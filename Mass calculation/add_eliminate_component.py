@@ -29,12 +29,12 @@ def fail_or_abort_selection(attempts: int) -> None:
 
 KEY_FIELD_ORDER = [
     "Designators",
+    "Section",
+    "Subsection",
+    "Category",
     "Manufacturer",
     "Part_Number",
     "Description",
-    "Category",
-    "Section",
-    "Subsection",
     "number_elements",
     "unit",
     "Quantity_per_element",

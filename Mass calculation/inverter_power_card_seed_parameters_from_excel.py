@@ -21,14 +21,25 @@ def seed_from_excel(workbook_path, output_csv):
     ws = wb["BoM inverter card"]
 
     rows = []
+    last_section = ""
+    last_subsection = ""
 
     for r in range(3, ws.max_row + 1):
         category = ws.cell(r, 1).value            # A
-        section = ws.cell(r, 2).value             # B
-        subsection = ws.cell(r, 3).value          # C
+        section = _clean_text(ws.cell(r, 2).value)             # B
+        subsection = _clean_text(ws.cell(r, 3).value)          # C
         designators = ws.cell(r, 4).value  # D
         if not designators:
             continue
+
+        # Forward-fill Section and Subsection if empty
+        if not section:
+            section = last_section
+        if not subsection:
+            subsection = last_subsection
+        
+        last_section = section
+        last_subsection = subsection
 
         manufacturer = ws.cell(r, 5).value
         part_number = ws.cell(r, 6).value
@@ -96,12 +107,12 @@ def seed_from_excel(workbook_path, output_csv):
 
     fieldnames = [
         "Designators",
+        "Section",
+        "Subsection",
+        "Category",
         "Manufacturer",
         "Part_Number",
         "Description",
-        "Category",
-        "Section",
-        "Subsection",
         "number_elements",
         "unit",
         "Quantity_per_element",
