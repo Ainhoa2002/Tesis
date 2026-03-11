@@ -1,8 +1,6 @@
 ﻿#!/usr/bin/env python3
 """
-Parametric mass + ecoinvent pipeline.
-
-User edits inverter_power_card_component_parameters.csv directly (no need to edit Excel), then runs this script.
+User edits inverter_power_card_component_parameters.csv directly, then runs this script.
 Outputs:
 - inverter_power_card_component_mass_results.csv (component-level, all fields preserved)
 - inverter_power_card_component_io_flows.csv (component-level IO amounts)
@@ -13,7 +11,7 @@ import csv
 from collections import OrderedDict
 from pathlib import Path
 
-
+# Converts the inputs in correct format, float. changes coma for dot, averages ranges, returns none if it is empty.
 def to_float(value):
     if value is None:
         return None
@@ -38,16 +36,16 @@ def to_float(value):
     except ValueError:
         return None
 
-
+#Yes or no when input is in different formats
 def to_yes_no(value):
     text = str(value or "").strip().upper()
-    if text in {"YES", "SI", "S", "Y", "TRUE", "1"}:
+    if text in {"YES", "SI", "S", "Y", "TRUE", "1", "yes", "Yes", "true", "T"}:
         return True
-    if text in {"NO", "N", "FALSE", "0", ""}:
+    if text in {"NO", "N", "FALSE", "0", "FALSE", "no", "No", "false", "F"}:
         return False
     return False
 
-
+#Reorders the colums
 def _sort_key(row):
     category_order = to_float(row.get("Category_order"))
     group_order = to_float(row.get("Group_order"))
@@ -69,7 +67,7 @@ def _clean_text(value):
 
 
 def _build_row_metadata(rows):
-    """Compute sortable/groupable metadata even when these columns are absent in input CSV."""
+    """Compute sortable/groupable metadata using user-provided grouping parameters."""
     category_order_map = OrderedDict()
     group_order_map = OrderedDict()
     metadata = []
@@ -100,6 +98,16 @@ def _build_row_metadata(rows):
     return metadata
 
 
+def _validate_required_grouping_fields(raw_rows):
+    missing = []
+    for idx, row in raw_rows:
+        section = _clean_text(row.get("Section"))
+        subsection = _clean_text(row.get("Subsection"))
+        if section == "" or subsection == "":
+            missing.append((idx, _clean_text(row.get("Designators")), section, subsection))
+    return missing
+
+#For calculating the density
 def _resolve_density(row):
     """Resolve effective density for mass calculation.
     Priority:
@@ -121,11 +129,11 @@ def _resolve_density(row):
 
 
 def _get_number_elements(row):
-    return to_float(row.get("number_elements")) or to_float(row.get("Quantity_elements"))
+    return to_float(row.get("number_elements"))
 
 
 def _get_unit(row):
-    return str(row.get("unit") or row.get("Quantity_unit") or "").strip()
+    return str(row.get("unit") or "").strip()
 
 
 def _compute_total_quantity(row):
@@ -135,7 +143,7 @@ def _compute_total_quantity(row):
         return None
     return number_elements * quantity_per_element
 
-
+#CALCULATE THE MASS OF THE COMPONENTS
 def _try_geometry_mass(row, metal_extra_g, other_extra_g):
     l_mm = to_float(row.get("L_mm"))
     w_mm = to_float(row.get("W_mm"))
@@ -239,7 +247,7 @@ def ecoinvent_amount(row, mass_data):
         "Amount": amount,
     }
 
-
+##RECEIVES THE INPUTS FROM THE EXCEL AND CREATES THE CSV WITH THE PARAMETERS TO BE USED IN THE PIPELINE
 def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv):
     sorted_rows = []
     component_results = []
@@ -248,10 +256,31 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
     errors = []
 
     raw_rows = []
+    input_headers = []
     with open(input_csv, newline="", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
+        input_headers = list(reader.fieldnames or [])
         for idx, row in enumerate(reader, start=2):
             raw_rows.append((idx, row))
+
+    required_grouping_headers = ["Section", "Subsection"]
+    missing_headers = [h for h in required_grouping_headers if h not in input_headers]
+    if missing_headers:
+        raise ValueError(
+            "Input CSV is missing required grouping columns: "
+            + ", ".join(missing_headers)
+            + ". Add them as input parameters in *_component_parameters.csv."
+        )
+
+    missing_grouping_rows = _validate_required_grouping_fields(raw_rows)
+    if missing_grouping_rows:
+        preview = "; ".join(
+            [f"row {idx} ({designators or 'no designator'})" for idx, designators, _, _ in missing_grouping_rows[:10]]
+        )
+        raise ValueError(
+            "Section and Subsection are required input parameters for all rows. "
+            f"Missing values found in: {preview}"
+        )
 
     row_metadata = _build_row_metadata([row for _, row in raw_rows])
 
@@ -400,12 +429,16 @@ def main():
     component_flows_csv = base / "inverter_power_card_component_io_flows.csv"
     grouped_flows_csv = base / "inverter_power_card_ipe_flows_from_parameters.csv"
 
-    results, component_flows, grouped_flows, errors = run_pipeline(
-        input_csv,
-        results_csv,
-        component_flows_csv,
-        grouped_flows_csv,
-    )
+    try:
+        results, component_flows, grouped_flows, errors = run_pipeline(
+            input_csv,
+            results_csv,
+            component_flows_csv,
+            grouped_flows_csv,
+        )
+    except ValueError as exc:
+        print(f"Validation error: {exc}")
+        return
 
     print(f"Processed component rows: {len(results)}")
     print(f"Component IO rows: {len(component_flows)}")

@@ -32,6 +32,9 @@ KEY_FIELD_ORDER = [
     "Manufacturer",
     "Part_Number",
     "Description",
+    "Category",
+    "Section",
+    "Subsection",
     "number_elements",
     "unit",
     "Quantity_per_element",
@@ -58,9 +61,6 @@ AUTO_FIELDS = {
     "Order_index",
     "Category_order",
     "Group_order",
-    "Category",
-    "Section",
-    "Subsection",
     "Total_quantity",
     "Datasheet_required_flag",
     "Mass_datasheet_g",
@@ -338,6 +338,12 @@ def prompt_component_row(
             new_row[header] = ""
         elif user_value:
             new_row[header] = user_value
+
+    # Section/Subsection must be explicitly provided as input parameters.
+    for required_field in ("Section", "Subsection"):
+        if required_field in headers:
+            while not str(new_row.get(required_field, "")).strip():
+                new_row[required_field] = input(f"{required_field} is required: ").strip()
 
     return new_row
 

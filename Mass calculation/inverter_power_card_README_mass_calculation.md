@@ -44,6 +44,9 @@ Columnas esperadas:
 - `Manufacturer`
 - `Part_Number`
 - `Description`
+- `Category`
+- `Section`
+- `Subsection`
 - `number_elements`
 - `unit`
 - `Quantity_per_element`
@@ -72,15 +75,15 @@ Aunque no esten en el CSV de entrada, el pipeline calcula y agrega en salidas:
 - `Order_index`
 - `Category_order`
 - `Group_order`
-- `Category`
-- `Section`
-- `Subsection`
 - `Total_quantity`
 
 Regla:
 
-- Si `Category`, `Section`, `Subsection` no existen o estan vacios, se usa `Category = AUTO` y los demas vacios.
 - `Order_index` se basa en el orden de filas del CSV.
+
+Nota:
+
+- `Section` y `Subsection` son obligatorios como parametros de entrada en el CSV editable.
 
 ## Logica de masa
 

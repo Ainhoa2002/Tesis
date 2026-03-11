@@ -23,6 +23,9 @@ def seed_from_excel(workbook_path, output_csv):
     rows = []
 
     for r in range(3, ws.max_row + 1):
+        category = ws.cell(r, 1).value            # A
+        section = ws.cell(r, 2).value             # B
+        subsection = ws.cell(r, 3).value          # C
         designators = ws.cell(r, 4).value  # D
         if not designators:
             continue
@@ -65,6 +68,9 @@ def seed_from_excel(workbook_path, output_csv):
                 "Manufacturer": manufacturer,
                 "Part_Number": part_number,
                 "Description": description,
+                "Category": category,
+                "Section": section,
+                "Subsection": subsection,
                 "number_elements": number_elements,
                 "unit": unit,
                 "Quantity_per_element": qty_per_element,
@@ -93,6 +99,9 @@ def seed_from_excel(workbook_path, output_csv):
         "Manufacturer",
         "Part_Number",
         "Description",
+        "Category",
+        "Section",
+        "Subsection",
         "number_elements",
         "unit",
         "Quantity_per_element",
