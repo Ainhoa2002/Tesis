@@ -77,37 +77,51 @@ def import_from_excel(workbook_path, output_csv, sheet_name="Sheet1"):
 
 def main():
     mass_calc_dir = Path(__file__).parent
+    default_input_dir = Path(r"C:\Users\alorzaga\cernbox\WINDOWS\Desktop\TESIS\Power converters\Power converter\Manufacturing")
     
     print("=" * 70)
     print("IMPORT COMPONENT PARAMETERS FROM EXCEL")
     print("=" * 70)
     print()
     
-    # Ask for Excel file path
+    # Ask for base directory where Excel workbook is located.
     while True:
-        excel_input = input("📁 Excel file path (full path or filename in current directory): ").strip()
-        if not excel_input:
-            print("❌ Path cannot be empty")
+        dir_prompt = f"📁 Folder path (Enter for default: {default_input_dir}): "
+        folder_input = input(dir_prompt).strip()
+        input_dir = Path(folder_input) if folder_input else default_input_dir
+
+        if input_dir.exists() and input_dir.is_dir():
+            break
+        print(f"❌ Folder not found: {input_dir}")
+
+    # Ask for workbook name (with or without .xlsx extension).
+    while True:
+        workbook_name = input("\n📘 Excel file name (e.g., BoM_fuse_card or BoM_fuse_card.xlsx): ").strip()
+        if not workbook_name:
+            print("❌ File name cannot be empty")
             continue
-        
-        excel_path = Path(excel_input)
-        
-        # If relative path, try to find it in mass_calc_dir first
-        if not excel_path.is_absolute():
-            excel_path_candidate = mass_calc_dir / excel_input
-            if excel_path_candidate.exists():
-                excel_path = excel_path_candidate
-        
+
+        if not workbook_name.lower().endswith(".xlsx"):
+            workbook_name = workbook_name + ".xlsx"
+
+        excel_path = input_dir / workbook_name
         if excel_path.exists():
             break
-        else:
-            print(f"❌ File not found: {excel_path}")
-            print(f"   Searched in: {mass_calc_dir if not Path(excel_input).is_absolute() else 'full path'}")
-            continue
+        print(f"❌ Excel file not found: {excel_path}")
     
-    # Ask for CSV name
+    workbook_stem = excel_path.stem
+    if workbook_stem.lower().startswith("bom_"):
+        default_csv_name = f"{workbook_stem[4:]}_component_parameters.csv"
+    else:
+        default_csv_name = f"{workbook_stem}_component_parameters.csv"
+
+    # Ask for output CSV file name.
     while True:
-        csv_name = input("\n📄 Output CSV filename (e.g., fuse_card_component_parameters.csv): ").strip()
+        csv_prompt = f"\n📄 Output CSV filename (Enter for default: {default_csv_name}): "
+        csv_name = input(csv_prompt).strip()
+        if not csv_name:
+            csv_name = default_csv_name
+
         if not csv_name:
             print("❌ Filename cannot be empty")
             continue
