@@ -40,3 +40,5 @@ Order_index,Category_order,Group_order,Category,Section,Subsection,Designators,P
 39,1,17,AUTO,Passives,Test PINs,PCB Terminal Test Pins,20-2136,EcoInvent ,,"electronic component, passive, unspecified",kg,Input,0.002,0.08,2.0,0.002,mass-based,
 40,1,18,AUTO,Magnetics,Current sensing,TR1,HCR6BFW,EcoInvent ,,"transformer production, low voltage use",kg,Input,0.0095,9.5,9.5,0.0095,mass-based,
 41,1,19,AUTO,Accesaries,Mounting hardware,J3 screws,3341-5,EcoInvent ,,"market for steel, low-alloyed + market for metal working, average for metal product manufacturing",kg,Input,0.00126385,0.631925,1.26385,0.00126385,mass-based,
+42,1,20,AUTO,Assambly,,SMD_PROCESS,,EcoInvent,,"mounting, surface mount technology, Pb-free solder",m2,Input,0.0168,,,,area-based,
+43,1,20,AUTO,Assambly,,THT_PROCESS,,EcoInvent,,"mounting, through-hole technology, Pb-free solder",m2,Input,0.0168,,,,area-based,

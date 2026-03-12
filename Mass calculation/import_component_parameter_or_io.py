@@ -87,10 +87,39 @@ def _resolve_source_csv(source_dir, source_name, extra_search_dirs=None):
     return None
 
 
+def _choose_csv_from_directory(source_dir):
+    csv_files = sorted(p for p in source_dir.glob("*.csv") if p.is_file())
+    if not csv_files:
+        return None
+
+    print("\nCSV files in folder:")
+    for i, path in enumerate(csv_files, start=1):
+        print(f"  {i}. {path.name}")
+
+    while True:
+        raw = input("Choose CSV number (Enter to type filename manually): ").strip()
+        if not raw:
+            return None
+        try:
+            idx = int(raw)
+        except ValueError:
+            print("Invalid number. Enter one of the listed options.")
+            continue
+
+        if 1 <= idx <= len(csv_files):
+            return csv_files[idx - 1]
+
+        print("Invalid number. Enter one of the listed options.")
+
+
 def _prompt_source_csv_path(default_dir, extra_search_dirs=None):
     while True:
         dir_prompt = f"Source CSV folder (Enter for default: {default_dir}): "
         source_dir = _prompt_directory(dir_prompt, default_dir)
+
+        selected_csv = _choose_csv_from_directory(source_dir)
+        if selected_csv is not None:
+            return selected_csv
 
         source_name = input("Source CSV filename: ").strip()
         if not source_name:
@@ -194,9 +223,9 @@ def import_from_excel(workbook_path, output_csv, sheet_name=None):
 
 
 def main():
-    mass_calc_dir = Path(__file__).parent
+    mass_calc_dir = Path(__file__).parent.resolve()
     current_git_dir = Path.cwd().resolve()
-    default_input_dir = current_git_dir
+    default_input_dir = mass_calc_dir
     
     print("IMPORT COMPONENT PARAMETERS")
     mode = _prompt_import_mode()
@@ -229,7 +258,7 @@ def main():
         else:
             default_csv_name = f"{workbook_stem}_component_parameters.csv"
 
-        output_csv = _prompt_output_csv_path(current_git_dir, default_csv_name)
+        output_csv = _prompt_output_csv_path(mass_calc_dir, default_csv_name)
 
         # Ask for sheet name
         sheet_name = input("\nSheet name (Enter for auto-detect): ").strip()
@@ -254,12 +283,12 @@ def main():
         return
 
     source_csv = _prompt_source_csv_path(
-        current_git_dir,
-        extra_search_dirs=[mass_calc_dir],
+        mass_calc_dir,
+        extra_search_dirs=[current_git_dir],
     )
     output_dir = _prompt_directory(
-        f"Destination folder (Enter for default: {current_git_dir}): ",
-        current_git_dir,
+        f"Destination folder (Enter for default: {mass_calc_dir}): ",
+        mass_calc_dir,
     )
     default_csv_name = f"{source_csv.stem}_copy.csv"
     output_csv = _prompt_output_csv_path(output_dir, default_csv_name, disallow_path=source_csv)
