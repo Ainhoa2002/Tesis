@@ -67,7 +67,27 @@ def _prompt_output_csv_path(default_dir, default_name, disallow_path=None):
         return output_csv
 
 
-def _prompt_source_csv_path(default_dir):
+def _resolve_source_csv(source_dir, source_name, extra_search_dirs=None):
+    if not source_name.lower().endswith(".csv"):
+        source_name = source_name + ".csv"
+
+    source_path = Path(source_name)
+    if source_path.is_absolute():
+        return source_path if source_path.exists() and source_path.is_file() else None
+
+    primary_candidate = source_dir / source_path
+    if primary_candidate.exists() and primary_candidate.is_file():
+        return primary_candidate
+
+    for search_dir in extra_search_dirs or []:
+        fallback_candidate = search_dir / source_path
+        if fallback_candidate.exists() and fallback_candidate.is_file():
+            return fallback_candidate
+
+    return None
+
+
+def _prompt_source_csv_path(default_dir, extra_search_dirs=None):
     while True:
         dir_prompt = f"Source CSV folder (Enter for default: {default_dir}): "
         source_dir = _prompt_directory(dir_prompt, default_dir)
@@ -77,13 +97,16 @@ def _prompt_source_csv_path(default_dir):
             print("Filename cannot be empty")
             continue
 
-        if not source_name.endswith(".csv"):
-            source_name = source_name + ".csv"
-
-        source_csv = source_dir / source_name
-        if source_csv.exists() and source_csv.is_file():
+        source_csv = _resolve_source_csv(source_dir, source_name, extra_search_dirs)
+        if source_csv is not None:
+            if source_csv.parent.resolve() != source_dir.resolve():
+                print(f"Source CSV found in: {source_csv.parent}")
             return source_csv
-        print(f"CSV file not found: {source_csv}")
+
+        filename = source_name if source_name.lower().endswith(".csv") else f"{source_name}.csv"
+        print(f"CSV file not found in: {source_dir / filename}")
+        if extra_search_dirs:
+            print("Also checked fallback folders.")
 
 
 def duplicate_csv(source_csv, output_csv):
@@ -173,7 +196,7 @@ def import_from_excel(workbook_path, output_csv, sheet_name=None):
 def main():
     mass_calc_dir = Path(__file__).parent
     current_git_dir = Path.cwd().resolve()
-    default_input_dir = Path(r"C:\Users\alorzaga\cernbox\WINDOWS\Desktop\TESIS\Power converters\Power converter\Manufacturing")
+    default_input_dir = current_git_dir
     
     print("IMPORT COMPONENT PARAMETERS")
     mode = _prompt_import_mode()
@@ -206,7 +229,7 @@ def main():
         else:
             default_csv_name = f"{workbook_stem}_component_parameters.csv"
 
-        output_csv = _prompt_output_csv_path(mass_calc_dir, default_csv_name)
+        output_csv = _prompt_output_csv_path(current_git_dir, default_csv_name)
 
         # Ask for sheet name
         sheet_name = input("\nSheet name (Enter for auto-detect): ").strip()
@@ -230,7 +253,10 @@ def main():
         print(f"Output saved to: {output_csv}")
         return
 
-    source_csv = _prompt_source_csv_path(current_git_dir)
+    source_csv = _prompt_source_csv_path(
+        current_git_dir,
+        extra_search_dirs=[mass_calc_dir],
+    )
     output_dir = _prompt_directory(
         f"Destination folder (Enter for default: {current_git_dir}): ",
         current_git_dir,

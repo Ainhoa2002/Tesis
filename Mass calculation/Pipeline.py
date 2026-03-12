@@ -1,15 +1,16 @@
 ﻿#!/usr/bin/env python3
 """
-User edits inverter_power_card_component_parameters.csv directly, then runs this script.
-Outputs:
-- inverter_power_card_component_mass_results.csv (component-level, all fields preserved)
-- inverter_power_card_component_io_flows.csv (component-level IO amounts)
-- inverter_power_card_ipe_flows_from_parameters.csv (grouped totals for import)
+Run parametric mass + ecoinvent pipeline for a selected subsystem.
+The subsystem is resolved from files named <subsystem>_component_parameters.csv.
 """
 
 import csv
+import sys
 from collections import OrderedDict
 from pathlib import Path
+
+
+MAX_SELECTION_ATTEMPTS = 3
 
 # Converts the inputs in correct format, float. changes coma for dot, averages ranges, returns none if it is empty.
 def to_float(value):
@@ -102,9 +103,8 @@ def _validate_required_grouping_fields(raw_rows):
     missing = []
     for idx, row in raw_rows:
         section = _clean_text(row.get("Section"))
-        subsection = _clean_text(row.get("Subsection"))
-        if section == "" or subsection == "":
-            missing.append((idx, _clean_text(row.get("Designators")), section, subsection))
+        if section == "":
+            missing.append((idx, _clean_text(row.get("Designators")), section))
     return missing
 
 #For calculating the density
@@ -142,6 +142,81 @@ def _compute_total_quantity(row):
     if number_elements is None or quantity_per_element is None:
         return None
     return number_elements * quantity_per_element
+
+
+def _try_area_quantity_m2(row):
+    """Compute area-based quantity for m2 context using only L and W (mm -> m2)."""
+    l_mm = to_float(row.get("L_mm"))
+    w_mm = to_float(row.get("W_mm"))
+    if l_mm is None or w_mm is None:
+        return None
+    return (l_mm * w_mm) / 1_000_000.0
+
+
+def _build_quantity_data(row, mass_data):
+    """Resolve Quantity_per_element and Total_quantity for reporting and flow amount logic."""
+    number_elements = _get_number_elements(row)
+    number_elements = 1.0 if number_elements is None else number_elements
+
+    unit = str(row.get("Ecoinvent_unit") or _get_unit(row) or "").strip().lower()
+    has_datasheet_info = to_yes_no(row.get("Has_datasheet_info"))
+    input_qty_per_element = to_float(row.get("Quantity_per_element"))
+
+    if unit == "m2" and has_datasheet_info:
+        area_per_element_m2 = _try_area_quantity_m2(row)
+        if area_per_element_m2 is None:
+            if input_qty_per_element is None:
+                return None
+            area_per_element_m2 = input_qty_per_element
+            method = "AREA_FROM_INPUT"
+        else:
+            method = "AREA_LW_MM_TO_M2"
+
+        return {
+            "Quantity_per_element": area_per_element_m2,
+            "Total_quantity": area_per_element_m2 * number_elements,
+            "Method": method,
+        }
+
+    if is_mass_unit(unit) and mass_data is not None:
+        if unit == "kg":
+            qty_per_element = mass_data["Mass_per_element_g"] / 1000.0
+            total_quantity = mass_data["Total_mass_kg"]
+        else:
+            qty_per_element = mass_data["Mass_per_element_g"]
+            total_quantity = mass_data["Total_mass_g"]
+
+        return {
+            "Quantity_per_element": qty_per_element,
+            "Total_quantity": total_quantity,
+            "Method": "MASS_DERIVED",
+        }
+
+    if input_qty_per_element is not None:
+        return {
+            "Quantity_per_element": input_qty_per_element,
+            "Total_quantity": input_qty_per_element * number_elements,
+            "Method": "INPUT_QTY",
+        }
+
+    return None
+
+
+def _ordered_result_fieldnames(row):
+    """Return result CSV field order with key visualization columns first."""
+    preferred_front = [
+        "Designators",
+        "Section",
+        "Subsection",
+        "Ecoinvent_unit",
+        "unit",
+        "Total_quantity",
+        "Ecoinvent_flow",
+    ]
+    fields = list(row.keys())
+    front = [name for name in preferred_front if name in fields]
+    tail = [name for name in fields if name not in front]
+    return front + tail
 
 #CALCULATE THE MASS OF THE COMPONENTS
 def _try_geometry_mass(row, metal_extra_g, other_extra_g):
@@ -216,7 +291,7 @@ def is_mass_unit(unit):
     return str(unit or "").strip().lower() in {"kg", "g"}
 
 
-def ecoinvent_amount(row, mass_data):
+def ecoinvent_amount(row, mass_data, quantity_data):
     """Compute the ecoinvent flow amount for a component row.
     - kg/g units  → taken from calculated mass (mass_data must not be None)
     - any other unit → taken from Ecoinvent_amount_override set by the user
@@ -234,6 +309,12 @@ def ecoinvent_amount(row, mass_data):
                 f"Unit is '{unit}' but mass data is missing — fill Quantity_per_element (kg, with Has_datasheet_info=YES) or geometry + density"
             )
         amount = mass_data["Total_mass_kg"] if unit.lower() == "kg" else mass_data["Total_mass_g"]
+    elif unit.lower() == "m2":
+        if quantity_data is None:
+            raise ValueError(
+                "Unit is 'm2' but area quantity is missing — fill L_mm and W_mm (Has_datasheet_info=YES) or Quantity_per_element"
+            )
+        amount = quantity_data["Total_quantity"]
     else:
         override = to_float(row.get("Ecoinvent_amount_override"))
         if override is None:
@@ -263,11 +344,11 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
         for idx, row in enumerate(reader, start=2):
             raw_rows.append((idx, row))
 
-    required_grouping_headers = ["Section", "Subsection"]
+    required_grouping_headers = ["Section"]
     missing_headers = [h for h in required_grouping_headers if h not in input_headers]
     if missing_headers:
         raise ValueError(
-            "Input CSV is missing required grouping columns: "
+            "Input CSV is missing required column(s): "
             + ", ".join(missing_headers)
             + ". Add them as input parameters in *_component_parameters.csv."
         )
@@ -275,10 +356,10 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
     missing_grouping_rows = _validate_required_grouping_fields(raw_rows)
     if missing_grouping_rows:
         preview = "; ".join(
-            [f"row {idx} ({designators or 'no designator'})" for idx, designators, _, _ in missing_grouping_rows[:10]]
+            [f"row {idx} ({designators or 'no designator'})" for idx, designators, _ in missing_grouping_rows[:10]]
         )
         raise ValueError(
-            "Section and Subsection are required input parameters for all rows. "
+            "Section is a required input parameter for all rows. "
             f"Missing values found in: {preview}"
         )
 
@@ -295,13 +376,17 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
 
     for idx, row, meta in sorted_rows:
         result_row = dict(row)
-        total_quantity = _compute_total_quantity(row)
-        result_row["Total_quantity"] = "" if total_quantity is None else round(total_quantity, 12)
-
         mass_data = compute_component_mass(row)  # returns None if data missing — not an error yet
+        quantity_data = _build_quantity_data(row, mass_data)
+        if quantity_data is not None:
+            result_row["Quantity_per_element"] = round(quantity_data["Quantity_per_element"], 12)
+            result_row["Total_quantity"] = round(quantity_data["Total_quantity"], 12)
+        else:
+            result_row["Total_quantity"] = ""
 
         unit = str(row.get("Ecoinvent_unit") or _get_unit(row) or "").strip()
         needs_mass = is_mass_unit(unit)
+        needs_area = unit.lower() == "m2"
         validation_error = ""
 
         if mass_data is not None:
@@ -310,8 +395,6 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
                     "Method": mass_data["Method"],
                     "Volume_cm3": "" if mass_data["Volume_cm3"] is None else round(mass_data["Volume_cm3"], 9),
                     "Mass_per_element_g": round(mass_data["Mass_per_element_g"], 6),
-                    "Total_mass_g": round(mass_data["Total_mass_g"], 6),
-                    "Total_mass_kg": round(mass_data["Total_mass_kg"], 12),
                     "Density_used_g_cm3": ""
                     if mass_data["Density_used_g_cm3"] is None
                     else round(mass_data["Density_used_g_cm3"], 6),
@@ -325,8 +408,6 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
                     "Method": "PENDING" if not needs_mass else "MISSING_MASS",
                     "Volume_cm3": "",
                     "Mass_per_element_g": "",
-                    "Total_mass_g": "",
-                    "Total_mass_kg": "",
                     "Density_used_g_cm3": "",
                     "Density_source": "",
                     "Validation_error": "Mass data not yet filled" if needs_mass else "",
@@ -335,6 +416,13 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
             if needs_mass:
                 validation_error = "Mass data not yet filled (unit is kg/g — fill Quantity_per_element in kg with Has_datasheet_info=YES, or geometry + density)"
                 errors.append({"row": idx, "component": row.get("Designators", ""), "error": validation_error})
+
+        if needs_area and quantity_data is None:
+            area_error = "Area data not yet filled (unit is m2 — fill L_mm and W_mm with Has_datasheet_info=YES, or Quantity_per_element)"
+            result_row["Validation_error"] = area_error
+            errors.append({"row": idx, "component": row.get("Designators", ""), "error": area_error})
+        elif needs_area and quantity_data is not None:
+            result_row["Method"] = quantity_data["Method"]
 
         component_results.append(result_row)
 
@@ -363,10 +451,15 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
             }
 
             try:
-                flow_row = ecoinvent_amount(row, mass_data)
+                flow_row = ecoinvent_amount(row, mass_data, quantity_data)
                 if flow_row is not None:
                     flow_entry["Amount"] = round(flow_row["Amount"], 12)
-                    flow_entry["Formula_basis"] = "mass-based" if is_mass_unit(unit) else "override"
+                    if is_mass_unit(unit):
+                        flow_entry["Formula_basis"] = "mass-based"
+                    elif unit.lower() == "m2":
+                        flow_entry["Formula_basis"] = "area-based"
+                    else:
+                        flow_entry["Formula_basis"] = "override"
                     key = (flow_row["Flow"], flow_row["Unit"], flow_row["Direction"])
                     grouped_flows[key] = grouped_flows.get(key, 0.0) + flow_row["Amount"]
                 else:
@@ -380,7 +473,7 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
             component_flows.append(flow_entry)
 
     if component_results:
-        fieldnames = list(component_results[0].keys())
+        fieldnames = _ordered_result_fieldnames(component_results[0])
         with open(results_csv, "w", newline="", encoding="utf-8") as f:
             writer = csv.DictWriter(f, fieldnames=fieldnames)
             writer.writeheader()
@@ -422,12 +515,87 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
     return component_results, component_flows, grouped_flows, errors
 
 
+def _discover_subsystems(base_dir):
+    mapping = {}
+    for path in sorted(base_dir.glob("*_component_parameters.csv")):
+        name = path.name[: -len("_component_parameters.csv")]
+        mapping[name] = path
+    return mapping
+
+
+def _choose_subsystem(subsystems, requested=None):
+    names = list(subsystems.keys())
+    if not names:
+        raise ValueError("No *_component_parameters.csv files were found in the folder.")
+
+    names_by_lower = {name.lower(): name for name in names}
+
+    if requested:
+        requested_clean = requested.strip()
+        if requested_clean in subsystems:
+            return requested_clean
+        lowered = requested_clean.lower()
+        if lowered in names_by_lower:
+            return names_by_lower[lowered]
+        raise ValueError(
+            f"Subsystem '{requested}' not found. Available: {', '.join(names)}"
+        )
+
+    if len(names) == 1:
+        return names[0]
+
+    print("Available subsystems:")
+    for i, name in enumerate(names, start=1):
+        print(f"  {i}. {name}")
+
+    attempts = 0
+    while True:
+        raw = input("Choose subsystem number or name: ").strip()
+        if raw in subsystems:
+            return raw
+
+        lowered = raw.lower()
+        if lowered in names_by_lower:
+            return names_by_lower[lowered]
+
+        try:
+            idx = int(raw)
+        except ValueError:
+            idx = -1
+        if 1 <= idx <= len(names):
+            return names[idx - 1]
+
+        attempts += 1
+        print("Invalid selection. Try again.")
+        if attempts >= MAX_SELECTION_ATTEMPTS:
+            raise ValueError("Too many invalid attempts. Operation canceled.")
+
+
+def _build_subsystem_paths(base_dir, subsystem):
+    input_csv = base_dir / f"{subsystem}_component_parameters.csv"
+    results_csv = base_dir / f"{subsystem}_component_mass_results.csv"
+    component_flows_csv = base_dir / f"{subsystem}_component_io_flows.csv"
+    grouped_flows_csv = base_dir / f"{subsystem}_ipe_flows_from_parameters.csv"
+    return input_csv, results_csv, component_flows_csv, grouped_flows_csv
+
+
 def main():
-    base = Path(r"c:\Users\alorzaga\Git\tesis\Mass calculation")
-    input_csv = base / "inverter_power_card_component_parameters.csv"
-    results_csv = base / "inverter_power_card_component_mass_results.csv"
-    component_flows_csv = base / "inverter_power_card_component_io_flows.csv"
-    grouped_flows_csv = base / "inverter_power_card_ipe_flows_from_parameters.csv"
+    base = Path(__file__).parent
+
+    requested_subsystem = sys.argv[1] if len(sys.argv) > 1 else None
+    try:
+        subsystems = _discover_subsystems(base)
+        subsystem = _choose_subsystem(subsystems, requested_subsystem)
+    except ValueError as exc:
+        print(f"Validation error: {exc}")
+        return
+
+    input_csv, results_csv, component_flows_csv, grouped_flows_csv = _build_subsystem_paths(
+        base,
+        subsystem,
+    )
+
+    print(f"Running subsystem: {subsystem}")
 
     try:
         results, component_flows, grouped_flows, errors = run_pipeline(

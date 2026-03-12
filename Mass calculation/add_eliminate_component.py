@@ -71,41 +71,66 @@ AUTO_FIELDS = {
     "Temporal_correlation",
 }
 
-# It discovers the subsystems that we have files for.
-def discover_subsystem_files(base_dir: Path) -> Dict[str, Path]:
-    mapping: Dict[str, Path] = {}
-    for path in sorted(base_dir.glob("*_component_parameters.csv")):
-        subsystem = path.name[: -len("_component_parameters.csv")]
-        mapping[subsystem] = path
-    return mapping
+def choose_mode() -> str:
+    print("\nWhat do you want to edit?")
+    print("  1. Component parameters")
+    print("  2. I/O flows")
+    attempts = 0
+    while True:
+        raw = input("Mode [1/2]: ").strip().lower()
+        if raw in {"1", "parameters", "params", "p", "component"}:
+            return "parameters"
+        if raw in {"2", "io", "i/o", "flows", "i"}:
+            return "io"
+        attempts += 1
+        print("Invalid option. Enter 1 or 2.")
+        if attempts >= MAX_SELECTION_ATTEMPTS:
+            raise SelectionAborted("Too many invalid attempts. Operation canceled.")
 
-#For choosing the subsystem, it can be written or you can choose for the list of available possibilities
-def choose_subsystem(subsystems: Dict[str, Path]) -> Tuple[str, Path]:
-    names = list(subsystems.keys())
+
+def discover_csv_files(base_dir: Path, suffix: str) -> Dict[str, Path]:
+    return {
+        p.name[: -len(suffix)]: p
+        for p in sorted(base_dir.glob(f"*{suffix}"))
+    }
+
+
+# Kept as aliases so external callers (export_to_excel, etc.) continue to work.
+def discover_subsystem_files(base_dir: Path) -> Dict[str, Path]:
+    return discover_csv_files(base_dir, "_component_parameters.csv")
+
+
+def discover_io_files(base_dir: Path) -> Dict[str, Path]:
+    return discover_csv_files(base_dir, "_io.csv")
+
+
+def choose_from_mapping(mapping: Dict[str, Path], label: str, empty_error: str) -> Tuple[str, Path]:
+    #Presents a numbered list and returns the chosen (name, path) pair.
+    names = list(mapping.keys())
     if not names:
-        raise RuntimeError("No *_component_parameters.csv files found in this folder.")
+        raise RuntimeError(empty_error)
 
     names_by_lower = {name.lower(): name for name in names}
 
-    print("Available subsystems:")
+    print(f"Available {label}:")
     for i, name in enumerate(names, start=1):
         print(f"  {i}. {name}")
 
     attempts = 0
     while True:
-        raw = input("Choose subsystem number or name: ").strip()
+        raw = input(f"Choose {label} number or name: ").strip()
         if not raw:
             attempts += 1
             fail_or_abort_selection(attempts)
             continue
 
-        if raw in subsystems:
-            return raw, subsystems[raw]
+        if raw in mapping:
+            return raw, mapping[raw]
 
         lowered = raw.lower()
         if lowered in names_by_lower:
             chosen = names_by_lower[lowered]
-            return chosen, subsystems[chosen]
+            return chosen, mapping[chosen]
 
         try:
             idx = int(raw)
@@ -114,10 +139,19 @@ def choose_subsystem(subsystems: Dict[str, Path]) -> Tuple[str, Path]:
 
         if 1 <= idx <= len(names):
             chosen = names[idx - 1]
-            return chosen, subsystems[chosen]
+            return chosen, mapping[chosen]
 
         attempts += 1
         fail_or_abort_selection(attempts)
+
+
+# Kept as aliases so external callers continue to work.
+def choose_subsystem(subsystems: Dict[str, Path]) -> Tuple[str, Path]:
+    return choose_from_mapping(subsystems, "subsystems", "No *_component_parameters.csv files found in this folder.")
+
+
+def choose_io_file(io_files: Dict[str, Path]) -> Tuple[str, Path]:
+    return choose_from_mapping(io_files, "I/O files", "No *_io.csv files found in this folder.")
 
 # Loads the CSV file and returns headers (categories) and rows (info inside the categories). 
 def load_csv(path: Path) -> Tuple[List[str], List[Dict[str, str]]]:
@@ -165,13 +199,18 @@ def choose_action() -> str:
         if attempts >= MAX_SELECTION_ATTEMPTS:
             raise SelectionAborted("Too many invalid attempts. Operation canceled.")
 
-#Search if the component exist in the file by its designators, if it exist it returns the index of the row, if not it returns -1
-def find_row_index_by_designators(rows: List[Dict[str, str]], designators: str) -> int:
-    target = normalize_text(designators)
+def find_row_index(rows: List[Dict[str, str]], field: str, value: str) -> int:
+    #Returns the index of the first row where row[field] matches value, or -1.
+    target = normalize_text(value)
     for i, row in enumerate(rows):
-        if normalize_text(row.get("Designators", "")) == target:
+        if normalize_text(row.get(field, "")) == target:
             return i
     return -1
+
+
+# Kept as alias so existing call sites keep working.
+def find_row_index_by_designators(rows: List[Dict[str, str]], designators: str) -> int:
+    return find_row_index(rows, "Designators", designators)
 
 #it prints the information of the component.
 def print_component_preview(row: Dict[str, str], headers: List[str]) -> None:
@@ -347,6 +386,78 @@ def prompt_component_row(
 
     return new_row
 
+def find_row_index_by_flow(rows: List[Dict[str, str]], flow: str) -> int:
+    return find_row_index(rows, "Flow", flow)
+
+
+def prompt_io_row(
+    headers: List[str],
+    existing_row: Dict[str, str] | None = None,
+) -> Dict[str, str]:
+    is_update = existing_row is not None
+    new_row = {header: existing_row.get(header, "") if is_update else "" for header in headers}
+
+    for header in headers:
+        current_value = new_row.get(header, "")
+        prompt = f"{header} [{current_value}]: " if current_value else f"{header}: "
+        user_value = input(prompt).strip()
+
+        if user_value == "__blank__":
+            new_row[header] = ""
+        elif user_value:
+            new_row[header] = user_value
+
+    # Flow is the key field and is required.
+    while not str(new_row.get("Flow", "")).strip():
+        new_row["Flow"] = input("Flow is required: ").strip()
+
+    return new_row
+
+
+def io_row_label(row: Dict[str, str]) -> str:
+    flow = row.get("Flow", "")
+    unit = row.get("Unit", "")
+    amount = row.get("Amount", "")
+    direction = row.get("Direction", "")
+    label = flow if len(flow) <= 70 else flow[:67] + "..."
+    return f"{label} | {unit} | {amount} | {direction}"
+
+
+def find_io_row_for_delete(headers: List[str], rows: List[Dict[str, str]]) -> int:
+    while True:
+        keyword = input("Enter keyword to search in Flow (or Enter to list all): ").strip()
+
+        if keyword:
+            matches = [i for i, row in enumerate(rows)
+                       if normalize_text(keyword) in normalize_text(row.get("Flow", ""))]
+        else:
+            matches = list(range(len(rows)))
+
+        if not matches:
+            print("No matching flows found.")
+            if not prompt_yes_no("Try again?", default=True):
+                return -1
+            continue
+
+        print(f"\nFound {len(matches)} flow(s):")
+        for i, row_idx in enumerate(matches, start=1):
+            print(f"  {i}. {io_row_label(rows[row_idx])}")
+
+        attempts = 0
+        while True:
+            raw = input("Choose number to delete (Enter to cancel): ").strip()
+            if not raw:
+                return -1
+            try:
+                idx = int(raw)
+            except ValueError:
+                idx = -1
+            if 1 <= idx <= len(matches):
+                return matches[idx - 1]
+            attempts += 1
+            fail_or_abort_selection(attempts)
+
+
 #Saves the CSV file directly (no automatic backup files).
 def save_csv(path: Path, headers: List[str], rows: List[Dict[str, str]]) -> None:
     with open(path, "w", newline="", encoding="utf-8") as f:
@@ -355,71 +466,131 @@ def save_csv(path: Path, headers: List[str], rows: List[Dict[str, str]]) -> None
         writer.writerows(rows)
 
 
-def main() -> None:
-    try:
-        subsystems = discover_subsystem_files(BASE_DIR)
-        subsystem_name, csv_path = choose_subsystem(subsystems)
+def _run_parameters_workflow() -> None:
+    subsystems = discover_csv_files(BASE_DIR, "_component_parameters.csv")
+    subsystem_name, csv_path = choose_from_mapping(subsystems, "subsystems", "No *_component_parameters.csv files found in this folder.")
 
-        headers, rows = load_csv(csv_path)
+    headers, rows = load_csv(csv_path)
 
-        print("\nSelection summary")
-        print(f"Subsystem: {subsystem_name}")
-        print(f"File: {csv_path.name}")
-        print(f"Columns: {len(headers)}")
-        print(f"Rows: {len(rows)}")
+    print("\nSelection summary")
+    print(f"Subsystem: {subsystem_name}")
+    print(f"File: {csv_path.name}")
+    print(f"Columns: {len(headers)}")
+    print(f"Rows: {len(rows)}")
 
-        action_mode = choose_action()
+    action_mode = choose_action()
 
-        if action_mode == "delete":
-            row_index = find_component_for_delete(headers, rows)
-            if row_index < 0:
-                print("No changes made.")
-                return
+    if action_mode == "delete":
+        row_index = find_component_for_delete(headers, rows)
+        if row_index < 0:
+            print("No changes made.")
+            return
 
+        existing_row = rows[row_index]
+        print_component_preview(existing_row, headers)
+        if not prompt_yes_no("Confirm eliminate component?", default=False):
+            print("No changes made.")
+            return
+
+        del rows[row_index]
+        action = "deleted"
+    else:
+        while True:
+            designators = input("Enter Designators to add or update: ").strip()
+            if designators:
+                break
+            print("Designators cannot be empty.")
+
+        row_index = find_row_index(rows, "Designators", designators)
+
+        if row_index >= 0:
             existing_row = rows[row_index]
             print_component_preview(existing_row, headers)
-            if not prompt_yes_no("Confirm eliminate component?", default=False):
+            if not prompt_yes_no("Component exists. Update this row?", default=True):
                 print("No changes made.")
                 return
 
-            del rows[row_index]
-            action = "deleted"
+            rows[row_index] = prompt_component_row(
+                headers=headers,
+                designators=designators,
+                existing_row=existing_row,
+            )
+            action = "updated"
         else:
-            while True:
-                designators = input("Enter Designators to add or update: ").strip()
-                if designators:
-                    break
-                print("Designators cannot be empty.")
-
-            row_index = find_row_index_by_designators(rows, designators)
-
-            if row_index >= 0:
-                existing_row = rows[row_index]
-                print_component_preview(existing_row, headers)
-                if not prompt_yes_no("Component exists. Update this row?", default=True):
-                    print("No changes made.")
-                    return
-
-                rows[row_index] = prompt_component_row(
+            print("Component not found. Creating a new row.")
+            rows.append(
+                prompt_component_row(
                     headers=headers,
                     designators=designators,
-                    existing_row=existing_row,
+                    existing_row=None,
                 )
-                action = "updated"
-            else:
-                print("Component not found. Creating a new row.")
-                rows.append(
-                    prompt_component_row(
-                        headers=headers,
-                        designators=designators,
-                        existing_row=None,
-                    )
-                )
-                action = "added"
+            )
+            action = "added"
 
-        save_csv(csv_path, headers, rows)
-        print(f"\nComponent {action} successfully.")
-        print(f"Updated file: {csv_path.name}")
+    save_csv(csv_path, headers, rows)
+    print(f"\nComponent {action} successfully.")
+    print(f"Updated file: {csv_path.name}")
+
+
+def _run_io_workflow() -> None:
+    io_files = discover_csv_files(BASE_DIR, "_io.csv")
+    io_name, csv_path = choose_from_mapping(io_files, "I/O files", "No *_io.csv files found in this folder.")
+
+    headers, rows = load_csv(csv_path)
+
+    print("\nSelection summary")
+    print(f"I/O file: {io_name}")
+    print(f"File: {csv_path.name}")
+    print(f"Columns: {len(headers)}")
+    print(f"Rows: {len(rows)}")
+
+    action_mode = choose_action()
+
+    if action_mode == "delete":
+        row_index = find_io_row_for_delete(headers, rows)
+        if row_index < 0:
+            print("No changes made.")
+            return
+
+        print(f"\nAbout to delete: {io_row_label(rows[row_index])}")
+        if not prompt_yes_no("Confirm eliminate flow?", default=False):
+            print("No changes made.")
+            return
+
+        del rows[row_index]
+        action = "deleted"
+    else:
+        existing_flow = input("Enter Flow name to add or update (or Enter to add new): ").strip()
+
+        if existing_flow:
+            row_index = find_row_index(rows, "Flow", existing_flow)
+        else:
+            row_index = -1
+
+        if row_index >= 0:
+            print(f"\nCurrent: {io_row_label(rows[row_index])}")
+            if not prompt_yes_no("Flow exists. Update this row?", default=True):
+                print("No changes made.")
+                return
+            rows[row_index] = prompt_io_row(headers, existing_row=rows[row_index])
+            action = "updated"
+        else:
+            print("Flow not found. Creating a new row.")
+            rows.append(prompt_io_row(headers, existing_row=None))
+            action = "added"
+
+    save_csv(csv_path, headers, rows)
+    print(f"\nI/O flow {action} successfully.")
+    print(f"Updated file: {csv_path.name}")
+
+
+def main() -> None:
+    try:
+        mode = choose_mode()
+        if mode == "parameters":
+            _run_parameters_workflow()
+        else:
+            _run_io_workflow()
     except SelectionAborted as exc:
         print(str(exc))
         print("No changes made.")
