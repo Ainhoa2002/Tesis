@@ -46,10 +46,6 @@ Current examples in this repository:
   - Generic pipeline entry point for any subsystem with `<subsystem>_component_parameters.csv`.
   - Accepts an optional subsystem argument; if omitted, it prompts for selection.
 
-- `<subsystem>_seed_parameters_from_excel.py`
-  - Optional bootstrap/reset from source Excel data.
-  - Current implementation available: `inverter_power_card_seed_parameters_from_excel.py`.
-
 ## Recommended daily workflow
 
 1. If needed, import from Excel or duplicate CSV:
@@ -72,12 +68,13 @@ or pass subsystem explicitly:
 
 `python "Mass calculation\\export_to_excel.py"`
 
-## About seed scripts
+## CSV-only policy
 
-Seed scripts are optional tools for bootstrap/reset only.
+The pipeline depends on CSV files as inputs.
 
-- Use them when you want to regenerate a base CSV from the original Excel source.
-- Do not use them in daily operation if your `<subsystem>_component_parameters.csv` is already curated.
+- Required input per subsystem: `<subsystem>_component_parameters.csv`
+- Optional manual I/O table: `<subsystem>_io.csv`
+- Excel is optional and only used through `import_component_parameter_or_io.py` when needed.
 
 ## Input schema (component parameters CSV)
 
@@ -122,7 +119,8 @@ Common computed fields in pipeline outputs:
 
 Important validation rule:
 
-- `Section` and `Subsection` are required in input rows.
+- `Section` is required in input rows.
+- `Subsection` can be empty.
 
 ## Quantity and amount logic (current generic pipeline)
 

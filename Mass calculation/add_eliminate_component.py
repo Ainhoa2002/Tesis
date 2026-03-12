@@ -71,6 +71,43 @@ AUTO_FIELDS = {
     "Temporal_correlation",
 }
 
+FIELD_EXAMPLES = {
+    "Designators": "R1, R2",
+    "Section": "Passives",
+    "Subsection": "Resistors",
+    "Category": "AUTO",
+    "Manufacturer": "Infineon",
+    "Part_Number": "IKW25N120H3",
+    "Description": "1200V 50A IGBT",
+    "number_elements": "4",
+    "unit": "kg",
+    "Quantity_per_element": "0.0001",
+    "Has_datasheet_info": "YES",
+    "L_mm": "10",
+    "W_mm": "5",
+    "H_mm": "2",
+    "Volume_cm3_excel": "0.1",
+    "Density_min_g_cm3": "1.2",
+    "Density_max_g_cm3": "1.4",
+    "Metal_extra_g": "0.01",
+    "Other_extra_g": "0",
+    "Database": "EcoInvent",
+    "Database_component_title": "Infineon IKW40N120H3",
+    "Ecoinvent_flow": "integrated circuit production, logic type",
+    "Ecoinvent_unit": "kg",
+    "Direction": "Input",
+    "Ecoinvent_amount_override": "0.5",
+}
+
+
+def prompt_label_with_example(header: str) -> str:
+    if header in {"Comments", "Notes"}:
+        return header
+    example = FIELD_EXAMPLES.get(header)
+    if not example:
+        return header
+    return f"{header} (e.g. {example})"
+
 def choose_mode() -> str:
     print("\nWhat do you want to edit?")
     print("  1. Component parameters")
@@ -370,7 +407,8 @@ def prompt_component_row(
 
     for header in ordered_headers:
         current_value = new_row.get(header, "")
-        prompt = f"{header} [{current_value}]: " if current_value else f"{header}: "
+        label = prompt_label_with_example(header)
+        prompt = f"{label} [{current_value}]: " if current_value else f"{label}: "
         user_value = input(prompt).strip()
 
         if user_value == "__blank__":
@@ -378,11 +416,10 @@ def prompt_component_row(
         elif user_value:
             new_row[header] = user_value
 
-    # Section/Subsection must be explicitly provided as input parameters.
-    for required_field in ("Section", "Subsection"):
-        if required_field in headers:
-            while not str(new_row.get(required_field, "")).strip():
-                new_row[required_field] = input(f"{required_field} is required: ").strip()
+    # Section is required; Subsection is optional.
+    if "Section" in headers:
+        while not str(new_row.get("Section", "")).strip():
+            new_row["Section"] = input("Section is required (e.g. Passives): ").strip()
 
     return new_row
 

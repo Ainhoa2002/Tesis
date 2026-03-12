@@ -23,19 +23,22 @@ def to_float(value):
     if text == "":
         return None
 
-    # Support ranges like 0.35-0.4
+    try:
+        return float(text)
+    except ValueError:
+        pass
+
+    # Support ranges like 0.35-0.4 after normal float parsing.
+    # This avoids misreading scientific notation (e.g. 8e-05) as a range.
     if "-" in text and not text.startswith("-"):
         parts = text.split("-")
         if len(parts) == 2:
             try:
-                return (float(parts[0]) + float(parts[1])) / 2.0
+                return (float(parts[0].strip()) + float(parts[1].strip())) / 2.0
             except ValueError:
                 return None
 
-    try:
-        return float(text)
-    except ValueError:
-        return None
+    return None
 
 #Yes or no when input is in different formats
 def to_yes_no(value):
