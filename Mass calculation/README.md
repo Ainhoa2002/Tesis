@@ -10,11 +10,15 @@ Quick start:
 
 `python "Mass calculation\\add_eliminate_component.py"`
 
-3. Run pipeline:
+3. Rebuild deduplicated component libraries (by casing and part number):
+
+`python "Mass calculation\\build_component_libraries.py"`
+
+4. Run pipeline:
 
 `python "Mass calculation\\Pipeline.py"`
 
-4. Optional export:
+5. Optional export:
 
 `python "Mass calculation\\export_to_excel.py"`
 

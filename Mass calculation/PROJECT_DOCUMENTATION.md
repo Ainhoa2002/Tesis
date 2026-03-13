@@ -42,6 +42,11 @@ Per subsystem:
 - Component flows: `<subsystem>_component_io_flows.csv`
 - Grouped flows: `<subsystem>_ipe_flows_from_parameters.csv`
 
+Shared libraries:
+
+- Casing library: `component_library_by_casing.csv`
+- Part number library: `component_library_by_part_number.csv`
+
 This convention enables scalability without duplicating code logic.
 
 ## 5. Main Features
@@ -53,6 +58,7 @@ This convention enables scalability without duplicating code logic.
 - Quick CSV selection via numbered list during duplication.
 - Default folder for import/duplication in `Mass calculation`.
 - Robust numeric parsing, including scientific notation (example: `8e-05`).
+- Deduplicated component library generation from all subsystem parameter files.
 - Optional Excel export.
 
 ## 6. Scripts and Functional Role
@@ -61,6 +67,11 @@ This convention enables scalability without duplicating code logic.
   - Executes calculations for a subsystem.
   - Accepts optional argument (`Pipeline.py <subsystem>`).
   - Without argument, prompts to select subsystem.
+
+- `build_component_libraries.py`
+  - Scans all `<subsystem>_component_parameters.csv` files.
+  - Builds unique library rows by `Casing` and by `Manufacturer + Part_Number`.
+  - Avoids repeated entries across subsystems.
 
 - `add_eliminate_component.py`
   - Component parameters mode.
@@ -87,7 +98,7 @@ Validation rules:
 
 Expected key fields:
 
-- Identification and classification: `Designators`, `Section`, `Subsection`, `Category`
+- Identification and classification: `Designators`, `Casing`, `Section`, `Subsection`, `Category`
 - Quantity: `number_elements`, `unit`, `Quantity_per_element`, `Has_datasheet_info`
 - Geometry/density: `L_mm`, `W_mm`, `H_mm`, `Volume_cm3_excel`, `Density_min_g_cm3`, `Density_max_g_cm3`, `Metal_extra_g`, `Other_extra_g`
 - LCA mapping: `Ecoinvent_flow`, `Ecoinvent_unit`, `Direction`, `Database`, `Database_component_title`

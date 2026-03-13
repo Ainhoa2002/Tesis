@@ -29,6 +29,7 @@ def fail_or_abort_selection(attempts: int) -> None:
 
 KEY_FIELD_ORDER = [
     "Designators",
+    "Casing",
     "Section",
     "Subsection",
     "Category",
@@ -73,6 +74,7 @@ AUTO_FIELDS = {
 
 FIELD_EXAMPLES = {
     "Designators": "R1, R2",
+    "Casing": "TO-220, SOIC-8, 1206",
     "Section": "Passives",
     "Subsection": "Resistors",
     "Category": "AUTO",
@@ -253,6 +255,7 @@ def find_row_index_by_designators(rows: List[Dict[str, str]], designators: str) 
 def print_component_preview(row: Dict[str, str], headers: List[str]) -> None:
     preview_order = [
         "Designators",
+        "Casing",
         "Manufacturer",
         "Part_Number",
         "Description",
@@ -267,17 +270,19 @@ def print_component_preview(row: Dict[str, str], headers: List[str]) -> None:
 
 def component_label(row: Dict[str, str]) -> str:
     designators = row.get("Designators", "")
+    casing = row.get("Casing", "")
     manufacturer = row.get("Manufacturer", "")
     part_number = row.get("Part_Number", "")
     description = row.get("Description", "")
     if len(description) > 60:
         description = description[:57] + "..."
-    return f"{designators} | {manufacturer} | {part_number} | {description}"
+    return f"{designators} | {casing} | {manufacturer} | {part_number} | {description}"
 
 
 def choose_search_field(headers: List[str]) -> str | None:
     preferred_fields = [
         "Designators",
+        "Casing",
         "Manufacturer",
         "Part_Number",
         "Description",
@@ -395,7 +400,7 @@ def prompt_component_row(
 ) -> Dict[str, str]:
     is_update = existing_row is not None
     if is_update:
-        new_row = {header: existing_row.get(header, "") for header in headers}
+        new_row = {header: (existing_row.get(header, "") or "") for header in headers}
     else:
         new_row = {header: "" for header in headers}
 

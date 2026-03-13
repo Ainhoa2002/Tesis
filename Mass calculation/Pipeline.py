@@ -209,6 +209,7 @@ def _ordered_result_fieldnames(row):
     """Return result CSV field order with key visualization columns first."""
     preferred_front = [
         "Designators",
+        "Casing",
         "Section",
         "Subsection",
         "Ecoinvent_unit",
@@ -439,6 +440,7 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
                 "Section": meta["Section"],
                 "Subsection": meta["Subsection"],
                 "Designators": row.get("Designators", ""),
+                "Casing": row.get("Casing") or "",
                 "Part_Number": row.get("Part_Number", ""),
                 "Database": row.get("Database", ""),
                 "Database_component_title": row.get("Database_component_title", ""),
@@ -490,6 +492,7 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
         "Section",
         "Subsection",
         "Designators",
+        "Casing",
         "Part_Number",
         "Database",
         "Database_component_title",
