@@ -7,6 +7,7 @@ Creates:
 
 Rules:
 - Each library stores unique keys only once.
+- Casing library uniqueness key is (Casing, unit, Quantity_per_element).
 - If duplicate keys are found, empty fields are filled from later rows.
 - Conflicting non-empty values keep the first value and are reported.
 """
@@ -73,6 +74,18 @@ def _clean(value: str | None) -> str:
     return str(value or "").strip()
 
 
+def _normalize_quantity_key(value: str | None) -> str:
+    """Normalize numeric strings so equivalent quantities map to the same key."""
+    text = _clean(value)
+    if text == "":
+        return ""
+
+    try:
+        return format(float(text.replace(",", ".")), ".12g")
+    except ValueError:
+        return text.casefold()
+
+
 def _load_parameter_rows(base_dir: Path) -> List[Tuple[str, Dict[str, str]]]:
     rows: List[Tuple[str, Dict[str, str]]] = []
     for path in sorted(base_dir.glob("*_component_parameters.csv")):
@@ -115,14 +128,20 @@ def _write_csv(path: Path, fieldnames: List[str], rows: List[Dict[str, str]]) ->
 def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
     raw_rows = _load_parameter_rows(base_dir)
 
-    casing_map: Dict[str, Dict[str, str]] = {}
+    casing_map: Dict[Tuple[str, str, str], Dict[str, str]] = {}
     part_map: Dict[str, Dict[str, str]] = {}
     conflicts: List[str] = []
 
     for subsystem, row in raw_rows:
         casing = _clean(row.get("Casing"))
         if casing:
-            casing_key = casing.casefold()
+            unit = _clean(row.get("unit"))
+            quantity_per_element = _clean(row.get("Quantity_per_element"))
+            casing_key = (
+                casing.casefold(),
+                unit.casefold(),
+                _normalize_quantity_key(quantity_per_element),
+            )
             incoming_casing = _row_subset(row, CASING_FIELDS)
             if casing_key not in casing_map:
                 casing_map[casing_key] = incoming_casing
@@ -130,7 +149,11 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
                 _merge_unique(
                     casing_map[casing_key],
                     incoming_casing,
-                    f"Casing '{casing}' (subsystem '{subsystem}')",
+                    (
+                        f"Casing '{casing}' | unit '{unit}' | "
+                        f"Quantity_per_element '{quantity_per_element}' "
+                        f"(subsystem '{subsystem}')"
+                    ),
                     conflicts,
                 )
 
@@ -149,7 +172,14 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
                     conflicts,
                 )
 
-    casing_rows = sorted(casing_map.values(), key=lambda r: r["Casing"].casefold())
+    casing_rows = sorted(
+        casing_map.values(),
+        key=lambda r: (
+            r["Casing"].casefold(),
+            _clean(r.get("unit")).casefold(),
+            _normalize_quantity_key(r.get("Quantity_per_element")),
+        ),
+    )
     part_rows = sorted(
         part_map.values(),
         key=lambda r: (r["Manufacturer"].casefold(), r["Part_Number"].casefold()),

@@ -5,6 +5,7 @@ The subsystem is resolved from files named <subsystem>_component_parameters.csv.
 """
 
 import csv
+import os
 import sys
 from collections import OrderedDict
 from pathlib import Path
@@ -585,6 +586,28 @@ def _build_subsystem_paths(base_dir, subsystem):
     return input_csv, results_csv, component_flows_csv, grouped_flows_csv
 
 
+def _auto_refresh_component_libraries(base_dir):
+    """Refresh deduplicated libraries unless explicitly disabled.
+
+    Set MASS_CALC_AUTO_REFRESH_LIBRARIES=0 to skip automatic refresh.
+    """
+    enabled = str(os.getenv("MASS_CALC_AUTO_REFRESH_LIBRARIES", "1")).strip().lower()
+    if enabled in {"0", "false", "no", "off"}:
+        print("Library refresh skipped: MASS_CALC_AUTO_REFRESH_LIBRARIES is disabled.")
+        return
+
+    try:
+        from build_component_libraries import build_libraries
+
+        casing_count, part_count, conflict_count = build_libraries(base_dir)
+        print(
+            "Library refresh completed"
+            f": casing={casing_count}, part_number={part_count}, conflicts={conflict_count}"
+        )
+    except Exception as exc:
+        print(f"Warning: library refresh failed: {exc}")
+
+
 def main():
     base = Path(__file__).parent
 
@@ -620,6 +643,8 @@ def main():
     print(f"Results file: {results_csv}")
     print(f"Component IO file: {component_flows_csv}")
     print(f"Grouped flows file: {grouped_flows_csv}")
+
+    _auto_refresh_component_libraries(base)
 
     if errors:
         print("\nValidation warnings/errors found:")

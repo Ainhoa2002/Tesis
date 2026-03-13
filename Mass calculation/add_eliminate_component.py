@@ -10,6 +10,7 @@ Current scope:
 from __future__ import annotations
 
 import csv
+import os
 from pathlib import Path
 from typing import Dict, List, Tuple
 
@@ -508,6 +509,28 @@ def save_csv(path: Path, headers: List[str], rows: List[Dict[str, str]]) -> None
         writer.writerows(rows)
 
 
+def _auto_refresh_component_libraries(base_dir: Path, reason: str) -> None:
+    """Refresh deduplicated libraries unless explicitly disabled.
+
+    Set MASS_CALC_AUTO_REFRESH_LIBRARIES=0 to skip automatic refresh.
+    """
+    enabled = str(os.getenv("MASS_CALC_AUTO_REFRESH_LIBRARIES", "1")).strip().lower()
+    if enabled in {"0", "false", "no", "off"}:
+        print("Library refresh skipped: MASS_CALC_AUTO_REFRESH_LIBRARIES is disabled.")
+        return
+
+    try:
+        from build_component_libraries import build_libraries
+
+        casing_count, part_count, conflict_count = build_libraries(base_dir)
+        print(
+            "Library refresh completed"
+            f" ({reason}): casing={casing_count}, part_number={part_count}, conflicts={conflict_count}"
+        )
+    except Exception as exc:
+        print(f"Warning: library refresh failed ({reason}): {exc}")
+
+
 def _run_parameters_workflow() -> None:
     subsystems = discover_csv_files(BASE_DIR, "_component_parameters.csv")
     subsystem_name, csv_path = choose_from_mapping(subsystems, "subsystems", "No *_component_parameters.csv files found in this folder.")
@@ -572,6 +595,7 @@ def _run_parameters_workflow() -> None:
     save_csv(csv_path, headers, rows)
     print(f"\nComponent {action} successfully.")
     print(f"Updated file: {csv_path.name}")
+    _auto_refresh_component_libraries(BASE_DIR, "add_eliminate_component parameters")
 
 
 def _run_io_workflow() -> None:

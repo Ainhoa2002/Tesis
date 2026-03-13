@@ -31,6 +31,7 @@ Operational principle:
 - Interactive editing for parameters and I/O.
 - Validation rule: `Section` mandatory and `Subsection` optional.
 - Quantity/mass logic dependent on unit (`kg`, `g`, `m2`, or override).
+- Component library deduplication based on explicit keys (`Casing + unit + Quantity_per_element`, and `Manufacturer + Part_Number`).
 
 ## 4. Naming Conventions
 
@@ -67,16 +68,19 @@ This convention enables scalability without duplicating code logic.
   - Executes calculations for a subsystem.
   - Accepts optional argument (`Pipeline.py <subsystem>`).
   - Without argument, prompts to select subsystem.
+  - Refreshes deduplicated casing/part-number libraries automatically after execution.
 
 - `build_component_libraries.py`
   - Scans all `<subsystem>_component_parameters.csv` files.
-  - Builds unique library rows by `Casing` and by `Manufacturer + Part_Number`.
+  - Builds unique library rows by `(Casing, unit, Quantity_per_element)` and by `Manufacturer + Part_Number`.
   - Avoids repeated entries across subsystems.
+  - Keeps first value when repeated keys conflict and reports warnings.
 
 - `add_eliminate_component.py`
   - Component parameters mode.
   - I/O flows mode.
   - Operations: add, update, delete.
+  - Refreshes deduplicated libraries automatically after parameter edits.
 
 - `import_component_parameter_or_io.py`
   - Option 1: Excel to CSV.
@@ -131,6 +135,16 @@ Expected key fields:
 - `<subsystem>_component_io_flows.csv`
 - `<subsystem>_ipe_flows_from_parameters.csv`
 
+### 8.4 Component Library Logic
+
+- Library source files are all `<subsystem>_component_parameters.csv` files.
+- Casing library key: `(Casing, unit, Quantity_per_element)`.
+- Part-number library key: `(Manufacturer, Part_Number)`.
+- If rows share a key and a field is empty in the first row, the value can be filled from later rows.
+- If rows share a key and have different non-empty values in a field, the first value is kept and the conflict is reported.
+- Components with same `Casing` but different `Quantity_per_element` are intentionally preserved as separate rows in `component_library_by_casing.csv`.
+- Grouped IPE outputs remain grouped by `(Flow, Unit, Direction)` and do not include casing-based grouping.
+
 ## 9. Recommended Operation Workflow
 
 1. Create or duplicate inputs:
@@ -141,9 +155,15 @@ Expected key fields:
 
 `python "Mass calculation\\add_eliminate_component.py"`
 
+  Notes:
+  - Parameter edits trigger automatic library refresh.
+
 3. Run pipeline:
 
 `python "Mass calculation\\Pipeline.py"`
+
+  Notes:
+  - Pipeline execution also triggers automatic library refresh.
 
 Or specifying subsystem:
 
@@ -173,3 +193,4 @@ Layer summary:
 - The pipeline may emit validation warnings when mass data is missing in `kg/g` context.
 - The warning does not imply total execution failure, but does indicate a row pending completion.
 - To maintain consistency, use the per-subsystem naming convention across all CSVs.
+- If parameter CSVs are edited manually outside scripts, run `build_component_libraries.py` (or `Pipeline.py`) to refresh libraries.
