@@ -31,7 +31,7 @@ Operational principle:
 - Interactive editing for parameters and I/O.
 - Validation rule: `Section` mandatory and `Subsection` optional.
 - Quantity/mass logic dependent on unit (`kg`, `g`, `m2`, or override).
-- Component library deduplication based on explicit keys (`Casing + unit + Quantity_per_element`, and `Manufacturer + Part_Number`).
+- Component library deduplication based on explicit keys (`Casing + Quantity_per_element`, and `Manufacturer + Part_Number`).
 
 ## 4. Naming Conventions
 
@@ -72,7 +72,7 @@ This convention enables scalability without duplicating code logic.
 
 - `build_component_libraries.py`
   - Scans all `<subsystem>_component_parameters.csv` files.
-  - Builds unique library rows by `(Casing, unit, Quantity_per_element)` and by `Manufacturer + Part_Number`.
+  - Builds unique library rows by `(Casing, Quantity_per_element)` and by `Manufacturer + Part_Number`.
   - Avoids repeated entries across subsystems.
   - Keeps first value when repeated keys conflict and reports warnings.
 
@@ -138,7 +138,7 @@ Expected key fields:
 ### 8.4 Component Library Logic
 
 - Library source files are all `<subsystem>_component_parameters.csv` files.
-- Casing library key: `(Casing, unit, Quantity_per_element)`.
+- Casing library key: `(Casing, Quantity_per_element)`.
 - Part-number library key: `(Manufacturer, Part_Number)`.
 - If rows share a key and a field is empty in the first row, the value can be filled from later rows.
 - If rows share a key and have different non-empty values in a field, the first value is kept and the conflict is reported.

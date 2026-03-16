@@ -111,6 +111,49 @@ def _validate_required_grouping_fields(raw_rows):
             missing.append((idx, _clean_text(row.get("Designators")), section))
     return missing
 
+
+def _validate_input_consistency(raw_rows):
+    conflicts = []
+    geometry_density_fields = [
+        "L_mm",
+        "W_mm",
+        "H_mm",
+        "Volume_cm3_excel",
+        "Density_min_g_cm3",
+        "Density_max_g_cm3",
+    ]
+
+    for idx, row in raw_rows:
+        designators = _clean_text(row.get("Designators")) or "no designator"
+        unit = _get_quantity_context_unit(row)
+        has_datasheet_info = to_yes_no(row.get("Has_datasheet_info"))
+
+        if has_datasheet_info and is_mass_unit(unit):
+            filled = [field for field in geometry_density_fields if _clean_text(row.get(field)) != ""]
+            if filled:
+                conflicts.append(
+                    (
+                        idx,
+                        designators,
+                        "datasheet_mass_has_geometry",
+                        filled,
+                    )
+                )
+
+        has_lwh = all(_clean_text(row.get(field)) != "" for field in ["L_mm", "W_mm", "H_mm"])
+        has_volume = _clean_text(row.get("Volume_cm3_excel")) != ""
+        if has_lwh and has_volume:
+            conflicts.append(
+                (
+                    idx,
+                    designators,
+                    "lwh_and_volume",
+                    ["L_mm", "W_mm", "H_mm", "Volume_cm3_excel"],
+                )
+            )
+
+    return conflicts
+
 #For calculating the density
 def _resolve_density(row):
     """Resolve effective density for mass calculation.
@@ -140,6 +183,17 @@ def _get_unit(row):
     return str(row.get("unit") or "").strip()
 
 
+def _get_quantity_context_unit(row):
+    primary = str(row.get("Ecoinvent_unit") or "").strip().lower()
+    fallback = _get_unit(row).strip().lower()
+
+    if primary == "m2" or is_mass_unit(primary):
+        return primary
+    if fallback == "m2" or is_mass_unit(fallback):
+        return fallback
+    return primary or fallback
+
+
 def _compute_total_quantity(row):
     number_elements = _get_number_elements(row)
     quantity_per_element = to_float(row.get("Quantity_per_element"))
@@ -162,7 +216,7 @@ def _build_quantity_data(row, mass_data):
     number_elements = _get_number_elements(row)
     number_elements = 1.0 if number_elements is None else number_elements
 
-    unit = str(row.get("Ecoinvent_unit") or _get_unit(row) or "").strip().lower()
+    unit = _get_quantity_context_unit(row)
     has_datasheet_info = to_yes_no(row.get("Has_datasheet_info"))
     input_qty_per_element = to_float(row.get("Quantity_per_element"))
 
@@ -253,7 +307,7 @@ def compute_component_mass(row):
 
     has_datasheet_info = to_yes_no(row.get("Has_datasheet_info"))
     qty_per_element = to_float(row.get("Quantity_per_element"))
-    unit_context = str(row.get("Ecoinvent_unit") or _get_unit(row) or "").strip()
+    unit_context = _get_quantity_context_unit(row)
     is_mass_context = is_mass_unit(unit_context)
 
     metal_extra_g = to_float(row.get("Metal_extra_g")) or 0.0
@@ -302,7 +356,7 @@ def ecoinvent_amount(row, mass_data, quantity_data):
     - any other unit → taken from Ecoinvent_amount_override set by the user
     """
     flow = str(row.get("Ecoinvent_flow") or "").strip()
-    unit = str(row.get("Ecoinvent_unit") or _get_unit(row) or "").strip() or "kg"
+    unit = _get_quantity_context_unit(row) or "kg"
     direction = str(row.get("Direction") or "").strip() or "Input"
 
     if flow == "":
@@ -342,7 +396,6 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
     errors = []
 
     raw_rows = []
-    input_headers = []
     with open(input_csv, newline="", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
         input_headers = list(reader.fieldnames or [])
@@ -368,6 +421,24 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
             f"Missing values found in: {preview}"
         )
 
+    input_conflicts = _validate_input_consistency(raw_rows)
+    if input_conflicts:
+        preview_lines = []
+        for idx, designators, conflict_type, fields in input_conflicts[:10]:
+            if conflict_type == "datasheet_mass_has_geometry":
+                preview_lines.append(
+                    f"row {idx} ({designators}): Has_datasheet_info=YES with mass unit cannot include {', '.join(fields)}"
+                )
+            else:
+                preview_lines.append(
+                    f"row {idx} ({designators}): L_mm, W_mm and H_mm are filled, so Volume_cm3_excel must be blank"
+                )
+        preview = "; ".join(preview_lines)
+        raise ValueError(
+            "Contradictory input values found in *_component_parameters.csv. "
+            f"Fix these rows before running the pipeline: {preview}"
+        )
+
     row_metadata = _build_row_metadata([row for _, row in raw_rows])
 
     for (idx, row), meta in zip(raw_rows, row_metadata):
@@ -389,7 +460,7 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
         else:
             result_row["Total_quantity"] = ""
 
-        unit = str(row.get("Ecoinvent_unit") or _get_unit(row) or "").strip()
+        unit = _get_quantity_context_unit(row)
         needs_mass = is_mass_unit(unit)
         needs_area = unit.lower() == "m2"
         validation_error = ""

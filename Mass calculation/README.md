@@ -31,7 +31,7 @@ Optional:
 Component library logic:
 
 - Source of truth is all `*_component_parameters.csv` files.
-- Casing library uniqueness key is `(Casing, unit, Quantity_per_element)`.
+- Casing library uniqueness key is `(Casing, Quantity_per_element)`.
 - Part-number library uniqueness key is `(Manufacturer, Part_Number)`.
 - If the same key appears more than once, empty fields are completed from later rows.
 - If repeated keys have conflicting non-empty values, the first value is kept and a warning is printed.
