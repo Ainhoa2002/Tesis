@@ -31,7 +31,9 @@ Operational principle:
 - Interactive editing for parameters and I/O.
 - Validation rule: `Section` mandatory and `Subsection` optional.
 - Quantity/mass logic dependent on unit (`kg`, `g`, `m2`, or override).
-- Component library deduplication based on explicit keys (`Casing + Quantity_per_element`, and `Manufacturer + Part_Number`).
+- Component library deduplication based on explicit keys:
+  - Casing key: `Casing + mass-calculation parameter signature`.
+  - Part key: `Manufacturer + Part_Number` plus comparison fields to separate true duplicates from variants.
 
 ## 4. Naming Conventions
 
@@ -52,7 +54,10 @@ This convention enables scalability without duplicating code logic.
 
 ## 5. Main Features
 
-- Generic subsystem selection in `Pipeline.py`.
+- Generic subsystem execution in `Pipeline.py` with:
+  - single selection,
+  - multi-selection (for example `1 2`),
+  - all-subsystems option (`0`, `all`, `todo`, `todos`, `*`).
 - Add/edit/delete operations in `add_eliminate_component.py`.
 - Prompts with field examples for component parameters (except comments/notes).
 - Excel to CSV import and CSV duplication in `import_component_parameter_or_io.py`.
@@ -60,21 +65,25 @@ This convention enables scalability without duplicating code logic.
 - Default folder for import/duplication in `Mass calculation`.
 - Robust numeric parsing, including scientific notation (example: `8e-05`).
 - Deduplicated component library generation from all subsystem parameter files.
+- Optional parameter auto-sync from library to parameter CSV files.
 - Optional Excel export.
 
 ## 6. Scripts and Functional Role
 
 - `Pipeline.py`
-  - Executes calculations for a subsystem.
-  - Accepts optional argument (`Pipeline.py <subsystem>`).
-  - Without argument, prompts to select subsystem.
-  - Refreshes deduplicated casing/part-number libraries automatically after execution.
+  - Executes calculations for one or more subsystems.
+  - Accepts optional arguments (`Pipeline.py <selection...>`), including multiple values.
+  - Without arguments, prompts to select subsystem(s), including an ALL option.
+  - Auto-syncs parameter files from library before execution (can be disabled).
+  - Refreshes deduplicated casing/part-number libraries automatically after successful execution.
 
 - `build_component_libraries.py`
   - Scans all `<subsystem>_component_parameters.csv` files.
-  - Builds unique library rows by `(Casing, Quantity_per_element)` and by `Manufacturer + Part_Number`.
-  - Avoids repeated entries across subsystems.
-  - Keeps first value when repeated keys conflict and reports warnings.
+  - Builds casing library using `Casing + mass-calculation parameter signature`.
+  - Builds part-number library using `Manufacturer + Part_Number` and comparison fields.
+  - For equal casing signatures, keeps one row (filling empty fields from duplicates).
+  - For casing variants, keeps multiple rows and reports differing mass parameters.
+  - Supports sync mode (`--sync-parameters` or `sync`) to apply unique part-number library values back to parameter CSVs.
 
 - `add_eliminate_component.py`
   - Component parameters mode.
@@ -99,6 +108,7 @@ Validation rules:
 
 - `Section` must have a value.
 - `Subsection` can be empty.
+- For mass context (`kg`/`g`): if `Has_datasheet_info=YES`, `Quantity_per_element` is required.
 
 Expected key fields:
 
@@ -114,7 +124,7 @@ Expected key fields:
 
 - Context `kg` or `g`:
   - Mass-based calculation.
-  - Datasheet route: `Has_datasheet_info=YES` + `Quantity_per_element` (kg per element).
+  - Datasheet route: `Has_datasheet_info=YES` requires `Quantity_per_element`.
   - Geometric route: dimensions/volume + density + extras.
 
 - Context `m2` with `Has_datasheet_info=YES`:
@@ -138,11 +148,19 @@ Expected key fields:
 ### 8.4 Component Library Logic
 
 - Library source files are all `<subsystem>_component_parameters.csv` files.
-- Casing library key: `(Casing, Quantity_per_element)`.
-- Part-number library key: `(Manufacturer, Part_Number)`.
-- If rows share a key and a field is empty in the first row, the value can be filled from later rows.
-- If rows share a key and have different non-empty values in a field, the first value is kept and the conflict is reported.
-- Components with same `Casing` but different `Quantity_per_element` are intentionally preserved as separate rows in `component_library_by_casing.csv`.
+- Casing library key uses `Casing + mass-calculation parameter signature`.
+- Casing mass-calculation signature fields are:
+  - `unit`, `Quantity_per_element`, `Has_datasheet_info`,
+  - `L_mm`, `W_mm`, `H_mm`, `Volume_cm3_excel`,
+  - `Density_min_g_cm3`, `Density_max_g_cm3`, `Metal_extra_g`.
+- Same casing with equal signature is deduplicated into one row.
+- Same casing with different signature is stored as multiple rows.
+- Casing warning reports exactly which of the signature fields differ.
+- Part-number base key is `(Manufacturer, Part_Number)`.
+- Exact duplicates for part-number data are collapsed.
+- Variant part rows are preserved and warning lists differing comparison fields.
+- Part-number library includes `Subsystems` to show where the part appears.
+- Sync from library to parameter files updates only unique part-number matches; ambiguous matches are skipped.
 - Grouped IPE outputs remain grouped by `(Flow, Unit, Direction)` and do not include casing-based grouping.
 
 ## 9. Recommended Operation Workflow
@@ -163,11 +181,19 @@ Expected key fields:
 `python "Mass calculation\\Pipeline.py"`
 
   Notes:
-  - Pipeline execution also triggers automatic library refresh.
+  - Interactive prompt supports one, multiple, or all subsystems.
+  - Examples of interactive answer: `1`, `1 2`, `all`.
+  - Pipeline auto-syncs from library first, then runs selected subsystem(s), then refreshes libraries.
 
 Or specifying subsystem:
 
 `python "Mass calculation\\Pipeline.py" inverter_power_card`
+
+Or multiple/all selections:
+
+`python "Mass calculation\\Pipeline.py" inverter_power_card fuse_card`
+
+`python "Mass calculation\\Pipeline.py" all`
 
 4. Export results (optional):
 
@@ -190,7 +216,10 @@ Layer summary:
 
 ## 11. Important Operational Notes
 
-- The pipeline may emit validation warnings when mass data is missing in `kg/g` context.
+- The pipeline may emit validation warnings when mass data is missing or inconsistent in `kg/g` context.
 - The warning does not imply total execution failure, but does indicate a row pending completion.
 - To maintain consistency, use the per-subsystem naming convention across all CSVs.
 - If parameter CSVs are edited manually outside scripts, run `build_component_libraries.py` (or `Pipeline.py`) to refresh libraries.
+- Runtime toggles:
+  - `MASS_CALC_AUTO_SYNC_FROM_LIBRARY=0` disables library-to-parameter sync at pipeline start.
+  - `MASS_CALC_AUTO_REFRESH_LIBRARIES=0` disables automatic library rebuild after pipeline execution.

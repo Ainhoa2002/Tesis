@@ -7,7 +7,7 @@ Creates:
 
 Rules:
 - Each library stores unique keys only once.
-- Casing library uniqueness key is (Casing, Quantity_per_element).
+- Casing library uniqueness key is (Casing + mass-calculation parameters).
 - If duplicate keys are found, empty fields are filled from later rows.
 - Conflicting non-empty values keep the first value and are reported.
 """
@@ -15,6 +15,7 @@ Rules:
 from __future__ import annotations
 
 import csv
+import sys
 from pathlib import Path
 from typing import Dict, List, Set, Tuple
 
@@ -30,6 +31,7 @@ CASING_FIELDS = [
     "Subsection",
     "unit",
     "Quantity_per_element",
+    "Has_datasheet_info",
     "L_mm",
     "W_mm",
     "H_mm",
@@ -45,16 +47,33 @@ CASING_FIELDS = [
     "Database_component_title",
 ]
 
-CASING_WARNING_FIELDS = {
+CASING_MASS_COMPARISON_FIELDS = [
+    "unit",
+    "Quantity_per_element",
+    "Has_datasheet_info",
     "L_mm",
     "W_mm",
     "H_mm",
+    "Volume_cm3_excel",
+    "Density_min_g_cm3",
+    "Density_max_g_cm3",
+    "Metal_extra_g",
+]
+
+CASING_NUMERIC_FIELDS = {
+    "Quantity_per_element",
+    "L_mm",
+    "W_mm",
+    "H_mm",
+    "Volume_cm3_excel",
     "Density_min_g_cm3",
     "Density_max_g_cm3",
     "Metal_extra_g",
 }
 
 FIELD_LABELS = {
+    "Section": "SECTION",
+    "Subsection": "SUBSECTION",
     "unit": "UNIT",
     "Quantity_per_element": "QUANTITY_PER_ELEMENT",
     "Has_datasheet_info": "HAS_DATASHEET_INFO",
@@ -70,9 +89,36 @@ FIELD_LABELS = {
     "Ecoinvent_flow": "ECOINVENT_FLOW",
     "Ecoinvent_unit": "ECOINVENT_UNIT",
     "Direction": "DIRECTION",
+    "Database_component_title": "DATABASE_COMPONENT_TITLE",
 }
 
 PART_FIELDS = [
+    "Manufacturer",
+    "Part_Number",
+    "Subsystems",
+    "Casing",
+    "Description",
+    "Section",
+    "Subsection",
+    "unit",
+    "Quantity_per_element",
+    "Has_datasheet_info",
+    "L_mm",
+    "W_mm",
+    "H_mm",
+    "Volume_cm3_excel",
+    "Density_min_g_cm3",
+    "Density_max_g_cm3",
+    "Metal_extra_g",
+    "Other_extra_g",
+    "Database",
+    "Ecoinvent_flow",
+    "Ecoinvent_unit",
+    "Direction",
+    "Database_component_title",
+]
+
+PART_SYNC_FIELDS = [
     "Manufacturer",
     "Part_Number",
     "Casing",
@@ -148,6 +194,23 @@ def _row_match_key(row: Dict[str, str]) -> Tuple[str, ...]:
     return tuple(_clean(row.get(field)).casefold() for field in ROW_MATCH_FIELDS)
 
 
+def _normalized_mass_value(field: str, value: str | None) -> str:
+    text = _clean(value)
+    if field in CASING_NUMERIC_FIELDS:
+        return _normalize_quantity_key(text)
+    if field == "Has_datasheet_info":
+        return "YES" if _to_yes_no(text) else "NO"
+    return text.casefold()
+
+
+def _mass_field_matches(field: str, row_a: Dict[str, str], row_b: Dict[str, str]) -> bool:
+    return _normalized_mass_value(field, row_a.get(field)) == _normalized_mass_value(field, row_b.get(field))
+
+
+def _casing_mass_signature(row: Dict[str, str]) -> Tuple[str, ...]:
+    return tuple(_normalized_mass_value(field, row.get(field)) for field in CASING_MASS_COMPARISON_FIELDS)
+
+
 def _load_result_quantity_map(base_dir: Path, subsystem: str) -> Dict[Tuple[str, ...], str]:
     result_path = base_dir / f"{subsystem}_component_mass_results.csv"
     if not result_path.exists():
@@ -210,9 +273,10 @@ def _merge_unique(
 
 def _print_conflict_summary(
     casing_conflicts: Dict[Tuple[str, str, str, str], Set[str]],
+    casing_variant_conflicts: Dict[str, Tuple[str, Set[str], Set[str]]],
     part_conflicts: Dict[str, Tuple[str, Set[str], Set[str]]],
 ) -> None:
-    if not casing_conflicts and not part_conflicts:
+    if not casing_conflicts and not casing_variant_conflicts and not part_conflicts:
         return
 
     print("Library merge warnings:")
@@ -222,6 +286,14 @@ def _print_conflict_summary(
         print(
             f"- {kind} '{reference}' has different values across components. "
             f"Differing fields: {fields}. Source file: {source_file}. Folder: {folder}"
+        )
+    for casing in sorted(casing_variant_conflicts):
+        casing_label, subsystems, diff_fields = casing_variant_conflicts[casing]
+        fields = ", ".join(FIELD_LABELS.get(f, f) for f in sorted(diff_fields))
+        subs_text = " and ".join(f"{s} subsystem" for s in sorted(subsystems))
+        print(
+            f"- Casing '{casing_label}' appears with multiple variants across components. "
+            f"Differing fields: {fields}. Between {subs_text}."
         )
     for base_key in sorted(part_conflicts):
         reference, subsystems, diff_fields = part_conflicts[base_key]
@@ -240,14 +312,131 @@ def _write_csv(path: Path, fieldnames: List[str], rows: List[Dict[str, str]]) ->
         writer.writerows(rows)
 
 
+def _load_library_rows(path: Path) -> List[Dict[str, str]]:
+    if not path.exists():
+        return []
+    with open(path, newline="", encoding="utf-8-sig") as f:
+        return [dict(row) for row in csv.DictReader(f)]
+
+
+def _normalize_part_number_key(part_number: str) -> str:
+    return _clean(part_number).casefold()
+
+
+def _to_yes_no(value: str | None) -> bool:
+    return _clean(value).upper() in {"YES", "SI", "S", "Y", "TRUE", "1", "T"}
+
+
+def _is_mass_unit(value: str | None) -> bool:
+    return _clean(value).lower() in {"kg", "g"}
+
+
+def _resolved_sync_value(field: str, source_row: Dict[str, str]) -> str:
+    if field != "Quantity_per_element":
+        return _clean(source_row.get(field))
+
+    unit = _clean(source_row.get("unit")).lower()
+    has_datasheet_info = _to_yes_no(source_row.get("Has_datasheet_info"))
+    has_area_dimensions = _clean(source_row.get("L_mm")) != "" and _clean(source_row.get("W_mm")) != ""
+
+    # Keep inputs clean: calculated quantities must not be written back.
+    if _is_mass_unit(unit) and not has_datasheet_info:
+        return ""
+    if unit == "m2" and has_area_dimensions:
+        return ""
+
+    return _clean(source_row.get(field))
+
+
+def _apply_row_updates(
+    target_row: Dict[str, str],
+    source_row: Dict[str, str],
+    fields: List[str],
+) -> bool:
+    changed = False
+    for field in fields:
+        if field not in target_row:
+            continue
+        new_value = _resolved_sync_value(field, source_row)
+        old_value = _clean(target_row.get(field))
+        if old_value != new_value:
+            target_row[field] = new_value
+            changed = True
+    return changed
+
+
+def sync_parameter_files_from_libraries(base_dir: Path) -> Tuple[int, int, int]:
+    """Apply library values to all *_component_parameters.csv files.
+
+    Rows are updated only when Part_Number has a unique entry in the
+    part-number library. If a Part_Number appears more than once in the
+    library, that Part_Number is skipped to avoid ambiguous updates.
+
+    When the match is unique, input fields are updated from the library,
+    including identifying text fields like Manufacturer, Part_Number,
+    Casing and Description.
+    """
+    part_rows = _load_library_rows(base_dir / PART_LIBRARY_NAME)
+
+    if not part_rows:
+        return 0, 0, 0
+
+    part_index: Dict[str, List[Dict[str, str]]] = {}
+    for row in part_rows:
+        key = _normalize_part_number_key(row.get("Part_Number", ""))
+        if key == "":
+            continue
+        part_index.setdefault(key, []).append(row)
+
+    files_changed = 0
+    rows_changed = 0
+    skipped_ambiguous = 0
+
+    for path in sorted(base_dir.glob("*_component_parameters.csv")):
+        with open(path, newline="", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f)
+            fieldnames = list(reader.fieldnames or [])
+            rows = [{key: value for key, value in dict(row).items() if key is not None} for row in reader]
+
+        file_changed = False
+
+        for row in rows:
+            library_row = None
+            sync_fields: List[str] = []
+
+            part_key = _normalize_part_number_key(row.get("Part_Number", ""))
+            if part_key != "":
+                matches = part_index.get(part_key, [])
+                if len(matches) == 1:
+                    library_row = matches[0]
+                    sync_fields = PART_SYNC_FIELDS
+                elif len(matches) > 1:
+                    skipped_ambiguous += 1
+
+            if library_row is not None and _apply_row_updates(row, library_row, sync_fields):
+                rows_changed += 1
+                file_changed = True
+
+        if file_changed:
+            temp_path = path.with_suffix(path.suffix + ".tmp")
+            with open(temp_path, "w", newline="", encoding="utf-8") as f:
+                writer = csv.DictWriter(f, fieldnames=fieldnames)
+                writer.writeheader()
+                writer.writerows(rows)
+            temp_path.replace(path)
+            files_changed += 1
+
+    return files_changed, rows_changed, skipped_ambiguous
+
+
 def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
     """Rebuild both libraries from scratch on every call.
 
     Casing library:
-      - Key: (Casing, Quantity_per_element)
-      - Same key → deduplicate (one entry).
-      - Different Quantity_per_element for the same Casing → both entries kept.
-      - Conflicting geometry/density fields → warning.
+            - Key: (Casing + all mass-calculation parameters)
+            - Same mass parameters → deduplicate (one entry).
+            - Different mass parameters for the same Casing → keep multiple entries.
+            - Variant warning lists which mass parameters differ.
 
     Part-number library:
       - Key: (Manufacturer, Part_Number) + all PART_COMPARISON_FIELDS
@@ -257,14 +446,18 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
     """
     raw_rows = _load_parameter_rows(base_dir)
 
-    casing_map: Dict[Tuple[str, str], Dict[str, str]] = {}
+    casing_map: Dict[Tuple[str, Tuple[str, ...]], Dict[str, str]] = {}
     # Part tracking: full dedup key → skip exact duplicates
     part_full_seen: set = set()
     # First added row per base key, used for diff comparison
     part_first_rows: Dict[str, Dict[str, str]] = {}
     part_rows_list: List[Dict[str, str]] = []
+    part_subsystems: Dict[str, Set[str]] = {}
 
     casing_conflicts: Dict[Tuple[str, str, str, str], Set[str]] = {}
+    casing_variant_conflicts: Dict[str, Tuple[str, Set[str], Set[str]]] = {}
+    casing_first_rows: Dict[str, Dict[str, str]] = {}
+    casing_first_subsystem: Dict[str, str] = {}
     # base_key → (reference_label, subsystems_set, differing_fields_set)
     part_conflicts: Dict[str, Tuple[str, Set[str], Set[str]]] = {}
     # First subsystem per base key
@@ -276,30 +469,47 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
         source_file = f"{subsystem}_component_parameters.csv"
         casing = _clean(row.get("Casing"))
         if casing:
-            quantity_per_element = _clean(row.get("Quantity_per_element"))
-            casing_key = (
-                casing.casefold(),
-                _normalize_quantity_key(quantity_per_element),
-            )
+            casing_base_key = casing.casefold()
+            casing_signature = _casing_mass_signature(row)
+            casing_key = (casing_base_key, casing_signature)
             incoming_casing = _row_subset(row, CASING_FIELDS)
+
+            if casing_base_key in casing_first_rows:
+                first_row = casing_first_rows[casing_base_key]
+                differing: Set[str] = set()
+                for field in CASING_MASS_COMPARISON_FIELDS:
+                    if not _mass_field_matches(field, first_row, row):
+                        differing.add(field)
+                if differing:
+                    if casing_base_key not in casing_variant_conflicts:
+                        casing_variant_conflicts[casing_base_key] = (
+                            casing,
+                            {casing_first_subsystem[casing_base_key], subsystem},
+                            differing,
+                        )
+                        conflict_count += 1
+                    else:
+                        _, existing_subsystems, existing_fields = casing_variant_conflicts[casing_base_key]
+                        existing_subsystems.add(subsystem)
+                        existing_fields.update(differing)
+            else:
+                casing_first_rows[casing_base_key] = dict(row)
+                casing_first_subsystem[casing_base_key] = subsystem
+
             if casing_key not in casing_map:
                 casing_map[casing_key] = incoming_casing
             else:
-                conflict_count += _merge_unique(
-                    casing_map[casing_key],
-                    incoming_casing,
-                    "Casing",
-                    f"{casing} | Quantity_per_element={quantity_per_element}",
-                    source_file,
-                    folder_name,
-                    casing_conflicts,
-                    conflict_fields=CASING_WARNING_FIELDS,
-                )
+                # True duplicate in mass-calculation terms: keep one row and complete missing values.
+                existing = casing_map[casing_key]
+                for field, new_value in incoming_casing.items():
+                    if _clean(existing.get(field)) == "" and new_value != "":
+                        existing[field] = new_value
 
         part_number = _clean(row.get("Part_Number"))
         if part_number:
             manufacturer = _clean(row.get("Manufacturer"))
             base_key = f"{manufacturer.casefold()}::{part_number.casefold()}"
+            part_subsystems.setdefault(base_key, set()).add(subsystem)
             incoming_part = _row_subset(row, PART_FIELDS)
 
             # Build a full deduplication key from the comparison fields.
@@ -347,6 +557,13 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
 
             part_rows_list.append(incoming_part)
 
+    for row in part_rows_list:
+        manufacturer = _clean(row.get("Manufacturer"))
+        part_number = _clean(row.get("Part_Number"))
+        base_key = f"{manufacturer.casefold()}::{part_number.casefold()}"
+        subsystems = sorted(part_subsystems.get(base_key, set()))
+        row["Subsystems"] = ", ".join(subsystems)
+
     casing_rows = sorted(
         casing_map.values(),
         key=lambda r: (
@@ -364,12 +581,20 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
     _write_csv(base_dir / CASING_LIBRARY_NAME, CASING_FIELDS, casing_rows)
     _write_csv(base_dir / PART_LIBRARY_NAME, PART_FIELDS, part_rows)
 
-    _print_conflict_summary(casing_conflicts, part_conflicts)
+    _print_conflict_summary(casing_conflicts, casing_variant_conflicts, part_conflicts)
 
     return len(casing_rows), len(part_rows), conflict_count
 
 
 def main() -> None:
+    if len(sys.argv) > 1 and sys.argv[1].strip().lower() in {"--sync-parameters", "sync"}:
+        files_changed, rows_changed, skipped_ambiguous = sync_parameter_files_from_libraries(BASE_DIR)
+        print(
+            "Parameter sync completed"
+            f": files_changed={files_changed}, rows_changed={rows_changed}, skipped_ambiguous={skipped_ambiguous}"
+        )
+        return
+
     casing_count, part_count, conflict_count = build_libraries(BASE_DIR)
     print(f"Created {CASING_LIBRARY_NAME}: {casing_count} unique casing rows")
     print(f"Created {PART_LIBRARY_NAME}: {part_count} unique part-number rows")

@@ -1,7 +1,7 @@
 ﻿#!/usr/bin/env python3
 """
-Run parametric mass + ecoinvent pipeline for a selected subsystem.
-The subsystem is resolved from files named <subsystem>_component_parameters.csv.
+Run parametric mass + ecoinvent pipeline for one or more selected subsystems.
+Subsystem names are resolved from files named <subsystem>_component_parameters.csv.
 """
 
 import csv
@@ -127,8 +127,19 @@ def _validate_input_consistency(raw_rows):
         designators = _clean_text(row.get("Designators")) or "no designator"
         unit = _get_quantity_context_unit(row)
         has_datasheet_info = to_yes_no(row.get("Has_datasheet_info"))
+        quantity_per_element = _clean_text(row.get("Quantity_per_element"))
 
         if has_datasheet_info and is_mass_unit(unit):
+            if quantity_per_element == "":
+                conflicts.append(
+                    (
+                        idx,
+                        designators,
+                        "datasheet_mass_missing_quantity",
+                        ["Quantity_per_element"],
+                    )
+                )
+
             filled = [field for field in geometry_density_fields if _clean_text(row.get(field)) != ""]
             if filled:
                 conflicts.append(
@@ -425,7 +436,11 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
     if input_conflicts:
         preview_lines = []
         for idx, designators, conflict_type, fields in input_conflicts[:10]:
-            if conflict_type == "datasheet_mass_has_geometry":
+            if conflict_type == "datasheet_mass_missing_quantity":
+                preview_lines.append(
+                    f"row {idx} ({designators}): Has_datasheet_info=YES with mass unit requires Quantity_per_element"
+                )
+            elif conflict_type == "datasheet_mass_has_geometry":
                 preview_lines.append(
                     f"row {idx} ({designators}): Has_datasheet_info=YES with mass unit cannot include {', '.join(fields)}"
                 )
@@ -601,7 +616,55 @@ def _discover_subsystems(base_dir):
     return mapping
 
 
-def _choose_subsystem(subsystems, requested=None):
+def _selection_tokens(raw):
+    if raw is None:
+        return []
+    return [token for token in str(raw).replace(",", " ").split() if token]
+
+
+def _parse_selection(raw, names, subsystems, names_by_lower):
+    tokens = _selection_tokens(raw)
+    if not tokens:
+        raise ValueError("No subsystem selection was provided.")
+
+    has_all = False
+    selected = []
+    for token in tokens:
+        lowered = token.lower()
+        if lowered in {"all", "todo", "todos", "*", "0"}:
+            has_all = True
+            continue
+
+        if token in subsystems:
+            chosen = token
+        elif lowered in names_by_lower:
+            chosen = names_by_lower[lowered]
+        else:
+            try:
+                idx = int(token)
+            except ValueError:
+                idx = -1
+
+            if 1 <= idx <= len(names):
+                chosen = names[idx - 1]
+            else:
+                raise ValueError(
+                    f"Subsystem '{token}' not found. Available: {', '.join(names)}"
+                )
+
+        if chosen not in selected:
+            selected.append(chosen)
+
+    if has_all:
+        return list(names)
+
+    if not selected:
+        raise ValueError("No valid subsystem was selected.")
+
+    return selected
+
+
+def _choose_subsystems(subsystems, requested=None):
     names = list(subsystems.keys())
     if not names:
         raise ValueError("No *_component_parameters.csv files were found in the folder.")
@@ -609,42 +672,28 @@ def _choose_subsystem(subsystems, requested=None):
     names_by_lower = {name.lower(): name for name in names}
 
     if requested:
-        requested_clean = requested.strip()
-        if requested_clean in subsystems:
-            return requested_clean
-        lowered = requested_clean.lower()
-        if lowered in names_by_lower:
-            return names_by_lower[lowered]
-        raise ValueError(
-            f"Subsystem '{requested}' not found. Available: {', '.join(names)}"
-        )
+        if isinstance(requested, (list, tuple)):
+            combined = " ".join(str(item) for item in requested)
+        else:
+            combined = str(requested)
+        return _parse_selection(combined, names, subsystems, names_by_lower)
 
     if len(names) == 1:
-        return names[0]
+        return [names[0]]
 
     print("Available subsystems:")
+    print("  0. ALL")
     for i, name in enumerate(names, start=1):
         print(f"  {i}. {name}")
 
     attempts = 0
     while True:
-        raw = input("Choose subsystem number or name: ").strip()
-        if raw in subsystems:
-            return raw
-
-        lowered = raw.lower()
-        if lowered in names_by_lower:
-            return names_by_lower[lowered]
-
+        raw = input("Choose subsystem number/name (you can provide multiple, e.g. '1 2' or 'all'): ").strip()
         try:
-            idx = int(raw)
+            return _parse_selection(raw, names, subsystems, names_by_lower)
         except ValueError:
-            idx = -1
-        if 1 <= idx <= len(names):
-            return names[idx - 1]
-
-        attempts += 1
-        print("Invalid selection. Try again.")
+            attempts += 1
+            print("Invalid selection. Try again.")
         if attempts >= MAX_SELECTION_ATTEMPTS:
             raise ValueError("Too many invalid attempts. Operation canceled.")
 
@@ -679,48 +728,92 @@ def _auto_refresh_component_libraries(base_dir):
         print(f"Warning: library refresh failed: {exc}")
 
 
+def _auto_sync_parameters_from_libraries(base_dir):
+    """Sync library values back into all parameter files unless disabled.
+
+    Set MASS_CALC_AUTO_SYNC_FROM_LIBRARY=0 to skip automatic sync.
+    """
+    enabled = str(os.getenv("MASS_CALC_AUTO_SYNC_FROM_LIBRARY", "1")).strip().lower()
+    if enabled in {"0", "false", "no", "off"}:
+        print("Parameter sync skipped: MASS_CALC_AUTO_SYNC_FROM_LIBRARY is disabled.")
+        return
+
+    try:
+        from build_component_libraries import sync_parameter_files_from_libraries
+
+        files_changed, rows_changed, skipped_ambiguous = sync_parameter_files_from_libraries(base_dir)
+        print(
+            "Parameter sync completed"
+            f": files_changed={files_changed}, rows_changed={rows_changed}, skipped_ambiguous={skipped_ambiguous}"
+        )
+    except Exception as exc:
+        print(f"Warning: parameter sync from libraries failed: {exc}")
+
+
 def main():
     base = Path(__file__).parent
 
-    requested_subsystem = sys.argv[1] if len(sys.argv) > 1 else None
+    _auto_sync_parameters_from_libraries(base)
+
+    requested_selection = sys.argv[1:] if len(sys.argv) > 1 else None
     try:
         subsystems = _discover_subsystems(base)
-        subsystem = _choose_subsystem(subsystems, requested_subsystem)
+        selected_subsystems = _choose_subsystems(subsystems, requested_selection)
     except ValueError as exc:
         print(f"Validation error: {exc}")
         return
 
-    input_csv, results_csv, component_flows_csv, grouped_flows_csv = _build_subsystem_paths(
-        base,
-        subsystem,
-    )
+    all_errors = []
+    failed_subsystems = []
+    completed_subsystems = []
 
-    print(f"Running subsystem: {subsystem}")
-
-    try:
-        results, component_flows, grouped_flows, errors = run_pipeline(
-            input_csv,
-            results_csv,
-            component_flows_csv,
-            grouped_flows_csv,
+    for subsystem in selected_subsystems:
+        input_csv, results_csv, component_flows_csv, grouped_flows_csv = _build_subsystem_paths(
+            base,
+            subsystem,
         )
-    except ValueError as exc:
-        print(f"Validation error: {exc}")
-        return
 
-    print(f"Processed component rows: {len(results)}")
-    print(f"Component IO rows: {len(component_flows)}")
-    print(f"Exported grouped flows: {len(grouped_flows)}")
-    print(f"Results file: {results_csv}")
-    print(f"Component IO file: {component_flows_csv}")
-    print(f"Grouped flows file: {grouped_flows_csv}")
+        print(f"\nRunning subsystem: {subsystem}")
 
-    _auto_refresh_component_libraries(base)
+        try:
+            results, component_flows, grouped_flows, errors = run_pipeline(
+                input_csv,
+                results_csv,
+                component_flows_csv,
+                grouped_flows_csv,
+            )
+        except ValueError as exc:
+            failed_subsystems.append((subsystem, str(exc)))
+            print(f"Validation error in subsystem '{subsystem}': {exc}")
+            continue
 
-    if errors:
-        print("\nValidation warnings/errors found:")
+        completed_subsystems.append(subsystem)
+
+        print(f"Processed component rows: {len(results)}")
+        print(f"Component IO rows: {len(component_flows)}")
+        print(f"Exported grouped flows: {len(grouped_flows)}")
+        print(f"Results file: {results_csv}")
+        print(f"Component IO file: {component_flows_csv}")
+        print(f"Grouped flows file: {grouped_flows_csv}")
+
         for err in errors:
-            print(f"- Row {err['row']} ({err['component']}): {err['error']}")
+            all_errors.append((subsystem, err))
+
+    if completed_subsystems:
+        _auto_refresh_component_libraries(base)
+
+    if all_errors:
+        print("\nValidation warnings/errors found:")
+        for subsystem, err in all_errors:
+            print(f"- [{subsystem}] Row {err['row']} ({err['component']}): {err['error']}")
+
+    if failed_subsystems:
+        print("\nSubsystems with validation errors:")
+        for subsystem, message in failed_subsystems:
+            print(f"- {subsystem}: {message}")
+
+    if not completed_subsystems:
+        print("No subsystem completed successfully.")
 
 
 if __name__ == "__main__":
