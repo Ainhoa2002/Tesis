@@ -771,11 +771,12 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
             conflict_count += 1
 
         casing = _clean(row.get("Casing"))
+        casing_signature = _casing_mass_signature(row)
+        incoming_casing = _row_subset(row, CASING_FIELDS)
+
         if casing:
             casing_base_key = casing.casefold()
-            casing_signature = _casing_mass_signature(row)
             casing_key = (casing_base_key, casing_signature)
-            incoming_casing = _row_subset(row, CASING_FIELDS)
 
             if casing_base_key in casing_first_rows:
                 first_row = casing_first_rows[casing_base_key]
@@ -798,15 +799,28 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
             else:
                 casing_first_rows[casing_base_key] = dict(row)
                 casing_first_subsystem[casing_base_key] = subsystem
+        else:
+            # Keep no-casing components in the casing library as well.
+            # Use a stricter key to avoid mixing unrelated parts that happen
+            # to share only mass inputs.
+            casing_base_key = "__no_casing__"
+            no_casing_signature = (
+                _clean(row.get("Section")).casefold(),
+                _clean(row.get("Subsection")).casefold(),
+                _clean(row.get("Ecoinvent_flow")).casefold(),
+                _clean(row.get("Ecoinvent_unit")).casefold(),
+                _clean(row.get("Direction")).casefold(),
+            ) + casing_signature
+            casing_key = (casing_base_key, no_casing_signature)
 
-            if casing_key not in casing_map:
-                casing_map[casing_key] = incoming_casing
-            else:
-                # True duplicate in mass-calculation terms: keep one row and complete missing values.
-                existing = casing_map[casing_key]
-                for field, new_value in incoming_casing.items():
-                    if _clean(existing.get(field)) == "" and new_value != "":
-                        existing[field] = new_value
+        if casing_key not in casing_map:
+            casing_map[casing_key] = incoming_casing
+        else:
+            # True duplicate in mass-calculation terms: keep one row and complete missing values.
+            existing = casing_map[casing_key]
+            for field, new_value in incoming_casing.items():
+                if _clean(existing.get(field)) == "" and new_value != "":
+                    existing[field] = new_value
 
         part_number = _clean(row.get("Part_Number"))
         if part_number:

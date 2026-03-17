@@ -11,15 +11,21 @@ from __future__ import annotations
 
 import csv
 import os
+from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Tuple
 
 
 BASE_DIR = Path(r"c:\Users\alorzaga\Git\tesis\Mass calculation")
+AUDIT_LOG = BASE_DIR / "add_eliminate_component_audit.log"
 MAX_SELECTION_ATTEMPTS = 3
 
 
 class SelectionAborted(RuntimeError):
+    pass
+
+
+class SaveVerificationError(RuntimeError):
     pass
 
 
@@ -518,6 +524,27 @@ def verify_saved_row(path: Path, key_field: str, key_value: str) -> Tuple[bool, 
     return exists, len(persisted_rows)
 
 
+def append_audit_log(
+    csv_path: Path,
+    action: str,
+    key_field: str,
+    key_value: str,
+    expected_present: bool,
+    found_present: bool,
+    row_count: int,
+    status: str,
+) -> None:
+    timestamp = datetime.now().isoformat(timespec="seconds")
+    expected = "present" if expected_present else "absent"
+    found = "present" if found_present else "absent"
+    line = (
+        f"[{timestamp}] {status} action={action} file={csv_path.resolve()} "
+        f"{key_field}='{key_value}' expected={expected} found={found} rows={row_count}\n"
+    )
+    with open(AUDIT_LOG, "a", encoding="utf-8") as f:
+        f.write(line)
+
+
 def _auto_refresh_component_libraries(base_dir: Path, reason: str) -> None:
     """Refresh deduplicated libraries unless explicitly disabled.
 
@@ -609,17 +636,34 @@ def _run_parameters_workflow() -> None:
 
     save_csv(csv_path, headers, rows)
     exists_after_save, persisted_count = verify_saved_row(csv_path, "Designators", verification_key)
-    print(f"\nComponent {action} successfully.")
-    print(f"Updated file: {csv_path.resolve()}")
     if verification_key:
         state_ok = exists_after_save == should_exist_after_save
-        status = "OK" if state_ok else "WARNING"
+        status = "OK" if state_ok else "FAIL"
         expected = "present" if should_exist_after_save else "absent"
         found = "present" if exists_after_save else "absent"
+        append_audit_log(
+            csv_path=csv_path,
+            action=action,
+            key_field="Designators",
+            key_value=verification_key,
+            expected_present=should_exist_after_save,
+            found_present=exists_after_save,
+            row_count=persisted_count,
+            status=status,
+        )
+        if not state_ok:
+            raise SaveVerificationError(
+                f"Save verification FAILED for Designators='{verification_key}'. "
+                f"Expected {expected}, found {found}. File: {csv_path.resolve()}"
+            )
         print(
-            f"Save verification [{status}]: Designators='{verification_key}' "
+            f"Save verification [OK]: Designators='{verification_key}' "
             f"expected {expected}, found {found}. Rows now: {persisted_count}"
         )
+
+    print(f"\nComponent {action} successfully.")
+    print(f"Updated file: {csv_path.resolve()}")
+    print(f"Audit log: {AUDIT_LOG.resolve()}")
     _auto_refresh_component_libraries(BASE_DIR, "add_eliminate_component parameters")
 
 
@@ -685,6 +729,9 @@ def main() -> None:
     except SelectionAborted as exc:
         print(str(exc))
         print("No changes made.")
+    except SaveVerificationError as exc:
+        print(f"ERROR: {exc}")
+        print("No library refresh executed because save verification failed.")
 
 
 if __name__ == "__main__":
