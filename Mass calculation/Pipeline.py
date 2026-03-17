@@ -45,9 +45,9 @@ def to_float(value):
 #Yes or no when input is in different formats
 def to_yes_no(value):
     text = str(value or "").strip().upper()
-    if text in {"YES", "SI", "S", "Y", "TRUE", "1", "yes", "Yes", "true", "T"}:
+    if text in {"YES", "SI", "S", "Y", "M", "TRUE", "1", "T"}:
         return True
-    if text in {"NO", "N", "FALSE", "0", "FALSE", "no", "No", "false", "F"}:
+    if text in {"NO", "N", "FALSE", "0", "F"}:
         return False
     return False
 

@@ -173,6 +173,8 @@ PART_COMPARISON_FIELDS = [
     "Direction",
 ]
 
+PART_MASS_DIMENSION_FIELDS = ["L_mm", "W_mm", "H_mm"]
+
 ROW_MATCH_FIELDS = [
     "Designators",
     "Manufacturer",
@@ -253,6 +255,107 @@ def _normalize_quantity_key(value: str | None) -> str:
         return format(float(text.replace(",", ".")), ".12g")
     except ValueError:
         return text.casefold()
+
+
+def _normalized_part_mass_value(field: str, value: str | None) -> str:
+    if field in {"Quantity_per_element", "L_mm", "W_mm", "H_mm", "Volume_cm3_excel"}:
+        return _normalize_quantity_key(value)
+    if field == "Has_datasheet_info":
+        return "YES" if _to_yes_no(value) else "NO"
+    return _clean(value).casefold()
+
+
+def _is_m2_unit(value: str | None) -> bool:
+    return _clean(value).lower() == "m2"
+
+
+def _has_any_dimensions(row: Dict[str, str]) -> bool:
+    return any(_clean(row.get(field)) != "" for field in PART_MASS_DIMENSION_FIELDS)
+
+
+def _has_complete_dimensions(row: Dict[str, str]) -> bool:
+    return all(_clean(row.get(field)) != "" for field in PART_MASS_DIMENSION_FIELDS)
+
+
+def _component_reference(row: Dict[str, str]) -> Tuple[str, str]:
+    designators = _clean(row.get("Designators")) or "no designator"
+    part_number = _clean(row.get("Part_Number")) or "no part number"
+    return designators, part_number
+
+
+def _missing_mass_reason(row: Dict[str, str]) -> str | None:
+    unit = _clean(row.get("unit"))
+    if not _is_mass_unit(unit):
+        return None
+
+    has_datasheet_info = _to_yes_no(row.get("Has_datasheet_info"))
+    quantity_per_element = _clean(row.get("Quantity_per_element"))
+
+    if has_datasheet_info:
+        if quantity_per_element == "":
+            return "Has_datasheet_info=YES requires Quantity_per_element"
+        return None
+
+    has_complete_dimensions = _has_complete_dimensions(row)
+    has_volume = _clean(row.get("Volume_cm3_excel")) != ""
+    has_density = (
+        _clean(row.get("Density_min_g_cm3")) != ""
+        or _clean(row.get("Density_max_g_cm3")) != ""
+    )
+
+    missing_parts: List[str] = []
+    if not has_complete_dimensions and not has_volume:
+        if _has_any_dimensions(row):
+            missing_parts.append("incomplete L_mm/W_mm/H_mm (or provide Volume_cm3_excel)")
+        else:
+            missing_parts.append("missing L_mm/W_mm/H_mm and Volume_cm3_excel")
+    if not has_density:
+        missing_parts.append("missing Density_min_g_cm3/Density_max_g_cm3")
+
+    if missing_parts:
+        return "; ".join(missing_parts)
+    return None
+
+
+def _part_mass_warning_fields(first_row: Dict[str, str], incoming_row: Dict[str, str]) -> Set[str]:
+    differing: Set[str] = set()
+
+    first_has_datasheet = _to_yes_no(first_row.get("Has_datasheet_info"))
+    incoming_has_datasheet = _to_yes_no(incoming_row.get("Has_datasheet_info"))
+    if first_has_datasheet != incoming_has_datasheet:
+        differing.add("Has_datasheet_info")
+
+    # Area components are excluded from mass warning comparisons.
+    if _is_m2_unit(first_row.get("unit")) and _is_m2_unit(incoming_row.get("unit")):
+        return differing
+
+    if not (_is_mass_unit(first_row.get("unit")) and _is_mass_unit(incoming_row.get("unit"))):
+        return differing
+
+    if first_has_datasheet and incoming_has_datasheet:
+        if _normalized_part_mass_value(
+            "Quantity_per_element", first_row.get("Quantity_per_element")
+        ) != _normalized_part_mass_value("Quantity_per_element", incoming_row.get("Quantity_per_element")):
+            differing.add("Quantity_per_element")
+        return differing
+
+    if (not first_has_datasheet) and (not incoming_has_datasheet):
+        first_uses_dimensions = _has_any_dimensions(first_row)
+        incoming_uses_dimensions = _has_any_dimensions(incoming_row)
+
+        if first_uses_dimensions or incoming_uses_dimensions:
+            for field in PART_MASS_DIMENSION_FIELDS:
+                if _normalized_part_mass_value(field, first_row.get(field)) != _normalized_part_mass_value(
+                    field, incoming_row.get(field)
+                ):
+                    differing.add(field)
+        else:
+            if _normalized_part_mass_value(
+                "Volume_cm3_excel", first_row.get("Volume_cm3_excel")
+            ) != _normalized_part_mass_value("Volume_cm3_excel", incoming_row.get("Volume_cm3_excel")):
+                differing.add("Volume_cm3_excel")
+
+    return differing
 
 
 def _row_match_key(row: Dict[str, str]) -> Tuple[str, ...]:
@@ -340,8 +443,16 @@ def _print_conflict_summary(
     casing_conflicts: Dict[Tuple[str, str, str, str], Set[str]],
     casing_variant_conflicts: Dict[str, Tuple[str, Set[str], Set[str]]],
     part_conflicts: Dict[str, Tuple[str, Set[str], Set[str]]],
+    missing_section_warnings: List[Tuple[str, str, str]],
+    missing_mass_data_warnings: List[Tuple[str, str, str, str]],
 ) -> None:
-    if not casing_conflicts and not casing_variant_conflicts and not part_conflicts:
+    if (
+        not casing_conflicts
+        and not casing_variant_conflicts
+        and not part_conflicts
+        and not missing_section_warnings
+        and not missing_mass_data_warnings
+    ):
         return
 
     print("Library merge warnings:")
@@ -367,6 +478,16 @@ def _print_conflict_summary(
         print(
             f"- Part '{reference}' has different values across components. "
             f"Differing fields: {fields}. Between {subs_text}."
+        )
+    for subsystem, designators, part_number in sorted(missing_section_warnings):
+        print(
+            f"- Missing required Section. Subsystem: {subsystem}. "
+            f"Element: {designators}. Part_Number: {part_number}."
+        )
+    for subsystem, designators, part_number, reason in sorted(missing_mass_data_warnings):
+        print(
+            f"- Missing mass inputs. Subsystem: {subsystem}. "
+            f"Element: {designators}. Part_Number: {part_number}. Reason: {reason}."
         )
 
 
@@ -485,7 +606,7 @@ def _normalize_part_number_key(part_number: str) -> str:
 
 
 def _to_yes_no(value: str | None) -> bool:
-    return _clean(value).upper() in {"YES", "SI", "S", "Y", "TRUE", "1", "T"}
+    return _clean(value).upper() in {"YES", "SI", "S", "Y", "M", "TRUE", "1", "T"}
 
 
 def _is_mass_unit(value: str | None) -> bool:
@@ -630,6 +751,8 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
     casing_first_subsystem: Dict[str, str] = {}
     # base_key → (reference_label, subsystems_set, differing_fields_set)
     part_conflicts: Dict[str, Tuple[str, Set[str], Set[str]]] = {}
+    missing_section_warnings: List[Tuple[str, str, str]] = []
+    missing_mass_data_warnings: List[Tuple[str, str, str, str]] = []
     # First subsystem per base key
     part_first_subsystem: Dict[str, str] = {}
     conflict_count = 0
@@ -637,6 +760,16 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
 
     for subsystem, row in raw_rows:
         source_file = f"{subsystem}_component_parameters.csv"
+        designators, part_reference = _component_reference(row)
+        if _clean(row.get("Section")) == "":
+            missing_section_warnings.append((subsystem, designators, part_reference))
+            conflict_count += 1
+
+        missing_mass_reason = _missing_mass_reason(row)
+        if missing_mass_reason is not None:
+            missing_mass_data_warnings.append((subsystem, designators, part_reference, missing_mass_reason))
+            conflict_count += 1
+
         casing = _clean(row.get("Casing"))
         if casing:
             casing_base_key = casing.casefold()
@@ -698,20 +831,7 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
             if base_key in part_first_rows:
                 # Same (Manufacturer, Part_Number) but different data → warn.
                 first_row = part_first_rows[base_key]
-                differing: Set[str] = set()
-                for f in PART_COMPARISON_FIELDS:
-                    v1 = _clean(first_row.get(f))
-                    v2 = _clean(incoming_part.get(f))
-                    if f == "Quantity_per_element":
-                        match = _normalize_quantity_key(v1) == _normalize_quantity_key(v2)
-                    elif f == "Direction":
-                        db1 = _clean(first_row.get("Database"))
-                        db2 = _clean(incoming_part.get("Database"))
-                        match = _normalize_direction(v1, db1) == _normalize_direction(v2, db2)
-                    else:
-                        match = v1 == v2
-                    if not match:
-                        differing.add(f)
+                differing = _part_mass_warning_fields(first_row, incoming_part)
                 if differing:
                     reference = f"{manufacturer} {part_number}"
                     if base_key not in part_conflicts:
@@ -756,7 +876,13 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
     _write_csv(base_dir / PART_LIBRARY_NAME, PART_FIELDS, part_rows)
     build_ecoinvent_totals_library(base_dir)
 
-    _print_conflict_summary(casing_conflicts, casing_variant_conflicts, part_conflicts)
+    _print_conflict_summary(
+        casing_conflicts,
+        casing_variant_conflicts,
+        part_conflicts,
+        missing_section_warnings,
+        missing_mass_data_warnings,
+    )
 
     return len(casing_rows), len(part_rows), conflict_count
 
