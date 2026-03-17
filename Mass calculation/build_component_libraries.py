@@ -4,6 +4,7 @@
 Creates:
 - component_library_by_casing.csv
 - component_library_by_part_number.csv
+- component_library_ecoinvent_totals.csv
 
 Rules:
 - Each library stores unique keys only once.
@@ -24,6 +25,16 @@ BASE_DIR = Path(__file__).parent
 
 CASING_LIBRARY_NAME = "component_library_by_casing.csv"
 PART_LIBRARY_NAME = "component_library_by_part_number.csv"
+ECOINVENT_TOTALS_LIBRARY_NAME = "component_library_ecoinvent_totals.csv"
+
+ECOINVENT_TOTALS_FIELDS = [
+    "Ecoinvent_flow",
+    "Ecoinvent_unit",
+    "Direction",
+    "Total_amount",
+    "Total_mass_kg",
+    "Subsystems",
+]
 
 CASING_FIELDS = [
     "Casing",
@@ -176,6 +187,62 @@ def _clean(value: str | None) -> str:
     return str(value or "").strip()
 
 
+def _normalize_direction(value: str | None, database: str | None = None) -> str:
+    text = _clean(value)
+    lowered = text.casefold()
+    if lowered in {"input", "in"}:
+        return "Input"
+    if lowered in {"output", "out"}:
+        return "Output"
+
+    # For EcoInvent rows, an empty direction is almost always intended as Input.
+    if text == "" and _clean(database).casefold() == "ecoinvent":
+        return "Input"
+
+    return text
+
+
+def _normalize_ecoinvent_fields(row: Dict[str, str]) -> Dict[str, str]:
+    """Normalize common EcoInvent field inconsistencies in CSV rows.
+
+    Handles cases where Ecoinvent_unit is accidentally filled with Input/Output
+    and direction is missing, by recovering the unit from the generic `unit` field.
+    """
+    normalized = dict(row)
+
+    database = _clean(normalized.get("Database"))
+    ecoinvent_unit = _clean(normalized.get("Ecoinvent_unit"))
+    direction = _clean(normalized.get("Direction"))
+    fallback_unit = _clean(normalized.get("unit"))
+
+    unit_token = ecoinvent_unit.casefold()
+    direction_token = direction.casefold()
+
+    # Recover shifted values when unit accidentally contains direction text.
+    if unit_token in {"input", "output", "in", "out"} and direction == "":
+        direction = ecoinvent_unit
+        ecoinvent_unit = fallback_unit
+
+    # If both fields contain direction-like values, prefer fallback unit.
+    if (
+        ecoinvent_unit.casefold() in {"input", "output", "in", "out"}
+        and direction_token in {"input", "output", "in", "out"}
+        and fallback_unit != ""
+    ):
+        ecoinvent_unit = fallback_unit
+
+    normalized["Ecoinvent_unit"] = ecoinvent_unit
+    normalized["Direction"] = _normalize_direction(direction, database)
+    return normalized
+
+
+def _discover_parameter_subsystems(base_dir: Path) -> Set[str]:
+    return {
+        path.name[: -len("_component_parameters.csv")]
+        for path in sorted(base_dir.glob("*_component_parameters.csv"))
+    }
+
+
 def _normalize_quantity_key(value: str | None) -> str:
     """Normalize numeric strings so equivalent quantities map to the same key."""
     text = _clean(value)
@@ -233,7 +300,7 @@ def _load_parameter_rows(base_dir: Path) -> List[Tuple[str, Dict[str, str]]]:
         with open(path, newline="", encoding="utf-8-sig") as f:
             reader = csv.DictReader(f)
             for row in reader:
-                merged_row = dict(row)
+                merged_row = _normalize_ecoinvent_fields(dict(row))
                 result_quantity = result_quantity_map.get(_row_match_key(row), "")
                 if result_quantity != "":
                     merged_row["Quantity_per_element"] = result_quantity
@@ -310,6 +377,102 @@ def _write_csv(path: Path, fieldnames: List[str], rows: List[Dict[str, str]]) ->
         writer.writerows(rows)
 
 
+def _format_float(value: float) -> str:
+    return format(value, ".12g")
+
+
+def build_ecoinvent_totals_library(base_dir: Path) -> int:
+    """Build one consolidated Ecoinvent library from all *_component_io_flows.csv files.
+
+    Each output row represents one unique (Ecoinvent_flow, Ecoinvent_unit, Direction)
+    across all subsystems, with:
+    - Total_amount: summed in the original Ecoinvent unit
+    - Total_mass_kg: summed only when unit is kg/g (blank otherwise)
+    - Subsystems: comma-separated subsystem list where the flow appears
+    """
+    totals: Dict[Tuple[str, str, str], Dict[str, object]] = {}
+
+    active_subsystems = _discover_parameter_subsystems(base_dir)
+
+    for path in sorted(base_dir.glob("*_component_io_flows.csv")):
+        subsystem = path.name[: -len("_component_io_flows.csv")]
+        # Ignore orphan flow files from removed/renamed subsystems.
+        if subsystem not in active_subsystems:
+            continue
+
+        parameter_path = base_dir / f"{subsystem}_component_parameters.csv"
+        if parameter_path.exists() and path.stat().st_mtime < parameter_path.stat().st_mtime:
+            # Prevent stale totals when parameters were edited but pipeline was not rerun.
+            continue
+
+        with open(path, newline="", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                normalized = _normalize_ecoinvent_fields(dict(row))
+                database = _clean(normalized.get("Database"))
+                flow = _clean(normalized.get("Ecoinvent_flow") or normalized.get("Flow"))
+                unit = _clean(normalized.get("Ecoinvent_unit") or normalized.get("Unit"))
+                direction = _clean(normalized.get("Direction"))
+                amount_text = _clean(row.get("Amount"))
+
+                # Keep only rows explicitly marked as EcoInvent.
+                if database.casefold() != "ecoinvent":
+                    continue
+
+                if flow == "" or unit == "" or direction == "" or amount_text == "":
+                    continue
+
+                try:
+                    amount = float(amount_text.replace(",", "."))
+                except ValueError:
+                    continue
+
+                key = (flow, unit, direction)
+                if key not in totals:
+                    totals[key] = {
+                        "Ecoinvent_flow": flow,
+                        "Ecoinvent_unit": unit,
+                        "Direction": direction,
+                        "Total_amount": 0.0,
+                        "Total_mass_kg": 0.0,
+                        "Subsystems": set(),
+                    }
+
+                entry = totals[key]
+                entry["Total_amount"] = float(entry["Total_amount"]) + amount
+
+                unit_l = unit.lower()
+                if unit_l == "kg":
+                    entry["Total_mass_kg"] = float(entry["Total_mass_kg"]) + amount
+                elif unit_l == "g":
+                    entry["Total_mass_kg"] = float(entry["Total_mass_kg"]) + (amount / 1000.0)
+
+                entry["Subsystems"].add(subsystem)
+
+    rows: List[Dict[str, str]] = []
+    for key in sorted(totals.keys(), key=lambda k: (k[0].casefold(), k[1].casefold(), k[2].casefold())):
+        entry = totals[key]
+        unit = str(entry["Ecoinvent_unit"])
+        unit_l = unit.lower()
+        mass_text = ""
+        if unit_l in {"kg", "g"}:
+            mass_text = _format_float(float(entry["Total_mass_kg"]))
+
+        rows.append(
+            {
+                "Ecoinvent_flow": str(entry["Ecoinvent_flow"]),
+                "Ecoinvent_unit": unit,
+                "Direction": str(entry["Direction"]),
+                "Total_amount": _format_float(float(entry["Total_amount"])),
+                "Total_mass_kg": mass_text,
+                "Subsystems": ", ".join(sorted(entry["Subsystems"])),
+            }
+        )
+
+    _write_csv(base_dir / ECOINVENT_TOTALS_LIBRARY_NAME, ECOINVENT_TOTALS_FIELDS, rows)
+    return len(rows)
+
+
 def _load_library_rows(path: Path) -> List[Dict[str, str]]:
     if not path.exists():
         return []
@@ -356,11 +519,16 @@ def _apply_row_updates(
         if field not in target_row:
             continue
         new_value = _resolved_sync_value(field, source_row)
-        # Keep user-provided inputs stable: do not erase non-quantity fields
-        # when the library has blanks.
-        if field != "Quantity_per_element" and new_value == "":
-            continue
         old_value = _clean(target_row.get(field))
+
+        # Never overwrite existing user values.
+        # Sync acts as a "fill missing values" helper only.
+        if old_value != "":
+            continue
+
+        if new_value == "":
+            continue
+
         if old_value != new_value:
             target_row[field] = new_value
             changed = True
@@ -536,6 +704,10 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
                     v2 = _clean(incoming_part.get(f))
                     if f == "Quantity_per_element":
                         match = _normalize_quantity_key(v1) == _normalize_quantity_key(v2)
+                    elif f == "Direction":
+                        db1 = _clean(first_row.get("Database"))
+                        db2 = _clean(incoming_part.get("Database"))
+                        match = _normalize_direction(v1, db1) == _normalize_direction(v2, db2)
                     else:
                         match = v1 == v2
                     if not match:
@@ -582,6 +754,7 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
     # Always overwrite from scratch to avoid stale residual entries.
     _write_csv(base_dir / CASING_LIBRARY_NAME, CASING_FIELDS, casing_rows)
     _write_csv(base_dir / PART_LIBRARY_NAME, PART_FIELDS, part_rows)
+    build_ecoinvent_totals_library(base_dir)
 
     _print_conflict_summary(casing_conflicts, casing_variant_conflicts, part_conflicts)
 

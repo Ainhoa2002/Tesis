@@ -1,13 +1,23 @@
 Casing,Section,Subsection,unit,Quantity_per_element,Has_datasheet_info,L_mm,W_mm,H_mm,Volume_cm3_excel,Density_min_g_cm3,Density_max_g_cm3,Metal_extra_g,Other_extra_g,Ecoinvent_flow,Ecoinvent_unit,Direction,Database,Database_component_title
+1206,Passives,Resistors,kg,1.2249625e-05,NO,3.2,1.6,0.55,0.0026427500000000006,3,4,0.003,0,"resistor production, surface-mounted",kg,Input,EcoInvent,0.105
 1206,Passives,Resistors,kg,1.2856e-05,NO,3.2,1.6,0.55,,3,4,0.003,0,"resistor production, surface-mounted",kg,Input,EcoInvent,0.105
 1206,Passives,Capacitors (mounted),kg,5.6576e-05,NO,3.2,1.6,1.7,,6,7,0,,"capacitor production, for surface-mounting",kg,Input,EcoInvent,0.055-0.06
+1206,Passives,Capacitors (mounted),kg,5.6576e-05,NO,3.2,1.6,1.7,0.008704,6,7,0,,"capacitor production, for surface-mounting",kg,Input,EcoInvent,0.055-0.06
+D2PAK,Auxiliary power supply,Voltage regulator,kg,0.00080785,NO,10.29,9.65,4.83,0.42228,1.2,1.3,0.28,,"integrated circuit production, logic type",kg,Input,EcoInvent,0.8-0.9
 D2PAK,Auxiliary power supply,Voltage regulator,kg,0.000879514694,NO,10.29,9.65,4.83,,1.2,1.3,0.28,,"integrated circuit production, logic type",kg,Input,EcoInvent,0.8-0.9
 DIP6 SMD,Control and signal management,ICs,kg,0.000427,YES,,,,,,,,,"electronic component production, active, unspecified",kg,Input,EcoInvent,0.1-0.12
+DIP6 SMD,Control and signal management,ICs,kg,9.93e-05,NO,7.12,7.62,3.65,0.05544,1.2,1.3,0.03,0,"electronic component production, active, unspecified",kg,Input,EcoInvent,0.1-0.12
 DO-214AA,Diodes and optoelectronics,TVS Diodes,kg,0.000102937052,NO,4.57,3.94,2.4,,1.2,1.25,0.05,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent,0.08-0.1
+DO-214AA,Diodes and optoelectronics,TVS Diodes,kg,0.000106310953,NO,4.57,3.94,2.4,0.045968125000000006,1.2,1.25,0.05,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent,0.08-0.1
+E,Passives,Capacitors (mounted),kg,0.0007078445,NO,7.3,4.3,4.1,0.12869899999999998,5,6,0,,"capacitor production, electrolyte type, < 2cm height",kg,Input,EcoInvent,0.7
 E,Passives,Capacitors (mounted),kg,0.0007078445,NO,7.3,4.3,4.1,,5,6,0,,"capacitor production, electrolyte type, < 2cm height",kg,Input,EcoInvent,0.7
 SOD-80C,Diodes and optoelectronics,Zener Diodes,kg,1.874e-05,NO,,,,0.00744,2.2,2.3,0.002,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent,0.017
 SOIC16,Control and signal management,ICs,kg,0.0001853125,NO,10,3.9,1.75,,1.2,1.3,0.1,,"integrated circuit production, logic type",kg,Input,EcoInvent,0.2-0.25
+SOIC16,Control and signal management,ICs,kg,0.000226875,NO,10,3.9,1.75,0.1015,1.2,1.3,0.1,,"integrated circuit production, logic type",kg,Input,EcoInvent,0.2-0.25
+SOT23-3,Small signal transistors,Bipolar Transistors,kg,7.7125e-06,NO,2.9,1.3,1,0.00377,1.2,1.3,0.003,0,"transistor production, surface-mounted",kg,Input,EcoInvent,0.008-0.012
 SOT23-3,Diodes and optoelectronics,Bipolar Transistors,kg,8.2125e-06,NO,2.9,1.3,1,,1.2,1.3,0.0035,EcoInvent,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent,0.008-0.012
+SOT23-3,Diodes and optoelectronics,TVS Diodes,kg,8.61825e-06,NO,2.9,1.3,1,0.00377,1.2,1.25,0.004,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent,0.008-0.012
 STD10NF10T4,Small signal transistors,MOSFET,kg,0.0003279392,NO,6.6,6.2,2.3,,,1.2,0.215,,"transistor production, surface-mounted",kg,Input,EcoInvent,
+TO-247,Power module,IGBT,kg,0.00310675,NO,20.95,15.74,5.31,1.6853999999999998,1.2,1.3,1,,"insulated gate bipolar transistor production, for electric vehicle applications",kg,Input,EcoInvent,Infineon IKW40N120H3
 TO-247,Power module,IGBT,kg,0.00542,YES,,,,,,,,,"insulated gate bipolar transistor production, for electric vehicle applications",kg,Input,EcoInvent,Infineon IKW40N120H3
 TO-247-2,Diodes and optoelectronics,,kg,0.00542,YES,,,,,,,,,,kg,Input,EcoInvent,

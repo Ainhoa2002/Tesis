@@ -12,6 +12,7 @@ from pathlib import Path
 
 
 MAX_SELECTION_ATTEMPTS = 3
+DEPRECATED_INPUT_FIELDS = {"Ecoinvent_amount_override", "Notes"}
 
 # Converts the inputs in correct format, float. changes coma for dot, averages ranges, returns none if it is empty.
 def to_float(value):
@@ -114,14 +115,6 @@ def _validate_required_grouping_fields(raw_rows):
 
 def _validate_input_consistency(raw_rows):
     conflicts = []
-    geometry_density_fields = [
-        "L_mm",
-        "W_mm",
-        "H_mm",
-        "Volume_cm3_excel",
-        "Density_min_g_cm3",
-        "Density_max_g_cm3",
-    ]
 
     for idx, row in raw_rows:
         designators = _clean_text(row.get("Designators")) or "no designator"
@@ -139,29 +132,6 @@ def _validate_input_consistency(raw_rows):
                         ["Quantity_per_element"],
                     )
                 )
-
-            filled = [field for field in geometry_density_fields if _clean_text(row.get(field)) != ""]
-            if filled:
-                conflicts.append(
-                    (
-                        idx,
-                        designators,
-                        "datasheet_mass_has_geometry",
-                        filled,
-                    )
-                )
-
-        has_lwh = all(_clean_text(row.get(field)) != "" for field in ["L_mm", "W_mm", "H_mm"])
-        has_volume = _clean_text(row.get("Volume_cm3_excel")) != ""
-        if has_lwh and has_volume:
-            conflicts.append(
-                (
-                    idx,
-                    designators,
-                    "lwh_and_volume",
-                    ["L_mm", "W_mm", "H_mm", "Volume_cm3_excel"],
-                )
-            )
 
     return conflicts
 
@@ -298,10 +268,11 @@ def _try_geometry_mass(row, metal_extra_g, other_extra_g):
     if density_g_cm3 is None:
         return None, None, None, density_source
 
-    if l_mm is not None and w_mm is not None and h_mm is not None:
+    # Prefer explicit volume when provided by the user.
+    # If missing, fall back to box volume from L/W/H.
+    volume_cm3 = to_float(row.get("Volume_cm3_excel"))
+    if volume_cm3 is None and l_mm is not None and w_mm is not None and h_mm is not None:
         volume_cm3 = (l_mm * w_mm * h_mm) / 1000.0
-    else:
-        volume_cm3 = to_float(row.get("Volume_cm3_excel"))
 
     if volume_cm3 is None:
         return None, None, None, density_source
@@ -408,9 +379,16 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
     raw_rows = []
     with open(input_csv, newline="", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
-        input_headers = list(reader.fieldnames or [])
+        input_headers = [
+            h for h in list(reader.fieldnames or []) if h and h not in DEPRECATED_INPUT_FIELDS
+        ]
         for idx, row in enumerate(reader, start=2):
-            raw_rows.append((idx, row))
+            cleaned_row = {
+                k: v
+                for k, v in dict(row).items()
+                if k and k not in DEPRECATED_INPUT_FIELDS
+            }
+            raw_rows.append((idx, cleaned_row))
 
     required_grouping_headers = ["Section"]
     missing_headers = [h for h in required_grouping_headers if h not in input_headers]
@@ -439,13 +417,9 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
                 preview_lines.append(
                     f"row {idx} ({designators}): Has_datasheet_info=YES with mass unit requires Quantity_per_element"
                 )
-            elif conflict_type == "datasheet_mass_has_geometry":
-                preview_lines.append(
-                    f"row {idx} ({designators}): Has_datasheet_info=YES with mass unit cannot include {', '.join(fields)}"
-                )
             else:
                 preview_lines.append(
-                    f"row {idx} ({designators}): L_mm, W_mm and H_mm are filled, so Volume_cm3_excel must be blank"
+                    f"row {idx} ({designators}): conflicting inputs ({', '.join(fields)})"
                 )
         preview = "; ".join(preview_lines)
         raise ValueError(
@@ -725,9 +699,10 @@ def _auto_refresh_component_libraries(base_dir):
 def _auto_sync_parameters_from_libraries(base_dir):
     """Sync library values back into all parameter files unless disabled.
 
-    Set MASS_CALC_AUTO_SYNC_FROM_LIBRARY=0 to skip automatic sync.
+    Disabled by default.
+    Set MASS_CALC_AUTO_SYNC_FROM_LIBRARY=1 to enable automatic sync.
     """
-    enabled = str(os.getenv("MASS_CALC_AUTO_SYNC_FROM_LIBRARY", "1")).strip().lower()
+    enabled = str(os.getenv("MASS_CALC_AUTO_SYNC_FROM_LIBRARY", "0")).strip().lower()
     if enabled in {"0", "false", "no", "off"}:
         print("Parameter sync skipped: MASS_CALC_AUTO_SYNC_FROM_LIBRARY is disabled.")
         return

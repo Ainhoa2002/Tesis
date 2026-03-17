@@ -49,6 +49,7 @@ Shared libraries:
 
 - Casing library: `component_library_by_casing.csv`
 - Part number library: `component_library_by_part_number.csv`
+- EcoInvent totals library: `component_library_ecoinvent_totals.csv`
 
 This convention enables scalability without duplicating code logic.
 
@@ -74,16 +75,19 @@ This convention enables scalability without duplicating code logic.
   - Executes calculations for one or more subsystems.
   - Accepts optional arguments (`Pipeline.py <selection...>`), including multiple values.
   - Without arguments, prompts to select subsystem(s), including an ALL option.
-  - Auto-syncs parameter files from library before execution (can be disabled).
+  - Auto-sync from library is disabled by default (`MASS_CALC_AUTO_SYNC_FROM_LIBRARY=0`).
+  - If enabled, sync only fills empty parameter cells and never overwrites existing user values.
   - Refreshes deduplicated casing/part-number libraries automatically after successful execution.
+  - Rebuilds consolidated EcoInvent totals library automatically after successful execution.
 
 - `build_component_libraries.py`
   - Scans all `<subsystem>_component_parameters.csv` files.
   - Builds casing library using `Casing + mass-calculation parameter signature`.
   - Builds part-number library using `Manufacturer + Part_Number` and comparison fields.
+  - Builds one consolidated EcoInvent totals library from all subsystem component I/O flows.
   - For equal casing signatures, keeps one row (filling empty fields from duplicates).
   - For casing variants, keeps multiple rows and reports differing mass parameters.
-  - Supports sync mode (`--sync-parameters` or `sync`) to apply unique part-number library values back to parameter CSVs.
+  - Supports sync mode (`--sync-parameters` or `sync`) to fill missing parameter values from the part-number library.
 
 - `add_eliminate_component.py`
   - Component parameters mode.
