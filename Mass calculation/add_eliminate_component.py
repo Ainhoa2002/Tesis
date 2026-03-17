@@ -54,7 +54,9 @@ KEY_FIELD_ORDER = [
     "Ecoinvent_flow",
     "Ecoinvent_unit",
     "Direction",
+    "Ecoinvent_amount_override",
     "Comments",
+    "Notes",
 ]
 
 AUTO_FIELDS = {
@@ -97,11 +99,12 @@ FIELD_EXAMPLES = {
     "Ecoinvent_flow": "integrated circuit production, logic type",
     "Ecoinvent_unit": "kg",
     "Direction": "Input",
+    "Ecoinvent_amount_override": "0.5",
 }
 
 
 def prompt_label_with_example(header: str) -> str:
-    if header == "Comments":
+    if header in {"Comments", "Notes"}:
         return header
     example = FIELD_EXAMPLES.get(header)
     if not example:
@@ -286,6 +289,7 @@ def choose_search_field(headers: List[str]) -> str | None:
         "Description",
         "Ecoinvent_flow",
         "Comments",
+        "Notes",
     ]
     searchable_fields = [field for field in preferred_fields if field in headers]
     if not searchable_fields:
@@ -499,10 +503,19 @@ def find_io_row_for_delete(headers: List[str], rows: List[Dict[str, str]]) -> in
 
 #Saves the CSV file directly (no automatic backup files).
 def save_csv(path: Path, headers: List[str], rows: List[Dict[str, str]]) -> None:
-    with open(path, "w", newline="", encoding="utf-8") as f:
+    # Keep BOM for better compatibility when opening edited CSVs with Excel.
+    with open(path, "w", newline="", encoding="utf-8-sig") as f:
         writer = csv.DictWriter(f, fieldnames=headers, extrasaction="ignore")
         writer.writeheader()
         writer.writerows(rows)
+
+
+def verify_saved_row(path: Path, key_field: str, key_value: str) -> Tuple[bool, int]:
+    """Reload file and verify the target key value exists after save."""
+    _, persisted_rows = load_csv(path)
+    target = normalize_text(key_value)
+    exists = any(normalize_text(str(row.get(key_field, ""))) == target for row in persisted_rows)
+    return exists, len(persisted_rows)
 
 
 def _auto_refresh_component_libraries(base_dir: Path, reason: str) -> None:
@@ -540,6 +553,8 @@ def _run_parameters_workflow() -> None:
     print(f"Rows: {len(rows)}")
 
     action_mode = choose_action()
+    verification_key = ""
+    should_exist_after_save = False
 
     if action_mode == "delete":
         row_index = find_component_for_delete(headers, rows)
@@ -548,6 +563,7 @@ def _run_parameters_workflow() -> None:
             return
 
         existing_row = rows[row_index]
+        verification_key = str(existing_row.get("Designators", "")).strip()
         print_component_preview(existing_row, headers)
         if not prompt_yes_no("Confirm eliminate component?", default=False):
             print("No changes made.")
@@ -555,6 +571,7 @@ def _run_parameters_workflow() -> None:
 
         del rows[row_index]
         action = "deleted"
+        should_exist_after_save = False
     else:
         while True:
             designators = input("Enter Designators to add or update: ").strip()
@@ -576,21 +593,33 @@ def _run_parameters_workflow() -> None:
                 designators=designators,
                 existing_row=existing_row,
             )
+            verification_key = str(rows[row_index].get("Designators", designators)).strip() or designators
             action = "updated"
         else:
             print("Component not found. Creating a new row.")
-            rows.append(
-                prompt_component_row(
-                    headers=headers,
-                    designators=designators,
-                    existing_row=None,
-                )
+            new_row = prompt_component_row(
+                headers=headers,
+                designators=designators,
+                existing_row=None,
             )
+            rows.append(new_row)
+            verification_key = str(new_row.get("Designators", designators)).strip() or designators
             action = "added"
+        should_exist_after_save = True
 
     save_csv(csv_path, headers, rows)
+    exists_after_save, persisted_count = verify_saved_row(csv_path, "Designators", verification_key)
     print(f"\nComponent {action} successfully.")
-    print(f"Updated file: {csv_path.name}")
+    print(f"Updated file: {csv_path.resolve()}")
+    if verification_key:
+        state_ok = exists_after_save == should_exist_after_save
+        status = "OK" if state_ok else "WARNING"
+        expected = "present" if should_exist_after_save else "absent"
+        found = "present" if exists_after_save else "absent"
+        print(
+            f"Save verification [{status}]: Designators='{verification_key}' "
+            f"expected {expected}, found {found}. Rows now: {persisted_count}"
+        )
     _auto_refresh_component_libraries(BASE_DIR, "add_eliminate_component parameters")
 
 
@@ -643,7 +672,7 @@ def _run_io_workflow() -> None:
 
     save_csv(csv_path, headers, rows)
     print(f"\nI/O flow {action} successfully.")
-    print(f"Updated file: {csv_path.name}")
+    print(f"Updated file: {csv_path.resolve()}")
 
 
 def main() -> None:
