@@ -123,8 +123,6 @@ PART_SYNC_FIELDS = [
     "Part_Number",
     "Casing",
     "Description",
-    "Section",
-    "Subsection",
     "unit",
     "Quantity_per_element",
     "Has_datasheet_info",
@@ -358,6 +356,10 @@ def _apply_row_updates(
         if field not in target_row:
             continue
         new_value = _resolved_sync_value(field, source_row)
+        # Keep user-provided inputs stable: do not erase non-quantity fields
+        # when the library has blanks.
+        if field != "Quantity_per_element" and new_value == "":
+            continue
         old_value = _clean(target_row.get(field))
         if old_value != new_value:
             target_row[field] = new_value

@@ -54,9 +54,7 @@ KEY_FIELD_ORDER = [
     "Ecoinvent_flow",
     "Ecoinvent_unit",
     "Direction",
-    "Ecoinvent_amount_override",
     "Comments",
-    "Notes",
 ]
 
 AUTO_FIELDS = {
@@ -99,12 +97,11 @@ FIELD_EXAMPLES = {
     "Ecoinvent_flow": "integrated circuit production, logic type",
     "Ecoinvent_unit": "kg",
     "Direction": "Input",
-    "Ecoinvent_amount_override": "0.5",
 }
 
 
 def prompt_label_with_example(header: str) -> str:
-    if header in {"Comments", "Notes"}:
+    if header == "Comments":
         return header
     example = FIELD_EXAMPLES.get(header)
     if not example:
@@ -289,7 +286,6 @@ def choose_search_field(headers: List[str]) -> str | None:
         "Description",
         "Ecoinvent_flow",
         "Comments",
-        "Notes",
     ]
     searchable_fields = [field for field in preferred_fields if field in headers]
     if not searchable_fields:

@@ -364,7 +364,7 @@ def is_mass_unit(unit):
 def ecoinvent_amount(row, mass_data, quantity_data):
     """Compute the ecoinvent flow amount for a component row.
     - kg/g units  → taken from calculated mass (mass_data must not be None)
-    - any other unit → taken from Ecoinvent_amount_override set by the user
+    - m2 unit     → taken from calculated area quantity (quantity_data must not be None)
     """
     flow = str(row.get("Ecoinvent_flow") or "").strip()
     unit = _get_quantity_context_unit(row) or "kg"
@@ -386,10 +386,9 @@ def ecoinvent_amount(row, mass_data, quantity_data):
             )
         amount = quantity_data["Total_quantity"]
     else:
-        override = to_float(row.get("Ecoinvent_amount_override"))
-        if override is None:
-            return None  # User hasn't filled the override yet — not counted, no error
-        amount = override
+        raise ValueError(
+            f"Unsupported unit '{unit}'. Use kg/g for mass-based flows or m2 for area-based flows."
+        )
 
     return {
         "Flow": flow,
@@ -544,18 +543,13 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
 
             try:
                 flow_row = ecoinvent_amount(row, mass_data, quantity_data)
-                if flow_row is not None:
-                    flow_entry["Amount"] = round(flow_row["Amount"], 12)
-                    if is_mass_unit(unit):
-                        flow_entry["Formula_basis"] = "mass-based"
-                    elif unit.lower() == "m2":
-                        flow_entry["Formula_basis"] = "area-based"
-                    else:
-                        flow_entry["Formula_basis"] = "override"
-                    key = (flow_row["Flow"], flow_row["Unit"], flow_row["Direction"])
-                    grouped_flows[key] = grouped_flows.get(key, 0.0) + flow_row["Amount"]
-                else:
-                    flow_entry["Validation_error"] = "Pending: fill Ecoinvent_amount_override"
+                flow_entry["Amount"] = round(flow_row["Amount"], 12)
+                if is_mass_unit(unit):
+                    flow_entry["Formula_basis"] = "mass-based"
+                elif unit.lower() == "m2":
+                    flow_entry["Formula_basis"] = "area-based"
+                key = (flow_row["Flow"], flow_row["Unit"], flow_row["Direction"])
+                grouped_flows[key] = grouped_flows.get(key, 0.0) + flow_row["Amount"]
             except Exception as exc:
                 flow_entry["Validation_error"] = str(exc)
                 # Only add to errors if not already reported above (missing mass for kg unit)

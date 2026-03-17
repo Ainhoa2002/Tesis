@@ -59,7 +59,7 @@ This convention enables scalability without duplicating code logic.
   - multi-selection (for example `1 2`),
   - all-subsystems option (`0`, `all`, `todo`, `todos`, `*`).
 - Add/edit/delete operations in `add_eliminate_component.py`.
-- Prompts with field examples for component parameters (except comments/notes).
+- Prompts with field examples for component parameters (except comments).
 - Excel to CSV import and CSV duplication in `import_component_parameter_or_io.py`.
 - Quick CSV selection via numbered list during duplication.
 - Default folder for import/duplication in `Mass calculation`.
@@ -116,7 +116,6 @@ Expected key fields:
 - Quantity: `number_elements`, `unit`, `Quantity_per_element`, `Has_datasheet_info`
 - Geometry/density: `L_mm`, `W_mm`, `H_mm`, `Volume_cm3_excel`, `Density_min_g_cm3`, `Density_max_g_cm3`, `Metal_extra_g`, `Other_extra_g`
 - LCA mapping: `Ecoinvent_flow`, `Ecoinvent_unit`, `Direction`, `Database`, `Database_component_title`
-- Optional manual route: `Ecoinvent_amount_override`
 
 ## 8. Pipeline Calculation Logic
 
@@ -132,7 +131,7 @@ Expected key fields:
   - `Area per element (m2) = (L_mm * W_mm) / 1,000,000`
 
 - Other units:
-  - `Amount` is taken from `Ecoinvent_amount_override`.
+  - Not supported in this workflow. Use `kg`, `g`, or `m2`.
 
 ### 8.2 Flow Generation
 
