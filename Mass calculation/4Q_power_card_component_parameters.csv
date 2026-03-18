@@ -13,4 +13,23 @@
 "D1,D2",TO-220-2-V,Diodes and optoelectronics,Schottky,,"ON SEMICONDUCTOR","MBR40250G","250V 40A Switch-Mode Schottky Power Rectifier",2,kg,0.0019,YES,,,,,,,,,"EcoInvent","transistor production, wired, small size, through-hole mounting",kg,Input,,Mass data from: https://www.chipdip.am/product/mbr40250g-on-semiconductor-8002980390,
 "D3, D22",SOD-80C,Diodes and optoelectronics,Voltage Regulator ,,NEXPERIA,BZV55-B10,10V 500mW Voltage Regulator Diode,2,kg,,NO,,,,0.00744,2.2,2.3,0.002,,EcoInvent,"diode production, glass-, for through-hole mounting",kg,Input,0.017,,
 D4–D7,SOD-80C,Diodes and optoelectronics,Voltage Regulator ,,Nexperia,BZV55-B15,15V 500mW Voltage Regulator Diode,4,kg,,NO,,,,0.00744,2.2,2.3,0.002,,EcoInvent,"diode production, glass-, for surface-mounting",kg,Input,0.017,, 
-"D8, D9, D16, D17, D20, D23-D26",SOT23-3,Diodes and optoelectronics,Voltage Regulator ,,NXP SEMICONDUCTORS,BAV199,75V 250mW Low-Leakage Double Diode,9,kg,,NO,2.9,1.3,1,,1.2,1.3,0.0035,,EcoInvent,"diode production, glass-, for surface-mounting",kg,Input,0.008-0.012,,
+"D8, D9, D16, D17, D20, D23-D26",SOT23-3,Diodes and optoelectronics,Low-Leakage Double Diode,,NXP SEMICONDUCTORS,BAV199,75V 250mW Low-Leakage Double Diode,9,kg,,NO,2.9,1.3,1,,1.2,1.3,0.0035,,EcoInvent,"diode production, glass-, for surface-mounting",kg,Input,,,
+"D10-D13",SOT23-3,Diodes and optoelectronics,Switching,,ON SEMICONDUCTOR,BAW56L,70V Dual Common Anode Switching Diodes,4,kg,,NO,2.9,1.3,1,,1.2,1.3,0.0035,,EcoInvent,"diode production, glass-, for surface-mounting",kg,Input,0.008-0.012,mass calculated from the casing,
+"D14, D15, D18, D19",SOT23-3,Diodes and optoelectronics,TVS Diodes,,Semtech,SM712.TCT,12V/-7V 400W Asymmetrical TVS Diode for Extended Common-Mode RS-485,4,kg,,NO,2.9,1.3,1,,1.2,1.3,0.0035,,EcoInvent,"diode production, glass-, for surface-mounting",kg,Input,,perfectly describes glass SMD diodes,
+D21,DO-214AA,Diodes and optoelectronics,TVS Diodes,,onsemi (Fairchild),SMBJ24A,24V 600W Uni-Directional Transient Voltage Suppressor Diode,1,kg,,NO,4.57,3.94,2.4,,1.2,1.25,0.05,,EcoInvent,"diode production, glass-, for surface-mounting",kg,Input,0.08-0.1,,
+IC1,,Control and signal management,Sensing,,LEM,LESR 25-NP,Current Transducer 25A,1,kg,0.01,YES,,,,,,,,,EcoInvent,"electronic component production, active, unspecified",kg,Input,,"big aproximation, it contains active components mass: https://ch.farnell.com/en-CH/lem/lesr-25-np/current-sensor-voltage-85a-to/dp/3253159"
+IC4–IC7,,Auxiliary power supply,DC/DC Converters,,Traco Power,TRV 1-2413M,"19.2-28.8VDC to +15VDC/±67mA, Ripple and Noise (max) 100mVpk-pk,DC/DC Medical Converter",4,kg,0.0048,YES,,,,,,,,,EcoInvent,"electronic component production, active, unspecified",kg,Input,,"Generic active component dataset used with mass scaling. The automotive converter dataset was rejected due to extreme scale difference.",
+,Ecoinvent_unit,Direction,Database_component_title,Comments,
+IC8,SOIC16,Control and signal management,ICs,,Texas Instruments,AM26LV32IDR,"Low-Voltage, High-Speed Quadruple Differential Line Receiver",1,kg,,NO,10,3.9,1.75,,1.2,1.3,0.1,,EcoInvent,"integrated circuit production, logic type",kg,Input,0.2-0.25," logic IC. The function matches.",
+IC9,DIP6 SMD,Control and signal management,ICs,,Panasonic,AQV210EHA,"GE 1 Form A, PhotoMOS Relay, 5000V Reinforced Insulation, 350V 130mA",1,kg,0.000427,YES,,,,,,,,,EcoInvent,"electronic component production, active, unspecified",kg,Input,0.1-0.12,"The PhotoMOS is a solid-state relay combining an LED and MOSFETs in an SMD package. No specific ecoinvent dataset exists.",
+IC11,SOIC16,Control and signal management,ICs,,Texas Instruments,AMC3330DWE,"Precision, ±1V Input, Reinforced Isolated Amplifier with Integrated DC/DC Converter",1,kg,,NO,10,3.9,1.75,,1.2,1.3,0.1,,EcoInvent,"integrated circuit production, logic type",kg,Input,,"logic IC. The function matches.",
+J1,,Passives,Connectors,,TYCO ELECTRONICS,1-770166-0,"2 Circuits In-Line, Mini-Universal MATE-N-LOK Connector",1,kg,0.00078,YES,,,,,,,,,EcoInvent,"electric connector production, wire clamp",kg,Input,,"Mass info:https://www.tme.eu/se/details/1-770166-0/signalkontaktdon-avstand-4-14mm/te-connectivity/"
+
+
+
+
+
+
+
+
+
