@@ -45,16 +45,25 @@ Optional:
 Component library logic:
 
 - Source of truth is all `*_component_parameters.csv` files.
+- Systems/subsystems library is generated from `Section` and `Subsection`:
+	- Output file: `component_library_systems_subsystems.csv`.
+	- Includes source subsystem files where each pair appears and row counts.
 - Casing library uniqueness key is `Casing + mass-calculation parameters`:
 	- `unit`, `Quantity_per_element`, `Has_datasheet_info`,
 	- `L_mm`, `W_mm`, `H_mm`, `Volume_cm3_excel`,
 	- `Density_min_g_cm3`, `Density_max_g_cm3`, `Metal_extra_g`.
+- Casing library only includes rows where `Casing` is non-empty (empty values like `""` are excluded).
 - Part-number library uniqueness key is `(Manufacturer, Part_Number)`.
 - For casing rows with identical mass parameters, only one row is kept and empty fields are completed from other duplicates.
 - For same casing with different mass parameters, multiple rows are kept and a warning is printed with the differing parameters.
 - Part-number library includes `Subsystems` and keeps multiple rows only when `(Manufacturer, Part_Number)` has conflicting comparison fields.
 - Reverse sync (library to parameter files) updates rows only when `Part_Number` has a unique library match; ambiguous repeated part numbers are skipped.
 - Grouped IPE flow output (`*_ipe_flows_from_parameters.csv`) is not grouped by casing.
+
+Validation behavior in `Pipeline.py`:
+
+- `Section` and `Ecoinvent_flow` are required for all rows.
+- If either is empty in any row, pipeline stops that subsystem and reports the row numbers.
 
 When libraries refresh:
 

@@ -5,6 +5,7 @@ Creates:
 - component_library_by_casing.csv
 - component_library_by_part_number.csv
 - component_library_ecoinvent_totals.csv
+- component_library_systems_subsystems.csv
 
 Rules:
 - Each library stores unique keys only once.
@@ -26,6 +27,14 @@ BASE_DIR = Path(__file__).parent
 CASING_LIBRARY_NAME = "component_library_by_casing.csv"
 PART_LIBRARY_NAME = "component_library_by_part_number.csv"
 ECOINVENT_TOTALS_LIBRARY_NAME = "component_library_ecoinvent_totals.csv"
+SYSTEM_SUBSYSTEM_LIBRARY_NAME = "component_library_systems_subsystems.csv"
+
+SYSTEM_SUBSYSTEM_FIELDS = [
+    "System",
+    "Subsystem",
+    "Source_subsystems",
+    "Component_rows",
+]
 
 ECOINVENT_TOTALS_FIELDS = [
     "Ecoinvent_flow",
@@ -594,6 +603,56 @@ def build_ecoinvent_totals_library(base_dir: Path) -> int:
     return len(rows)
 
 
+def build_system_subsystem_library(
+    base_dir: Path,
+    raw_rows: List[Tuple[str, Dict[str, str]]],
+) -> int:
+    """Build a library of systems and their subsystems from parameter files.
+
+    - System is read from `Section`.
+    - Subsystem is read from `Subsection` (can be blank).
+    - Source_subsystems stores the component parameter files where the pair appears.
+    - Component_rows stores the total number of component rows for the pair.
+    """
+    pair_map: Dict[Tuple[str, str], Dict[str, object]] = {}
+
+    for source_subsystem, row in raw_rows:
+        system = _clean(row.get("Section"))
+        subsystem = _clean(row.get("Subsection"))
+
+        # Keep only valid system labels.
+        if system == "":
+            continue
+
+        key = (system.casefold(), subsystem.casefold())
+        if key not in pair_map:
+            pair_map[key] = {
+                "System": system,
+                "Subsystem": subsystem,
+                "Source_subsystems": set(),
+                "Component_rows": 0,
+            }
+
+        entry = pair_map[key]
+        entry["Source_subsystems"].add(source_subsystem)
+        entry["Component_rows"] = int(entry["Component_rows"]) + 1
+
+    rows: List[Dict[str, str]] = []
+    for key in sorted(pair_map.keys(), key=lambda pair: (pair[0], pair[1])):
+        entry = pair_map[key]
+        rows.append(
+            {
+                "System": str(entry["System"]),
+                "Subsystem": str(entry["Subsystem"]),
+                "Source_subsystems": ", ".join(sorted(entry["Source_subsystems"])),
+                "Component_rows": str(entry["Component_rows"]),
+            }
+        )
+
+    _write_csv(base_dir / SYSTEM_SUBSYSTEM_LIBRARY_NAME, SYSTEM_SUBSYSTEM_FIELDS, rows)
+    return len(rows)
+
+
 def _load_library_rows(path: Path) -> List[Dict[str, str]]:
     if not path.exists():
         return []
@@ -720,7 +779,7 @@ def sync_parameter_files_from_libraries(base_dir: Path) -> Tuple[int, int, int]:
     return files_changed, rows_changed, skipped_ambiguous
 
 
-def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
+def build_libraries(base_dir: Path) -> Tuple[int, int, int, int]:
     """Rebuild both libraries from scratch on every call.
 
     Casing library:
@@ -799,28 +858,15 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
             else:
                 casing_first_rows[casing_base_key] = dict(row)
                 casing_first_subsystem[casing_base_key] = subsystem
-        else:
-            # Keep no-casing components in the casing library as well.
-            # Use a stricter key to avoid mixing unrelated parts that happen
-            # to share only mass inputs.
-            casing_base_key = "__no_casing__"
-            no_casing_signature = (
-                _clean(row.get("Section")).casefold(),
-                _clean(row.get("Subsection")).casefold(),
-                _clean(row.get("Ecoinvent_flow")).casefold(),
-                _clean(row.get("Ecoinvent_unit")).casefold(),
-                _clean(row.get("Direction")).casefold(),
-            ) + casing_signature
-            casing_key = (casing_base_key, no_casing_signature)
 
-        if casing_key not in casing_map:
-            casing_map[casing_key] = incoming_casing
-        else:
-            # True duplicate in mass-calculation terms: keep one row and complete missing values.
-            existing = casing_map[casing_key]
-            for field, new_value in incoming_casing.items():
-                if _clean(existing.get(field)) == "" and new_value != "":
-                    existing[field] = new_value
+            if casing_key not in casing_map:
+                casing_map[casing_key] = incoming_casing
+            else:
+                # True duplicate in mass-calculation terms: keep one row and complete missing values.
+                existing = casing_map[casing_key]
+                for field, new_value in incoming_casing.items():
+                    if _clean(existing.get(field)) == "" and new_value != "":
+                        existing[field] = new_value
 
         part_number = _clean(row.get("Part_Number"))
         if part_number:
@@ -889,6 +935,7 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
     _write_csv(base_dir / CASING_LIBRARY_NAME, CASING_FIELDS, casing_rows)
     _write_csv(base_dir / PART_LIBRARY_NAME, PART_FIELDS, part_rows)
     build_ecoinvent_totals_library(base_dir)
+    system_subsystem_count = build_system_subsystem_library(base_dir, raw_rows)
 
     _print_conflict_summary(
         casing_conflicts,
@@ -898,7 +945,7 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int]:
         missing_mass_data_warnings,
     )
 
-    return len(casing_rows), len(part_rows), conflict_count
+    return len(casing_rows), len(part_rows), conflict_count, system_subsystem_count
 
 
 def main() -> None:
@@ -910,9 +957,10 @@ def main() -> None:
         )
         return
 
-    casing_count, part_count, conflict_count = build_libraries(BASE_DIR)
+    casing_count, part_count, conflict_count, system_subsystem_count = build_libraries(BASE_DIR)
     print(f"Created {CASING_LIBRARY_NAME}: {casing_count} unique casing rows")
     print(f"Created {PART_LIBRARY_NAME}: {part_count} unique part-number rows")
+    print(f"Created {SYSTEM_SUBSYSTEM_LIBRARY_NAME}: {system_subsystem_count} system/subsystem rows")
     print(f"Conflicts detected: {conflict_count}")
 
 

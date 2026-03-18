@@ -1,0 +1,24 @@
+System,Subsystem,Source_subsystems,Component_rows
+Accesaries,Mounting hardware,inverter_power_card,1
+Active,Inductor,filter_card,2
+Assambly,,"contactor_card, filter_card, fuse_card, inverter_power_card",6
+Auxiliary power supply,DC/DC Converters,inverter_power_card,1
+Auxiliary power supply,Voltage regulator,inverter_power_card,1
+Control and signal management,ICs,"contactor_card, inverter_power_card",3
+Control and signal management,Protection,"contactor_card, fuse_card, inverter_power_card",7
+Diodes and optoelectronics,,"contactor_card, inverter_power_card",5
+Diodes and optoelectronics,Optoelectronics,"contactor_card, inverter_power_card",2
+Diodes and optoelectronics,TVS Diodes,"contactor_card, inverter_power_card",3
+Diodes and optoelectronics,Zener Diodes,inverter_power_card,1
+Magnetics,Current sensing,inverter_power_card,1
+Passives,Capacitors (mounted),"contactor_card, filter_card, fuse_card, inverter_power_card",18
+Passives,Capacitors (unmounted),"filter_card, fuse_card, inverter_power_card",8
+Passives,Connectors,"contactor_card, filter_card, fuse_card, inverter_power_card",11
+Passives,Resistors,"contactor_card, filter_card, fuse_card, inverter_power_card",19
+Passives,Test PINs,"contactor_card, filter_card, inverter_power_card",3
+Passives,Thermal management,contactor_card,1
+PCB,,"contactor_card, filter_card, fuse_card, inverter_power_card",4
+Power module,Gate driver,inverter_power_card,1
+Power module,IGBT,inverter_power_card,1
+Small signal transistors,Bipolar Transistors,"contactor_card, inverter_power_card",2
+Small signal transistors,MOSFET,"contactor_card, inverter_power_card",3

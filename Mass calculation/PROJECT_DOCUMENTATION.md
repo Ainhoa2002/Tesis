@@ -50,6 +50,7 @@ Shared libraries:
 - Casing library: `component_library_by_casing.csv`
 - Part number library: `component_library_by_part_number.csv`
 - EcoInvent totals library: `component_library_ecoinvent_totals.csv`
+- Systems/subsystems library: `component_library_systems_subsystems.csv`
 
 This convention enables scalability without duplicating code logic.
 
@@ -85,6 +86,7 @@ This convention enables scalability without duplicating code logic.
   - Builds casing library using `Casing + mass-calculation parameter signature`.
   - Builds part-number library using `Manufacturer + Part_Number` and comparison fields.
   - Builds one consolidated EcoInvent totals library from all subsystem component I/O flows.
+  - Builds one systems/subsystems library from `Section` and `Subsection` with source subsystem traceability.
   - For equal casing signatures, keeps one row (filling empty fields from duplicates).
   - For casing variants, keeps multiple rows and reports differing mass parameters.
   - Supports sync mode (`--sync-parameters` or `sync`) to fill missing parameter values from the part-number library.
@@ -111,6 +113,7 @@ Minimum input to run pipeline:
 Validation rules:
 
 - `Section` must have a value.
+- `Ecoinvent_flow` must have a value.
 - `Subsection` can be empty.
 - For mass context (`kg`/`g`): if `Has_datasheet_info=YES`, `Quantity_per_element` is required.
 
@@ -152,6 +155,7 @@ Expected key fields:
 
 - Library source files are all `<subsystem>_component_parameters.csv` files.
 - Casing library key uses `Casing + mass-calculation parameter signature`.
+- Casing library includes only rows with non-empty `Casing` (empty values are excluded).
 - Casing mass-calculation signature fields are:
   - `unit`, `Quantity_per_element`, `Has_datasheet_info`,
   - `L_mm`, `W_mm`, `H_mm`, `Volume_cm3_excel`,

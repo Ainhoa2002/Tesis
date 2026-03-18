@@ -104,13 +104,16 @@ def _build_row_metadata(rows):
     return metadata
 
 
-def _validate_required_grouping_fields(raw_rows):
-    missing = []
+def _validate_required_non_empty_fields(raw_rows, required_fields):
+    missing_by_field = {field: [] for field in required_fields}
+
     for idx, row in raw_rows:
-        section = _clean_text(row.get("Section"))
-        if section == "":
-            missing.append((idx, _clean_text(row.get("Designators")), section))
-    return missing
+        designators = _clean_text(row.get("Designators")) or "no designator"
+        for field in required_fields:
+            if _clean_text(row.get(field)) == "":
+                missing_by_field[field].append((idx, designators))
+
+    return {field: rows for field, rows in missing_by_field.items() if rows}
 
 
 def _validate_input_consistency(raw_rows):
@@ -390,8 +393,8 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
             }
             raw_rows.append((idx, cleaned_row))
 
-    required_grouping_headers = ["Section"]
-    missing_headers = [h for h in required_grouping_headers if h not in input_headers]
+    required_non_empty_fields = ["Section", "Ecoinvent_flow"]
+    missing_headers = [h for h in required_non_empty_fields if h not in input_headers]
     if missing_headers:
         raise ValueError(
             "Input CSV is missing required column(s): "
@@ -399,14 +402,22 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
             + ". Add them as input parameters in *_component_parameters.csv."
         )
 
-    missing_grouping_rows = _validate_required_grouping_fields(raw_rows)
-    if missing_grouping_rows:
-        preview = "; ".join(
-            [f"row {idx} ({designators or 'no designator'})" for idx, designators, _ in missing_grouping_rows[:10]]
-        )
+    missing_required_rows = _validate_required_non_empty_fields(raw_rows, required_non_empty_fields)
+    if missing_required_rows:
+        details = []
+        for field in required_non_empty_fields:
+            rows = missing_required_rows.get(field, [])
+            if not rows:
+                continue
+
+            preview = "; ".join([f"row {idx} ({designators})" for idx, designators in rows[:10]])
+            if len(rows) > 10:
+                preview += f"; ... (+{len(rows) - 10} more)"
+            details.append(f"{field}: {preview}")
+
         raise ValueError(
-            "Section is a required input parameter for all rows. "
-            f"Missing values found in: {preview}"
+            "Section and Ecoinvent_flow are required input parameters for all rows. "
+            f"Missing values found in: {' | '.join(details)}"
         )
 
     input_conflicts = _validate_input_consistency(raw_rows)
@@ -687,10 +698,11 @@ def _auto_refresh_component_libraries(base_dir):
     try:
         from build_component_libraries import build_libraries
 
-        casing_count, part_count, conflict_count = build_libraries(base_dir)
+        casing_count, part_count, conflict_count, system_subsystem_count = build_libraries(base_dir)
         print(
             "Library refresh completed"
-            f": casing={casing_count}, part_number={part_count}, conflicts={conflict_count}"
+            f": casing={casing_count}, part_number={part_count}, "
+            f"systems_subsystems={system_subsystem_count}, conflicts={conflict_count}"
         )
     except Exception as exc:
         print(f"Warning: library refresh failed: {exc}")
