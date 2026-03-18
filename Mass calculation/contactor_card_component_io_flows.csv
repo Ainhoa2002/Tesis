@@ -29,7 +29,7 @@ Order_index,Category_order,Group_order,Category,Section,Subsection,Designators,C
 26,1,10,AUTO,Passives,Resistors,"R143 > R148, R151 > R156,R167 > R178, R187 > R198,R207 > R212, R215 > R220, R231 > R236, R239 > R244, R253 > R258",1206,R1206_33K_1%_0.25W_100PPM,EcoInvent,,"resistor production, surface-mounted",kg,Input,0.000848496,0.012856,0.848496,0.000848496,mass-based,
 27,1,10,AUTO,Passives,Resistors,RV1,,B72220S0511K101 or S20K510,EcoInvent,,"resistor production, wirewound, through-hole mounting",kg,Input,0.005948,5.948,5.948,0.005948,mass-based,
 28,1,11,AUTO,Small signal transistors,Bipolar Transistors,T1,SOT23-3,MMBT3906LT1G,EcoInvent,,"transistor production, surface-mounted",kg,Input,8.2125e-06,0.008212,0.008212,8.2125e-06,mass-based,
-29,1,12,AUTO,Small signal transistors,MOSFET,"T2,T5",STD10NF10T4,STD10NF10T4,EcoInvent,,"transistor production, surface-mounted",kg,Input,0.0006558784,0.327939,0.655878,0.0006558784,mass-based,
+29,1,12,AUTO,Small signal transistors,MOSFET,"T2,T5",DPAK,STD10NF10T4,EcoInvent,,"transistor production, surface-mounted",kg,Input,0.0006558784,0.327939,0.655878,0.0006558784,mass-based,
 31,1,12,AUTO,Small signal transistors,MOSFET,"T3,T4",SOT23-3,BSS119N,EcoInvent,Input,"transistor production, surface-mounted",kg,Input,4.9275e-05,0.008212,0.049275,4.9275e-05,mass-based,
 33,1,13,AUTO,Passives,Thermal management,HS1-HS6,,FK 245 MI 247 O,EcoInvent,,"market for copper, cathode+metal working, average for copper product manufacturing",kg,Input,0.03,5.0,30.0,0.03,mass-based,
 34,1,14,AUTO,Assambly,,SMD_PROCESS,,,EcoInvent,,"mounting, surface mount technology, Pb-free solder",m2,Input,0.017,,,,area-based,
