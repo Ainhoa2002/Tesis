@@ -1,3 +1,23 @@
+"""
+Working with Streamlit to visualize mass results across subsystems and components. "
+This app:
+1.reads all *_component_mass_results.csv files
+2.allows filtering by subsystem and component
+3.provides various visualizations like bar charts and treemaps"
+Streamlit is a library for building interactive web apps in Python,
+Used for data visualization and exploration.
+
+
+HOW TO USE IT:
+- In the termianal: .\Mass calculation\mass_visuals_app.py
+                - Make sure you have Streamlit installed: .\\.venv\\Scripts\\python.exe -m pip install streamlit plotly pandas numpy
+- The app will open in your web browser, showing mass results from all subsystems.
+- In the web parameters can be changed for visualization
+    - You can change parameters in the web app to update visualizations.
+    - You can edit the code while the app is running; save changes to auto-reload.
+- Press Ctrl + C in the terminal to stop the app.
+
+"""""
 from pathlib import Path
 
 import numpy as np
