@@ -12,14 +12,13 @@ Ecoinvent_flow,Ecoinvent_unit,Direction,Total_amount,Total_mass_kg,Subsystems
 "insulated gate bipolar transistor production, for electric vehicle applications",kg,Input,0.02168,0.02168,inverter_power_card
 "integrated circuit production, logic type",kg,Input,0.001818670944,0.001818670944,inverter_power_card
 light emitting diode production,kg,Input,0.07,0.07,"contactor_card, inverter_power_card"
-"market for copper, cathode+metal working, average for copper product manufacturing",kg,Input,0.03,0.03,contactor_card
 "market for steel, low-alloyed + market for metal working, average for metal product manufacturing",kg,Input,0.00126385,0.00126385,inverter_power_card
-"mounting, surface mount technology, Pb-free solder",m2,Input,0.0338,,"contactor_card, inverter_power_card"
-"mounting, through-hole technology, Pb-free solder",m2,Input,0.0608,,"contactor_card, filter_card, fuse_card, inverter_power_card"
+"mounting, surface mount technology, Pb-free solder",m2,Input,0.0168,,inverter_power_card
+"mounting, through-hole technology, Pb-free solder",m2,Input,0.0438,,"filter_card, fuse_card, inverter_power_card"
 "printed wiring board production, for power supply unit, desktop computer, Pb free",m2,Input,0.0608,,"contactor_card, filter_card, fuse_card, inverter_power_card"
 "resistor production, surface-mounted",kg,Input,0.004088208,0.004088208,"contactor_card, inverter_power_card"
 "resistor production, wirewound, through-hole mounting",kg,Input,0.005948,0.005948,contactor_card
 "resistor, metal film type, through-hole mounting",kg,Input,0.05065215,0.05065215,"filter_card, fuse_card"
-"transformer production, low voltage use",kg,Input,0.2132,0.2132,"contactor_card, filter_card, inverter_power_card"
-"transistor production, surface-mounted",kg,Input,0.0007708534,0.0007708534,"contactor_card, inverter_power_card"
+"transformer production, low voltage use",kg,Input,0.1622,0.1622,"contactor_card, filter_card, inverter_power_card"
+"transistor production, surface-mounted",kg,Input,0.0007215784,0.0007215784,"contactor_card, inverter_power_card"
 "transistor production, wired, big size, through-hole mounting",kg,Input,0.03252,0.03252,contactor_card
