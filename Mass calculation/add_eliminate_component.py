@@ -558,11 +558,21 @@ def _auto_refresh_component_libraries(base_dir: Path, reason: str) -> None:
     try:
         from build_component_libraries import build_libraries
 
-        casing_count, part_count, conflict_count, system_subsystem_count = build_libraries(base_dir)
+        (
+            casing_count,
+            part_count,
+            conflict_count,
+            system_subsystem_count,
+            parameters_storage_count,
+            results_storage_count,
+        ) = build_libraries(base_dir)
         print(
             "Library refresh completed"
             f" ({reason}): casing={casing_count}, part_number={part_count}, "
-            f"systems_subsystems={system_subsystem_count}, conflicts={conflict_count}"
+            f"systems_subsystems={system_subsystem_count}, "
+            f"storage_parameters={parameters_storage_count}, "
+            f"storage_results={results_storage_count}, "
+            f"conflicts={conflict_count}"
         )
     except Exception as exc:
         print(f"Warning: library refresh failed ({reason}): {exc}")

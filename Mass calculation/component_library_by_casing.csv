@@ -1,21 +1,21 @@
 Casing,Section,Subsection,unit,Quantity_per_element,Has_datasheet_info,L_mm,W_mm,H_mm,Volume_cm3_excel,Density_min_g_cm3,Density_max_g_cm3,Metal_extra_g,Other_extra_g,Ecoinvent_flow,Ecoinvent_unit,Direction,Database,Database_component_title
-1206,Passives,Capacitors (mounted),kg,,NO,3.2,1.6,1.7,,6,7,0,,"capacitor production, for surface-mounting",kg,Input,EcoInvent,0.055-0.06
+1206,Passives,Capacitors,kg,,NO,3.2,1.6,1.7,,6,7,0,,"capacitor production, for surface-mounting",kg,Input,EcoInvent,0.055-0.06
 1206,Passives,Resistors,kg,1.2856e-05,NO,3.2,1.6,0.55,,3,4,0.003,0,"resistor production, surface-mounted",kg,Input,EcoInvent,0.105
-1206,Passives,Capacitors (mounted),kg,5.6576e-05,NO,3.2,1.6,1.7,,6,7,0,,"capacitor production, for surface-mounting",kg,Input,EcoInvent,0.055-0.06
-D2PAK,Auxiliary power supply,Voltage regulator,kg,0.000879514694,NO,10.29,9.65,4.83,,1.2,1.3,0.28,,"integrated circuit production, logic type",kg,Input,EcoInvent,0.8-0.9
-DIP6 SMD,Control and signal management,ICs,kg,0.000427,YES,,,,,,,,,"electronic component production, active, unspecified",kg,Input,EcoInvent,0.1-0.12
-DO-214AA,Diodes and optoelectronics,TVS Diodes,kg,,NO,4.57,3.94,2.4,,1.2,1.25,0.05,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent,0.08-0.1
-DO-214AA,Diodes and optoelectronics,TVS Diodes,kg,0.000102937052,NO,4.57,3.94,2.4,,1.2,1.25,0.05,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent,0.08-0.1
-DPAK,Small signal transistors,MOSFET,kg,0.0003279392,NO,6.6,6.2,2.3,,,1.2,0.215,,"transistor production, surface-mounted",kg,Input,EcoInvent,
-E,Passives,Capacitors (mounted),kg,,NO,7.3,4.3,4.1,,5,6,0,,kg,Input,EcoInvent,"capacitor production, electrolyte type, < 2cm height",
-E,Passives,Capacitors (mounted),kg,0.0007078445,NO,7.3,4.3,4.1,,5,6,0,,"capacitor production, electrolyte type, < 2cm height",kg,Input,EcoInvent,0.7
+1206,Passives,Capacitors,kg,5.6576e-05,NO,3.2,1.6,1.7,,6,7,0,,"capacitor production, for surface-mounting",kg,Input,EcoInvent,0.055-0.06
+D2PAK,IC,Analog,kg,0.000879514694,NO,10.29,9.65,4.83,,1.2,1.3,0.28,,"integrated circuit production, logic type",kg,Input,EcoInvent,0.8-0.9
+DIP6 SMD,Module,Hybrid relays,kg,0.000427,YES,,,,,,,,,"electronic component production, active, unspecified",kg,Input,EcoInvent,0.1-0.12
+DO-214AA,Discrete Semiconductors,Small signal,kg,,NO,4.57,3.94,2.4,,1.2,1.25,0.05,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent,0.08-0.1
+DO-214AA,Discrete Semiconductors,Small signal,kg,0.000102937052,NO,4.57,3.94,2.4,,1.2,1.25,0.05,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent,0.08-0.1
+DPAK,Discrete Semiconductors,Small signal,kg,0.0003279392,NO,6.6,6.2,2.3,,,1.2,0.215,,"transistor production, surface-mounted",kg,Input,EcoInvent,
+E,Passives,Capacitors,kg,,NO,7.3,4.3,4.1,,5,6,0,,"capacitor production, electrolyte type, < 2cm height",kg,Input,EcoInvent,
+E,Passives,Capacitors,kg,0.0007078445,NO,7.3,4.3,4.1,,5,6,0,,"capacitor production, electrolyte type, < 2cm height",kg,Input,EcoInvent,0.7
 Ecoinvent_unit,Direction,Database_component_title,,,,,,,,,,,,,,,,
-SOD-80C,Diodes and optoelectronics,Voltage Regulator,kg,,NO,,,,0.00744,2.2,2.3,0.002,,"diode production, glass-, for through-hole mounting",kg,Input,EcoInvent,0.017
-SOD-80C,Diodes and optoelectronics,Zener Diodes,kg,1.874e-05,NO,,,,0.00744,2.2,2.3,0.002,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent,0.017
-SOIC16,Control and signal management,ICs,kg,,NO,10,3.9,1.75,,1.2,1.3,0.1,,"integrated circuit production, logic type",kg,Input,EcoInvent,0.2-0.25
-SOIC16,Control and signal management,ICs,kg,0.0001853125,NO,10,3.9,1.75,,1.2,1.3,0.1,,"integrated circuit production, logic type",kg,Input,EcoInvent,0.2-0.25
-SOT23-3,Diodes and optoelectronics,Low-Leakage Double Diode,kg,,NO,2.9,1.3,1,,1.2,1.3,0.0035,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent,0.008-0.012
-SOT23-3,Diodes and optoelectronics,Bipolar Transistors,kg,8.2125e-06,NO,2.9,1.3,1,,1.2,1.3,0.0035,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent,0.008-0.012
-TO-220-2-V,Diodes and optoelectronics,Schottky,kg,0.0019,YES,,,,,,,,,"transistor production, wired, small size, through-hole mounting",kg,Input,EcoInvent,
-TO-247,Power module,IGBT,kg,0.00542,YES,,,,,,,,,"insulated gate bipolar transistor production, for electric vehicle applications",kg,Input,EcoInvent,Infineon IKW40N120H3
-TO-247-2,Diodes and optoelectronics,,kg,0.00542,YES,,,,,,,,,"transistor production, wired, big size, through-hole mounting",kg,Input,EcoInvent,
+SOD-80C,Discrete Semiconductors,Small signal,kg,,NO,,,,0.00744,2.2,2.3,0.002,,"diode production, glass-, for through-hole mounting",kg,Input,EcoInvent,0.017
+SOD-80C,Discrete Semiconductors,Small signal,kg,1.874e-05,NO,,,,0.00744,2.2,2.3,0.002,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent,0.017
+SOIC16,IC,Mixed signal,kg,,NO,10,3.9,1.75,,1.2,1.3,0.1,,"integrated circuit production, logic type",kg,Input,EcoInvent,0.2-0.25
+SOIC16,IC,Digital,kg,0.0001853125,NO,10,3.9,1.75,,1.2,1.3,0.1,,"integrated circuit production, logic type",kg,Input,EcoInvent,0.2-0.25
+SOT23-3,Discrete Semiconductors,Small signal,kg,,NO,2.9,1.3,1,,1.2,1.3,0.0035,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent,0.008-0.012
+SOT23-3,Discrete Semiconductors,Small signal,kg,8.2125e-06,NO,2.9,1.3,1,,1.2,1.3,0.0035,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent,0.008-0.012
+TO-220-2-V,Discrete Semiconductors,Power,kg,0.0019,YES,,,,,,,,,"transistor production, wired, small size, through-hole mounting",kg,Input,EcoInvent,
+TO-247,Discrete Semiconductors,Power,kg,0.00542,YES,,,,,,,,,"insulated gate bipolar transistor production, for electric vehicle applications",kg,Input,EcoInvent,Infineon IKW40N120H3
+TO-247-2,Discrete Semiconductors,Power,kg,0.00542,YES,,,,,,,,,"transistor production, wired, big size, through-hole mounting",kg,Input,EcoInvent,

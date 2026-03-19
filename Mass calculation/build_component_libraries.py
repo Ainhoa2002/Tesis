@@ -6,6 +6,8 @@ Creates:
 - component_library_by_part_number.csv
 - component_library_ecoinvent_totals.csv
 - component_library_systems_subsystems.csv
+- component_library_parameters_all.csv
+- component_library_mass_results_all.csv
 
 Rules:
 - Each library stores unique keys only once.
@@ -28,10 +30,13 @@ CASING_LIBRARY_NAME = "component_library_by_casing.csv"
 PART_LIBRARY_NAME = "component_library_by_part_number.csv"
 ECOINVENT_TOTALS_LIBRARY_NAME = "component_library_ecoinvent_totals.csv"
 SYSTEM_SUBSYSTEM_LIBRARY_NAME = "component_library_systems_subsystems.csv"
+PARAMETERS_STORAGE_LIBRARY_NAME = "component_library_parameters_all.csv"
+RESULTS_STORAGE_LIBRARY_NAME = "component_library_mass_results_all.csv"
 
 SYSTEM_SUBSYSTEM_FIELDS = [
     "System",
     "Subsystem",
+    "Categories",
     "Source_subsystems",
     "Component_rows",
 ]
@@ -507,6 +512,75 @@ def _write_csv(path: Path, fieldnames: List[str], rows: List[Dict[str, str]]) ->
         writer.writerows(rows)
 
 
+def _build_storage_library(
+    base_dir: Path,
+    input_suffix: str,
+    output_name: str,
+    filter_subsystems: Set[str] | None = None,
+    skip_stale_against_parameters: bool = False,
+) -> int:
+    """Build one full-storage CSV keeping every source row (no deduplication).
+
+    Header order is preserved from source files using first-seen column order,
+    and `Subsystem` is appended as the last column.
+    """
+    rows: List[Dict[str, str]] = []
+    ordered_fields: List[str] = []
+    seen_fields: Set[str] = set()
+
+    for path in sorted(base_dir.glob(f"*{input_suffix}")):
+        subsystem = path.name[: -len(input_suffix)]
+        if filter_subsystems is not None and subsystem not in filter_subsystems:
+            continue
+
+        if skip_stale_against_parameters:
+            parameter_path = base_dir / f"{subsystem}_component_parameters.csv"
+            if parameter_path.exists() and path.stat().st_mtime < parameter_path.stat().st_mtime:
+                # Skip stale results when parameters were updated after the last pipeline run.
+                continue
+
+        with open(path, newline="", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f)
+            source_fields = [field for field in list(reader.fieldnames or []) if field]
+
+            for field in source_fields:
+                if field == "Subsystem":
+                    continue
+                if field not in seen_fields:
+                    seen_fields.add(field)
+                    ordered_fields.append(field)
+
+            for row in reader:
+                normalized = {field: _clean(row.get(field)) for field in source_fields}
+                normalized["Subsystem"] = subsystem
+                rows.append(normalized)
+
+    fieldnames = ordered_fields + ["Subsystem"]
+    output_rows = [{field: _clean(row.get(field)) for field in fieldnames} for row in rows]
+    _write_csv(base_dir / output_name, fieldnames, output_rows)
+    return len(output_rows)
+
+
+def build_full_storage_libraries(base_dir: Path) -> Tuple[int, int]:
+    """Create full component storage libraries for parameters and mass results."""
+    active_subsystems = _discover_parameter_subsystems(base_dir)
+
+    parameters_count = _build_storage_library(
+        base_dir,
+        "_component_parameters.csv",
+        PARAMETERS_STORAGE_LIBRARY_NAME,
+    )
+    results_count = _build_storage_library(
+        base_dir,
+        "_component_mass_results.csv",
+        RESULTS_STORAGE_LIBRARY_NAME,
+        filter_subsystems=active_subsystems,
+        skip_stale_against_parameters=True,
+    )
+
+    return parameters_count, results_count
+
+
 def _format_float(value: float) -> str:
     return format(value, ".12g")
 
@@ -611,6 +685,7 @@ def build_system_subsystem_library(
 
     - System is read from `Section`.
     - Subsystem is read from `Subsection` (can be blank).
+    - Categories stores all unique `Category` values seen for each pair.
     - Source_subsystems stores the component parameter files where the pair appears.
     - Component_rows stores the total number of component rows for the pair.
     """
@@ -619,6 +694,7 @@ def build_system_subsystem_library(
     for source_subsystem, row in raw_rows:
         system = _clean(row.get("Section"))
         subsystem = _clean(row.get("Subsection"))
+        category = _clean(row.get("Category"))
 
         # Keep only valid system labels.
         if system == "":
@@ -629,11 +705,14 @@ def build_system_subsystem_library(
             pair_map[key] = {
                 "System": system,
                 "Subsystem": subsystem,
+                "Categories": set(),
                 "Source_subsystems": set(),
                 "Component_rows": 0,
             }
 
         entry = pair_map[key]
+        if category != "":
+            entry["Categories"].add(category)
         entry["Source_subsystems"].add(source_subsystem)
         entry["Component_rows"] = int(entry["Component_rows"]) + 1
 
@@ -644,6 +723,7 @@ def build_system_subsystem_library(
             {
                 "System": str(entry["System"]),
                 "Subsystem": str(entry["Subsystem"]),
+                "Categories": ", ".join(sorted(entry["Categories"])),
                 "Source_subsystems": ", ".join(sorted(entry["Source_subsystems"])),
                 "Component_rows": str(entry["Component_rows"]),
             }
@@ -779,7 +859,7 @@ def sync_parameter_files_from_libraries(base_dir: Path) -> Tuple[int, int, int]:
     return files_changed, rows_changed, skipped_ambiguous
 
 
-def build_libraries(base_dir: Path) -> Tuple[int, int, int, int]:
+def build_libraries(base_dir: Path) -> Tuple[int, int, int, int, int, int]:
     """Rebuild both libraries from scratch on every call.
 
     Casing library:
@@ -936,6 +1016,7 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int, int]:
     _write_csv(base_dir / PART_LIBRARY_NAME, PART_FIELDS, part_rows)
     build_ecoinvent_totals_library(base_dir)
     system_subsystem_count = build_system_subsystem_library(base_dir, raw_rows)
+    parameters_storage_count, results_storage_count = build_full_storage_libraries(base_dir)
 
     _print_conflict_summary(
         casing_conflicts,
@@ -945,7 +1026,14 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int, int]:
         missing_mass_data_warnings,
     )
 
-    return len(casing_rows), len(part_rows), conflict_count, system_subsystem_count
+    return (
+        len(casing_rows),
+        len(part_rows),
+        conflict_count,
+        system_subsystem_count,
+        parameters_storage_count,
+        results_storage_count,
+    )
 
 
 def main() -> None:
@@ -957,10 +1045,19 @@ def main() -> None:
         )
         return
 
-    casing_count, part_count, conflict_count, system_subsystem_count = build_libraries(BASE_DIR)
+    (
+        casing_count,
+        part_count,
+        conflict_count,
+        system_subsystem_count,
+        parameters_storage_count,
+        results_storage_count,
+    ) = build_libraries(BASE_DIR)
     print(f"Created {CASING_LIBRARY_NAME}: {casing_count} unique casing rows")
     print(f"Created {PART_LIBRARY_NAME}: {part_count} unique part-number rows")
     print(f"Created {SYSTEM_SUBSYSTEM_LIBRARY_NAME}: {system_subsystem_count} system/subsystem rows")
+    print(f"Created {PARAMETERS_STORAGE_LIBRARY_NAME}: {parameters_storage_count} total parameter rows")
+    print(f"Created {RESULTS_STORAGE_LIBRARY_NAME}: {results_storage_count} total mass-result rows")
     print(f"Conflicts detected: {conflict_count}")
 
 

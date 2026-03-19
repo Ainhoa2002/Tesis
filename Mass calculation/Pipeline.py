@@ -691,18 +691,35 @@ def _auto_refresh_component_libraries(base_dir):
     Set MASS_CALC_AUTO_REFRESH_LIBRARIES=0 to skip automatic refresh.
     """
     enabled = str(os.getenv("MASS_CALC_AUTO_REFRESH_LIBRARIES", "1")).strip().lower()
-    if enabled in {"0", "false", "no", "off"}:
-        print("Library refresh skipped: MASS_CALC_AUTO_REFRESH_LIBRARIES is disabled.")
-        return
+    full_refresh_enabled = enabled not in {"0", "false", "no", "off"}
 
     try:
-        from build_component_libraries import build_libraries
+        from build_component_libraries import build_full_storage_libraries, build_libraries
 
-        casing_count, part_count, conflict_count, system_subsystem_count = build_libraries(base_dir)
+        if full_refresh_enabled:
+            (
+                casing_count,
+                part_count,
+                conflict_count,
+                system_subsystem_count,
+                parameters_storage_count,
+                results_storage_count,
+            ) = build_libraries(base_dir)
+            print(
+                "Library refresh completed"
+                f": casing={casing_count}, part_number={part_count}, "
+                f"systems_subsystems={system_subsystem_count}, "
+                f"storage_parameters={parameters_storage_count}, "
+                f"storage_results={results_storage_count}, "
+                f"conflicts={conflict_count}"
+            )
+            return
+
+        parameters_storage_count, results_storage_count = build_full_storage_libraries(base_dir)
         print(
-            "Library refresh completed"
-            f": casing={casing_count}, part_number={part_count}, "
-            f"systems_subsystems={system_subsystem_count}, conflicts={conflict_count}"
+            "Library refresh partially skipped: MASS_CALC_AUTO_REFRESH_LIBRARIES is disabled. "
+            f"Storage updated: storage_parameters={parameters_storage_count}, "
+            f"storage_results={results_storage_count}"
         )
     except Exception as exc:
         print(f"Warning: library refresh failed: {exc}")
@@ -780,8 +797,7 @@ def main():
         for err in errors:
             all_errors.append((subsystem, err))
 
-    if completed_subsystems:
-        _auto_refresh_component_libraries(base)
+    _auto_refresh_component_libraries(base)
 
     if all_errors:
         print("\nValidation warnings/errors found:")

@@ -34,6 +34,10 @@ Optional:
 
 `python "Mass calculation\\build_component_libraries.py"`
 
+- Search/edit a part across all subsystems (uses full-storage library when scope is all):
+
+`python "Mass calculation\\find_component.py" <part_number> all`
+
 - Disable auto parameter sync for one command/session:
 
 `$env:MASS_CALC_AUTO_SYNC_FROM_LIBRARY='0'`
@@ -45,6 +49,9 @@ Optional:
 Component library logic:
 
 - Source of truth is all `*_component_parameters.csv` files.
+- Full-storage libraries (no deduplication) are also generated automatically:
+	- `component_library_parameters_all.csv` (same input headers as `*_component_parameters.csv` + `Subsystem`)
+	- `component_library_mass_results_all.csv` (same output headers as `*_component_mass_results.csv` + `Subsystem`)
 - Systems/subsystems library is generated from `Section` and `Subsection`:
 	- Output file: `component_library_systems_subsystems.csv`.
 	- Includes source subsystem files where each pair appears and row counts.
@@ -59,6 +66,7 @@ Component library logic:
 - Part-number library includes `Subsystems` and keeps multiple rows only when `(Manufacturer, Part_Number)` has conflicting comparison fields.
 - Reverse sync (library to parameter files) updates rows only when `Part_Number` has a unique library match; ambiguous repeated part numbers are skipped.
 - Grouped IPE flow output (`*_ipe_flows_from_parameters.csv`) is not grouped by casing.
+- `find_component.py` in `all` scope reads `component_library_parameters_all.csv` first and falls back to direct file scanning if the storage library is missing.
 
 Validation behavior in `Pipeline.py`:
 

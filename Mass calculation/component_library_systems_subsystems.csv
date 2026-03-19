@@ -1,29 +1,28 @@
-System,Subsystem,Source_subsystems,Component_rows
-Accesories,Mounting hardware,inverter_power_card,1
-Active,inductor,filter_card,1
-Assambly,,"filter_card, fuse_card, inverter_power_card",4
-Auxiliary power supply,DC/DC Converters,"4Q_power_card, inverter_power_card",2
-Auxiliary power supply,Voltage regulator,inverter_power_card,1
-Control and signal management,ICs,"4Q_power_card, contactor_card, inverter_power_card",6
-Control and signal management,Protection,"contactor_card, fuse_card, inverter_power_card",6
-Control and signal management,Sensing,4Q_power_card,1
-Diodes and optoelectronics,,"contactor_card, inverter_power_card",5
-Diodes and optoelectronics,Low-Leakage Double Diode,4Q_power_card,1
-Diodes and optoelectronics,Optoelectronics,"contactor_card, inverter_power_card",2
-Diodes and optoelectronics,Schottky,4Q_power_card,1
-Diodes and optoelectronics,Switching,4Q_power_card,1
-Diodes and optoelectronics,TVS Diodes,"4Q_power_card, contactor_card, inverter_power_card",5
-Diodes and optoelectronics,Voltage Regulator,4Q_power_card,2
-Diodes and optoelectronics,Zener Diodes,inverter_power_card,1
-Direction,Database_component_title,4Q_power_card,1
-Magnetics,Current sensing,inverter_power_card,1
-Passives,Capacitors (mounted),"4Q_power_card, contactor_card, filter_card, fuse_card, inverter_power_card",26
-Passives,Capacitors (unmounted),"filter_card, fuse_card, inverter_power_card",8
-Passives,Connectors,"4Q_power_card, contactor_card, filter_card, fuse_card, inverter_power_card",13
-Passives,Resistors,"contactor_card, filter_card, fuse_card, inverter_power_card",19
-Passives,Test PINs,"4Q_power_card, contactor_card, filter_card, inverter_power_card",4
-PCB,,"4Q_power_card, contactor_card, filter_card, fuse_card, inverter_power_card",5
-Power module,Gate driver,inverter_power_card,1
-Power module,IGBT,inverter_power_card,1
-Small signal transistors,Bipolar Transistors,"contactor_card, inverter_power_card",2
-Small signal transistors,MOSFET,"contactor_card, inverter_power_card",2
+System,Subsystem,Categories,Source_subsystems,Component_rows
+Assembly Processes,SMD,,inverter_power_card,1
+Assembly Processes,THT,,"filter_card, fuse_card, inverter_power_card",3
+Direction,Database_component_title,Comments,4Q_power_card,1
+Discrete Semiconductors,Optoelectronics,LED,"contactor_card, inverter_power_card",2
+Discrete Semiconductors,Power,"IGBT, Rectifier diode, Schottky rectifier","4Q_power_card, contactor_card, inverter_power_card",3
+Discrete Semiconductors,Small signal,"Bipolar Transistor, Bipolar transistor, Dual, Dual Diode, MOSFET, Switching, TVS, Zener, Zener Diodes","4Q_power_card, contactor_card, inverter_power_card",18
+Electromechanical,Connectors,,"4Q_power_card, contactor_card, fuse_card, inverter_power_card",11
+Electromechanical,Fuse holder,,fuse_card,1
+Hardware,Enclosure,,fuse_card,1
+Hardware,Mounting hardware,,inverter_power_card,1
+IC,Analog,Power management,inverter_power_card,2
+IC,Digital,Interface,inverter_power_card,1
+IC,Mixed signal,Isolated Amplifier,4Q_power_card,2
+Magnetic,Relay,,contactor_card,1
+Magnetics,Current sensing,,inverter_power_card,1
+Magnetics,Inductors,,filter_card,1
+Module,DC/DC Converters,,"4Q_power_card, inverter_power_card",2
+Module,Hybrid relays,Solid State Relay,"4Q_power_card, inverter_power_card",2
+Module,Sensors,Current transducer,4Q_power_card,1
+Modules,Hybrid Relays,,contactor_card,1
+Passive,Protection,,inverter_power_card,1
+Passives,Capacitors,"Electrolytic, Film, MLCC, Tantalum","4Q_power_card, contactor_card, filter_card, fuse_card, inverter_power_card",34
+Passives,Electromechanical,Connectors,filter_card,2
+Passives,Protection,Fuse,"contactor_card, fuse_card",2
+Passives,Resistors,,"contactor_card, filter_card, fuse_card, inverter_power_card",19
+Passives,Test PIN,,"4Q_power_card, contactor_card, filter_card, inverter_power_card",4
+PCB,,,"4Q_power_card, contactor_card, filter_card, fuse_card, inverter_power_card",5

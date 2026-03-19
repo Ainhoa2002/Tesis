@@ -51,6 +51,8 @@ Shared libraries:
 - Part number library: `component_library_by_part_number.csv`
 - EcoInvent totals library: `component_library_ecoinvent_totals.csv`
 - Systems/subsystems library: `component_library_systems_subsystems.csv`
+- Full parameters storage library: `component_library_parameters_all.csv`
+- Full mass-results storage library: `component_library_mass_results_all.csv`
 
 This convention enables scalability without duplicating code logic.
 
@@ -87,6 +89,7 @@ This convention enables scalability without duplicating code logic.
   - Builds part-number library using `Manufacturer + Part_Number` and comparison fields.
   - Builds one consolidated EcoInvent totals library from all subsystem component I/O flows.
   - Builds one systems/subsystems library from `Section` and `Subsection` with source subsystem traceability.
+  - Builds full-storage libraries (no deduplication) for parameters and mass results with a `Subsystem` column.
   - For equal casing signatures, keeps one row (filling empty fields from duplicates).
   - For casing variants, keeps multiple rows and reports differing mass parameters.
   - Supports sync mode (`--sync-parameters` or `sync`) to fill missing parameter values from the part-number library.
@@ -169,6 +172,7 @@ Expected key fields:
 - Part-number library includes `Subsystems` to show where the part appears.
 - Sync from library to parameter files updates only unique part-number matches; ambiguous matches are skipped.
 - Grouped IPE outputs remain grouped by `(Flow, Unit, Direction)` and do not include casing-based grouping.
+- Full-storage libraries keep the original header order from source CSVs and append `Subsystem` as the last column.
 
 ## 9. Recommended Operation Workflow
 
