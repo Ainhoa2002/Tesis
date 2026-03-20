@@ -206,6 +206,11 @@ def _rows_match_by_fieldnames(
     return True
 
 
+def _sanitize_row_for_write(row: Dict[str, str], fieldnames: List[str]) -> Dict[str, str]:
+    """Return a row containing only known columns, with cleaned string values."""
+    return {field: _clean(row.get(field, "")) for field in fieldnames}
+
+
 def _update_csv_row(
     subsystem: str,
     fieldnames: List[str],
@@ -235,7 +240,7 @@ def _update_csv_row(
             if not found and _rows_match_by_fieldnames(row_dict, old_row, source_fieldnames):
                 row_dict[field_name] = new_value
                 found = True
-            rows_to_write.append(row_dict)
+            rows_to_write.append(_sanitize_row_for_write(row_dict, source_fieldnames))
 
     if not found:
         print("Could not find the exact row to update.")
@@ -285,7 +290,7 @@ def _update_storage_library_row(
                 if same_subsystem and same_component:
                     row_dict[field_name] = new_value
                     updated_count += 1
-                rows_to_write.append(row_dict)
+                rows_to_write.append(_sanitize_row_for_write(row_dict, storage_fieldnames))
 
         if updated_count == 0:
             return 0

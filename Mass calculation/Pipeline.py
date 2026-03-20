@@ -385,6 +385,36 @@ def _normalize_ecoinvent_fields(row):
     return normalized
 
 
+def _split_ecoinvent_flow_components(flow, direction):
+    """Split compound EcoInvent flows joined by '+' into independent flow entries.
+
+    Rule:
+    - N plus signs -> N+1 resulting components.
+    - Components that start with 'market ' are tagged as 'previous input'
+      when the original direction is Input.
+    """
+    flow_text = str(flow or "").strip().strip('"')
+    if flow_text == "":
+        return []
+
+    base_direction = str(direction or "").strip() or "Input"
+    parts = [part.strip().strip('"') for part in flow_text.split("+")]
+    parts = [part for part in parts if part != ""]
+    if not parts:
+        return []
+
+    components = []
+    for part in parts:
+        part_direction = base_direction
+        if base_direction.casefold() == "input" and part.casefold().startswith("market "):
+            part_direction = "previous input"
+        components.append({"Flow": part, "Direction": part_direction})
+
+    # Keep standard input rows first, and market/previous-input rows after.
+    components.sort(key=lambda entry: (entry["Direction"].casefold() == "previous input", entry["Flow"].casefold()))
+    return components
+
+
 def ecoinvent_amount(row, mass_data, quantity_data):
     """Compute the ecoinvent flow amount for a component row.
     - kg/g units  → taken from calculated mass (mass_data must not be None)
@@ -579,20 +609,34 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
 
             try:
                 flow_row = ecoinvent_amount(row, mass_data, quantity_data)
-                flow_entry["Amount"] = round(flow_row["Amount"], 12)
-                if is_mass_unit(unit):
-                    flow_entry["Formula_basis"] = "mass-based"
-                elif unit.lower() == "m2":
-                    flow_entry["Formula_basis"] = "area-based"
-                key = (flow_row["Flow"], flow_row["Unit"], flow_row["Direction"])
-                grouped_flows[key] = grouped_flows.get(key, 0.0) + flow_row["Amount"]
+                split_components = _split_ecoinvent_flow_components(
+                    flow_row["Flow"],
+                    flow_row["Direction"],
+                )
+                for split_component in split_components:
+                    split_entry = dict(flow_entry)
+                    split_entry["Ecoinvent_flow"] = split_component["Flow"]
+                    split_entry["Direction"] = split_component["Direction"]
+                    split_entry["Amount"] = round(flow_row["Amount"], 12)
+
+                    if is_mass_unit(unit):
+                        split_entry["Formula_basis"] = "mass-based"
+                    elif unit.lower() == "m2":
+                        split_entry["Formula_basis"] = "area-based"
+
+                    key = (
+                        split_component["Flow"],
+                        flow_row["Unit"],
+                        split_component["Direction"],
+                    )
+                    grouped_flows[key] = grouped_flows.get(key, 0.0) + flow_row["Amount"]
+                    component_flows.append(split_entry)
             except Exception as exc:
                 flow_entry["Validation_error"] = str(exc)
                 # Only add to errors if not already reported above (missing mass for kg unit)
                 if not (needs_mass and mass_data is None):
                     errors.append({"row": idx, "component": row.get("Designators", ""), "error": str(exc)})
-
-            component_flows.append(flow_entry)
+                component_flows.append(flow_entry)
 
     if component_results:
         fieldnames = _ordered_result_fieldnames(component_results[0])
