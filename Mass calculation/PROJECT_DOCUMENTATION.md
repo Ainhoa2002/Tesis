@@ -163,6 +163,13 @@ Expected key fields:
 ### 8.2 Flow Generation
 
 - I/O is generated per component with its `Amount`.
+- If `Ecoinvent_flow` contains `+`, it is split into multiple flow components.
+  - `N` plus signs generate `N+1` components.
+  - Each split component keeps the same component `Amount`.
+- Split components are written into component I/O and grouped IPE outputs, and then propagated to the consolidated EcoInvent totals library.
+- Direction adjustment for split components:
+  - If split flow text starts with `market ` and base direction is `Input`, direction is stored as `previous input`.
+  - All other split components keep the base direction.
 - Grouped by key `(Flow, Unit, Direction)`.
 
 ### 8.3 Outputs

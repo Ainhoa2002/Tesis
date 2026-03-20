@@ -1,27 +1,27 @@
 System,Subsystem,Categories,Source_subsystems,Component_rows
 Assembly Processes,SMD,,"contactor_card, inverter_power_card",2
-Assembly Processes,THT,,"4Q_output_power_card, Q_output_control_card, contactor_card, filter_card, fuse_card, inverter_power_card",6
+Assembly Processes,THT,,"4Q_output_power_card, contactor_card, filter_card, fuse_card, inverter_power_card",5
 Discrete Semiconductors,Optoelectronics,LED,"contactor_card, inverter_power_card",2
-Discrete Semiconductors,Power,"IGBT, MOSFET, Rectifier diode","4Q_output_power_card, Q_output_control_card, contactor_card, inverter_power_card",4
-Discrete Semiconductors,Small signal,"Bipolar Transistor, Bipolar transistor, Dual, MOSFET, TVS, Zener, Zener Diodes","4Q_output_power_card, Q_output_control_card, contactor_card, inverter_power_card",14
-Electromechanical,Connectors,,"4Q_output_power_card, Q_output_control_card, contactor_card, fuse_card, inverter_power_card",15
-Electromechanical,Fuse holder,,fuse_card,1
+Discrete Semiconductors,Power,"IGBT, MOSFET, Rectifier diode","4Q_output_power_card, contactor_card, inverter_power_card",3
+Discrete Semiconductors,Small signal,"Bipolar Transistor, Bipolar transistor, Dual, MOSFET, Rectifier, TVS, Zener, Zener Diodes","4Q_output_power_card, Q_output_control_card, contactor_card, inverter_power_card",17
+Electromechanical,Connectors,,"4Q_output_power_card, Q_output_control_card, contactor_card, fuse_card, inverter_power_card",16
+Electromechanical,Fuse holder,,"Q_output_control_card, fuse_card",2
 Electromechanicsd,Relays,,contactor_card,1
 Hardware,Enclosure,,fuse_card,1
-Hardware,Mounting hardware,CERN,"4Q_output_power_card, Q_output_control_card, inverter_power_card",11
+Hardware,Mounting hardware,CERN,"4Q_output_power_card, inverter_power_card",6
 Hardware,Thermal Management,Heatsink,contactor_card,1
-IC,Analog,Power management,inverter_power_card,2
-IC,Digital,Interface,inverter_power_card,1
+IC,Analog,Power management,"Q_output_control_card, inverter_power_card",4
+IC,Digital,Interface,"Q_output_control_card, inverter_power_card",2
 Magnetics,Current sensing,,inverter_power_card,1
 Magnetics,Inductors,,filter_card,1
-Module,DC/DC Converters,,inverter_power_card,1
-Module,Hybrid relays,,inverter_power_card,1
-Module,Sensors,Current transducer,"4Q_output_power_card, Q_output_control_card",2
+Module,DC/DC Converters,,"Q_output_control_card, inverter_power_card",2
+Module,Hybrid relays,,"Q_output_control_card, inverter_power_card",2
+Module,Sensors,Current transducer,4Q_output_power_card,1
 Modules,Hybrid Relays,,contactor_card,1
-Passive,Protection,,inverter_power_card,1
-Passives,Capacitors,"Electrolytic, Film, MLCC, Paper, Tantalum","4Q_output_power_card, Q_output_control_card, contactor_card, filter_card, fuse_card, inverter_power_card",36
+Passive,Protection,,"Q_output_control_card, inverter_power_card",2
+Passives,Capacitors,"Electrolytic, Film, MLCC, Paper, Tantalum","4Q_output_power_card, Q_output_control_card, contactor_card, filter_card, fuse_card, inverter_power_card",37
 Passives,Electromechanical,Connectors,filter_card,2
-Passives,Protection,Fuse,"contactor_card, fuse_card",2
-Passives,Resistors,,"4Q_output_power_card, Q_output_control_card, contactor_card, filter_card, fuse_card, inverter_power_card",21
+Passives,Protection,Fuse,"Q_output_control_card, contactor_card, fuse_card",3
+Passives,Resistors,,"4Q_output_power_card, contactor_card, filter_card, fuse_card, inverter_power_card",20
 Passives,Test PIN,,"contactor_card, filter_card, inverter_power_card",3
 PCB,,,"4Q_output_power_card, Q_output_control_card, contactor_card, filter_card, fuse_card, inverter_power_card",6

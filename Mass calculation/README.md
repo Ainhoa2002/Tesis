@@ -81,6 +81,16 @@ Component library logic:
 - Part-number library includes `Subsystems` and keeps multiple rows only when `(Manufacturer, Part_Number)` has conflicting comparison fields.
 - Reverse sync (library to parameter files) updates rows only when `Part_Number` has a unique library match; ambiguous repeated part numbers are skipped.
 - Grouped IPE flow output (`*_ipe_flows_from_parameters.csv`) is not grouped by casing.
+- Compound EcoInvent flows containing `+` are split into multiple components in:
+	- `<subsystem>_component_io_flows.csv`
+	- `<subsystem>_ipe_flows_from_parameters.csv`
+	- `component_library_ecoinvent_totals.csv`
+- Split rule:
+	- `1 +` creates 2 flow components, `2 +` creates 3 components, etc.
+	- each split component keeps the same amount as the original component flow amount.
+- Direction rule for split components:
+	- if a split component starts with `market ` and original direction is `Input`, the split direction is `previous input`.
+	- other split components keep the original direction.
 - `find_component.py` in `all` scope reads `component_library_parameters_all.csv` first and falls back to direct file scanning if the storage library is missing.
 
 Validation behavior in `Pipeline.py`:
