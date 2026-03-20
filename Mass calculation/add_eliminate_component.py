@@ -545,7 +545,11 @@ def append_audit_log(
         f.write(line)
 
 
-def _auto_refresh_component_libraries(base_dir: Path, reason: str) -> None:
+def _auto_refresh_component_libraries(
+    base_dir: Path,
+    reason: str,
+    warning_scope_subsystems: set[str] | None = None,
+) -> None:
     """Refresh deduplicated libraries unless explicitly disabled.
 
     Set MASS_CALC_AUTO_REFRESH_LIBRARIES=0 to skip automatic refresh.
@@ -565,7 +569,7 @@ def _auto_refresh_component_libraries(base_dir: Path, reason: str) -> None:
             system_subsystem_count,
             parameters_storage_count,
             results_storage_count,
-        ) = build_libraries(base_dir)
+        ) = build_libraries(base_dir, warning_scope_subsystems)
         print(
             "Library refresh completed"
             f" ({reason}): casing={casing_count}, part_number={part_count}, "
@@ -675,7 +679,11 @@ def _run_parameters_workflow() -> None:
     print(f"\nComponent {action} successfully.")
     print(f"Updated file: {csv_path.resolve()}")
     print(f"Audit log: {AUDIT_LOG.resolve()}")
-    _auto_refresh_component_libraries(BASE_DIR, "add_eliminate_component parameters")
+    _auto_refresh_component_libraries(
+        BASE_DIR,
+        "add_eliminate_component parameters",
+        {subsystem_name},
+    )
 
 
 def _run_io_workflow() -> None:

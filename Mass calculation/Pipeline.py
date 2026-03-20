@@ -335,6 +335,56 @@ def is_mass_unit(unit):
     return str(unit or "").strip().lower() in {"kg", "g"}
 
 
+def _normalize_direction(direction, database=None):
+    value = str(direction or "").strip()
+    lowered = value.casefold()
+    if lowered in {"input", "in"}:
+        return "Input"
+    if lowered in {"output", "out"}:
+        return "Output"
+
+    if value == "" and str(database or "").strip().casefold() == "ecoinvent":
+        return "Input"
+
+    return value
+
+
+def _normalize_ecoinvent_fields(row):
+    """Normalize malformed EcoInvent columns commonly seen in imported CSVs."""
+    normalized = dict(row)
+
+    database = str(normalized.get("Database") or "").strip()
+    flow = str(normalized.get("Ecoinvent_flow") or "").strip()
+    unit = str(normalized.get("Ecoinvent_unit") or "").strip()
+    direction = str(normalized.get("Direction") or "").strip()
+
+    # Recover rows where Database accidentally contains the first part of flow,
+    # e.g. Database='EcoInvent:"capacitor production' and flow='for surface-mounting"'.
+    db_lower = database.casefold()
+    if db_lower.startswith("ecoinvent:"):
+        flow_prefix = database.split(":", 1)[1].strip().strip('"')
+        flow_suffix = flow.strip().strip('"')
+        recovered_flow = ", ".join(part for part in [flow_prefix, flow_suffix] if part)
+        normalized["Database"] = "EcoInvent"
+        normalized["Ecoinvent_flow"] = recovered_flow
+        database = normalized["Database"]
+        flow = normalized["Ecoinvent_flow"]
+
+    # Recover shifted values when unit was filled with Input/Output.
+    if unit.casefold() in {"input", "output", "in", "out"} and direction == "":
+        normalized["Direction"] = unit
+        normalized["Ecoinvent_unit"] = str(normalized.get("unit") or "").strip()
+        unit = normalized["Ecoinvent_unit"]
+        direction = normalized["Direction"]
+
+    normalized["Direction"] = _normalize_direction(direction, database)
+
+    # Remove accidental wrapping quotes after imports.
+    normalized["Ecoinvent_flow"] = str(flow).strip().strip('"')
+    normalized["Ecoinvent_unit"] = str(unit).strip().strip('"')
+    return normalized
+
+
 def ecoinvent_amount(row, mass_data, quantity_data):
     """Compute the ecoinvent flow amount for a component row.
     - kg/g units  → taken from calculated mass (mass_data must not be None)
@@ -391,6 +441,7 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
                 for k, v in dict(row).items()
                 if k and k not in DEPRECATED_INPUT_FIELDS
             }
+            cleaned_row = _normalize_ecoinvent_fields(cleaned_row)
             raw_rows.append((idx, cleaned_row))
 
     required_non_empty_fields = ["Section", "Ecoinvent_flow"]
@@ -685,7 +736,7 @@ def _build_subsystem_paths(base_dir, subsystem):
     return input_csv, results_csv, component_flows_csv, grouped_flows_csv
 
 
-def _auto_refresh_component_libraries(base_dir):
+def _auto_refresh_component_libraries(base_dir, warning_scope_subsystems=None):
     """Refresh deduplicated libraries unless explicitly disabled.
 
     Set MASS_CALC_AUTO_REFRESH_LIBRARIES=0 to skip automatic refresh.
@@ -704,7 +755,7 @@ def _auto_refresh_component_libraries(base_dir):
                 system_subsystem_count,
                 parameters_storage_count,
                 results_storage_count,
-            ) = build_libraries(base_dir)
+            ) = build_libraries(base_dir, warning_scope_subsystems)
             print(
                 "Library refresh completed"
                 f": casing={casing_count}, part_number={part_count}, "
@@ -748,6 +799,28 @@ def _auto_sync_parameters_from_libraries(base_dir):
         print(f"Warning: parameter sync from libraries failed: {exc}")
 
 
+def _clear_subsystem_outputs(results_csv, component_flows_csv, grouped_flows_csv):
+    """Delete stale outputs for a subsystem that failed validation.
+
+    Disabled by default to avoid surprising data loss.
+    Set MASS_CALC_CLEAR_OUTPUTS_ON_FAILURE=1 to enable automatic cleanup.
+    """
+    enabled = str(os.getenv("MASS_CALC_CLEAR_OUTPUTS_ON_FAILURE", "0")).strip().lower()
+    if enabled in {"0", "false", "no", "off"}:
+        print(
+            "Output cleanup skipped: MASS_CALC_CLEAR_OUTPUTS_ON_FAILURE is disabled. "
+            "Previous output files were kept."
+        )
+        return
+
+    for output_path in (results_csv, component_flows_csv, grouped_flows_csv):
+        try:
+            if output_path.exists():
+                output_path.unlink()
+        except Exception as exc:
+            print(f"Warning: could not remove stale output '{output_path.name}': {exc}")
+
+
 def main():
     base = Path(__file__).parent
 
@@ -783,6 +856,7 @@ def main():
         except ValueError as exc:
             failed_subsystems.append((subsystem, str(exc)))
             print(f"Validation error in subsystem '{subsystem}': {exc}")
+            _clear_subsystem_outputs(results_csv, component_flows_csv, grouped_flows_csv)
             continue
 
         completed_subsystems.append(subsystem)
@@ -797,7 +871,7 @@ def main():
         for err in errors:
             all_errors.append((subsystem, err))
 
-    _auto_refresh_component_libraries(base)
+    _auto_refresh_component_libraries(base, selected_subsystems)
 
     if all_errors:
         print("\nValidation warnings/errors found:")

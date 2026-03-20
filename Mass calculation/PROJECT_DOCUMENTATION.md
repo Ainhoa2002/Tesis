@@ -71,6 +71,9 @@ This convention enables scalability without duplicating code logic.
 - Deduplicated component library generation from all subsystem parameter files.
 - Optional parameter auto-sync from library to parameter CSV files.
 - Optional Excel export.
+- Export mode selection in `export_to_excel.py` (single subsystem or all subsystems).
+- Total BoM workbook export in all-subsystems mode.
+- Automatic short export summary text file (`export_readme_*.txt`).
 
 ## 6. Scripts and Functional Role
 
@@ -82,6 +85,9 @@ This convention enables scalability without duplicating code logic.
   - If enabled, sync only fills empty parameter cells and never overwrites existing user values.
   - Refreshes deduplicated casing/part-number libraries automatically after successful execution.
   - Rebuilds consolidated EcoInvent totals library automatically after successful execution.
+  - Library merge warnings follow selected scope:
+    - selected subsystem(s): warnings only from those subsystems,
+    - `all`: warnings from all subsystems.
 
 - `build_component_libraries.py`
   - Scans all `<subsystem>_component_parameters.csv` files.
@@ -92,6 +98,7 @@ This convention enables scalability without duplicating code logic.
   - Builds full-storage libraries (no deduplication) for parameters and mass results with a `Subsystem` column.
   - For equal casing signatures, keeps one row (filling empty fields from duplicates).
   - For casing variants, keeps multiple rows and reports differing mass parameters.
+  - Casing warning fields exclude `Subsection` (it does not trigger casing conflict warnings).
   - Supports sync mode (`--sync-parameters` or `sync`) to fill missing parameter values from the part-number library.
 
 - `add_eliminate_component.py`
@@ -106,6 +113,16 @@ This convention enables scalability without duplicating code logic.
 
 - `export_to_excel.py`
   - Exports selected outputs to workbook.
+  - Supports export mode selection:
+    - one subsystem,
+    - all subsystems.
+  - Lets the user choose output folder and custom output file names.
+  - In all-subsystems mode, also exports one total BoM workbook with sheets:
+    - `Parameters_All` (from `component_library_parameters_all.csv`),
+    - `Mass_Results_All` (from `component_library_mass_results_all.csv`),
+    - `Ecoinvent_Totals` (from `component_library_ecoinvent_totals.csv`).
+  - Writes a short text summary file in output folder:
+    - `export_readme_YYYYMMDD_HHMMSS.txt`.
 
 ## 7. Input Requirements and Assumptions
 
@@ -195,6 +212,7 @@ Expected key fields:
   - Interactive prompt supports one, multiple, or all subsystems.
   - Examples of interactive answer: `1`, `1 2`, `all`.
   - Pipeline auto-syncs from library first, then runs selected subsystem(s), then refreshes libraries.
+  - Library merge warnings printed after refresh are aligned with the selected subsystem scope.
 
 Or specifying subsystem:
 

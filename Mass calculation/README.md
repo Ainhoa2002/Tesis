@@ -28,6 +28,20 @@ Subsystem selection options in `Pipeline.py`:
 
 `python "Mass calculation\\export_to_excel.py"`
 
+Export options in `export_to_excel.py`:
+
+- Interactive menu supports:
+	- one subsystem export
+	- all-subsystems export
+- You can choose the output folder.
+- You can set custom output names (`.xlsx`) for each export.
+- In all-subsystems mode, it also creates one total BoM workbook with:
+	- `Parameters_All` (from `component_library_parameters_all.csv`)
+	- `Mass_Results_All` (from `component_library_mass_results_all.csv`)
+	- `Ecoinvent_Totals` (from `component_library_ecoinvent_totals.csv`)
+- A short export summary text file is generated in the output folder:
+	- `export_readme_YYYYMMDD_HHMMSS.txt`
+
 Optional:
 
 - Force library rebuild manually:
@@ -63,6 +77,7 @@ Component library logic:
 - Part-number library uniqueness key is `(Manufacturer, Part_Number)`.
 - For casing rows with identical mass parameters, only one row is kept and empty fields are completed from other duplicates.
 - For same casing with different mass parameters, multiple rows are kept and a warning is printed with the differing parameters.
+- Casing warnings ignore `Subsection` as a conflict field.
 - Part-number library includes `Subsystems` and keeps multiple rows only when `(Manufacturer, Part_Number)` has conflicting comparison fields.
 - Reverse sync (library to parameter files) updates rows only when `Part_Number` has a unique library match; ambiguous repeated part numbers are skipped.
 - Grouped IPE flow output (`*_ipe_flows_from_parameters.csv`) is not grouped by casing.
@@ -72,6 +87,9 @@ Validation behavior in `Pipeline.py`:
 
 - `Section` and `Ecoinvent_flow` are required for all rows.
 - If either is empty in any row, pipeline stops that subsystem and reports the row numbers.
+- Library merge warnings are scoped to the selected subsystem set:
+	- selecting specific subsystem(s) shows warnings only for that selection
+	- selecting `all` shows warnings across all subsystems
 
 When libraries refresh:
 

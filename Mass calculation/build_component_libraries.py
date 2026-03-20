@@ -72,6 +72,10 @@ CASING_FIELDS = [
     "Database_component_title",
 ]
 
+CASING_WARNING_FIELDS = {
+    field for field in CASING_FIELDS if field != "Subsection"
+}
+
 CASING_MASS_COMPARISON_FIELDS = [
     "unit",
     "Quantity_per_element",
@@ -436,7 +440,7 @@ def _merge_unique(
     reference: str,
     source_file: str,
     folder: str,
-    casing_conflicts: Dict[Tuple[str, str, str, str], Set[str]],
+    casing_conflicts: Dict[Tuple[str, str, str], Dict[str, Set[str]]],
     conflict_fields: Set[str] | None = None,
 ) -> int:
     conflict_count = 0
@@ -447,14 +451,19 @@ def _merge_unique(
             continue
         if old_value != "" and new_value != "" and old_value != new_value:
             if conflict_fields is None or field in conflict_fields:
-                key = (conflict_kind, reference, source_file, folder)
-                casing_conflicts.setdefault(key, set()).add(field)
+                key = (conflict_kind, reference, folder)
+                entry = casing_conflicts.setdefault(
+                    key,
+                    {"fields": set(), "source_files": set()},
+                )
+                entry["fields"].add(field)
+                entry["source_files"].add(source_file)
                 conflict_count += 1
     return conflict_count
 
 
 def _print_conflict_summary(
-    casing_conflicts: Dict[Tuple[str, str, str, str], Set[str]],
+    casing_conflicts: Dict[Tuple[str, str, str], Dict[str, Set[str]]],
     casing_variant_conflicts: Dict[str, Tuple[str, Set[str], Set[str]]],
     part_conflicts: Dict[str, Tuple[str, Set[str], Set[str]]],
     missing_section_warnings: List[Tuple[str, str, str]],
@@ -470,28 +479,49 @@ def _print_conflict_summary(
         return
 
     print("Library merge warnings:")
-    for kind, reference, source_file, folder in sorted(casing_conflicts):
-        raw_fields = sorted(casing_conflicts[(kind, reference, source_file, folder)])
+    for kind, reference, folder in sorted(casing_conflicts):
+        entry = casing_conflicts[(kind, reference, folder)]
+        raw_fields = sorted(entry["fields"])
         fields = ", ".join(FIELD_LABELS.get(f, f) for f in raw_fields)
+        source_files = sorted(entry["source_files"])
+        source_files_text = ", ".join(source_files)
+        subsystems = sorted(
+            source_file[: -len("_component_parameters.csv")]
+            if source_file.endswith("_component_parameters.csv")
+            else source_file
+            for source_file in source_files
+        )
+        subsystems_text = ", ".join(subsystems)
         print(
             f"- {kind} '{reference}' has different values across components. "
-            f"Differing fields: {fields}. Source file: {source_file}. Folder: {folder}"
+            f"Differing fields: {fields}. Source files: {source_files_text}. "
+            f"Subsystems: {subsystems_text}. Folder: {folder}"
         )
     for casing in sorted(casing_variant_conflicts):
         casing_label, subsystems, diff_fields = casing_variant_conflicts[casing]
         fields = ", ".join(FIELD_LABELS.get(f, f) for f in sorted(diff_fields))
-        subs_text = " and ".join(f"{s} subsystem" for s in sorted(subsystems))
+        sorted_subsystems = sorted(subsystems)
+        if len(sorted_subsystems) == 1:
+            scope_text = f"Within {sorted_subsystems[0]} subsystem."
+        else:
+            subs_text = " and ".join(f"{s} subsystem" for s in sorted_subsystems)
+            scope_text = f"Between {subs_text}."
         print(
             f"- Casing '{casing_label}' appears with multiple variants across components. "
-            f"Differing fields: {fields}. Between {subs_text}."
+            f"Differing fields: {fields}. {scope_text}"
         )
     for base_key in sorted(part_conflicts):
         reference, subsystems, diff_fields = part_conflicts[base_key]
         fields = ", ".join(FIELD_LABELS.get(f, f) for f in sorted(diff_fields))
-        subs_text = " and ".join(f"{s} subsystem" for s in sorted(subsystems))
+        sorted_subsystems = sorted(subsystems)
+        if len(sorted_subsystems) == 1:
+            scope_text = f"Within {sorted_subsystems[0]} subsystem."
+        else:
+            subs_text = " and ".join(f"{s} subsystem" for s in sorted_subsystems)
+            scope_text = f"Between {subs_text}."
         print(
             f"- Part '{reference}' has different values across components. "
-            f"Differing fields: {fields}. Between {subs_text}."
+            f"Differing fields: {fields}. {scope_text}"
         )
     for subsystem, designators, part_number in sorted(missing_section_warnings):
         print(
@@ -859,7 +889,10 @@ def sync_parameter_files_from_libraries(base_dir: Path) -> Tuple[int, int, int]:
     return files_changed, rows_changed, skipped_ambiguous
 
 
-def build_libraries(base_dir: Path) -> Tuple[int, int, int, int, int, int]:
+def build_libraries(
+    base_dir: Path,
+    warning_scope_subsystems: Set[str] | None = None,
+) -> Tuple[int, int, int, int, int, int]:
     """Rebuild both libraries from scratch on every call.
 
     Casing library:
@@ -876,38 +909,46 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int, int, int, int]:
     """
     raw_rows = _load_parameter_rows(base_dir)
 
+    warning_scope: Set[str] | None = None
+    if warning_scope_subsystems is not None:
+        warning_scope = {str(name).strip().casefold() for name in warning_scope_subsystems if str(name).strip()}
+
     casing_map: Dict[Tuple[str, Tuple[str, ...]], Dict[str, str]] = {}
+    warning_casing_map: Dict[Tuple[str, Tuple[str, ...]], Dict[str, str]] = {}
     # Part tracking: full dedup key → skip exact duplicates
     part_full_seen: set = set()
-    # First added row per base key, used for diff comparison
-    part_first_rows: Dict[str, Dict[str, str]] = {}
+    warning_part_full_seen: set = set()
     part_rows_list: List[Dict[str, str]] = []
     part_subsystems: Dict[str, Set[str]] = {}
 
-    casing_conflicts: Dict[Tuple[str, str, str, str], Set[str]] = {}
+    casing_conflicts: Dict[Tuple[str, str, str], Dict[str, Set[str]]] = {}
     casing_variant_conflicts: Dict[str, Tuple[str, Set[str], Set[str]]] = {}
-    casing_first_rows: Dict[str, Dict[str, str]] = {}
-    casing_first_subsystem: Dict[str, str] = {}
+    warning_casing_first_rows: Dict[str, Dict[str, str]] = {}
+    warning_casing_first_subsystem: Dict[str, str] = {}
     # base_key → (reference_label, subsystems_set, differing_fields_set)
     part_conflicts: Dict[str, Tuple[str, Set[str], Set[str]]] = {}
     missing_section_warnings: List[Tuple[str, str, str]] = []
     missing_mass_data_warnings: List[Tuple[str, str, str, str]] = []
     # First subsystem per base key
-    part_first_subsystem: Dict[str, str] = {}
+    warning_part_first_rows: Dict[str, Dict[str, str]] = {}
+    warning_part_first_subsystem: Dict[str, str] = {}
     conflict_count = 0
     folder_name = base_dir.name
 
     for subsystem, row in raw_rows:
         source_file = f"{subsystem}_component_parameters.csv"
+        in_warning_scope = warning_scope is None or subsystem.casefold() in warning_scope
         designators, part_reference = _component_reference(row)
-        if _clean(row.get("Section")) == "":
-            missing_section_warnings.append((subsystem, designators, part_reference))
-            conflict_count += 1
 
-        missing_mass_reason = _missing_mass_reason(row)
-        if missing_mass_reason is not None:
-            missing_mass_data_warnings.append((subsystem, designators, part_reference, missing_mass_reason))
-            conflict_count += 1
+        if in_warning_scope:
+            if _clean(row.get("Section")) == "":
+                missing_section_warnings.append((subsystem, designators, part_reference))
+                conflict_count += 1
+
+            missing_mass_reason = _missing_mass_reason(row)
+            if missing_mass_reason is not None:
+                missing_mass_data_warnings.append((subsystem, designators, part_reference, missing_mass_reason))
+                conflict_count += 1
 
         casing = _clean(row.get("Casing"))
         casing_signature = _casing_mass_signature(row)
@@ -917,36 +958,52 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int, int, int, int]:
             casing_base_key = casing.casefold()
             casing_key = (casing_base_key, casing_signature)
 
-            if casing_base_key in casing_first_rows:
-                first_row = casing_first_rows[casing_base_key]
-                differing: Set[str] = set()
-                for field in CASING_MASS_COMPARISON_FIELDS:
-                    if not _mass_field_matches(field, first_row, row):
-                        differing.add(field)
-                if differing:
-                    if casing_base_key not in casing_variant_conflicts:
-                        casing_variant_conflicts[casing_base_key] = (
-                            casing,
-                            {casing_first_subsystem[casing_base_key], subsystem},
-                            differing,
-                        )
-                        conflict_count += 1
-                    else:
-                        _, existing_subsystems, existing_fields = casing_variant_conflicts[casing_base_key]
-                        existing_subsystems.add(subsystem)
-                        existing_fields.update(differing)
-            else:
-                casing_first_rows[casing_base_key] = dict(row)
-                casing_first_subsystem[casing_base_key] = subsystem
-
             if casing_key not in casing_map:
                 casing_map[casing_key] = incoming_casing
             else:
-                # True duplicate in mass-calculation terms: keep one row and complete missing values.
                 existing = casing_map[casing_key]
+                # Full-library merge: always complete empty values.
                 for field, new_value in incoming_casing.items():
                     if _clean(existing.get(field)) == "" and new_value != "":
                         existing[field] = new_value
+
+            if in_warning_scope:
+                if casing_base_key in warning_casing_first_rows:
+                    first_row = warning_casing_first_rows[casing_base_key]
+                    differing: Set[str] = set()
+                    for field in CASING_MASS_COMPARISON_FIELDS:
+                        if not _mass_field_matches(field, first_row, row):
+                            differing.add(field)
+                    if differing:
+                        if casing_base_key not in casing_variant_conflicts:
+                            casing_variant_conflicts[casing_base_key] = (
+                                casing,
+                                {warning_casing_first_subsystem[casing_base_key], subsystem},
+                                differing,
+                            )
+                            conflict_count += 1
+                        else:
+                            _, existing_subsystems, existing_fields = casing_variant_conflicts[casing_base_key]
+                            existing_subsystems.add(subsystem)
+                            existing_fields.update(differing)
+                else:
+                    warning_casing_first_rows[casing_base_key] = dict(row)
+                    warning_casing_first_subsystem[casing_base_key] = subsystem
+
+                if casing_key not in warning_casing_map:
+                    warning_casing_map[casing_key] = dict(incoming_casing)
+                else:
+                    warning_existing = warning_casing_map[casing_key]
+                    conflict_count += _merge_unique(
+                        warning_existing,
+                        incoming_casing,
+                        "Casing",
+                        casing,
+                        source_file,
+                        folder_name,
+                        casing_conflicts,
+                        conflict_fields=CASING_WARNING_FIELDS,
+                    )
 
         part_number = _clean(row.get("Part_Number"))
         if part_number:
@@ -968,26 +1025,36 @@ def build_libraries(base_dir: Path) -> Tuple[int, int, int, int, int, int]:
                 continue
             part_full_seen.add(full_key)
 
-            if base_key in part_first_rows:
-                # Same (Manufacturer, Part_Number) but different data → warn.
-                first_row = part_first_rows[base_key]
-                differing = _part_mass_warning_fields(first_row, incoming_part)
-                if differing:
-                    reference = f"{manufacturer} {part_number}"
-                    if base_key not in part_conflicts:
-                        part_conflicts[base_key] = (
-                            reference,
-                            {part_first_subsystem[base_key], subsystem},
-                            differing,
-                        )
+            if in_warning_scope:
+                warning_full_key = (base_key,) + tuple(
+                    _normalize_quantity_key(incoming_part.get(f))
+                    if f == "Quantity_per_element"
+                    else _clean(incoming_part.get(f))
+                    for f in PART_COMPARISON_FIELDS
+                )
+
+                if warning_full_key not in warning_part_full_seen:
+                    warning_part_full_seen.add(warning_full_key)
+                    if base_key in warning_part_first_rows:
+                        # Same (Manufacturer, Part_Number) but different data → warn.
+                        first_row = warning_part_first_rows[base_key]
+                        differing = _part_mass_warning_fields(first_row, incoming_part)
+                        if differing:
+                            reference = f"{manufacturer} {part_number}"
+                            if base_key not in part_conflicts:
+                                part_conflicts[base_key] = (
+                                    reference,
+                                    {warning_part_first_subsystem[base_key], subsystem},
+                                    differing,
+                                )
+                            else:
+                                _, existing_subs, existing_fields = part_conflicts[base_key]
+                                existing_subs.add(subsystem)
+                                existing_fields.update(differing)
+                            conflict_count += 1
                     else:
-                        _, existing_subs, existing_fields = part_conflicts[base_key]
-                        existing_subs.add(subsystem)
-                        existing_fields.update(differing)
-                    conflict_count += 1
-            else:
-                part_first_rows[base_key] = incoming_part
-                part_first_subsystem[base_key] = subsystem
+                        warning_part_first_rows[base_key] = incoming_part
+                        warning_part_first_subsystem[base_key] = subsystem
 
             part_rows_list.append(incoming_part)
 

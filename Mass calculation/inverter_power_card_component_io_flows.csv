@@ -20,7 +20,7 @@ Order_index,Category_order,Group_order,Category,Section,Subsection,Designators,C
 43,1,22,AUTO,Assembly Processes,THT,THT_PROCESS,,,EcoInvent,,"mounting, through-hole technology, Pb-free solder",m2,Input,0.0168,,,,area-based,
 2,2,2,IGBT,Discrete Semiconductors,Power,"IGBT_A1, A2, B1, B2",TO-247,IKW25N120H3,EcoInvent,Infineon IKW40N120H3,"insulated gate bipolar transistor production, for electric vehicle applications",kg,Input,0.02168,5.42,21.68,0.02168,mass-based,
 3,3,3,Power management,IC,Analog,"IC1, IC2",,2ED3141MC12L,EcoInvent,0.35-0.4,"integrated circuit production, logic type",kg,Input,0.00075384375,0.376922,0.753844,0.00075384375,mass-based,
-5,3,3,Power management,IC,Analog,REG1,D2PAK,LD1086D2M33TR,EcoInvent,0.8-0.9,"integrated circuit production, logic type",kg,Input,0.000879514694,0.879515,0.879515,0.000879514694,mass-based,
+5,3,3,Power management,IC,Analog,REG1,D2PAK,LD1086D2M33TR,EcoInvent,0.8-0.9,"integrated circuit production, logic type",kg,Input,0.001566914694,1.566915,1.566915,0.001566914694,mass-based,
 7,4,6,Interface,IC,Digital,IC8,SOIC16,AM26LV32IDR,EcoInvent,0.2-0.25,"integrated circuit production, logic type",kg,Input,0.0001853125,0.185313,0.185313,0.0001853125,mass-based,
 9,5,8,Zener Diodes,Discrete Semiconductors,Small signal,D1–D4,SOD-80C,BZV55-B15,EcoInvent,0.017,"diode production, glass-, for surface-mounting",kg,Input,7.496e-05,0.01874,0.07496,7.496e-05,mass-based,
 10,5,8,Zener Diodes,Discrete Semiconductors,Small signal,"D5, D6",SOD-80C,BZV55-B10,EcoInvent,0.017,"diode production, glass-, for surface-mounting",kg,Input,3.748e-05,0.01874,0.03748,3.748e-05,mass-based,
