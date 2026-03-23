@@ -152,14 +152,24 @@ def main() -> None:
     fig1 = px.bar(b1, x="mass_kg", y="Component", orientation="h", labels={"mass_kg": "Mass (kg)"})
     st.plotly_chart(fig1, width="stretch")
 
+
     # 2) Treemap by subsystem -> section -> subsection -> component.
-    st.subheader("2) Treemap")
+    st.subheader("2) Treemap: Subsystem > Section > Subsection > Component")
     fig2 = px.treemap(
         view,
-        path=["Subsystem", "Section", "Subsection", "Component"],  # <- Category eliminada
+        path=["Subsystem", "Section", "Subsection", "Component"],
         values="mass_kg",
     )
     st.plotly_chart(fig2, width="stretch")
+
+    # 2b) Treemap by Section > Subsection > Category > Component (all components, all subsystems)
+    st.subheader("2b) Treemap: Section > Subsection > Category > Component (all components)")
+    fig2b = px.treemap(
+        view,
+        path=["Section", "Subsection", "Category", "Component"],
+        values="mass_kg",
+    )
+    st.plotly_chart(fig2b, width="stretch")
 
     # 3) One stacked bar per subsystem with selectable subdivision.
     st.subheader("3) Subsystem bars (stacked)")
@@ -177,14 +187,15 @@ def main() -> None:
         .sort_values("mass_kg", ascending=False)["Subsystem"]
         .tolist()
     )
-
+    # Consistent color order for split_col (Component or Section)
+    split_order = sorted(view[split_col].dropna().unique().tolist())
     fig3 = px.bar(
         b3,
         x="Subsystem",
         y="mass_kg",
         color=split_col,
         barmode="stack",
-        category_orders={"Subsystem": order},
+        category_orders={"Subsystem": order, split_col: split_order},
         labels={"mass_kg": "Mass (kg)"},
     )
     st.plotly_chart(fig3, width="stretch")

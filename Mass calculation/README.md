@@ -109,10 +109,16 @@ Mass result column `Total_mass_kg`:
 	- `Total_mass_kg = Total_quantity * mass_space_relation_m2/kg`
 - If `mass_space_relation_m2/kg` is empty in `m2` rows, `Total_mass_kg` remains empty.
 
+
 Mass visualization logic (`mass_visuals_app.py`):
 
 - Visualizations use `Total_mass_kg` as the single mass source.
 - Components with non-mass EcoInvent units are included whenever `Total_mass_kg` is available.
+- Includes:
+	- Horizontal bar chart: Top components by mass
+	- Treemap: Subsystem > Section > Subsection > Component
+	- Treemap: Section > Subsection > Category > Component (all components, all subsystems)
+	- Stacked bar chart: Subsystem bars (stacked by Component or Section)
 
 When libraries refresh:
 

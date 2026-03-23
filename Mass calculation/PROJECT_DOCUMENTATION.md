@@ -1,3 +1,13 @@
+## 6.1. Mass Visualization Treemaps
+
+The Streamlit visualization app (`mass_visuals_app.py`) provides interactive treemaps for exploring the structure and mass distribution of all components:
+
+- **Treemap: Subsystem > Section > Subsection > Component**
+  - Shows the hierarchy from subsystem down to individual components, sized by total mass.
+- **Treemap: Section > Subsection > Category > Component (all components, all subsystems)**
+  - Shows the hierarchy of all components grouped by Section, Subsection, and Category, regardless of subsystem, sized by total mass.
+
+These visualizations help users understand the distribution of mass and the organization of components across the entire system.
 # Mass Calculation - Project Documentation
 
 ## 1. Software Necessity

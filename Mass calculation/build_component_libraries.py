@@ -7,7 +7,7 @@ Creates:
 - component_library_ecoinvent_totals.csv
 - component_library_systems_subsystems.csv
 - component_library_parameters_all.csv
-- component_library_mass_results_all.csv
+- component_library_results_all.csv
 
 Rules:
 - Each library stores unique keys only once.
@@ -31,7 +31,7 @@ PART_LIBRARY_NAME = "component_library_by_part_number.csv"
 ECOINVENT_TOTALS_LIBRARY_NAME = "component_library_ecoinvent_totals.csv"
 SYSTEM_SUBSYSTEM_LIBRARY_NAME = "component_library_systems_subsystems.csv"
 PARAMETERS_STORAGE_LIBRARY_NAME = "component_library_parameters_all.csv"
-RESULTS_STORAGE_LIBRARY_NAME = "component_library_mass_results_all.csv"
+RESULTS_STORAGE_LIBRARY_NAME = "component_library_results_all.csv"
 
 SYSTEM_SUBSYSTEM_FIELDS = [
     "System",
@@ -737,8 +737,8 @@ def build_system_subsystem_library(
         subsystem = _clean(row.get("Subsection"))
         category = _clean(row.get("Category"))
 
-        # Keep only valid system labels.
-        if system == "":
+        # Skip any system label that is exactly 'Module' (singular)
+        if system == "" or system == "Module":
             continue
 
         key = (system.casefold(), subsystem.casefold())
