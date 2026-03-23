@@ -24,7 +24,7 @@ Streamlit is a library for building interactive web apps in Python,
 Used for data visualization and exploration.
 
 HOW TO USE IT:
-- In the termianal: .\Mass calculation\mass_visuals_app.py
+- In the termianal: streamlit run "Mass calculation/mass_visuals_app.py"
                 - Make sure you have Streamlit installed: .\\.venv\\Scripts\\python.exe -m pip install streamlit plotly pandas numpy
 - The app will open in your web browser, showing mass results from all subsystems.
 - In the web parameters can be changed for visualization
@@ -144,9 +144,13 @@ def main() -> None:
     top_n = st.slider("Top N", 5, 100, 25, 5)
     b1 = (
         view.groupby("Component", as_index=False)["mass_kg"]
+        .sum()
         .sort_values("mass_kg", ascending=False)
+        .head(top_n)
+        .sort_values("mass_kg", ascending=True)
     )
     fig1 = px.bar(b1, x="mass_kg", y="Component", orientation="h", labels={"mass_kg": "Mass (kg)"})
+    st.plotly_chart(fig1, width="stretch")
 
     # 2) Treemap by subsystem -> section -> subsection -> component.
     st.subheader("2) Treemap")
