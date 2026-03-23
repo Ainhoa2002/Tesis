@@ -12,7 +12,10 @@ from pathlib import Path
 
 
 MAX_SELECTION_ATTEMPTS = 3
-DEPRECATED_INPUT_FIELDS = {"Ecoinvent_amount_override", "Notes"}
+DEPRECATED_INPUT_FIELDS = {
+    "Ecoinvent_amount_override",
+    "Notes",
+}
 
 # Converts the inputs in correct format, float. changes coma for dot, averages ranges, returns none if it is empty.
 def to_float(value):
@@ -244,6 +247,29 @@ def _build_quantity_data(row, mass_data):
     return None
 
 
+def _compute_total_mass_kg_from_quantity(row, unit, quantity_data):
+    """Derive Total_mass_kg for mass_results from Total_quantity context."""
+    if quantity_data is None:
+        return ""
+
+    total_quantity = quantity_data["Total_quantity"]
+
+    if is_mass_unit(unit):
+        if unit == "kg":
+            return round(total_quantity, 12)
+        if unit == "g":
+            return round(total_quantity, 12)
+        return ""
+
+    if unit == "m2":
+        relation = to_float(row.get("mass_space_relation_m2/kg"))
+        if relation is None:
+            return ""
+        return round(total_quantity * relation, 12)
+
+    return ""
+
+
 def _ordered_result_fieldnames(row):
     """Return result CSV field order with key visualization columns first."""
     preferred_front = [
@@ -254,6 +280,7 @@ def _ordered_result_fieldnames(row):
         "Ecoinvent_unit",
         "unit",
         "Total_quantity",
+        "Total_mass_kg",
         "Ecoinvent_flow",
     ]
     fields = list(row.keys())
@@ -262,7 +289,7 @@ def _ordered_result_fieldnames(row):
     return front + tail
 
 #CALCULATE THE MASS OF THE COMPONENTS
-def _try_geometry_mass(row, metal_extra_g, other_extra_g):
+def _try_geometry_mass(row, metal_extra_g):
     l_mm = to_float(row.get("L_mm"))
     w_mm = to_float(row.get("W_mm"))
     h_mm = to_float(row.get("H_mm"))
@@ -280,8 +307,34 @@ def _try_geometry_mass(row, metal_extra_g, other_extra_g):
     if volume_cm3 is None:
         return None, None, None, density_source
 
-    mass_per_element_g = (volume_cm3 * density_g_cm3) + metal_extra_g + other_extra_g
+    mass_per_element_g = (volume_cm3 * density_g_cm3) + metal_extra_g
     return volume_cm3, mass_per_element_g, density_g_cm3, density_source
+
+
+def _try_m2_mass_equivalent(row, quantity_data):
+    """Compute mass equivalent for m2 rows using mass_space_relation_m2/kg."""
+    if quantity_data is None:
+        return None
+
+    relation_m2_per_kg = to_float(row.get("mass_space_relation_m2/kg"))
+    if relation_m2_per_kg is None or relation_m2_per_kg <= 0:
+        return None
+
+    qty_per_element_m2 = quantity_data["Quantity_per_element"]
+    total_qty_m2 = quantity_data["Total_quantity"]
+
+    mass_per_element_kg = qty_per_element_m2 / relation_m2_per_kg
+    total_mass_kg = total_qty_m2 / relation_m2_per_kg
+
+    return {
+        "Method": "M2_EQUIVALENT",
+        "Volume_cm3": None,
+        "Mass_per_element_g": mass_per_element_kg * 1000.0,
+        "Total_mass_g": total_mass_kg * 1000.0,
+        "Total_mass_kg": total_mass_kg,
+        "Density_used_g_cm3": None,
+        "Density_source": "M2_RELATION",
+    }
 
 
 def compute_component_mass(row):
@@ -296,12 +349,9 @@ def compute_component_mass(row):
     is_mass_context = is_mass_unit(unit_context)
 
     metal_extra_g = to_float(row.get("Metal_extra_g")) or 0.0
-    other_extra_g = to_float(row.get("Other_extra_g")) or 0.0
-
     volume_cm3, mass_from_geometry_g, density_used_g_cm3, density_source = _try_geometry_mass(
         row,
         metal_extra_g,
-        other_extra_g,
     )
 
     if has_datasheet_info and is_mass_context and qty_per_element is not None:
@@ -534,13 +584,20 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
         result_row = dict(row)
         mass_data = compute_component_mass(row)  # returns None if data missing — not an error yet
         quantity_data = _build_quantity_data(row, mass_data)
+        unit = _get_quantity_context_unit(row)
+        if _get_quantity_context_unit(row).lower() == "m2":
+            mass_data = _try_m2_mass_equivalent(row, quantity_data)
         if quantity_data is not None:
             result_row["Quantity_per_element"] = round(quantity_data["Quantity_per_element"], 12)
             result_row["Total_quantity"] = round(quantity_data["Total_quantity"], 12)
         else:
             result_row["Total_quantity"] = ""
+        result_row["Total_mass_kg"] = _compute_total_mass_kg_from_quantity(
+            row,
+            unit,
+            quantity_data,
+        )
 
-        unit = _get_quantity_context_unit(row)
         needs_mass = is_mass_unit(unit)
         needs_area = unit.lower() == "m2"
         validation_error = ""
@@ -577,7 +634,9 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
             area_error = "Area data not yet filled (unit is m2 — fill L_mm and W_mm with Has_datasheet_info=YES, or Quantity_per_element)"
             result_row["Validation_error"] = area_error
             errors.append({"row": idx, "component": row.get("Designators", ""), "error": area_error})
-        elif needs_area and quantity_data is not None:
+        elif needs_area and quantity_data is not None and (
+            mass_data is None or mass_data.get("Method") != "M2_EQUIVALENT"
+        ):
             result_row["Method"] = quantity_data["Method"]
 
         component_results.append(result_row)
@@ -595,7 +654,6 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
                 "Casing": row.get("Casing") or "",
                 "Part_Number": row.get("Part_Number", ""),
                 "Database": row.get("Database", ""),
-                "Database_component_title": row.get("Database_component_title", ""),
                 "Ecoinvent_flow": flow,
                 "Ecoinvent_unit": unit,
                 "Direction": str(row.get("Direction") or "Input").strip(),
@@ -656,7 +714,6 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
         "Casing",
         "Part_Number",
         "Database",
-        "Database_component_title",
         "Ecoinvent_flow",
         "Ecoinvent_unit",
         "Direction",

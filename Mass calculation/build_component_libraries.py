@@ -64,12 +64,11 @@ CASING_FIELDS = [
     "Density_min_g_cm3",
     "Density_max_g_cm3",
     "Metal_extra_g",
-    "Other_extra_g",
+    "mass_space_relation_m2/kg",
     "Ecoinvent_flow",
     "Ecoinvent_unit",
     "Direction",
     "Database",
-    "Database_component_title",
 ]
 
 CASING_WARNING_FIELDS = {
@@ -87,6 +86,7 @@ CASING_MASS_COMPARISON_FIELDS = [
     "Density_min_g_cm3",
     "Density_max_g_cm3",
     "Metal_extra_g",
+    "mass_space_relation_m2/kg",
 ]
 
 CASING_NUMERIC_FIELDS = {
@@ -98,6 +98,7 @@ CASING_NUMERIC_FIELDS = {
     "Density_min_g_cm3",
     "Density_max_g_cm3",
     "Metal_extra_g",
+    "mass_space_relation_m2/kg",
 }
 
 FIELD_LABELS = {
@@ -113,12 +114,11 @@ FIELD_LABELS = {
     "Density_min_g_cm3": "DENSITY_MIN",
     "Density_max_g_cm3": "DENSITY_MAX",
     "Metal_extra_g": "EXTRA_MASS_METAL",
-    "Other_extra_g": "EXTRA_MASS_OTHER",
+    "mass_space_relation_m2/kg": "MASS_SPACE_RELATION_M2_PER_KG",
     "Database": "DATABASE",
     "Ecoinvent_flow": "ECOINVENT_FLOW",
     "Ecoinvent_unit": "ECOINVENT_UNIT",
     "Direction": "DIRECTION",
-    "Database_component_title": "DATABASE_COMPONENT_TITLE",
 }
 
 PART_FIELDS = [
@@ -139,12 +139,11 @@ PART_FIELDS = [
     "Density_min_g_cm3",
     "Density_max_g_cm3",
     "Metal_extra_g",
-    "Other_extra_g",
+    "mass_space_relation_m2/kg",
     "Database",
     "Ecoinvent_flow",
     "Ecoinvent_unit",
     "Direction",
-    "Database_component_title",
 ]
 
 PART_SYNC_FIELDS = [
@@ -162,12 +161,11 @@ PART_SYNC_FIELDS = [
     "Density_min_g_cm3",
     "Density_max_g_cm3",
     "Metal_extra_g",
-    "Other_extra_g",
+    "mass_space_relation_m2/kg",
     "Database",
     "Ecoinvent_flow",
     "Ecoinvent_unit",
     "Direction",
-    "Database_component_title",
 ]
 
 # Fields used to decide whether two rows with the same (Manufacturer, Part_Number)
@@ -184,7 +182,7 @@ PART_COMPARISON_FIELDS = [
     "Density_min_g_cm3",
     "Density_max_g_cm3",
     "Metal_extra_g",
-    "Other_extra_g",
+    "mass_space_relation_m2/kg",
     "Database",
     "Ecoinvent_flow",
     "Ecoinvent_unit",
@@ -397,10 +395,23 @@ def _casing_mass_signature(row: Dict[str, str]) -> Tuple[str, ...]:
     return tuple(_normalized_mass_value(field, row.get(field)) for field in CASING_MASS_COMPARISON_FIELDS)
 
 
-def _load_result_quantity_map(base_dir: Path, subsystem: str) -> Dict[Tuple[str, ...], str]:
+def _load_result_quantity_map(
+    base_dir: Path,
+    subsystem: str,
+    parameter_path: Path | None = None,
+) -> Dict[Tuple[str, ...], str]:
     result_path = base_dir / f"{subsystem}_component_mass_results.csv"
     if not result_path.exists():
         return {}
+
+    # Ignore stale mass results to avoid propagating outdated calculated
+    # quantities into library merge keys.
+    if parameter_path is not None:
+        try:
+            if result_path.stat().st_mtime < parameter_path.stat().st_mtime:
+                return {}
+        except OSError:
+            return {}
 
     quantity_map: Dict[Tuple[str, ...], str] = {}
     with open(result_path, newline="", encoding="utf-8-sig") as f:
@@ -417,7 +428,7 @@ def _load_parameter_rows(base_dir: Path) -> List[Tuple[str, Dict[str, str]]]:
     rows: List[Tuple[str, Dict[str, str]]] = []
     for path in sorted(base_dir.glob("*_component_parameters.csv")):
         subsystem = path.name[: -len("_component_parameters.csv")]
-        result_quantity_map = _load_result_quantity_map(base_dir, subsystem)
+        result_quantity_map = _load_result_quantity_map(base_dir, subsystem, path)
         with open(path, newline="", encoding="utf-8-sig") as f:
             reader = csv.DictReader(f)
             for row in reader:

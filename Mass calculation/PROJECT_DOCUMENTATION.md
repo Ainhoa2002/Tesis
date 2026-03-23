@@ -141,8 +141,8 @@ Expected key fields:
 
 - Identification and classification: `Designators`, `Casing`, `Section`, `Subsection`, `Category`
 - Quantity: `number_elements`, `unit`, `Quantity_per_element`, `Has_datasheet_info`
-- Geometry/density: `L_mm`, `W_mm`, `H_mm`, `Volume_cm3_excel`, `Density_min_g_cm3`, `Density_max_g_cm3`, `Metal_extra_g`, `Other_extra_g`
-- LCA mapping: `Ecoinvent_flow`, `Ecoinvent_unit`, `Direction`, `Database`, `Database_component_title`
+- Geometry/density: `L_mm`, `W_mm`, `H_mm`, `Volume_cm3_excel`, `Density_min_g_cm3`, `Density_max_g_cm3`, `Metal_extra_g`, `mass_space_relation_m2/kg`
+- LCA mapping: `Ecoinvent_flow`, `Ecoinvent_unit`, `Direction`, `Database`
 
 ## 8. Pipeline Calculation Logic
 
@@ -177,6 +177,14 @@ Expected key fields:
 - `<subsystem>_component_mass_results.csv`
 - `<subsystem>_component_io_flows.csv`
 - `<subsystem>_ipe_flows_from_parameters.csv`
+
+Mass result column details:
+
+- `<subsystem>_component_mass_results.csv` includes `Total_mass_kg` after `Total_quantity`.
+- `Total_mass_kg` rules:
+  - mass unit context (`kg`/`g`): value follows mass-based total quantity in kg context.
+  - `m2` unit context: `Total_mass_kg = Total_quantity * mass_space_relation_m2/kg`.
+  - if `mass_space_relation_m2/kg` is empty for `m2` rows, `Total_mass_kg` remains empty.
 
 ### 8.4 Component Library Logic
 
@@ -258,4 +266,9 @@ Layer summary:
 - If parameter CSVs are edited manually outside scripts, run `build_component_libraries.py` (or `Pipeline.py`) to refresh libraries.
 - Runtime toggles:
   - `MASS_CALC_AUTO_SYNC_FROM_LIBRARY=0` disables library-to-parameter sync at pipeline start.
+
+Mass visualization (`mass_visuals_app.py`):
+
+- Uses `Total_mass_kg` as the single source for all mass charts and totals.
+- Includes components with any EcoInvent unit when `Total_mass_kg` is available.
   - `MASS_CALC_AUTO_REFRESH_LIBRARIES=0` disables automatic library rebuild after pipeline execution.

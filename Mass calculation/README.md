@@ -101,6 +101,19 @@ Validation behavior in `Pipeline.py`:
 	- selecting specific subsystem(s) shows warnings only for that selection
 	- selecting `all` shows warnings across all subsystems
 
+Mass result column `Total_mass_kg`:
+
+- `*_component_mass_results.csv` now includes `Total_mass_kg` right after `Total_quantity`.
+- For mass context rows (`kg`/`g`), `Total_mass_kg` follows `Total_quantity` in kg context.
+- For `m2` context rows, `Total_mass_kg` is calculated from:
+	- `Total_mass_kg = Total_quantity * mass_space_relation_m2/kg`
+- If `mass_space_relation_m2/kg` is empty in `m2` rows, `Total_mass_kg` remains empty.
+
+Mass visualization logic (`mass_visuals_app.py`):
+
+- Visualizations use `Total_mass_kg` as the single mass source.
+- Components with non-mass EcoInvent units are included whenever `Total_mass_kg` is available.
+
 When libraries refresh:
 
 - Parameter files can be auto-synced from libraries at the beginning of `Pipeline.py`.
