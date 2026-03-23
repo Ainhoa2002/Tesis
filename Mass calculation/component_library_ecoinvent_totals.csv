@@ -14,8 +14,7 @@ Ecoinvent_flow,Ecoinvent_unit,Direction,Total_amount,Total_mass_kg,Subsystems
 light emitting diode production,kg,Input,0.07,0.07,"contactor_card, inverter_power_card"
 "market for aluminium, primary",kg,previous input,0.002796,0.002796,4Q_power_card
 "market for aluminium, wrought alloy",kg,previous input,0.005592,0.005592,4Q_output_control_card
-"Market for copper, cathode",kg,previous input,0.016,0.016,4Q_power_card
-"market for copper, cathode",kg,previous input,0.03,0.03,contactor_card
+"market for copper, cathode",kg,previous input,0.046,0.046,"4Q_power_card, contactor_card"
 "market for metal working, average for metal product manufacturing",kg,previous input,0.00126385,0.00126385,4Q_power_card
 "market for steel, low-alloyed",kg,previous input,0.00631925,0.00631925,"4Q_output_control_card, 4Q_power_card, inverter_power_card"
 "market for zinc, primary",kg,previous input,0.016,0.016,4Q_power_card
