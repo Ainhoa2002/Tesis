@@ -1,14 +1,14 @@
 Ecoinvent_flow,Ecoinvent_unit,Direction,Total_amount,Total_mass_kg,Subsystems
-"capacitor production, electrolyte type, < 2cm height",kg,Input,0.008494134,0.008494134,"4Q_output_control_card, 4Q_power_card, inverter_power_card"
+"capacitor production, electrolyte type, < 2cm height",kg,Input,0.012294134,0.012294134,"4Q_output_control_card, 4Q_power_card, fan_supervision_card, inverter_power_card"
 "capacitor production, electrolyte type, > 2cm height",kg,Input,0.8915588,0.8915588,"4Q_power_card, filter_card"
 "capacitor production, film type, for through-hole mounting",kg,Input,0.548401725,0.548401725,"4Q_power_card, filter_card, fuse_card, inverter_power_card"
-"capacitor production, for surface-mounting",kg,Input,0.0084864,0.0084864,"4Q_output_control_card, 4Q_power_card, contactor_card, inverter_power_card"
+"capacitor production, for surface-mounting",kg,Input,0.00905216,0.00905216,"4Q_output_control_card, 4Q_power_card, contactor_card, fan_supervision_card, inverter_power_card"
 "diode production, glass-, for surface-mounting",kg,Input,0.001578781416,0.001578781416,"4Q_output_control_card, 4Q_power_card, contactor_card, inverter_power_card"
 "diode production, glass-, for through-hole mounting",kg,Input,3.748e-05,3.748e-05,4Q_power_card
 "electric connector production, peripheral type buss",kg,Input,0.064498,0.064498,"contactor_card, filter_card, fuse_card, inverter_power_card"
-"electric connector production, wire clamp",kg,Input,0.11728055024,0.11728055024,"4Q_output_control_card, 4Q_power_card, contactor_card, filter_card, fuse_card, inverter_power_card"
+"electric connector production, wire clamp",kg,Input,0.12513455024,0.12513455024,"4Q_output_control_card, 4Q_power_card, contactor_card, fan_supervision_card, filter_card, fuse_card, inverter_power_card"
 "electronic component production, active, unspecified",kg,Input,0.063235,0.063235,"4Q_output_control_card, 4Q_power_card, contactor_card, inverter_power_card"
-"electronic component, passive, unspecified",kg,Input,0.081531474833,0.081531474833,"4Q_output_control_card, 4Q_power_card, contactor_card, filter_card, fuse_card, inverter_power_card"
+"electronic component, passive, unspecified",kg,Input,0.098479474833,0.098479474833,"4Q_output_control_card, 4Q_power_card, contactor_card, fan_supervision_card, filter_card, fuse_card, inverter_power_card"
 "insulated gate bipolar transistor production, for electric vehicle applications",kg,Input,0.02168,0.02168,inverter_power_card
 "integrated circuit production, logic type",kg,Input,0.017558158026,0.017558158026,"4Q_output_control_card, 4Q_power_card, inverter_power_card"
 light emitting diode production,kg,Input,0.07,0.07,"contactor_card, inverter_power_card"
@@ -21,9 +21,9 @@ light emitting diode production,kg,Input,0.07,0.07,"contactor_card, inverter_pow
 "metal working, average for aluminium product manufacturing",kg,Input,0.008388,0.008388,"4Q_output_control_card, 4Q_power_card"
 "metal working, average for copper product manufacturing",kg,Input,0.046,0.046,"4Q_power_card, contactor_card"
 "metal working, average for metal product manufacturing",kg,Input,0.0050554,0.0050554,"4Q_output_control_card, inverter_power_card"
-"mounting, surface mount technology, Pb-free solder",m2,Input,0.08435,,"4Q_output_control_card, 4Q_power_card, contactor_card, inverter_power_card"
-"mounting, through-hole technology, Pb-free solder",m2,Input,0.11135,,"4Q_output_control_card, 4Q_power_card, contactor_card, filter_card, fuse_card, inverter_power_card"
-"printed wiring board production, for through-hole mounting, Pb free surface",m2,Input,0.10035,,"4Q_output_control_card, 4Q_power_card, contactor_card, filter_card, fuse_card, inverter_power_card"
+"mounting, surface mount technology, Pb-free solder",m2,Input,0.11235,,"4Q_output_control_card, 4Q_power_card, contactor_card, fan_supervision_card, inverter_power_card"
+"mounting, through-hole technology, Pb-free solder",m2,Input,0.13935,,"4Q_output_control_card, 4Q_power_card, contactor_card, fan_supervision_card, filter_card, fuse_card, inverter_power_card"
+"printed wiring board production, for through-hole mounting, Pb free surface",m2,Input,0.10409,,"4Q_output_control_card, 4Q_power_card, contactor_card, fan_supervision_card, filter_card, fuse_card, inverter_power_card"
 "resistor production, metal film type, through-hole mounting",kg,Input,0.0028,0.0028,4Q_output_control_card
 "resistor production, surface-mounted",kg,Input,0.007919296,0.007919296,"4Q_output_control_card, 4Q_power_card, contactor_card, inverter_power_card"
 "resistor production, wirewound, through-hole mounting",kg,Input,0.005948,0.005948,contactor_card

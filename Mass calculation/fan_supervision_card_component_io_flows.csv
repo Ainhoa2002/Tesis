@@ -1,0 +1,12 @@
+Order_index,Category_order,Group_order,Category,Section,Subsection,Designators,Casing,Part_Number,Database,Ecoinvent_flow,Ecoinvent_unit,Direction,Amount,Mass_per_element_g,Total_mass_g,Total_mass_kg,Formula_basis,Validation_error
+1,1,1,AUTO,PCB,,PCB,,EDA-05283-V1,EcoInvent,"printed wiring board production, for through-hole mounting, Pb free surface",m2,Input,0.00374,1.214286,1.214286,0.001214285714,area-based,
+5,1,4,AUTO,Passives,Protection,"F1, F2",,MF-SM030,EcoInvent,"electronic component, passive, unspecified",kg,Input,0.000948,0.474,0.948,0.000948,mass-based,
+6,1,5,AUTO,Electromechanical,Connectors,"J1,J2",,236-402,EcoInvent,"electric connector production, wire clamp",kg,Input,0.003804,1.902,3.804,0.003804,mass-based,
+7,1,5,AUTO,Electromechanical,Connectors,J3,,N3793-6302RB,EcoInvent,"electric connector production, wire clamp",kg,Input,0.00405,4.05,4.05,0.00405,mass-based,
+8,1,6,AUTO,Assembly Processes,SMD,SMD_PROCESS,,,EcoInvent,"mounting, surface mount technology, Pb-free solder",m2,Input,0.028,,,,area-based,
+9,1,7,AUTO,Assembly Processes,THT,THT_PROCESS,,,EcoInvent,"mounting, through-hole technology, Pb-free solder",m2,Input,0.028,,,,area-based,
+10,1,8,AUTO,Electromechanical,Switches,PB1 > PB3,,ZB6E2A,EcoInvent,"electronic component, passive, unspecified",kg,Input,0.012,4.0,12.0,0.012,mass-based,
+11,1,9,AUTO,Hardware,Mounting Hardware,PB4 ,,ZB6Y011,EcoInvent,"electronic component, passive, unspecified",kg,Input,0.004,4.0,4.0,0.004,mass-based,
+2,2,2,Electrolytic,Passives,Capacitors,"C1, C10",,MAL213668101E3,EcoInvent,"capacitor production, electrolyte type, < 2cm height",kg,Input,0.0038,1.9,3.8,0.0038,mass-based,
+3,3,3,Film,Passives,Capacitors,C2 > C9,1206,CC1206_100NF_50V_10%_X7R,EcoInvent,"capacitor production, for surface-mounting",kg,Input,0.000452608,0.056576,0.452608,0.000452608,mass-based,
+4,3,3,Film,Passives,Capacitors,"C11, C12",1206,CC1206_1NF_50V_10%_X7R,EcoInvent,"capacitor production, for surface-mounting",kg,Input,0.000113152,0.056576,0.113152,0.000113152,mass-based,
