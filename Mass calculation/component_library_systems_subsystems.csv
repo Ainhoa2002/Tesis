@@ -7,9 +7,9 @@ Discrete Semiconductors,Small signal,"BJT, Bipolar Transistor, Bipolar transisto
 Electromechanical,Connectors,,"4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, contactor_card, fan_supervision_card, filter_card, fuse_card, inverter_power_card",21
 Electromechanical,Fuse holder,,"4Q_output_control_card, fuse_card",3
 Electromechanical,Relays,,contactor_card,1
-Electromechanical,Switches,,fan_supervision_card,1
+Electromechanical,Switches,"Contact Block, Emergency Stop Pushbutton Head",fan_supervision_card,2
 Hardware,Enclosure,,fuse_card,1
-Hardware,Mounting hardware,CERN,"4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, fan_supervision_card, inverter_power_card",9
+Hardware,Mounting hardware,CERN,"4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, fan_supervision_card, inverter_power_card",10
 Hardware,Thermal Management,Heatsink,"4Q_output_control_card, 4Q_power_card, contactor_card",3
 IC,Analog,"Power Management, Power management","4Q_output_control_card, 4Q_power_card, inverter_power_card",9
 IC,Digital,Interface,"4Q_output_control_card, inverter_power_card",2
@@ -22,6 +22,6 @@ Modules,Sensors,Current transducer,"4Q_output_power_card, 4Q_power_card",3
 Passives,Capacitors,"Electrolytic, Film, MLCC, Paper, Tantalum","4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, contactor_card, fan_supervision_card, filter_card, fuse_card, inverter_power_card",48
 Passives,Electromechanical,Connectors,filter_card,1
 Passives,Protection,Fuse,"4Q_output_control_card, contactor_card, fan_supervision_card, fuse_card, inverter_power_card",7
-Passives,Resistors,"Precision Metal Foil Resistor, Zero Ohm Jumper","4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, contactor_card, filter_card, fuse_card, inverter_power_card",35
+Passives,Resistors,"Precision Metal Foil Resistor, Switch Mounting Collar, Zero Ohm Jumper","4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, contactor_card, fan_supervision_card, filter_card, fuse_card, inverter_power_card",37
 Passives,Test PIN,,"4Q_output_control_card, 4Q_power_card, contactor_card, filter_card, inverter_power_card",5
 PCB,,,"4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, contactor_card, fan_supervision_card, filter_card, fuse_card, inverter_power_card",8

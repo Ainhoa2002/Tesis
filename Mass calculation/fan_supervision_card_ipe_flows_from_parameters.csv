@@ -1,8 +1,12 @@
 Flow,Unit,Amount,Direction
 "printed wiring board production, for through-hole mounting, Pb free surface",m2,0.00374,Input
-"electronic component, passive, unspecified",kg,0.016948,Input
+"electronic component, passive, unspecified",kg,0.022948,Input
 "electric connector production, wire clamp",kg,0.007854,Input
+"resistor production, surface-mounted",kg,0.000231408,Input
+"metal working, average for metal product manufacturing",kg,0.00126385,Input
+"market for steel, low-alloyed",kg,0.00126385,previous input
 "mounting, surface mount technology, Pb-free solder",m2,0.028,Input
 "mounting, through-hole technology, Pb-free solder",m2,0.028,Input
 "capacitor production, electrolyte type, < 2cm height",kg,0.0038,Input
 "capacitor production, for surface-mounting",kg,0.00056576,Input
+kg,kg,0.035,Mass info from datasheet

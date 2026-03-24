@@ -1,5 +1,5 @@
 Order_index,Category_order,Group_order,Category,Section,Subsection,Designators,Casing,Part_Number,Database,Ecoinvent_flow,Ecoinvent_unit,Direction,Amount,Mass_per_element_g,Total_mass_g,Total_mass_kg,Formula_basis,Validation_error
-1,1,1,AUTO,PCB,,PCB,,EDA-05281-V1,EcoInvent,"printed wiring board production, for through-hole mounting, Pb free surface",m2,Input,0.02475,,,,area-based,
+1,1,1,AUTO,PCB,,PCB,,EDA-05281-V1,EcoInvent,"printed wiring board production, for through-hole mounting, Pb free surface",m2,Input,0.02475,8.035714,8.035714,0.008035714286,area-based,
 2,1,2,AUTO,Electromechanical,Connectors,"BUSH_IN_V_M, BUSH_IN_V_P,BUSH_OUT_V_M,BUSH_OUT_V_P",,7460305,EcoInvent,"metal working, average for copper product manufacturing",kg,Input,0.016,4.0,16.0,0.016,mass-based,
 2,1,2,AUTO,Electromechanical,Connectors,"BUSH_IN_V_M, BUSH_IN_V_P,BUSH_OUT_V_M,BUSH_OUT_V_P",,7460305,EcoInvent,"Market for copper, cathode",kg,previous input,0.016,4.0,16.0,0.016,mass-based,
 2,1,2,AUTO,Electromechanical,Connectors,"BUSH_IN_V_M, BUSH_IN_V_P,BUSH_OUT_V_M,BUSH_OUT_V_P",,7460305,EcoInvent,"market for zinc, primary",kg,previous input,0.016,4.0,16.0,0.016,mass-based,
