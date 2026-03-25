@@ -13,17 +13,18 @@ Ecoinvent_flow,Ecoinvent_unit,Direction,Total_amount,Total_mass_kg,Subsystems
 "insulated gate bipolar transistor production, for electric vehicle applications",kg,Input,0.02168,0.02168,inverter_power_card
 "integrated circuit production, logic type",kg,Input,0.017558158026,0.017558158026,"4Q_output_control_card, 4Q_power_card, inverter_power_card"
 light emitting diode production,kg,Input,0.0007,0.0007,"contactor_card, inverter_power_card"
+"market for aluminium alloy, AlMg3",kg,previous input,9.212,9.212,mechanical_components
 "market for aluminium, primary",kg,previous input,0.002796,0.002796,4Q_power_card
 "market for aluminium, wrought alloy",kg,previous input,0.005592,0.005592,4Q_output_control_card
 "Market for copper, cathode",kg,previous input,0.016,0.016,4Q_output_power_card
-"market for copper, cathode",kg,previous input,0.046,0.046,"4Q_power_card, contactor_card"
+"market for copper, cathode",kg,previous input,0.05,0.05,"4Q_power_card, contactor_card, mechanical_components"
 "market for metal working, average for metal product manufacturing",kg,previous input,0.00126385,0.00126385,4Q_power_card
 "market for steel, chromium steel 18/8",kg,previous input,0.00164785,0.00164785,4Q_output_power_card
 "market for steel, low-alloyed",kg,previous input,0.0075831,0.0075831,"4Q_output_control_card, 4Q_power_card, fan_supervision_card, inverter_power_card"
 "market for zinc, primary",kg,previous input,0.032,0.032,"4Q_output_power_card, 4Q_power_card"
-"metal working, average for aluminium product manufacturing",kg,Input,0.008388,0.008388,"4Q_output_control_card, 4Q_power_card"
+"metal working, average for aluminium product manufacturing",kg,Input,9.220388,9.220388,"4Q_output_control_card, 4Q_power_card, mechanical_components"
 "metal working, average for chromium steel product manufacturing",kg,Input,0.00164785,0.00164785,4Q_output_power_card
-"metal working, average for copper product manufacturing",kg,Input,0.062,0.062,"4Q_output_power_card, 4Q_power_card, contactor_card"
+"metal working, average for copper product manufacturing",kg,Input,0.066,0.066,"4Q_output_power_card, 4Q_power_card, contactor_card, mechanical_components"
 "metal working, average for metal product manufacturing",kg,Input,0.00631925,0.00631925,"4Q_output_control_card, fan_supervision_card, inverter_power_card"
 "mounting, surface mount technology, Pb-free solder",m2,Input,0.11235,,"4Q_output_control_card, 4Q_power_card, contactor_card, fan_supervision_card, inverter_power_card"
 "mounting, through-hole technology, Pb-free solder",m2,Input,0.1641,,"4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, contactor_card, fan_supervision_card, filter_card, fuse_card, inverter_power_card"
