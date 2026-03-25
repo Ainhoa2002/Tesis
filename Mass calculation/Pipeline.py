@@ -408,18 +408,6 @@ def _normalize_ecoinvent_fields(row):
     unit = str(normalized.get("Ecoinvent_unit") or "").strip()
     direction = str(normalized.get("Direction") or "").strip()
 
-    # Recover rows where Database accidentally contains the first part of flow,
-    # e.g. Database='EcoInvent:"capacitor production' and flow='for surface-mounting"'.
-    db_lower = database.casefold()
-    if db_lower.startswith("ecoinvent:"):
-        flow_prefix = database.split(":", 1)[1].strip().strip('"')
-        flow_suffix = flow.strip().strip('"')
-        recovered_flow = ", ".join(part for part in [flow_prefix, flow_suffix] if part)
-        normalized["Database"] = "EcoInvent"
-        normalized["Ecoinvent_flow"] = recovered_flow
-        database = normalized["Database"]
-        flow = normalized["Ecoinvent_flow"]
-
     # Recover shifted values when unit was filled with Input/Output.
     if unit.casefold() in {"input", "output", "in", "out"} and direction == "":
         normalized["Direction"] = unit
@@ -434,14 +422,15 @@ def _normalize_ecoinvent_fields(row):
     normalized["Ecoinvent_unit"] = str(unit).strip().strip('"')
     return normalized
 
-
+#THIS IS FUNDAMENTAL FOR THE ENXT STEPS
 def _split_ecoinvent_flow_components(flow, direction):
     """Split compound EcoInvent flows joined by '+' into independent flow entries.
 
     Rule:
     - N plus signs -> N+1 resulting components.
-    - Components that start with 'market ' are tagged as 'previous input'
-      when the original direction is Input.
+    - The first component that starts with 'market ' and original direction is Input is tagged as 'pre-input'.
+    - The second component (if exists) is always tagged as 'pre-process'.
+    - All other components keep the base direction unless otherwise specified.
     """
     flow_text = str(flow or "").strip().strip('"')
     if flow_text == "":
@@ -454,14 +443,21 @@ def _split_ecoinvent_flow_components(flow, direction):
         return []
 
     components = []
-    for part in parts:
+    for idx, part in enumerate(parts):
         part_direction = base_direction
-        if base_direction.casefold() == "input" and part.casefold().startswith("market "):
-            part_direction = "previous input"
+        # First element: if 'market ' and input, tag as 'pre-input'
+        if idx == 0 and base_direction.casefold() == "input" and part.casefold().startswith("market "):
+            part_direction = "pre-input"
+        # Second element: always tag as 'pre-process'
+        elif idx == 1:
+            part_direction = "pre-process"
         components.append({"Flow": part, "Direction": part_direction})
 
-    # Keep standard input rows first, and market/previous-input rows after.
-    components.sort(key=lambda entry: (entry["Direction"].casefold() == "previous input", entry["Flow"].casefold()))
+    # Keep standard input rows first, then pre-input, then pre-process, then others alphabetically
+    def sort_key(entry):
+        direction_order = {"input": 0, "pre-input": 1, "pre-process": 2}
+        return (direction_order.get(entry["Direction"].casefold(), 3), entry["Flow"].casefold())
+    components.sort(key=sort_key)
     return components
 
 
