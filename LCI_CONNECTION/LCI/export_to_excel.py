@@ -18,7 +18,7 @@ from add_eliminate_component import (
     discover_subsystem_files,
 )
 
-BASE_DIR = Path(r"c:\Users\alorzaga\Git\tesis\Mass calculation")
+BASE_DIR = Path(__file__).parent
 DEFAULT_EXPORT_DIR = BASE_DIR.parent
 
 

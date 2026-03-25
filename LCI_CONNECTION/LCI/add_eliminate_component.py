@@ -16,7 +16,7 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 
 
-BASE_DIR = Path(r"c:\Users\alorzaga\Git\tesis\Mass calculation")
+BASE_DIR = Path(__file__).parent
 AUDIT_LOG = BASE_DIR / "add_eliminate_component_audit.log"
 MAX_SELECTION_ATTEMPTS = 3
 
