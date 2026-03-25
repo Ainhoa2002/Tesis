@@ -5,8 +5,8 @@ Flow,Unit,Amount,Direction
 "integrated circuit production, logic type",kg,0.011547632694,Input
 "electric connector production, wire clamp",kg,0.06227294528,Input
 "resistor production, surface-mounted",kg,0.002751184,Input
-"metal working, average for metal product manufacturing",kg,0.00379155,Input
-"market for steel, low-alloyed",kg,0.00379155,previous input
+"market for steel, low-alloyed",kg,0.00379155,pre-input
+"metal working, average for metal product manufacturing",kg,0.00379155,pre-process
 "mounting, surface mount technology, Pb-free solder",m2,0.02255,Input
 "mounting, through-hole technology, Pb-free solder",m2,0.02255,Input
 "capacitor production, for surface-mounting",kg,0.002319616,Input
@@ -14,5 +14,5 @@ Flow,Unit,Amount,Direction
 "diode production, glass-, for surface-mounting",kg,0.000529676156,Input
 "resistor production, metal film type, through-hole mounting",kg,0.0028,Input
 "transistor production, surface-mounted",kg,0.000681715,Input
-"metal working, average for aluminium product manufacturing",kg,0.005592,Input
-"market for aluminium, wrought alloy",kg,0.005592,previous input
+"market for aluminium, wrought alloy",kg,0.005592,pre-input
+"metal working, average for aluminium product manufacturing",kg,0.005592,pre-process
