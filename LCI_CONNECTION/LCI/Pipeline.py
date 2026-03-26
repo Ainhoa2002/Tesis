@@ -935,6 +935,20 @@ def main():
     failed_subsystems = []
     completed_subsystems = []
 
+    # Totals for all subsystems
+    total_processed_rows = 0
+    total_io_rows = 0
+    total_grouped_flows = 0
+
+
+    # --- Collect global stats ---
+    all_rows = []
+    all_subsystems = set()
+    all_sections = set()
+    all_subsections = set()
+    total_mass = 0.0
+    warning_count = 0
+
     for subsystem in selected_subsystems:
         input_csv, results_csv, component_flows_csv, grouped_flows_csv = _build_subsystem_paths(
             base,
@@ -958,15 +972,63 @@ def main():
 
         completed_subsystems.append(subsystem)
 
-        print(f"Processed component rows: {len(results)}")
-        print(f"Component IO rows: {len(component_flows)}")
-        print(f"Exported grouped flows: {len(grouped_flows)}")
+        processed_rows = len(results)
+        io_rows = len(component_flows)
+        grouped_flows_count = len(grouped_flows)
+
+        print(f"Processed component rows: {processed_rows}")
+        print(f"Component IO rows: {io_rows}")
+        print(f"Exported grouped flows: {grouped_flows_count}")
         print(f"Results file: {results_csv}")
         print(f"Component IO file: {component_flows_csv}")
         print(f"Grouped flows file: {grouped_flows_csv}")
 
+        total_processed_rows += processed_rows
+        total_io_rows += io_rows
+        total_grouped_flows += grouped_flows_count
+
         for err in errors:
             all_errors.append((subsystem, err))
+            warning_count += 1
+
+        # Read results file to collect stats
+        try:
+            with open(results_csv, newline='', encoding='utf-8') as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    all_rows.append(row)
+                    # Use the actual subsystem name from the file path, not from the row (which may be empty)
+                    all_subsystems.add(subsystem)
+                    all_sections.add(row.get('Section', '').strip())
+                    all_subsections.add(row.get('Subsection', '').strip())
+                    try:
+                        m = float(row.get('Total_mass_kg', '') or 0)
+                        total_mass += m
+                    except Exception:
+                        pass
+        except Exception as exc:
+            print(f"[Warning] Could not read {results_csv} for stats: {exc}")
+
+
+    # === GLOBAL SUMMARY ===
+    # Get library warnings/conflicts count
+    lib_conflicts = None
+    try:
+        from build_component_libraries import build_libraries
+        _, _, lib_conflicts, _, _, _ = build_libraries(base, selected_subsystems)
+    except Exception as exc:
+        print(f"[Warning] Could not get library warnings/conflicts: {exc}")
+    print("\n==================== PIPELINE GLOBAL SUMMARY ====================")
+    print(f"Total elements (component rows) analyzed: {len(all_rows)}")
+    print(f"Total unique subsystems: {len([s for s in all_subsystems if s])}")
+    print(f"Total unique sections: {len([s for s in all_sections if s])}")
+    print(f"Total unique subsections: {len([s for s in all_subsections if s])}")
+    if lib_conflicts is not None:
+        print(f"Total library warnings/conflicts: {lib_conflicts}")
+    else:
+        print(f"Total warnings: {warning_count}")
+    print(f"Total mass of all components: {total_mass:.6f} kg")
+    print("===============================================================\n")
 
     _auto_refresh_component_libraries(base, selected_subsystems)
 
@@ -982,6 +1044,8 @@ def main():
 
     if not completed_subsystems:
         print("No subsystem completed successfully.")
+
+
 
 
 if __name__ == "__main__":

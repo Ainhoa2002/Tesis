@@ -47,8 +47,8 @@ def load_all_results(base_dir: Path) -> pd.DataFrame:
 
     for c in ["Section", "Subsection", "Category", "Part_Number", "Designators", "Ecoinvent_unit"]:
         if c not in df.columns:
-            df[c] = "Unknown"
-        df[c] = df[c].astype(str).str.strip().replace({"": "Unknown", "nan": "Unknown", "None": "Unknown"})
+            df[c] = "Others"
+        df[c] = df[c].astype(str).str.strip().replace({"": "Others", "nan": "Others", "None": "Others", "Unknown": "Others"})
 
     if "Total_quantity" not in df.columns:
         df["Total_quantity"] = np.nan
@@ -128,11 +128,18 @@ def main() -> None:
     )
     st.plotly_chart(fig2, width="stretch")
 
-    # 2b) Treemap by Section > Subsection > Category > Component (all components, all subsystems)
+
+    # 2b) Treemap by Section > Subsection > Category > Component (use 'Others' for missing/auto/unknown category)
     st.subheader("2b) Treemap: Section > Subsection > Category > Component (all components)")
+    def clean_category(cat):
+        val = str(cat).strip().upper()
+        return cat if val not in {"", "AUTO", "UNKNOWN", "NONE", "NAN"} else "Others"
+
+    view2b = view.copy()
+    view2b["Category_for_treemap"] = view2b["Category"].apply(clean_category)
     fig2b = px.treemap(
-        view,
-        path=["Section", "Subsection", "Category", "Component"],
+        view2b,
+        path=["Section", "Subsection", "Category_for_treemap", "Component"],
         values="mass_kg",
     )
     st.plotly_chart(fig2b, width="stretch")
@@ -165,6 +172,46 @@ def main() -> None:
         labels={"mass_kg": "Mass (kg)"},
     )
     st.plotly_chart(fig3, width="stretch")
+
+    # 4) Pie chart: Section or Component (top N, rest as 'Others')
+    st.subheader("4) Pie chart: Mass distribution by Section or Component")
+    pie_mode = st.radio(
+        "Pie chart mode",
+        ["Section", "Component (top 20)"]
+    )
+    if pie_mode == "Section":
+        pie_df = (
+            view.groupby("Section", as_index=False)["mass_kg"].sum()
+            .sort_values("mass_kg", ascending=False)
+        )
+        fig_pie = px.pie(
+            pie_df,
+            names="Section",
+            values="mass_kg",
+            title="Mass distribution by Section",
+        )
+        st.plotly_chart(fig_pie, width="stretch")
+    else:
+        # By Component: top 20, rest as 'Others'
+        comp_mass = (
+            view.groupby("Component", as_index=False)["mass_kg"].sum()
+            .sort_values("mass_kg", ascending=False)
+        )
+        top_n = 20
+        if len(comp_mass) > top_n:
+            top = comp_mass.head(top_n)
+            others_mass = comp_mass["mass_kg"].iloc[top_n:].sum()
+            pie_df = top.copy()
+            pie_df.loc[len(pie_df)] = ["Others", others_mass]
+        else:
+            pie_df = comp_mass.copy()
+        fig_pie = px.pie(
+            pie_df,
+            names="Component",
+            values="mass_kg",
+            title=f"Mass distribution by Component (top {top_n} + Others)",
+        )
+        st.plotly_chart(fig_pie, width="stretch")
 
     st.subheader("Data preview")
     cols = [
