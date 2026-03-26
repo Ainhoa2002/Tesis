@@ -21,7 +21,7 @@ import plotly.express as px
 import streamlit as st
 
 BASE_DIR = Path(__file__).resolve().parent
-RESULT_SUFFIX = "_component_mass_results.csv"
+RESULT_SUFFIX = "_component_results.csv"
 
 
 def _to_num(series: pd.Series) -> pd.Series:
@@ -107,7 +107,7 @@ def main() -> None:
 
     # 1) Horizontal bar: top components by mass.
     st.subheader("1) Top components by mass")
-    top_n = st.slider("Top N", 5, 100, 25, 5)
+    top_n = st.slider("Top N", 5, 1000, 25, 5)
     b1 = (
         view.groupby("Component", as_index=False)["mass_kg"]
         .sum()
