@@ -1,21 +1,33 @@
 Casing,Section,Subsection,unit,Quantity_per_element,Has_datasheet_info,L_mm,W_mm,H_mm,Volume_cm3_excel,Density_min_g_cm3,Density_max_g_cm3,Metal_extra_g,mass_space_relation_m2/kg,Ecoinvent_flow,Ecoinvent_unit,Direction,Database
 0402,Passives,Capacitors,kg,,NO,1.0,0.5,0.5,,6,7,0,,"capacitor production, for surface-mounting",kg,Input,EcoInvent
+0402,Passives,Capacitors,kg,,NO,1.0,0.5,0.5,,6,7,0,0,"capacitor production, for surface-mounting",kg,Input,EcoInvent
 0402,Passives,Resistors,kg,,NO,1.0,0.5,0.35,,3,4,0.0002,0,"resistor production, surface-mounted",kg,Input,EcoInvent
+0402,Discrete Semiconductors,Small signal,kg,0.0000014,YES,1.0,0.5,0.5,,1.2,1.3,0.0000002,0,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent
 0603,Passives,Capacitors,kg,,NO,1.6,0.8,0.8,,6,7,0,,"capacitor production, for surface-mounting",kg,Input,EcoInvent
+0603,Passives,Capacitors,kg,,NO,1.6,0.8,0.8,,6,7,0,0,"capacitor production, for surface-mounting",kg,Input,EcoInvent
+0603,Passives,Protection,kg,,NO,1.6,0.8,0.8,,1.5,2.5,0,0,"electronic component, passive, unspecified",kg,Input,EcoInvent
 0603,Passives,Inductors,kg,,NO,1.6,0.8,0.8,,4.5,5.5,,,"inductor production, low value multilayer chip",kg,Input,EcoInvent
+0804,Passives,Resistors,kg,0.000129,YES,,,,,,,,,"electronic component, passive, unspecified",kg,Input,EcoInvent
 0805,Passives,Capacitors,kg,,NO,2.0,1.25,0.8,,6,7,0,,"capacitor production, for surface-mounting",kg,Input,EcoInvent
+0805,Passives,Capacitors,kg,,NO,2.0,1.25,0.8,,6,7,0,0,"capacitor production, for surface-mounting",kg,Input,EcoInvent
 0805,Passives,Inductors,kg,,NO,2.0,1.25,0.8,,4.5,5.5,,0,"inductor production, low value multilayer chip",kg,Input,EcoInvent
+0805,Passives,Resistors,kg,,NO,2,1.25,0.5,,6,7,0,,"resistor production, surface-mounted",kg,Input,EcoInvent
+0805,Passives,Resistors,kg,,NO,2.0,1.25,0.5,,3,4,0.000001,0,"resistor production, surface-mounted",kg,Input,EcoInvent
 0805,Passives,Resistors,kg,,NO,2.0,1.25,0.5,,3,4,0.001,0,"resistor production, surface-mounted",kg,Input,EcoInvent
-0805,Passives,Resistors,kg,,NO,1.0,0.5,0.35,,3,4,0.0002,0,"resistor production, surface-mounted",kg,Input,EcoInvent
+0805,Passives,Resistors,kg,,NO,2,1.25,0.5,,3,4,0.0002,0,"resistor production, surface-mounted",kg,Input,EcoInvent
 1206,Passives,Capacitors,kg,,NO,3.2,1.6,1.7,,6,7,0,,"capacitor production, for surface-mounting",kg,Input,EcoInvent
 1206,Passives,Resistors,kg,,NO,3.2,1.6,0.55,,3,4,0.003,,"resistor production, surface-mounted",kg,Input,EcoInvent
 1206,Passives,Resistors,kg,,NO,3.2,1.6,0.55,,3,4,0.003,0,"resistor production, surface-mounted",kg,Input,EcoInvent
 1206,Passives,Protection,kg,0.000474,YES,,,,,,,,,"electronic component, passive, unspecified",kg,Input,EcoInvent
-1210,Passives,Capacitors,kg,,NO,3.18,2.41,1.4,,6,7,0,,"capacitor production, for surface-mounting",kg,Input,EcoInvent
+1210,Passives,Capacitors,kg,,NO,3.2,2.5,2.5,,6,7,0,0,"capacitor production, for surface-mounting",kg,Input,EcoInvent
+1210,Passives,Inductors,kg,,NO,3.18,2.41,1.4,,6,7,0,,"inductor production, ring core choke type",kg,Input,EcoInvent
 1808,Passives,Capacitors,kg,,NO,4.5,2.0,1.6,,6,7,0,,"capacitor production, for surface-mounting",kg,Input,EcoInvent
+2220,Passives,Inductors,kg,0.00048,YES,,,,,,,,0,"inductor production, ring core choke type",kg,Input,EcoInvent
+BGA-25,Modules,DC/DC Converters,kg,0.001834,YES,,,,,,,,,"electronic component production, active, unspecified",kg,Input,EcoInvent
+BGA-64,IC,Mixed-Signal,kg,,NO,7,7,1.42,,1.2,1.3,0.00001,,"integrated circuit production, logic type",kg,Input,EcoInvent
 C,Passives,Capacitors,kg,0.0003,YES,,,,,,,,,"capacitor production, electrolyte type, < 2cm height",kg,Input,EcoInvent
 D2PAK,IC,Analog,kg,,NO,10.29,9.65,4.83,,1.2,1.3,0.9674,,"integrated circuit production, logic type",kg,Input,EcoInvent
-DIP,Electromechanical,Switches,kg,,NO,6.2,4.5,1.45,0.072,1.2,1.3,0.05,0,"electronic component, passive, unspecified",kg,Input,EcoInvent
+DIP,Electromechanical,Switches,kg,,NO,6.2,4.5,1.45,,1.2,1.3,0.05,0,"electronic component, passive, unspecified",kg,Input,EcoInvent
 DIP6 SMD,Modules,Hybrid relays,kg,0.000427,YES,,,,,,,,,"electronic component production, active, unspecified",kg,Input,EcoInvent
 DO-214AA,Discrete Semiconductors,Small signal,kg,,NO,4.57,3.94,2.4,,1.2,1.25,0.05,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent
 DO-214AC,Discrete Semiconductors,Small signal,kg,0.00012,YES,,,,,,,,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent
@@ -23,31 +35,52 @@ DO-35,Discrete Semiconductors,Small signal,kg,0.000125,YES,,,,,,,,,"diode produc
 DO214AC,Discrete Semiconductors,Small Signal,kg,0.000061,YES,,,,,,,,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent
 DPAK,Discrete Semiconductors,Power,kg,,NO,6.6,6.2,2.3,,1.2,1.3,0.215,,"transistor production, surface-mounted",kg,Input,EcoInvent
 E,Passives,Capacitors,kg,,NO,7.3,4.3,4.1,,5,6,0,,"capacitor production, electrolyte type, < 2cm height",kg,Input,EcoInvent
+E,Passives,Capacitors,kg,,NO,7.3,4.3,4.1,,5,6,0,0,"capacitor production, electrolyte type, < 2cm height",kg,Input,EcoInvent
 LFCSP20,IC,Analog,kg,0.0000584,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
 LGA25,IC,Analog,kg,0.0005,YES,,,,,,,,,"electronic component production, active, unspecified",kg,Input,EcoInvent
 MELF,Passives,Resistors,kg,,NO,,,,0.00554,3,4,,0,"resistor production, surface-mounted",kg,Input,EcoInvent
+MSOP-16,IC,Mixed-Signal,kg,0.000343,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
+MSOP-8,IC,Analog,kg,0.00014,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
+QFN-33,IC,Analog,kg,0.00003,YES,5.0,5.0,0.8,,1.2,1.3,0.000005,0,"integrated circuit production, logic type",kg,Input,EcoInvent
+SM-8,IC,Digital,kg,0.0000234,YES,,,,,,,,0,"integrated circuit production, logic type",kg,Input,EcoInvent
+SOD-323-2,Discrete Semiconductors,Small signal,kg,0.00001,YES,,,,,,,,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent
 SOD-80C,Discrete Semiconductors,Small signal,kg,,NO,,,,0.00744,2.2,2.3,0.002,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent
 SOD123,Discrete Semiconductors,Small Signal,kg,0.000333,YES,,,,,,,,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent
 SOD123FL,Discrete Semiconductors,Power,kg,0.000018,YES,,,,,,,,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent
 SOD523,Discrete Semiconductors,Small Signal,kg,0.0000016,YES,,,,,,,,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent
+SOIC-14,IC,Mixed-Signal,kg,0.000174,YES,8.65,3.9,1.75,,1.2,1.3,0.0001,0,"integrated circuit production, logic type",kg,Input,EcoInvent
+SOIC-8,IC,Mixed-Signal,kg,,NO,4.9,3.9,1.75,,1.2,1.2,,,"integrated circuit production, logic type",kg,Input,EcoInvent
 SOIC16,IC,Digital,kg,,NO,10,3.9,1.75,,1.2,1.3,0.1,,"integrated circuit production, logic type",kg,Input,EcoInvent
 SOIC8,IC,Analog,kg,,NO,4.9,3.9,1.75,,1.2,1.2,,,"integrated circuit production, logic type",kg,Input,EcoInvent
 SOT223,IC,Analog,kg,0.000112,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
+SOT223,Discrete Semiconductors,Small signal,kg,0.000188,YES,,,,,,,,,"transistor production, surface-mounted",kg,Input,EcoInvent
 SOT23,Discrete Semiconductors,ESD Protection,kg,,NO,2.9,1.3,1,,1.2,1.3,0.0035,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent
 SOT23-3,Discrete Semiconductors,Small signal,kg,,NO,2.9,1.3,1,,1.2,1.3,0.0035,,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent
+SOT23-3,Discrete Semiconductors,Small signal,kg,,NO,2.9,1.3,1.0,,1.2,1.3,0.0000035,0,"diode production, glass-, for surface-mounting",kg,Input,EcoInvent
+SOT23-3,IC,Analog,kg,0.0000082,YES,2.9,1.3,1.0,0.00377,1.2,1.3,0.0000035,0,"integrated circuit production, logic type",kg,Input,EcoInvent
+SOT23-3,Passives,Resistors,kg,0.000008,YES,,,,,,,,0,"electronic component, passive, unspecified",kg,Input,EcoInvent
+SOT23-5,IC,Analog,kg,,NO,2.9,1.3,1,,1.2,1.3,0.0035,0,"integrated circuit production, logic type",kg,Input,EcoInvent
+SOT23-6,IC,Memory,kg,,NO,2.9,1.3,1,,1.2,1.3,0.0035,,"integrated circuit production, logic type",kg,Input,EcoInvent
 SOT89,IC,Analog,kg,0.00019,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
 TO-220,IC,Analog,kg,,NO,10.67,4.7,16.3,,1.2,1.3,1.3,,"integrated circuit production, logic type",kg,Input,EcoInvent
 TO-220-2-V,Discrete Semiconductors,Power,kg,0.0019,YES,,,,,,,,,"transistor production, wired, small size, through-hole mounting",kg,Input,EcoInvent
 TO-247,Discrete Semiconductors,Power,kg,0.00542,YES,,,,,,,,,"insulated gate bipolar transistor production, for electric vehicle applications",kg,Input,EcoInvent
 TO-247-2,Discrete Semiconductors,Power,kg,0.00542,YES,,,,,,,,,"transistor production, wired, big size, through-hole mounting",kg,Input,EcoInvent
 TO-92,IC,Analog,kg,0.000214,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
+TSSOP-14,IC,Digital,kg,0.0000325,YES,5.0,4.4,1.0,,1.2,1.3,0.000005,0,"integrated circuit production, logic type",kg,Input,EcoInvent
+TSSOP-14,IC,Analog,kg,0.0000574,YES,,,,,,,,0,"integrated circuit production, logic type",kg,Input,EcoInvent
+TSSOP-8,IC,Analog,kg,0.000023550,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
 TSSOP14,IC,Digital,kg,0.0000572,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
 TSSOP16,IC,Analog,kg,0.000173,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
 TSSOP24,IC,Mixed-Signal,kg,0.00015,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
 TSSOP38,IC,Mixed-Signal,kg,0.0002626,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
 UQFN10,IC,Digital,kg,0.000031,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
+VQFN-16,IC,Mixed-Signal,kg,0.00005,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
+VQFN-20,IC,Digital,kg,0.000043,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
 VQFN14,IC,Digital,kg,0.0000322,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
 VQFN16,IC,Digital,kg,0.0000372,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
 VSON8,IC,Digital,kg,0.000024,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
+VSSOP-8,IC,Analog,kg,0.0000116,YES,3.0,3.0,0.85,,1.2,1.3,0.000002,0,"integrated circuit production, logic type",kg,Input,EcoInvent
+VSSOP-8,IC,Digital,kg,0.00001,YES,,,,,,,,0,"integrated circuit production, logic type",kg,Input,EcoInvent
 VSSOP10,IC,Mixed-Signal,kg,0.0000237,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
 VSSOP8,IC,Mixed-Signal,kg,0.0000096,YES,,,,,,,,,"integrated circuit production, logic type",kg,Input,EcoInvent
