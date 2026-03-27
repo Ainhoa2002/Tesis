@@ -1,0 +1,10 @@
+Order_index,Category_order,Group_order,Category,Section,Subsection,Designators,Casing,Part_Number,Database,Ecoinvent_flow,Ecoinvent_unit,Direction,Amount,Mass_per_element_g,Total_mass_g,Total_mass_kg,Formula_basis,Validation_error
+1,1,1,AUTO,Electromechanical,Connectors,J7A,,1-770178-0,EcoInvent,"electric connector production, wire clamp",kg,Input,0.00738,7.38,7.38,0.00738,mass-based,
+2,1,1,AUTO,Electromechanical,Connectors,J7B,,350711-1,EcoInvent,"electric connector production, wire clamp",kg,Input,0.003465,3.465,3.465,0.003465,mass-based,
+3,1,1,AUTO,Electromechanical,Connectors,J6,,N3793-6302RB,EcoInvent,"electric connector production, wire clamp",kg,Input,0.00405,4.05,4.05,0.00405,mass-based,
+4,1,1,AUTO,Electromechanical,Connectors,"J1,J8",,N3314-6302RB,EcoInvent,"electric connector production, wire clamp",kg,Input,0.00405,4.05,4.05,0.00405,mass-based,
+5,1,1,AUTO,Electromechanical,Connectors,"J1,J8",,N3314-6302RB,EcoInvent,"electric connector production, wire clamp",kg,Input,0.0081,4.05,8.1,0.0081,mass-based,
+6,1,1,AUTO,Electromechanical,Connectors,"J2,J5",,N3428-6302RB,EcoInvent,"electric connector production, wire clamp",kg,Input,0.03636257408,18.181287,36.362574,0.03636257408,mass-based,
+7,1,1,AUTO,Electromechanical,Connectors,"J3,J4",,N3429-6302RB,EcoInvent,"electric connector production, wire clamp",kg,Input,0.0423207424,21.160371,42.320742,0.0423207424,mass-based,
+8,1,2,AUTO,Hardware,Mounting hardware,screws,,3341-5,EcoInvent,"market for steel, low-alloyed",kg,pre-input,0.00884695,0.631925,8.84695,0.00884695,mass-based,
+8,1,2,AUTO,Hardware,Mounting hardware,screws,,3341-5,EcoInvent,"metal working, average for metal product manufacturing",kg,pre-process,0.00884695,0.631925,8.84695,0.00884695,mass-based,

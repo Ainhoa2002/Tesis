@@ -5,29 +5,25 @@ Discrete Semiconductors,ESD Protection,NXP,digital_control,1
 Discrete Semiconductors,Optoelectronics,LED,"contactor_card, digital_control, inverter_power_card",4
 Discrete Semiconductors,Power,"General purpose, IGBT, MOSFET, Rectifier diode, Schottky Rectifier, Schottky rectifier","4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, contactor_card, digital_control, inverter_power_card",10
 Discrete Semiconductors,Small signal,"BJT, Bipolar Transistor, Bipolar transistor, Current Regulative, Diode, Dual, Dual Diode, ESD Protection, MOSFET, Rectifier, Schottky, Switching, TVS, Zener, Zener Diodes","4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, contactor_card, digital_control, inverter_power_card",37
-Electromechanical,Connectors,"FFC/FPC, High-Density Array, High-Speed I/O, Modular Jack, PicoBlade, Right Angle Header, USB","4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, contactor_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card",31
+Electromechanical,Connectors,"FFC/FPC, High-Density Array, High-Speed I/O, Modular Jack, PicoBlade, Right Angle Header, USB","4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, contactor_card, control_backplane_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card",38
 Electromechanical,Fuse holder,,"4Q_output_control_card, fuse_card",3
 Electromechanical,Relays,,contactor_card,1
 Electromechanical,Switches,"Contact Block, DIP Switch, Emergency Stop Pushbutton Head","digital_control, fan_supervision_card",4
 Hardware,Enclosure,,fuse_card,1
-Hardware,Mounting hardware,CERN,"4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, digital_control, fan_supervision_card, inverter_power_card",11
+Hardware,Mounting hardware,CERN,"4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, control_backplane_card, digital_control, fan_supervision_card, inverter_power_card",12
 Hardware,Thermal Management,Heatsink,"4Q_output_control_card, 4Q_power_card, contactor_card",3
-IC,Analog,"Power Management, Power management, Sensor","4Q_output_control_card, 4Q_power_card, digital_control, inverter_power_card",11
-IC,Digital,"Interface, Logic","4Q_output_control_card, digital_control, inverter_power_card",5
+IC,Analog,"Driver, Power Management, Power management, Sensor","4Q_output_control_card, 4Q_power_card, digital_control, inverter_power_card",16
+IC,Digital,"Interface, Logic","4Q_output_control_card, digital_control, inverter_power_card",12
 IC,Logic / Mixed-Signal,USB Interface,digital_control,1
-IC,Memory,EEPROM,digital_control,1
+IC,Memory,EEPROM,digital_control,2
 IC,Mixed signal,Isolated Amplifier,4Q_power_card,2
-IC,Mixed-Signal,Isolator,digital_control,1
-Integrated Circuits (ICs),Analog,"Driver, Power Management",digital_control,5
-Integrated Circuits (ICs),Digital,"Interface, Logic",digital_control,7
-Integrated Circuits (ICs),Memory,EEPROM,digital_control,1
-Integrated Circuits (ICs),Mixed-Signal,"Interface, Isolated Digital Input, Power Monitor, Voltage Translator",digital_control,4
-Integrated Circuits (ICs),Optoelectronics,Optocoupler,digital_control,1
+IC,Mixed-Signal,"Interface, Isolated Digital Input, Isolator, Power Monitor, Voltage Translator",digital_control,5
+IC,Optoelectronics,Optocoupler,digital_control,1
 Magnetics,Current sensing,,inverter_power_card,1
 Magnetics,Inductors,,filter_card,1
 Mechanical components,cover,,mechanical_components,3
 Mechanical components,heatsink,,mechanical_components,1
-Mechanical components,panel,,mechanical_components,5
+Mechanical components,panel,,mechanical_components,7
 Mechanical components,separator,,mechanical_components,1
 Mechanical components,spacer,,mechanical_components,1
 Modules,DC/DC Converters,,"4Q_output_control_card, 4Q_power_card, inverter_power_card",3
