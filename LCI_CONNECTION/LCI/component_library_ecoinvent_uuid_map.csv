@@ -1,44 +1,43 @@
 Ecoinvent_flow,UUID,flow/process
-"capacitor production, electrolyte type, < 2cm height",4ba31d33-ea47-366e-a700-f2c314eefe35,
-"capacitor production, electrolyte type, > 2cm height",,
-"capacitor production, film type, for through-hole mounting",,
-"capacitor production, for surface-mounting",58bb18d4-4cd4-30e4-a30e-3d49987423f9,
-"diode production, glass-, for surface-mounting",0be8d851-ba22-3358-9978-1e98418488c6,
-"diode production, glass-, for through-hole mounting",,
-"electric connector production, peripheral type buss",,
-"electric connector production, wire clamp",dd86962a-dd7e-316b-9ae3-bb22cf1fcbc2,
-"electronic component production, active, unspecified",aab92320-5f7c-3d87-aafa-7dcd00f7295b,
-"electronic component, passive, unspecified",f3d352d4-6c0c-3a0d-819a-cdac67904aae,
-"epoxy resin, liquid",,
-"inductor production, low value multilayer chip",,
-"inductor production, ring core choke type",,
-injection moulding,,
-"insulated gate bipolar transistor production, for electric vehicle applications",,
-"integrated circuit production, logic type",bc6841b3-b7b5-35d7-bd6c-a4aea2d9319a,
-light emitting diode production,,
-"market for aluminium alloy, AlMg3",,
-"market for aluminium, primary",,
-"market for aluminium, wrought alloy",,
-"Market for copper, cathode",,
-"market for copper, cathode",,
-"market for metal working, average for metal product manufacturing",,
-market for polycarbonate,,
-"market for steel, chromium steel 18/8",,
-"market for steel, low-alloyed",fa03ac80-8409-3532-8909-e482fa560643,
-"market for zinc, primary",,
-"metal working, average for aluminium product manufacturing",,
-"metal working, average for chromium steel product manufacturing",,
-"metal working, average for copper product manufacturing",,
-"metal working, average for copper product manufacturing",,
-"metal working, average for metal product manufacturing",b4a702e6-a0a4-3606-b3eb-5b342853f443,
+"capacitor production, electrolyte type, < 2cm height",4ba31d33-ea47-366e-a700-f2c314eefe35,unit process
+"capacitor production, electrolyte type, > 2cm height",8a9ed6e2-a68a-3a9c-9312-3045c3e64d6d,unit process
+"capacitor production, film type, for through-hole mounting",59460f65-cf77-3d26-9e32-c7d03a4cd924,unit process
+"capacitor production, for surface-mounting",58bb18d4-4cd4-30e4-a30e-3d49987423f9,unit process
+"diode production, glass-, for surface-mounting",0be8d851-ba22-3358-9978-1e98418488c6,unit process
+"diode production, glass-, for through-hole mounting",863bb1f1-9c01-33bb-b157-c441b466754e,unit process
+"electric connector production, peripheral type buss",92091161-fb50-3a3f-8f3d-a35a0a2e0fb0,unit process
+"electric connector production, wire clamp",dd86962a-dd7e-316b-9ae3-bb22cf1fcbc2,unit process
+"electronic component production, active, unspecified",aab92320-5f7c-3d87-aafa-7dcd00f7295b,unit process
+"electronic component, passive, unspecified",f3d352d4-6c0c-3a0d-819a-cdac67904aae,unit process
+"epoxy resin, liquid",f66193fe-5709-3b4a-b5dd-e07525393aef,unit process
+"oduction, low value multilayer chip",3ab9b906-aafe-3619-af19-8f898a2caab6,unit process
+"inductor production, ring core choke type",6fbd98c3-1c92-3f5f-ba66-bda680ca0ebc,unit process
+injection moulding,68d6dfcf-2089-4586-9bbf-ad75591105cf,flow
+"insulated gate bipolar transistor production, for electric vehicle applications",898316bb-c09c-3745-80b4-a5262fd2a9f9,unit process
+"integrated circuit production, logic type",bc6841b3-b7b5-35d7-bd6c-a4aea2d9319a,unit process
+light emitting diode production,068100d0-b364-33c5-9c23-4a2ad382e3b3,unit process
+"market for aluminium alloy, AlMg3",d2348b26-49e6-361f-b975-ed980aafda97,unit process
+"market for aluminium, primary",3ab9b906-aafe-3619-af19-8f898a2caab6,unit process
+"market for aluminium, wrought alloy",f5777d54-6259-336c-b6b2-27a0bfac3c1e,unit process
+"market for copper, cathode",40dc9f2f-40c2-37b4-8f38-53d043a5f756,unit process
+"market for metal working, average for metal product manufacturing",ee2d0c92-a051-3a2d-a58b-0edfc89f19c7,unit process
+market for polycarbonate,03f3794b-f0d9-3918-b124-9a62a36aada7,unit process
+"market for steel, chromium steel 18/8",11702522-568d-3823-8e86-467f428672ea,unit process
+"market for steel, low-alloyed",fa03ac80-8409-3532-8909-e482fa560643,unit process
+"market for zinc, primary",b620b979-8e06-3778-9e5f-9d5de2dc3d74,unit process
+"metal working, average for aluminium product manufacturing",9e6c96d1-8f01-3261-9993-9afa310d6c63,unit process
+"metal working, average for chromium steel product manufacturing",6ccde1a1-a51e-3025-9e9f-7c685189aa9d,unit process
+"metal working, average for copper product manufacturing",d81d83ea-b26b-383a-ab8d-29cca83903fb,unit process
+"metal working, average for metal product manufacturing",b4a702e6-a0a4-3606-b3eb-5b342853f443,unit process
 "mounting, surface mount technology, Pb-free solder",ca2b5076-f230-473d-9272-da1a678b4f93,flow
 "mounting, through-hole technology, Pb-free solder",66084f92-4bed-46cb-931e-7ea8300c0972,flow
-"printed wiring board production, for through-hole mounting, Pb free surface",dcda613c-0c0d-3cea-a518-a4847d197cdb,
-"resistor production, metal film type, through-hole mounting",a0dd6779-6b13-38f5-ab6b-624af954475a,
-"resistor production, surface-mounted",4ec1457b-7716-3a2b-b019-a95236792b9a,
-"resistor production, wirewound, through-hole mounting",,
-"resistor, metal film type, through-hole mounting",,
-"transformer production, low voltage use",,
-"transistor production, surface-mounted",fe412dc1-c484-36e1-9799-648be3ecec7c,
-"transistor production, wired, big size, through-hole mounting",,
-"transistor production, wired, small size, through-hole mounting",,
+"printed wiring board production, for through-hole mounting, Pb free surface",dcda613c-0c0d-3cea-a518-a4847d197cdb,unit process
+"resistor production, metal film type, through-hole mounting",a0dd6779-6b13-38f5-ab6b-624af954475a,unit process
+"resistor production, surface-mounted",4ec1457b-7716-3a2b-b019-a95236792b9a,unit process
+"resistor production, wirewound, through-hole mounting",e0d7a365-f222-3c31-992f-d9223bb691a0,unit process
+"resistor, metal film type, through-hole mounting",a0dd6779-6b13-38f5-ab6b-624af954475a,unit process
+"transformer production, low voltage use",33903d25-0ea9-3fde-96d4-f3e0c10deb33,unit process
+"transistor production, surface-mounted",fe412dc1-c484-36e1-9799-648be3ecec7c,unit process
+"transistor production, wired, big size, through-hole mounting",dc537ffb-6da8-3c92-b6e9-9ba0d7a74803,unit process
+"transistor production, wired, small size, through-hole mounting",f3ef86cc-7a61-3cfd-b5ef-fb23a5546472,unit process
+,,

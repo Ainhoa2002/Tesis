@@ -1,15 +1,15 @@
 Flow,UUID,flow/process,Unit,Amount,Direction
-"printed wiring board production, for through-hole mounting, Pb free surface",,m2,0.02475,Input
-"metal working, average for copper product manufacturing",,kg,0.016,Input
-"Market for copper, cathode",,kg,0.016,pre-input
-"market for zinc, primary",,kg,0.016,pre-process
-"electric connector production, wire clamp",,kg,0.0211603712,Input
-"resistor, metal film type, through-hole mounting",,kg,0.00044502,Input
-"market for steel, chromium steel 18/8",,kg,0.00164785,pre-input
-"metal working, average for chromium steel product manufacturing",,kg,0.00164785,pre-process
-"mounting, through-hole technology, Pb-free solder",,m2,0.02475,Input
-"capacitor production, film type, for through-hole mounting",kg,0.2991084975,Input
-"diode production, glass-, for through-hole mounting",kg,0.00025,Input
-"electronic component production, active, unspecified",kg,1.2,Input
-"transistor production, wired, big size, through-hole mounting",kg,0.01084,Input
-"epoxy resin, liquid",kg,0.02536443,Input
+"printed wiring board production, for through-hole mounting, Pb free surface",dcda613c-0c0d-3cea-a518-a4847d197cdb,unit process,m2,0.02475,Input
+"metal working, average for copper product manufacturing",d81d83ea-b26b-383a-ab8d-29cca83903fb,unit process,kg,0.016,Input
+"market for copper, cathode",40dc9f2f-40c2-37b4-8f38-53d043a5f756,unit process,kg,0.016,pre-input
+"market for zinc, primary",b620b979-8e06-3778-9e5f-9d5de2dc3d74,unit process,kg,0.016,pre-process
+"electric connector production, wire clamp",dd86962a-dd7e-316b-9ae3-bb22cf1fcbc2,unit process,kg,0.0211603712,Input
+"resistor, metal film type, through-hole mounting",a0dd6779-6b13-38f5-ab6b-624af954475a,unit process,kg,0.00044502,Input
+"market for steel, chromium steel 18/8",11702522-568d-3823-8e86-467f428672ea,unit process,kg,0.00164785,pre-input
+"metal working, average for chromium steel product manufacturing",6ccde1a1-a51e-3025-9e9f-7c685189aa9d,unit process,kg,0.00164785,pre-process
+"mounting, through-hole technology, Pb-free solder",66084f92-4bed-46cb-931e-7ea8300c0972,flow,m2,0.02475,Input
+"capacitor production, film type, for through-hole mounting",59460f65-cf77-3d26-9e32-c7d03a4cd924,unit process,kg,0.0411234975,Input
+"diode production, glass-, for through-hole mounting",863bb1f1-9c01-33bb-b157-c441b466754e,unit process,kg,0.00025,Input
+"electronic component production, active, unspecified",aab92320-5f7c-3d87-aafa-7dcd00f7295b,unit process,kg,1.2,Input
+"transistor production, wired, big size, through-hole mounting",dc537ffb-6da8-3c92-b6e9-9ba0d7a74803,unit process,kg,0.01084,Input
+"epoxy resin, liquid",f66193fe-5709-3b4a-b5dd-e07525393aef,unit process,kg,0.02536443,Input

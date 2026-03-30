@@ -604,48 +604,24 @@ def _build_storage_library(
 
 
 def build_full_storage_libraries(base_dir: Path) -> Tuple[int, int]:
-    """Create full component storage libraries for parameters and mass results."""
-    active_subsystems = _discover_parameter_subsystems(base_dir)
+    # Load mapping
+    map_path = base_dir / 'component_library_ecoinvent_uuid_map.csv'
+    uuid_map = {}
+    with open(map_path, newline='', encoding='utf-8-sig') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            flow = row['Ecoinvent_flow'].strip().strip('"')
+            uuid = row['UUID'].strip()
+            flow_process = row['flow/process'].strip()
+            uuid_map[flow] = (uuid, flow_process)
 
-    parameters_count = _build_storage_library(
-        base_dir,
-        "_component_parameters.csv",
-        PARAMETERS_STORAGE_LIBRARY_NAME,
-    )
-    results_count = _build_storage_library(
-        base_dir,
-        "_component_mass_results.csv",
-        RESULTS_STORAGE_LIBRARY_NAME,
-        filter_subsystems=active_subsystems,
-        skip_stale_against_parameters=True,
-    )
-
-    return parameters_count, results_count
-
-
-def _format_float(value: float) -> str:
-    return format(value, ".12g")
-
-
-def build_ecoinvent_totals_library(base_dir: Path) -> int:
-    """Build one consolidated Ecoinvent library from all *_component_io_flows.csv files.
-
-    Each output row represents one unique (Ecoinvent_flow, Ecoinvent_unit, Direction)
-    across all subsystems, with:
-    - Total_amount: summed in the original Ecoinvent unit
-    - Total_mass_kg: summed only when unit is kg/g (blank otherwise)
-    - Subsystems: comma-separated subsystem list where the flow appears
-    """
     totals: Dict[Tuple[str, str, str], Dict[str, object]] = {}
     uuid_warnings = []
-
     active_subsystems = _discover_parameter_subsystems(base_dir)
-
     for path in sorted(base_dir.glob("*_ipe_flows_from_parameters.csv")):
         subsystem = path.name[: -len("_ipe_flows_from_parameters.csv")]
         if subsystem not in active_subsystems:
             continue
-
         with open(path, newline="", encoding="utf-8-sig") as f:
             reader = csv.DictReader(f)
             for row in reader:
@@ -653,16 +629,14 @@ def build_ecoinvent_totals_library(base_dir: Path) -> int:
                 unit = _clean(row.get("Unit"))
                 direction = _clean(row.get("Direction"))
                 amount_text = _clean(row.get("Amount"))
-                uuid = _clean(row.get("UUID"))
-
+                # Fill UUID and flow/process from mapping
+                uuid, flow_process = uuid_map.get(flow, ('', ''))
                 if flow == "" or unit == "" or direction == "" or amount_text == "":
                     continue
-
                 try:
                     amount = float(amount_text.replace(",", "."))
                 except ValueError:
                     continue
-
                 key = (flow, unit, direction)
                 if key not in totals:
                     totals[key] = {
@@ -674,20 +648,16 @@ def build_ecoinvent_totals_library(base_dir: Path) -> int:
                         "Total_mass_kg": 0.0,
                         "Subsystems": set(),
                     }
-
                 entry = totals[key]
                 if uuid:
                     entry["UUIDs"].add(uuid)
                 entry["Total_amount"] = float(entry["Total_amount"]) + amount
-
                 unit_l = unit.lower()
                 if unit_l == "kg":
                     entry["Total_mass_kg"] = float(entry["Total_mass_kg"]) + amount
                 elif unit_l == "g":
                     entry["Total_mass_kg"] = float(entry["Total_mass_kg"]) + (amount / 1000.0)
-
                 entry["Subsystems"].add(subsystem)
-
     rows: List[Dict[str, str]] = []
     for key in sorted(totals.keys(), key=lambda k: (k[0].casefold(), k[1].casefold(), k[2].casefold())):
         entry = totals[key]
@@ -696,12 +666,10 @@ def build_ecoinvent_totals_library(base_dir: Path) -> int:
         mass_text = ""
         if unit_l in {"kg", "g"}:
             mass_text = _format_float(float(entry["Total_mass_kg"]))
-
         uuids = sorted(entry["UUIDs"])
         uuid_str = ",".join(uuids)
         if len(uuids) > 1:
             uuid_warnings.append(f"WARNING: El flujo '{entry['Ecoinvent_flow']}' ({entry['Ecoinvent_unit']}, {entry['Direction']}) tiene múltiples UUID: {uuid_str} en subsistemas: {', '.join(sorted(entry['Subsystems']))}")
-
         rows.append(
             {
                 "Ecoinvent_flow": str(entry["Ecoinvent_flow"]),
@@ -713,7 +681,6 @@ def build_ecoinvent_totals_library(base_dir: Path) -> int:
                 "Subsystems": ", ".join(sorted(entry["Subsystems"])),
             }
         )
-
     _write_csv(base_dir / ECOINVENT_TOTALS_LIBRARY_NAME, ECOINVENT_TOTALS_FIELDS, rows)
     for warning in uuid_warnings:
         print(warning)
@@ -1096,7 +1063,12 @@ def build_libraries(
     _write_csv(base_dir / PART_LIBRARY_NAME, PART_FIELDS, part_rows)
     build_ecoinvent_totals_library(base_dir)
     system_subsystem_count = build_system_subsystem_library(base_dir, raw_rows)
-    parameters_storage_count, results_storage_count = build_full_storage_libraries(base_dir)
+    result_full_storage = build_full_storage_libraries(base_dir)
+    if isinstance(result_full_storage, tuple):
+        parameters_storage_count, results_storage_count = result_full_storage
+    else:
+        parameters_storage_count = result_full_storage
+        results_storage_count = 0
 
     _print_conflict_summary(
         casing_conflicts,
@@ -1106,7 +1078,7 @@ def build_libraries(
         missing_mass_data_warnings,
     )
 
-    return (
+    result_tuple = (
         len(casing_rows),
         len(part_rows),
         conflict_count,
@@ -1114,6 +1086,95 @@ def build_libraries(
         parameters_storage_count,
         results_storage_count,
     )
+    return result_tuple
+
+
+def build_ecoinvent_totals_library(base_dir: Path) -> int:
+    # Load mapping
+    map_path = base_dir / 'component_library_ecoinvent_uuid_map.csv'
+    uuid_map = {}
+    with open(map_path, newline='', encoding='utf-8-sig') as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            flow = row['Ecoinvent_flow'].strip().strip('"')
+            uuid = row['UUID'].strip()
+            flow_process = row['flow/process'].strip()
+            uuid_map[flow] = (uuid, flow_process)
+
+    totals: Dict[Tuple[str, str, str], Dict[str, object]] = {}
+    uuid_warnings = []
+    active_subsystems = _discover_parameter_subsystems(base_dir)
+    for path in sorted(base_dir.glob("*_ipe_flows_from_parameters.csv")):
+        subsystem = path.name[: -len("_ipe_flows_from_parameters.csv")]
+        if subsystem not in active_subsystems:
+            continue
+        with open(path, newline="", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                flow = _clean(row.get("Flow"))
+                unit = _clean(row.get("Unit"))
+                direction = _clean(row.get("Direction"))
+                amount_text = _clean(row.get("Amount"))
+                # Fill UUID and flow/process from mapping
+                uuid, flow_process = uuid_map.get(flow, ('', ''))
+                if flow == "" or unit == "" or direction == "" or amount_text == "":
+                    continue
+                try:
+                    amount = float(amount_text.replace(",", "."))
+                except ValueError:
+                    continue
+                key = (flow, unit, direction)
+                if key not in totals:
+                    totals[key] = {
+                        "Ecoinvent_flow": flow,
+                        "Ecoinvent_unit": unit,
+                        "Direction": direction,
+                        "UUIDs": set(),
+                        "Total_amount": 0.0,
+                        "Total_mass_kg": 0.0,
+                        "Subsystems": set(),
+                    }
+                entry = totals[key]
+                if uuid:
+                    entry["UUIDs"].add(uuid)
+                entry["Total_amount"] = float(entry["Total_amount"]) + amount
+                unit_l = unit.lower()
+                if unit_l == "kg":
+                    entry["Total_mass_kg"] = float(entry["Total_mass_kg"]) + amount
+                elif unit_l == "g":
+                    entry["Total_mass_kg"] = float(entry["Total_mass_kg"]) + (amount / 1000.0)
+                entry["Subsystems"].add(subsystem)
+    rows: List[Dict[str, str]] = []
+    for key in sorted(totals.keys(), key=lambda k: (k[0].casefold(), k[1].casefold(), k[2].casefold())):
+        entry = totals[key]
+        unit = str(entry["Ecoinvent_unit"])
+        unit_l = unit.lower()
+        mass_text = ""
+        if unit_l in {"kg", "g"}:
+            mass_text = _format_float(float(entry["Total_mass_kg"]))
+        uuids = sorted(entry["UUIDs"])
+        uuid_str = ",".join(uuids)
+        if len(uuids) > 1:
+            uuid_warnings.append(f"WARNING: El flujo '{entry['Ecoinvent_flow']}' ({entry['Ecoinvent_unit']}, {entry['Direction']}) tiene múltiples UUID: {uuid_str} en subsistemas: {', '.join(sorted(entry['Subsystems']))}")
+        rows.append(
+            {
+                "Ecoinvent_flow": str(entry["Ecoinvent_flow"]),
+                "Ecoinvent_unit": unit,
+                "Direction": str(entry["Direction"]),
+                "UUID": uuid_str,
+                "Total_amount": _format_float(float(entry["Total_amount"])),
+                "Total_mass_kg": mass_text,
+                "Subsystems": ", ".join(sorted(entry["Subsystems"])),
+            }
+        )
+    _write_csv(base_dir / ECOINVENT_TOTALS_LIBRARY_NAME, ECOINVENT_TOTALS_FIELDS, rows)
+    for warning in uuid_warnings:
+        print(warning)
+    return len(rows)
+
+
+def _format_float(value: float) -> str:
+    return format(value, ".12g")
 
 
 def main() -> None:

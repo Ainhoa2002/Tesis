@@ -30,7 +30,7 @@ Mechanical components,spacer,,mechanical_components,1
 Modules,DC/DC Converters,,"4Q_output_control_card, 4Q_power_card, analog_control, inverter_power_card",4
 Modules,Hybrid relays,Solid State Relay,"4Q_output_control_card, 4Q_power_card, contactor_card, digital_control, inverter_power_card",5
 Modules,Sensors,Current transducer,"4Q_output_power_card, 4Q_power_card",3
-Passives,Capacitors,"Electrolytic, Film, MLCC, Paper, Tantalum","4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card",88
+Passives,Capacitors,"Electrolytic, Film, MLCC, Paper, Tantalum","4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card",86
 Passives,Crystals,Quartz,digital_control,1
 Passives,Electromechanical,Connectors,filter_card,1
 Passives,Inductors,"Common Mode Choke, Ferrite Bead, Power Inductor","analog_control, digital_control",13

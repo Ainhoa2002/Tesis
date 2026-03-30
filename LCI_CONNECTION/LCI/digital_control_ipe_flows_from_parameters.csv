@@ -1,19 +1,19 @@
 Flow,UUID,flow/process,Unit,Amount,Direction
-"printed wiring board production, for through-hole mounting, Pb free surface",,m2,0.0195,Input
-"inductor production, ring core choke type",,kg,0.008,Input
-market for polycarbonate,,kg,0.00129,pre-input
-injection moulding,,kg,0.00129,pre-process
-"electronic component, passive, unspecified",,kg,0.00587056875,Input
-"mounting, surface mount technology, Pb-free solder",,m2,0.0195,Input
-"mounting, through-hole technology, Pb-free solder",,m2,0.0195,Input
-"capacitor production, for surface-mounting",,kg,0.00258612796,Input
-"capacitor production, electrolyte type, < 2cm height",,kg,0.0009,Input
-"diode production, glass-, for surface-mounting",kg,0.0053633875,Input
-"integrated circuit production, logic type",kg,0.006277641,Input
-"electronic component production, active, unspecified",kg,0.000927,Input
-"electric connector production, peripheral type buss",kg,0.313532,Input
-"electric connector production, wire clamp",kg,0.0012066,Input
-"inductor production, low value multilayer chip",kg,0.00013144,Input
-light emitting diode production,kg,0.00028096,Input
-"resistor production, surface-mounted",kg,0.002018637,Input
-"transistor production, surface-mounted",kg,6.57e-05,Input
+"printed wiring board production, for through-hole mounting, Pb free surface",dcda613c-0c0d-3cea-a518-a4847d197cdb,unit process,m2,0.0195,Input
+"inductor production, ring core choke type",6fbd98c3-1c92-3f5f-ba66-bda680ca0ebc,unit process,kg,0.008,Input
+market for polycarbonate,03f3794b-f0d9-3918-b124-9a62a36aada7,unit process,kg,0.00129,pre-input
+injection moulding,68d6dfcf-2089-4586-9bbf-ad75591105cf,flow,kg,0.00129,pre-process
+"electronic component, passive, unspecified",f3d352d4-6c0c-3a0d-819a-cdac67904aae,unit process,kg,0.00587056875,Input
+"mounting, surface mount technology, Pb-free solder",ca2b5076-f230-473d-9272-da1a678b4f93,flow,m2,0.0195,Input
+"mounting, through-hole technology, Pb-free solder",66084f92-4bed-46cb-931e-7ea8300c0972,flow,m2,0.0195,Input
+"capacitor production, for surface-mounting",58bb18d4-4cd4-30e4-a30e-3d49987423f9,unit process,kg,0.00258612796,Input
+"capacitor production, electrolyte type, < 2cm height",4ba31d33-ea47-366e-a700-f2c314eefe35,unit process,kg,0.0009,Input
+"diode production, glass-, for surface-mounting",0be8d851-ba22-3358-9978-1e98418488c6,unit process,kg,0.0053633875,Input
+"integrated circuit production, logic type",bc6841b3-b7b5-35d7-bd6c-a4aea2d9319a,unit process,kg,0.006277641,Input
+"electronic component production, active, unspecified",aab92320-5f7c-3d87-aafa-7dcd00f7295b,unit process,kg,0.000927,Input
+"electric connector production, peripheral type buss",92091161-fb50-3a3f-8f3d-a35a0a2e0fb0,unit process,kg,0.313532,Input
+"electric connector production, wire clamp",dd86962a-dd7e-316b-9ae3-bb22cf1fcbc2,unit process,kg,0.0012066,Input
+"inductor production, low value multilayer chip",,,kg,0.00013144,Input
+light emitting diode production,068100d0-b364-33c5-9c23-4a2ad382e3b3,unit process,kg,0.00028096,Input
+"resistor production, surface-mounted",4ec1457b-7716-3a2b-b019-a95236792b9a,unit process,kg,0.002018637,Input
+"transistor production, surface-mounted",fe412dc1-c484-36e1-9799-648be3ecec7c,unit process,kg,6.57e-05,Input
