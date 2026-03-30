@@ -45,6 +45,7 @@ ECOINVENT_TOTALS_FIELDS = [
     "Ecoinvent_flow",
     "Ecoinvent_unit",
     "Direction",
+    "UUID",
     "Total_amount",
     "Total_mass_kg",
     "Subsystems",
@@ -636,33 +637,23 @@ def build_ecoinvent_totals_library(base_dir: Path) -> int:
     - Subsystems: comma-separated subsystem list where the flow appears
     """
     totals: Dict[Tuple[str, str, str], Dict[str, object]] = {}
+    uuid_warnings = []
 
     active_subsystems = _discover_parameter_subsystems(base_dir)
 
-    for path in sorted(base_dir.glob("*_component_io_flows.csv")):
-        subsystem = path.name[: -len("_component_io_flows.csv")]
-        # Ignore orphan flow files from removed/renamed subsystems.
+    for path in sorted(base_dir.glob("*_ipe_flows_from_parameters.csv")):
+        subsystem = path.name[: -len("_ipe_flows_from_parameters.csv")]
         if subsystem not in active_subsystems:
-            continue
-
-        parameter_path = base_dir / f"{subsystem}_component_parameters.csv"
-        if parameter_path.exists() and path.stat().st_mtime < parameter_path.stat().st_mtime:
-            # Prevent stale totals when parameters were edited but pipeline was not rerun.
             continue
 
         with open(path, newline="", encoding="utf-8-sig") as f:
             reader = csv.DictReader(f)
             for row in reader:
-                normalized = _normalize_ecoinvent_fields(dict(row))
-                database = _clean(normalized.get("Database"))
-                flow = _clean(normalized.get("Ecoinvent_flow") or normalized.get("Flow"))
-                unit = _clean(normalized.get("Ecoinvent_unit") or normalized.get("Unit"))
-                direction = _clean(normalized.get("Direction"))
+                flow = _clean(row.get("Flow"))
+                unit = _clean(row.get("Unit"))
+                direction = _clean(row.get("Direction"))
                 amount_text = _clean(row.get("Amount"))
-
-                # Keep only rows explicitly marked as EcoInvent.
-                if database.casefold() != "ecoinvent":
-                    continue
+                uuid = _clean(row.get("UUID"))
 
                 if flow == "" or unit == "" or direction == "" or amount_text == "":
                     continue
@@ -678,12 +669,15 @@ def build_ecoinvent_totals_library(base_dir: Path) -> int:
                         "Ecoinvent_flow": flow,
                         "Ecoinvent_unit": unit,
                         "Direction": direction,
+                        "UUIDs": set(),
                         "Total_amount": 0.0,
                         "Total_mass_kg": 0.0,
                         "Subsystems": set(),
                     }
 
                 entry = totals[key]
+                if uuid:
+                    entry["UUIDs"].add(uuid)
                 entry["Total_amount"] = float(entry["Total_amount"]) + amount
 
                 unit_l = unit.lower()
@@ -703,11 +697,17 @@ def build_ecoinvent_totals_library(base_dir: Path) -> int:
         if unit_l in {"kg", "g"}:
             mass_text = _format_float(float(entry["Total_mass_kg"]))
 
+        uuids = sorted(entry["UUIDs"])
+        uuid_str = ",".join(uuids)
+        if len(uuids) > 1:
+            uuid_warnings.append(f"WARNING: El flujo '{entry['Ecoinvent_flow']}' ({entry['Ecoinvent_unit']}, {entry['Direction']}) tiene múltiples UUID: {uuid_str} en subsistemas: {', '.join(sorted(entry['Subsystems']))}")
+
         rows.append(
             {
                 "Ecoinvent_flow": str(entry["Ecoinvent_flow"]),
                 "Ecoinvent_unit": unit,
                 "Direction": str(entry["Direction"]),
+                "UUID": uuid_str,
                 "Total_amount": _format_float(float(entry["Total_amount"])),
                 "Total_mass_kg": mass_text,
                 "Subsystems": ", ".join(sorted(entry["Subsystems"])),
@@ -715,6 +715,8 @@ def build_ecoinvent_totals_library(base_dir: Path) -> int:
         )
 
     _write_csv(base_dir / ECOINVENT_TOTALS_LIBRARY_NAME, ECOINVENT_TOTALS_FIELDS, rows)
+    for warning in uuid_warnings:
+        print(warning)
     return len(rows)
 
 

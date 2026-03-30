@@ -1,21 +1,13 @@
 import os
-from olca_ipc import IpC
-from .process_builder import process_csv   # relative import works because we are in the same package
+import olca_ipc as ipc
+from process_builder import process_csv
 
-# Path to the folder containing CSV files (absolute path provided by user)
 CSV_FOLDER = r"C:\Users\alorzaga\Git\tesis\LCI_CONNECTION\LCI"
 
 def main():
-    # Connect to openLCA IPC server (default port 8080)
-    try:
-        client = IpC(8080)
-        print("Connected to openLCA IPC server on port 8080")
-    except Exception as e:
-        print(f"Error connecting to openLCA: {e}")
-        print("Make sure the IPC server is running (Tools → Developer tools → IPC Server)")
-        return
+    client = ipc.Client(8080)   # o ipc.ipc(8080) según tu instalación
+    print("Connected to openLCA IPC server on port 8080")
 
-    # Process every CSV file ending with '_ipe_flows_from_parameters.csv'
     if not os.path.isdir(CSV_FOLDER):
         print(f"CSV folder not found: {CSV_FOLDER}")
         return
