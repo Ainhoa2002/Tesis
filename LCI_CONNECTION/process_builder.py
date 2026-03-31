@@ -3,9 +3,6 @@ import olca_schema as o
 from csv_reader import read_input_rows
 
 def build_process_from_inputs(client, process_name, inputs):
-    """
-    Create a process with the given inputs. No output flow is created.
-    """
     process = o.Process()
     process.name = process_name
     process.process_type = o.ProcessType.UNIT_PROCESS
@@ -36,8 +33,20 @@ def build_process_from_inputs(client, process_name, inputs):
         print("  No valid inputs found, skipping process creation.")
         return
 
-    client.put(process)
-    print(f"  Process '{process_name}' saved with {input_count} inputs.")
+    try:
+        client.put(process)
+        print(f"  Process '{process_name}' saved with {input_count} inputs.")
+    except Exception as e:
+        print(f"  Failed to save process: {e}")
+        return
+
+    # Verify the process exists
+    fetched = client.get(o.Process, name=process_name)
+    if fetched:
+        print(f"  Verified: process '{fetched.name}' (ID: {fetched.id})")
+    else:
+        print(f"  Warning: process '{process_name}' not found after saving.")
+
     return process
 
 def process_csv(client, csv_path):
