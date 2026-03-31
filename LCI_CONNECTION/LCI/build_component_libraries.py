@@ -612,8 +612,7 @@ def build_full_storage_libraries(base_dir: Path) -> Tuple[int, int]:
         for row in reader:
             flow = row['Ecoinvent_flow'].strip().strip('"')
             uuid = row['UUID'].strip()
-            flow_process = row['flow/process'].strip()
-            uuid_map[flow] = (uuid, flow_process)
+            uuid_map[flow] = uuid
 
     totals: Dict[Tuple[str, str, str], Dict[str, object]] = {}
     uuid_warnings = []
@@ -629,8 +628,7 @@ def build_full_storage_libraries(base_dir: Path) -> Tuple[int, int]:
                 unit = _clean(row.get("Unit"))
                 direction = _clean(row.get("Direction"))
                 amount_text = _clean(row.get("Amount"))
-                # Fill UUID and flow/process from mapping
-                uuid, flow_process = uuid_map.get(flow, ('', ''))
+                uuid = uuid_map.get(flow, '')
                 if flow == "" or unit == "" or direction == "" or amount_text == "":
                     continue
                 try:
@@ -1098,8 +1096,7 @@ def build_ecoinvent_totals_library(base_dir: Path) -> int:
         for row in reader:
             flow = row['Ecoinvent_flow'].strip().strip('"')
             uuid = row['UUID'].strip()
-            flow_process = row['flow/process'].strip()
-            uuid_map[flow] = (uuid, flow_process)
+            uuid_map[flow] = uuid
 
     totals: Dict[Tuple[str, str, str], Dict[str, object]] = {}
     uuid_warnings = []
@@ -1115,8 +1112,7 @@ def build_ecoinvent_totals_library(base_dir: Path) -> int:
                 unit = _clean(row.get("Unit"))
                 direction = _clean(row.get("Direction"))
                 amount_text = _clean(row.get("Amount"))
-                # Fill UUID and flow/process from mapping
-                uuid, flow_process = uuid_map.get(flow, ('', ''))
+                uuid = uuid_map.get(flow, '')
                 if flow == "" or unit == "" or direction == "" or amount_text == "":
                     continue
                 try:

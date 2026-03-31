@@ -1,4 +1,6 @@
-﻿#!/usr/bin/env python3
+﻿import csv
+from pathlib import Path
+#!/usr/bin/env python3
 """
 Run parametric mass + ecoinvent pipeline for one or more selected subsystems.
 Subsystem names are resolved from files named <subsystem>_component_parameters.csv.
@@ -926,29 +928,26 @@ def _clear_subsystem_outputs(results_csv, component_flows_csv, grouped_flows_csv
 
 
 def main():
-    base = Path(__file__).parent
-
-    _auto_sync_parameters_from_libraries(base)
-
-    requested_selection = sys.argv[1:] if len(sys.argv) > 1 else None
+    # === UUID FILLING POSTPROCESS ===
+    import subprocess
     try:
-        subsystems = _discover_subsystems(base)
-        selected_subsystems = _choose_subsystems(subsystems, requested_selection)
-    except ValueError as exc:
-        print(f"Validation error: {exc}")
-        return
+        subprocess.run([
+            sys.executable,
+            str(Path(__file__).parent / 'fill_uuids_postprocess.py')
+        ], check=True)
+        print('[UUID-FILL] UUID columns updated by fill_uuids_postprocess.py')
+    except Exception as exc:
+        print(f'[UUID-FILL] Warning: UUID filling postprocess failed: {exc}')
+
+    base = Path(__file__).parent
+    requested_selection = sys.argv[1:] if len(sys.argv) > 1 else None
 
     all_errors = []
     failed_subsystems = []
     completed_subsystems = []
-
-    # Totals for all subsystems
     total_processed_rows = 0
     total_io_rows = 0
     total_grouped_flows = 0
-
-
-    # --- Collect global stats ---
     all_rows = []
     all_subsystems = set()
     all_sections = set()
@@ -956,14 +955,19 @@ def main():
     total_mass = 0.0
     warning_count = 0
 
+    try:
+        subsystems = _discover_subsystems(base)
+        selected_subsystems = _choose_subsystems(subsystems, requested_selection)
+    except ValueError as exc:
+        print(f"Validation error: {exc}")
+        return
+
     for subsystem in selected_subsystems:
         input_csv, results_csv, component_flows_csv, grouped_flows_csv = _build_subsystem_paths(
             base,
-            subsystem,
+            subsystem
         )
-
         print(f"\nRunning subsystem: {subsystem}")
-
         try:
             results, component_flows, grouped_flows, errors = run_pipeline(
                 input_csv,
@@ -978,7 +982,6 @@ def main():
             continue
 
         completed_subsystems.append(subsystem)
-
         processed_rows = len(results)
         io_rows = len(component_flows)
         grouped_flows_count = len(grouped_flows)
@@ -998,13 +1001,11 @@ def main():
             all_errors.append((subsystem, err))
             warning_count += 1
 
-        # Read results file to collect stats
         try:
             with open(results_csv, newline='', encoding='utf-8') as f:
                 reader = csv.DictReader(f)
                 for row in reader:
                     all_rows.append(row)
-                    # Use the actual subsystem name from the file path, not from the row (which may be empty)
                     all_subsystems.add(subsystem)
                     all_sections.add(row.get('Section', '').strip())
                     all_subsections.add(row.get('Subsection', '').strip())
@@ -1016,26 +1017,7 @@ def main():
         except Exception as exc:
             print(f"[Warning] Could not read {results_csv} for stats: {exc}")
 
-
-    # === GLOBAL SUMMARY ===
-    # Print all classic warnings after all updates (casing conflicts, missing mass, missing section, etc.)
-    try:
-        from build_component_libraries import build_libraries
-        print(f"DEBUG: build_libraries is {build_libraries}")
-        result = build_libraries(base, selected_subsystems)
-        print(f"DEBUG: build_libraries returned {result}")
-    except Exception as exc:
-        print(f"[Warning] Could not get library warnings/conflicts: {exc}")
-    print("\n==================== PIPELINE GLOBAL SUMMARY ====================")
-    print(f"Total elements (component rows) analyzed: {len(all_rows)}")
-    print(f"Total unique subsystems: {len([s for s in all_subsystems if s])}")
-    print(f"Total unique sections: {len([s for s in all_sections if s])}")
-    print(f"Total unique subsections: {len([s for s in all_subsections if s])}")
-    print(f"Total mass of all components: {total_mass:.6f} kg")
-    print("===============================================================\n")
-
-    _auto_refresh_component_libraries(base, selected_subsystems)
-
+    # Imprimir errores y subsistemas fallidos fuera del bucle principal
     if all_errors:
         print("\nValidation warnings/errors found:")
         for subsystem, err in all_errors:

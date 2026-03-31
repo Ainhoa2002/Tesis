@@ -1,12 +1,13 @@
 System,Subsystem,Categories,Source_subsystems,Component_rows
 Assembly Processes,SMD,,"4Q_output_control_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, inverter_power_card",7
-Assembly Processes,THT,,"4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card",10
+Assembly Processes,THT,,"4Q_output_power_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card",9
+"Assembly Processes:""THT""",,,4Q_output_control_card,1
 Discrete Semiconductors,ESD Protection,NXP,digital_control,1
 Discrete Semiconductors,Optoelectronics,LED,"contactor_card, digital_control, inverter_power_card",4
 Discrete Semiconductors,Power,"General purpose, IGBT, MOSFET, Rectifier diode, Schottky Rectifier, Schottky rectifier","4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, contactor_card, digital_control, inverter_power_card",10
 Discrete Semiconductors,Small signal,"BJT, Bipolar Transistor, Bipolar semiconductors, Bipolar transistor, Current Regulative, Diode, Dual, Dual Diode, ESD Protection, MOSFET, Rectifier, Schottky, Switching, TVS, Zener, Zener Diodes","4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, analog_control, contactor_card, digital_control, inverter_power_card",43
 Electromechanical,Connectors,"D-Sub, FFC/FPC, High-Density Array, High-Speed I/O, Modular Jack, PicoBlade, Pin Header, Right Angle Header, USB","4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, analog_control, contactor_card, control_backplane_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card",45
-Electromechanical,Fuse holder,,"4Q_output_control_card, fuse_card",3
+Electromechanical,Fuse holder,,"4Q_output_control_card, fuse_card",2
 Electromechanical,Relays,,contactor_card,1
 Electromechanical,Switches,"Contact Block, DIP Switch, Emergency Stop Pushbutton Head","digital_control, fan_supervision_card",4
 Hardware,Enclosure,,fuse_card,1
