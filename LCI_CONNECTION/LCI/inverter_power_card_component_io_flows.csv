@@ -20,6 +20,7 @@ Order_index,Category_order,Group_order,Category,Section,Subsection,Designators,C
 42,1,21,AUTO,Mechanical components,spacer,igbt_spacer,,,Ecoinvent,"copper, cathode",kg,Input,0.004,4.0,4.0,0.004,mass-based,
 42,1,21,AUTO,Mechanical components,spacer,igbt_spacer,,,Ecoinvent,"metal working, average for copper product manufacturing",kg,Input,0.004,4.0,4.0,0.004,mass-based,
 43,1,22,AUTO,Assembly Processes,THT,THT_PROCESS,,,EcoInvent,"mounting, through-hole technology, Pb-free solder",m2,Input,0.0168,,,,area-based,
+44,1,23,AUTO,Assembly Processes,SMD,SMD_PROCESS,,,EcoInvent,"mounting, surface mount technology, Pb-free solder",m2,Input,0.0168,,,,area-based,
 2,2,2,IGBT,Discrete Semiconductors,Power,"IGBT_A1, A2, B1, B2",TO-247,IKW25N120H3,EcoInvent,"insulated gate bipolar transistor production, for electric vehicle applications",kg,Input,0.02168,5.42,21.68,0.02168,mass-based,
 3,3,3,Power management,IC,Analog,"IC1, IC2",,2ED3141MC12L,EcoInvent,"integrated circuit production, logic type",kg,Input,0.00075384375,0.376922,0.753844,0.00075384375,mass-based,
 5,3,3,Power management,IC,Analog,REG1,D2PAK,LD1086D2M33TR,EcoInvent,"integrated circuit production, logic type",kg,Input,0.001566914694,1.566915,1.566915,0.001566914694,mass-based,
