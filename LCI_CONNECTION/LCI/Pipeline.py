@@ -993,20 +993,13 @@ def main():
 
     # Prompt user to optionally show overall operation summary
     try:
-        show_summary = input("\nDo you want to see the overall operation summary (totals, subsystems, sections, mass, etc.)? (y/n): ").strip().lower()
+        show_summary = input("\nDo you want to see the overall operation summary (number of subsystems, sections, subsections, warnings, total mass)? (y/n): ").strip().lower()
         if show_summary in {"y", "yes", "s", "si"}:
             print("\n--- Pipeline Operation Summary ---")
-            print(f"Total processed component rows: {total_processed_rows}")
-            print(f"Total IO rows: {total_io_rows}")
-            print(f"Total grouped flows: {total_grouped_flows}")
+            print(f"Number of subsystems: {len(all_subsystems)}")
+            print(f"Number of sections: {len(all_sections)}")
+            print(f"Number of subsections: {len(all_subsections)}")
             print(f"Total mass (kg): {total_mass:.6f}")
-            print(f"Subsystems processed: {', '.join(sorted(all_subsystems)) if all_subsystems else 'None'}")
-            print(f"Sections found: {', '.join(sorted(all_sections)) if all_sections else 'None'}")
-            print(f"Subsections found: {', '.join(sorted(all_subsections)) if all_subsections else 'None'}")
-            print(f"Total warnings: {warning_count}")
-            print(f"Total errors: {len(all_errors)}")
-            print(f"Completed subsystems: {', '.join(completed_subsystems) if completed_subsystems else 'None'}")
-            print(f"Failed subsystems: {', '.join(s for s, _ in failed_subsystems) if failed_subsystems else 'None'}")
             print("--- End of Summary ---\n")
         else:
             print("Operation summary skipped.")
