@@ -1,20 +1,21 @@
-Flow,UUID,flow/process,Unit,Amount,Direction
-"printed wiring board production, for through-hole mounting, Pb free surface",dcda613c-0c0d-3cea-a518-a4847d197cdb,unit process,m2,0.0168,Input
-"electronic component production, active, unspecified",aab92320-5f7c-3d87-aafa-7dcd00f7295b,unit process,kg,0.019627,Input
-"electronic component, passive, unspecified",f3d352d4-6c0c-3a0d-819a-cdac67904aae,unit process,kg,0.002010018708,Input
-"resistor production, surface-mounted",4ec1457b-7716-3a2b-b019-a95236792b9a,unit process,kg,0.00077136,Input
-"electric connector production, wire clamp",dd86962a-dd7e-316b-9ae3-bb22cf1fcbc2,unit process,kg,0.02063723376,Input
-"electric connector production, peripheral type buss",92091161-fb50-3a3f-8f3d-a35a0a2e0fb0,unit process,kg,0.001983,Input
-"transformer production, low voltage use",33903d25-0ea9-3fde-96d4-f3e0c10deb33,unit process,kg,0.0095,Input
-"steel, low-alloyed",,,kg,0.00126385,Input
-"metal working, average for steel product manufacturing",,,kg,0.00126385,pre-process
-"mounting, surface mount technology, Pb-free solder",ca2b5076-f230-473d-9272-da1a678b4f93,flow,m2,0.0168,Input
-"mounting, through-hole technology, Pb-free solder",66084f92-4bed-46cb-931e-7ea8300c0972,flow,m2,0.0168,Input
-"insulated gate bipolar transistor production, for electric vehicle applications",898316bb-c09c-3745-80b4-a5262fd2a9f9,unit process,kg,0.02168,Input
-"integrated circuit production, logic type",bc6841b3-b7b5-35d7-bd6c-a4aea2d9319a,unit process,kg,0.002506070944,Input
-"diode production, glass-, for surface-mounting",0be8d851-ba22-3358-9978-1e98418488c6,unit process,kg,0.000248227052,Input
-light emitting diode production,068100d0-b364-33c5-9c23-4a2ad382e3b3,unit process,kg,0.00035,Input
-"transistor production, surface-mounted",fe412dc1-c484-36e1-9799-648be3ecec7c,unit process,kg,5.74875e-05,Input
-"capacitor production, film type, for through-hole mounting",59460f65-cf77-3d26-9e32-c7d03a4cd924,unit process,kg,0.2122389,Input
-"capacitor production, for surface-mounting",58bb18d4-4cd4-30e4-a30e-3d49987423f9,unit process,kg,0.001867008,Input
-"capacitor production, electrolyte type, < 2cm height",4ba31d33-ea47-366e-a700-f2c314eefe35,unit process,kg,0.002831378,Input
+Flow,UUID,Unit,Amount,Direction
+"printed wiring board production, for through-hole mounting, Pb free surface",cf11031f-462b-48ce-857b-f36ed83e0095,m2,0.0168,Input
+"electronic component production, active, unspecified",d1e72526-546c-48f2-a363-e1e3b1c9aebc,kg,0.019627,Input
+"electronic component, passive, unspecified",4e252b55-fb08-4447-8391-d09e8bbb0238,kg,0.002010018708,Input
+"resistor production, surface-mounted",b826a1ab-8be4-41bf-80ad-a6665ec8f9b8,kg,0.00077136,Input
+"electric connector production, wire clamp",6716b460-7ba0-4cea-baa4-32ae24bfb88c,kg,0.02063723376,Input
+"electric connector production, peripheral type buss",9cc41404-5a63-4005-82a2-884dc147fc3f,kg,0.001983,Input
+"transformer production, low voltage use",33903d25-0ea9-3fde-96d4-f3e0c10deb33,kg,0.0095,Input
+"steel, low-alloyed",817c3650-4fed-4ef2-b9b6-404a198834e6,kg,0.00126385,Input
+"metal working, average for steel product manufacturing",79632c4b-f876-4c89-bf27-b864b30566be,kg,0.00126385,Input
+"copper, cathode",fbb039f7-f9cc-46d2-b631-313ddb125c1a,kg,0.004,Input
+"metal working, average for copper product manufacturing",ec161f58-adae-4afc-ba38-14659925b080,kg,0.004,Input
+"mounting, through-hole technology, Pb-free solder",66084f92-4bed-46cb-931e-7ea8300c0972,m2,0.0168,Input
+"insulated gate bipolar transistor production, for electric vehicle applications",4c5db6d0-a23c-4794-a259-3f63b780d853,kg,0.02168,Input
+"integrated circuit production, logic type",ad2a5d44-4e6d-430d-873b-0068ea24b9d5,kg,0.002506070944,Input
+"diode production, glass-, for surface-mounting",38dddb73-6677-4128-9a82-5c6668eceb29,kg,0.000248227052,Input
+light emitting diode production,084469ca-e2a7-4951-8753-60629e461823,kg,0.00035,Input
+"transistor production, surface-mounted",3422a31d-cb51-4f19-a659-28798bf18e54,kg,5.74875e-05,Input
+"capacitor production, film type, for through-hole mounting",1edf4d42-6315-49ab-89b8-cd8dd643f43c,kg,0.2122389,Input
+"capacitor production, for surface-mounting",c924ae77-ba85-4856-bc7a-2f249809872b,kg,0.001867008,Input
+"capacitor production, electrolyte type, < 2cm height",5036886d-4b0a-4c87-956d-50d85d9abaab,kg,0.002831378,Input

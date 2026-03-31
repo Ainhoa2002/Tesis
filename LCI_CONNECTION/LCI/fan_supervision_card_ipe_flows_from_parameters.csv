@@ -1,11 +1,11 @@
-Flow,UUID,flow/process,Unit,Amount,Direction
-"printed wiring board production, for through-hole mounting, Pb free surface",dcda613c-0c0d-3cea-a518-a4847d197cdb,unit process,m2,0.00374,Input
-"electronic component, passive, unspecified",f3d352d4-6c0c-3a0d-819a-cdac67904aae,unit process,kg,0.057948,Input
-"electric connector production, wire clamp",dd86962a-dd7e-316b-9ae3-bb22cf1fcbc2,unit process,kg,0.007854,Input
-"resistor production, surface-mounted",4ec1457b-7716-3a2b-b019-a95236792b9a,unit process,kg,0.000231408,Input
-"market for steel, low-alloyed",fa03ac80-8409-3532-8909-e482fa560643,unit process,kg,0.00126385,pre-input
-"metal working, average for metal product manufacturing",b4a702e6-a0a4-3606-b3eb-5b342853f443,unit process,kg,0.00126385,pre-process
-"mounting, surface mount technology, Pb-free solder",ca2b5076-f230-473d-9272-da1a678b4f93,flow,m2,0.028,Input
-"mounting, through-hole technology, Pb-free solder",66084f92-4bed-46cb-931e-7ea8300c0972,flow,m2,0.028,Input
-"capacitor production, electrolyte type, < 2cm height",4ba31d33-ea47-366e-a700-f2c314eefe35,unit process,kg,0.0038,Input
-"capacitor production, for surface-mounting",58bb18d4-4cd4-30e4-a30e-3d49987423f9,unit process,kg,0.00056576,Input
+Flow,UUID,Unit,Amount,Direction
+"printed wiring board production, for through-hole mounting, Pb free surface",cf11031f-462b-48ce-857b-f36ed83e0095,m2,0.00374,Input
+"electronic component, passive, unspecified",4e252b55-fb08-4447-8391-d09e8bbb0238,kg,0.057948,Input
+"electric connector production, wire clamp",6716b460-7ba0-4cea-baa4-32ae24bfb88c,kg,0.007854,Input
+"resistor production, surface-mounted",b826a1ab-8be4-41bf-80ad-a6665ec8f9b8,kg,0.000231408,Input
+"market for steel, low-alloyed",817c3650-4fed-4ef2-b9b6-404a198834e6,kg,0.00126385,Input
+"metal working, average for metal product manufacturing",79632c4b-f876-4c89-bf27-b864b30566be,kg,0.00126385,Input
+"mounting, surface mount technology, Pb-free solder",ca2b5076-f230-473d-9272-da1a678b4f93,m2,0.028,Input
+"mounting, through-hole technology, Pb-free solder",66084f92-4bed-46cb-931e-7ea8300c0972,m2,0.028,Input
+"capacitor production, electrolyte type, < 2cm height",5036886d-4b0a-4c87-956d-50d85d9abaab,kg,0.0038,Input
+"capacitor production, for surface-mounting",c924ae77-ba85-4856-bc7a-2f249809872b,kg,0.00056576,Input

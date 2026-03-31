@@ -445,21 +445,8 @@ def _split_ecoinvent_flow_components(flow, direction):
         return []
 
     components = []
-    for idx, part in enumerate(parts):
-        part_direction = base_direction
-        # First element: if 'market ' and input, tag as 'pre-input'
-        if idx == 0 and base_direction.casefold() == "input" and part.casefold().startswith("market "):
-            part_direction = "pre-input"
-        # Second element: always tag as 'pre-process'
-        elif idx == 1:
-            part_direction = "pre-process"
-        components.append({"Flow": part, "Direction": part_direction})
-
-    # Keep standard input rows first, then pre-input, then pre-process, then others alphabetically
-    def sort_key(entry):
-        direction_order = {"input": 0, "pre-input": 1, "pre-process": 2}
-        return (direction_order.get(entry["Direction"].casefold(), 3), entry["Flow"].casefold())
-    components.sort(key=sort_key)
+    for part in parts:
+        components.append({"Flow": part, "Direction": "Input"})
     return components
 
 
@@ -728,31 +715,12 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
         if component_flows:
             writer.writerows(component_flows)
 
-    # --- UUID/flow-process mapping logic for grouped_flows_csv ---
-    # Load mapping file once
-    base_dir = Path(input_csv).parent
-    map_path = base_dir / 'component_library_ecoinvent_uuid_map.csv'
-    uuid_map = {}
-    if map_path.exists():
-        with open(map_path, newline='', encoding='utf-8-sig') as mf:
-            reader = csv.DictReader(mf)
-            for row in reader:
-                flow = str(row['Ecoinvent_flow']).strip().strip('"')
-                uuid = str(row['UUID']).strip()
-                flow_process = str(row.get('flow/process', '')).strip()
-                uuid_map[flow] = (uuid, flow_process)
-    else:
-        print(f"WARNING: Mapping file {map_path} not found. UUID and flow/process columns will be empty.")
-
-    # Write grouped_flows_csv with UUID and flow/process columns after Flow
+    # Write grouped_flows_csv (without UUID/flow-process logic)
     with open(grouped_flows_csv, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
-        writer.writerow(["Flow", "UUID", "flow/process", "Unit", "Amount", "Direction"])
+        writer.writerow(["Flow", "UUID", "Unit", "Amount", "Direction"])
         for (flow, unit, direction), amount in grouped_flows.items():
-            uuid, flow_process = uuid_map.get(flow, ('', ''))
-            if not uuid:
-                print(f"WARNING: No UUID found for flow '{flow}' in file {grouped_flows_csv.name}")
-            writer.writerow([flow, uuid, flow_process, unit, round(amount, 12), direction])
+            writer.writerow([flow, '', unit, round(amount, 12), direction])
 
     return component_results, component_flows, grouped_flows, errors
 
@@ -928,16 +896,7 @@ def _clear_subsystem_outputs(results_csv, component_flows_csv, grouped_flows_csv
 
 
 def main():
-    # === UUID FILLING POSTPROCESS ===
-    import subprocess
-    try:
-        subprocess.run([
-            sys.executable,
-            str(Path(__file__).parent / 'fill_uuids_postprocess.py')
-        ], check=True)
-        print('[UUID-FILL] UUID columns updated by fill_uuids_postprocess.py')
-    except Exception as exc:
-        print(f'[UUID-FILL] Warning: UUID filling postprocess failed: {exc}')
+    # UUID FILLING: (Desactivado, ahora se usa fill_ipe_columns_from_library.py por separado)
 
     base = Path(__file__).parent
     requested_selection = sys.argv[1:] if len(sys.argv) > 1 else None
@@ -1031,8 +990,35 @@ def main():
     if not completed_subsystems:
         print("No subsystem completed successfully.")
 
+    # Prompt user to optionally show library merge warnings (casing, part, etc.)
+    try:
+        show_warnings = input("\nDo you want to see library merge warnings (casing/part conflicts, etc.)? (y/n): ").strip().lower()
+        if show_warnings in {"y", "yes", "s", "si"}:
+            _auto_refresh_component_libraries(Path(__file__).parent)
+        else:
+            print("Library merge warnings skipped.")
+    except Exception as exc:
+        print(f"[Warning] Error while trying to show library merge warnings: {exc}")
 
-
+    # Prompt user to optionally run UUID filling script (English)
+    try:
+        answer = input("\nDo you want to automatically fill UUIDs using the mapping script? (y/n): ").strip().lower()
+        if answer in {"y", "yes", "s", "si"}:
+            import subprocess
+            print("Running fill_ipe_columns_from_library.py to fill UUIDs...")
+            subprocess.run([
+                sys.executable,
+                str(Path(__file__).parent / "fill_ipe_columns_from_library.py"),
+                "--library",
+                str(Path(__file__).parent / "component_library_ecoinvent_uuid_map.csv"),
+                "--root",
+                str(Path(__file__).parent)
+            ], check=True)
+            print("UUIDs filled successfully.")
+        else:
+            print("UUID filling skipped.")
+    except Exception as exc:
+        print(f"[Warning] Error while trying to fill UUIDs: {exc}")
 
 if __name__ == "__main__":
     main()

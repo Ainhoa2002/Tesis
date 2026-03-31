@@ -1,5 +1,5 @@
 System,Subsystem,Categories,Source_subsystems,Component_rows
-Assembly Processes,SMD,,"4Q_output_control_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, inverter_power_card",7
+Assembly Processes,SMD,,"4Q_output_control_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card",6
 Assembly Processes,THT,,"4Q_output_power_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card",9
 "Assembly Processes:""THT""",,,4Q_output_control_card,1
 Discrete Semiconductors,ESD Protection,NXP,digital_control,1
@@ -27,7 +27,7 @@ Mechanical components,cover,,mechanical_components,3
 Mechanical components,heatsink,,mechanical_components,1
 Mechanical components,panel,,mechanical_components,5
 Mechanical components,separator,,mechanical_components,1
-Mechanical components,spacer,,mechanical_components,1
+Mechanical components,spacer,,"inverter_power_card, mechanical_components",2
 Modules,DC/DC Converters,,"4Q_output_control_card, 4Q_power_card, analog_control, inverter_power_card",4
 Modules,Hybrid relays,Solid State Relay,"4Q_output_control_card, 4Q_power_card, contactor_card, digital_control, inverter_power_card",5
 Modules,Sensors,Current transducer,"4Q_output_power_card, 4Q_power_card",3
