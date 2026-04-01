@@ -19,6 +19,25 @@ DEPRECATED_INPUT_FIELDS = {
     "Notes",
 }
 
+def calculate_subsystem_total_mass(results_csv_path):
+    """
+    Read component results CSV and sum all Total_mass_kg values.
+    Returns the aggregated mass in kg for the subsystem.
+    """
+    total_mass = 0.0
+    try:
+        with open(results_csv_path, newline='', encoding='utf-8') as f:
+            reader = csv.DictReader(f)
+            for row in reader:
+                try:
+                    m = float(row.get('Total_mass_kg', '') or 0)
+                    total_mass += m
+                except Exception:
+                    pass
+    except Exception as exc:
+        print(f"[Warning] Could not read {results_csv_path} for mass calculation: {exc}")
+    return total_mass
+
 # Converts the inputs in correct format, float. changes coma for dot, averages ranges, returns none if it is empty.
 def to_float(value):
     if value is None:
@@ -487,7 +506,7 @@ def ecoinvent_amount(row, mass_data, quantity_data):
     }
 
 ##RECEIVES THE INPUTS FROM THE EXCEL AND CREATES THE CSV WITH THE PARAMETERS TO BE USED IN THE PIPELINE
-def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv):
+def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv, subsystem_name=None):
     sorted_rows = []
     component_results = []
     component_flows = []
@@ -722,6 +741,11 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv)
         for (flow, unit, direction), amount in grouped_flows.items():
             writer.writerow([flow, '', unit, round(amount, 12), direction])
 
+        # Append subsystem total mass summary row if subsystem_name is provided
+        if subsystem_name:
+            subsystem_total_mass = calculate_subsystem_total_mass(str(results_csv))
+            writer.writerow([subsystem_name, '', 'kg', round(subsystem_total_mass, 12), 'Output'])
+
     return component_results, component_flows, grouped_flows, errors
 
 
@@ -933,6 +957,7 @@ def main():
                 results_csv,
                 component_flows_csv,
                 grouped_flows_csv,
+                subsystem_name=subsystem,
             )
         except ValueError as exc:
             failed_subsystems.append((subsystem, str(exc)))
@@ -968,11 +993,9 @@ def main():
                     all_subsystems.add(subsystem)
                     all_sections.add(row.get('Section', '').strip())
                     all_subsections.add(row.get('Subsection', '').strip())
-                    try:
-                        m = float(row.get('Total_mass_kg', '') or 0)
-                        total_mass += m
-                    except Exception:
-                        pass
+            # Use extracted function to calculate subsystem total mass
+            subsystem_mass = calculate_subsystem_total_mass(str(results_csv))
+            total_mass += subsystem_mass
         except Exception as exc:
             print(f"[Warning] Could not read {results_csv} for stats: {exc}")
 

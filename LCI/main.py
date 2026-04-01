@@ -7,6 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent
 
 
 def iter_system_folders(base_dir: Path):
+    # Each first-level folder under LCI is treated as one system source.
     for child in sorted(base_dir.iterdir()):
         if not child.is_dir():
             continue
@@ -16,12 +17,16 @@ def iter_system_folders(base_dir: Path):
 
 
 def resolve_category_name(folder_name: str) -> str:
+    # openLCA category drops the technical LCI_ prefix when present.
     if folder_name.startswith("LCI_") and len(folder_name) > 4:
         return folder_name[4:]
     return folder_name
 
 
 def iter_system_csvs(system_folder: Path):
+    # Support both layouts:
+    # 1) <system>/LCI/*.csv
+    # 2) <system>/*.csv
     lci_subfolder = system_folder / "LCI"
     if lci_subfolder.is_dir():
         search_dir = lci_subfolder
@@ -48,11 +53,13 @@ def main():
 
     client = None
     if not args.dry_run:
+        # Real import mode writes processes into openLCA via IPC.
         client = ipc.Client(8080)   # or ipc.IpC(8080) if needed
         print("Connected to openLCA IPC server")
 
     total_files = 0
     for system_folder in systems:
+        # Folder name determines the destination process category in openLCA.
         category_name = resolve_category_name(system_folder.name)
         csv_files = iter_system_csvs(system_folder)
         if not csv_files:
@@ -63,6 +70,7 @@ def main():
         for csv_file in csv_files:
             total_files += 1
             if args.dry_run:
+                # Dry-run prints planned actions without touching openLCA.
                 print(f"  [DRY-RUN] {csv_file.name}")
                 continue
             process_csv(client, str(csv_file), category_name)

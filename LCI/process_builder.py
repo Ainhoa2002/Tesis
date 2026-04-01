@@ -3,6 +3,7 @@ import olca_schema as o
 from csv_reader import read_input_rows
 
 def build_process_from_inputs(client, process_name, inputs, category_name):
+    # Create a unit process and attach it to the system category.
     process = o.Process()
     process.name = process_name
     process.process_type = o.ProcessType.UNIT_PROCESS
@@ -12,6 +13,7 @@ def build_process_from_inputs(client, process_name, inputs, category_name):
 
     input_count = 0
     for row in inputs:
+        # UUID is required to resolve each input flow from openLCA.
         uuid = row.get("UUID", "").strip()
         if not uuid:
             continue
@@ -20,10 +22,12 @@ def build_process_from_inputs(client, process_name, inputs, category_name):
             print(f"  Flow with UUID {uuid} not found, skipping.")
             continue
         try:
+            # Amount must be numeric to create a valid exchange.
             amount = float(row.get("Amount", 0))
         except (ValueError, TypeError):
             print(f"  Invalid amount '{row.get('Amount')}' for UUID {uuid}, skipping.")
             continue
+        # Build one input exchange for each valid CSV row.
         in_ex = o.Exchange()
         in_ex.flow = flow
         in_ex.amount = amount
@@ -31,6 +35,7 @@ def build_process_from_inputs(client, process_name, inputs, category_name):
         process.exchanges.append(in_ex)
         input_count += 1
 
+    # Skip process creation when no valid input exchanges were built.
     if input_count == 0:
         print("  No valid inputs found, skipping process creation.")
         return
@@ -42,7 +47,7 @@ def build_process_from_inputs(client, process_name, inputs, category_name):
         print(f"  Failed to save process: {e}")
         return
 
-    # Verify the process exists
+    # Quick read-back check to confirm persistence in openLCA.
     fetched = client.get(o.Process, name=process_name)
     if fetched:
         print(f"  Verified: process '{fetched.name}' (ID: {fetched.id})")
@@ -52,6 +57,7 @@ def build_process_from_inputs(client, process_name, inputs, category_name):
     return process
 
 def process_csv(client, csv_path, category_name):
+    # Reader already filters rows to Direction == Input.
     inputs = read_input_rows(csv_path)
     if not inputs:
         print(f"No inputs found in {csv_path}, skipping.")

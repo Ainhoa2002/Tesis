@@ -31,6 +31,11 @@ def update_ipe_files(base_dir, uuid_map):
                     row.setdefault('flow/process', '')
             updated = False
             for row in reader:
+                direction = str(row.get('Direction', '')).strip().lower()
+                if direction == 'output':
+                    # Output summary rows intentionally have no UUID mapping.
+                    continue
+
                 flow = row['Flow'].strip().strip('"')
                 if flow in uuid_map:
                     uuid, flow_process = uuid_map[flow]

@@ -55,6 +55,13 @@ def fill_columns_from_library(target_file, lib_df, key_col_lib='Ecoinvent_flow',
     import difflib
     lib_keys = list(lib_dict.keys())
     for idx, row in df.iterrows():
+        direction_val = str(row.get('Direction', '')).strip().lower()
+        is_output_row = direction_val == 'output'
+
+        # Output rows are intentional summary rows; do not try to fill/warn.
+        if is_output_row:
+            continue
+
         norm_key = row['_norm_key']
         matched = False
         if norm_key in lib_dict:
@@ -76,7 +83,7 @@ def fill_columns_from_library(target_file, lib_df, key_col_lib='Ecoinvent_flow',
                     continue  # Do not overwrite existing UUID
             if col in lib_row and pd.notna(lib_row[col]) and str(lib_row[col]).strip() != '':
                 df.at[idx, col] = str(lib_row[col])
-        # Always set Direction to Input
+        # Non-output rows are import inputs.
         if 'Direction' in df.columns:
             df.at[idx, 'Direction'] = 'Input'
 
