@@ -2,11 +2,13 @@ import os
 import olca_schema as o
 from csv_reader import read_input_rows
 
-def build_process_from_inputs(client, process_name, inputs):
+def build_process_from_inputs(client, process_name, inputs, category_name):
     process = o.Process()
     process.name = process_name
     process.process_type = o.ProcessType.UNIT_PROCESS
     process.exchanges = []
+    # In this olca_schema version, process.category is a category path string.
+    process.category = category_name
 
     input_count = 0
     for row in inputs:
@@ -49,7 +51,7 @@ def build_process_from_inputs(client, process_name, inputs):
 
     return process
 
-def process_csv(client, csv_path):
+def process_csv(client, csv_path, category_name):
     inputs = read_input_rows(csv_path)
     if not inputs:
         print(f"No inputs found in {csv_path}, skipping.")
@@ -57,5 +59,5 @@ def process_csv(client, csv_path):
 
     base = os.path.basename(csv_path)
     process_name = base.split("_ipe")[0]
-    print(f"\nProcessing {base} -> process '{process_name}'")
-    build_process_from_inputs(client, process_name, inputs)
+    print(f"\nProcessing {base} -> process '{process_name}' in category '{category_name}'")
+    build_process_from_inputs(client, process_name, inputs, category_name)
