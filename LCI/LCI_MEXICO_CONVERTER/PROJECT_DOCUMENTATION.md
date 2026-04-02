@@ -40,7 +40,7 @@ Operational principle:
 - Generic architecture per subsystem: single pipeline for multiple subsystems.
 - Interactive editing for parameters and I/O.
 - Validation rule: `Section` mandatory and `Subsection` optional.
-- Quantity/mass logic dependent on unit (`kg`, `g`, `m2`, or override).
+- Quantity/mass logic dependent on unit (`kg` or `m2`) plus optional subsystem-level multiplier.
 - Component library deduplication based on explicit keys:
   - Casing key: `Casing + mass-calculation parameter signature`.
   - Part key: `Manufacturer + Part_Number` plus comparison fields to separate true duplicates from variants.
@@ -54,6 +54,14 @@ Per subsystem:
 - Component-level results: `<subsystem>_component_mass_results.csv`
 - Component flows: `<subsystem>_component_io_flows.csv`
 - Grouped flows: `<subsystem>_ipe_flows_from_parameters.csv`
+
+Subsystem quantity control:
+
+- `subsystem_units.csv`
+  - Columns: `Subsystem`, `Quantity_per_subsystem`
+  - Auto-synced with discovered subsystem names when `Pipeline.py` runs.
+  - New subsystems default to `Quantity_per_subsystem=1`.
+  - User-defined quantities are preserved.
 
 Shared libraries:
 
@@ -95,6 +103,9 @@ This convention enables scalability without duplicating code logic.
   - If enabled, sync only fills empty parameter cells and never overwrites existing user values.
   - Refreshes deduplicated casing/part-number libraries automatically after successful execution.
   - Rebuilds consolidated EcoInvent totals library automatically after successful execution.
+  - Applies subsystem-level quantity scaling from `subsystem_units.csv`:
+    - `Total_quantity`, `Total_mass_kg` and flow `Amount` are multiplied by `Quantity_per_subsystem`.
+    - `Quantity_per_element` remains the per-component unit value (not scaled).
   - Library merge warnings follow selected scope:
     - selected subsystem(s): warnings only from those subsystems,
     - `all`: warnings from all subsystems.
@@ -139,13 +150,15 @@ This convention enables scalability without duplicating code logic.
 Minimum input to run pipeline:
 
 - `<subsystem>_component_parameters.csv`
+- `subsystem_units.csv` (auto-generated/updated by pipeline; defaults to 1 per subsystem)
 
 Validation rules:
 
 - `Section` must have a value.
 - `Ecoinvent_flow` must have a value.
 - `Subsection` can be empty.
-- For mass context (`kg`/`g`): if `Has_datasheet_info=YES`, `Quantity_per_element` is required.
+- For mass context (`kg`): if `Has_datasheet_info=YES`, `Quantity_per_element` is required.
+- `Quantity_per_subsystem` in `subsystem_units.csv` must be positive; invalid/empty values fallback to `1`.
 
 Expected key fields:
 
@@ -174,6 +187,16 @@ The mass calculation system accepts **only kilogram (kg)** as the unit for mass 
 - Other units:
   - Not supported in this workflow. Use `kg` or `m2`.
 
+### 8.1.b Subsystem Quantity Multiplier
+
+- The pipeline reads `Quantity_per_subsystem` from `subsystem_units.csv` for each subsystem.
+- This value scales subsystem totals during execution:
+  - `Total_quantity` (component results)
+  - `Total_mass_kg` (component results)
+  - `Amount` (component I/O and grouped flows)
+- `Quantity_per_element` is intentionally not scaled (it remains per-component-unit data).
+- This allows modeling multiple physical instances of one subsystem without duplicating subsystem files.
+
 ### 8.2 Flow Generation
 
 - I/O is generated per component with its `Amount`.
@@ -196,7 +219,7 @@ Mass result column details:
 
 - `<subsystem>_component_mass_results.csv` includes **only `Total_mass_kg`** as the mass output column.
 - `Total_mass_kg` rules:
-  - mass unit context (kg): value follows mass-based total quantity computed directly in kg.
+  - mass unit context (kg): value follows mass-based total quantity computed directly in kg and scaled by `Quantity_per_subsystem`.
   - `m2` unit context: `Total_mass_kg = Total_quantity * mass_space_relation_m2/kg`.
   - if `mass_space_relation_m2/kg` is empty for `m2` rows, `Total_mass_kg` remains empty.
 - **Gram-based columns removed**: Historical columns `Mass_per_element_g` and `Total_mass_g` are no longer exported. All mass reporting is in kilograms.

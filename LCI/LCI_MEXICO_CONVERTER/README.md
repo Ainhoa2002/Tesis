@@ -43,6 +43,19 @@ Salidas principales por subsistema:
 - `<subsystem>_component_io_flows.csv`
 - `<subsystem>_ipe_flows_from_parameters.csv`
 
+Control adicional de cantidad por subsistema:
+
+- `subsystem_units.csv`
+  - Columnas: `Subsystem`, `Quantity_per_subsystem`
+  - Se sincroniza automaticamente cuando corre el pipeline.
+  - Cada subsistema nuevo se agrega con valor default `1`.
+  - El usuario decide este valor; el pipeline no lo sobreescribe.
+
+Uso:
+
+- Si `Quantity_per_subsystem = 2` para un subsistema, el pipeline escala por 2 los totales de ese subsistema (`Total_quantity`, `Total_mass_kg` y `Amount` en flows).
+- `Quantity_per_element` permanece como valor unitario por componente (no se escala), para conservar trazabilidad del BOM base.
+
 ## Nueva Logica de Masa Total por Subsystem
 
 En `Pipeline.py` existe la funcion reutilizable:
@@ -54,6 +67,11 @@ Esta funcion:
 - lee `<subsystem>_component_results.csv`
 - suma `Total_mass_kg`
 - devuelve la masa total del subsistema en kg
+
+Nota de parametrizacion:
+
+- `Total_mass_kg` en resultados ya incorpora `Quantity_per_subsystem`.
+- Por lo tanto, la fila final de masa en `_ipe_flows_from_parameters.csv` tambien refleja ese multiplicador.
 
 Uso actual de esta funcion (2 lugares):
 
