@@ -31,6 +31,7 @@ BROADCOM,HCPL-063L-000E,digital_control,SOIC8,"Dual-Channel, High Speed LVTTL Co
 BROADCOM,HSMF-A203-A00J1,digital_control,,Bicolor Red/Emerald Green Surface Mount LED,Discrete Semiconductors,Optoelectronics,kg,0.000060,YES,,,,,,,,,EcoInvent,light emitting diode production,kg,Input
 BUSSMANN,1A1907-06-R,4Q_output_control_card,,"Fuse Clip for 1/4"" (6.35)mm Diameter Fuses",Electromechanical,Fuse holder,kg,0.00074,YES,,,,,,,,,EcoInvent,"electronic component, passive, unspecified",kg,Input
 CAEN ELS,CT-26,4Q_output_power_card,,"DC Current Transducer, 26A Primary Current O-FLUCS, CT PCB Series",Modules,Sensors,kg,0.3,YES,,,,,,,,,EcoInvent,"electronic component production, active, unspecified",kg,Input
+CEMBRE,PKE2508,HF_Power_Transformer_PM624929,,Insulated Wire Connectors,Electromechanical,Connectors,kg,0.000002,YES,,,,,,,,,EcoInvent,"electric connector production, wire clamp",kg,Input
 CERN,EDA-02872-V1-3,fuse_card,,"2 Circuits In-Line - Universal MATE-N-LOK with Central Wire Pin, 7 Poles, VDE  Metalok Bantam Circular Male Connector, Mounted On 15mm M3 Spacer",Electromechanical,Connectors,kg,0.0526,YES,,,,,,,,,EcoInvent,"electric connector production, peripheral type buss",kg,Input
 CERN,HCR6BFW,inverter_power_card,,HF Current transformer,Magnetics,Current sensing,kg,0.0095,YES,,,,,,,,,EcoInvent,"transformer production, low voltage use",kg,Input
 CERN,HCRAPQU001-0,filter_card,,HF Common Mode Inductor,Magnetics,Inductors,KG,0.0827,YES,,,,,,,,,EcoInvent,"transformer production, low voltage use",kg,Input
@@ -256,6 +257,10 @@ STMicroelectronics,LD1086D2M33TR,inverter_power_card,D2PAK,3.3V 1.5A Low-Dropout
 TDK,ACM2012-202-2P,analog_control,0805,"Common Mode Filter, 2000Ω@100MHz, 300mA, 2.0x1.25mm",Passives,Inductors,kg,,NO,2.0,1.25,0.8,,4.5,5.5,,0,EcoInvent,"inductor production, low value multilayer chip",kg,Input
 TDK,ACM2012-361-2P,analog_control,0805,"Common Mode Filter, 360Ω@100MHz, 300mA, 2.0x1.25mm",Passives,Inductors,kg,,NO,2.0,1.25,0.8,,4.5,5.5,,0,EcoInvent,"inductor production, low value multilayer chip",kg,Input
 TDK,B32653A6224J000,inverter_power_card,,±5% 630VDC/250VAC Metallized Polypropylene Film Capacitor (MKP),Passives,Capacitors,kg,,NO,7,16,26.5,,1.3,1.4,0,,EcoInvent,"capacitor production, film type, for through-hole mounting",kg,Input
+TDK,B65684A0000R087,HF_Power_Transformer_PM624929,,Pot core without Airgap,Magnetics,Inductors,kg,0.410592,YES,,,,,,,,,EcoInvent,"grain oriented electrical steel, 0.23 mm coil",kg,Input
+TDK,B65684A0315A027,power_inductor_PM6249,,Pot core with Airgap,Magnetics,Inductors,kg,0.65664,YES,,,,,,,,,EcoInvent,"grain oriented electrical steel, 0.23 mm coil",kg,Input
+TDK,B65685A1000T001,"HF_Power_Transformer_PM624929, power_inductor_PM6249",,Coil former without solder pins,Magnetics,Inductors,kg,0.02,YES,,,,,,,,,EcoInvent,"polyester resin, unsaturated+injection moulding",kg,Input
+TDK,B65685A1000T001,"HF_Power_Transformer_PM624929, power_inductor_PM6249",,Coil former without solder pins,Magnetics,Inductors,kg,0.03,YES,,,,,,,,,EcoInvent,"polyester resin, unsaturated+injection moulding",kg,Input
 TE CONNECTIVITY,1-2007637-5,digital_control,,2x2 Press Fit SFP+ Cage and PT Connectors Assembly with EMI Springs,Electromechanical,Connectors,kg,0.0162,YES,,,,,,,,,EcoInvent,"electric connector production, peripheral type buss",kg,Input
 TE CONNECTIVITY,1571983-4,digital_control,DIP,"4 Way SPST SMD DIP Switch, Latched, Contact Rating 0.025A 24VDC",Electromechanical,Switches,kg,,NO,6.2,4.5,1.45,,1.2,1.3,0.05,0,EcoInvent,"electronic component, passive, unspecified",kg,Input
 TE CONNECTIVITY,2311763-2,analog_control,,High Density D-sub 15 Position Female,Electromechanical,Connectors,kg,0.0084,YES,,,,,,,,,EcoInvent,"electric connector production, peripheral type buss",kg,Input

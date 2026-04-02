@@ -14,10 +14,62 @@ from pathlib import Path
 
 
 MAX_SELECTION_ATTEMPTS = 3
+SUBSYSTEM_UNITS_FILENAME = "subsystem_units.csv"
+SUBSYSTEM_UNITS_FIELDS = ["Subsystem", "Quantity_per_subsystem"]
 DEPRECATED_INPUT_FIELDS = {
     "Ecoinvent_amount_override",
     "Notes",
 }
+
+
+def _parse_subsystem_units(value):
+    parsed = to_float(value)
+    if parsed is None or parsed <= 0:
+        return 1.0
+    return parsed
+
+
+def _sync_subsystem_units_file(base_dir, subsystem_names):
+    """Keep subsystem units table in sync with discovered subsystem names.
+
+    File behavior:
+    - Adds missing subsystems with Units=1
+    - Removes rows for subsystems no longer present
+    - Preserves user-defined Units for existing subsystem names
+    """
+    path = base_dir / SUBSYSTEM_UNITS_FILENAME
+    existing_units = {}
+
+    if path.exists():
+        try:
+            with open(path, newline="", encoding="utf-8-sig") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    subsystem = _clean_text(row.get("Subsystem"))
+                    if subsystem == "":
+                        continue
+                    # Backward compatible: accept old "Units" column name.
+                    existing_units[subsystem] = _parse_subsystem_units(
+                        row.get("Quantity_per_subsystem") or row.get("Units")
+                    )
+        except Exception as exc:
+            print(f"[Warning] Could not read {path.name}: {exc}. Recreating with defaults.")
+
+    units_map = {
+        name: existing_units.get(name, 1.0)
+        for name in subsystem_names
+    }
+
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=SUBSYSTEM_UNITS_FIELDS)
+        writer.writeheader()
+        for name in subsystem_names:
+            writer.writerow({
+                "Subsystem": name,
+                "Quantity_per_subsystem": format(units_map[name], ".12g"),
+            })
+
+    return units_map
 
 def calculate_subsystem_total_mass(results_csv_path):
     """
@@ -507,7 +559,14 @@ def ecoinvent_amount(row, mass_data, quantity_data):
     }
 
 ##RECEIVES THE INPUTS FROM THE EXCEL AND CREATES THE CSV WITH THE PARAMETERS TO BE USED IN THE PIPELINE
-def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv, subsystem_name=None):
+def run_pipeline(
+    input_csv,
+    results_csv,
+    component_flows_csv,
+    grouped_flows_csv,
+    subsystem_name=None,
+    subsystem_units=1.0,
+):
     sorted_rows = []
     component_results = []
     component_flows = []
@@ -595,6 +654,8 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv,
 
     sorted_rows.sort(key=lambda item: _sort_key(item[1]))
 
+    units_multiplier = _parse_subsystem_units(subsystem_units)
+
     for idx, row, meta in sorted_rows:
         result_row = dict(row)
         mass_data = compute_component_mass(row)  # returns None if data missing — not an error yet
@@ -602,6 +663,15 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv,
         unit = _get_quantity_context_unit(row)
         if _get_quantity_context_unit(row).lower() == "m2":
             mass_data = _try_m2_mass_equivalent(row, quantity_data)
+
+        if mass_data is not None:
+            mass_data = dict(mass_data)
+            mass_data["Total_mass_kg"] = mass_data["Total_mass_kg"] * units_multiplier
+
+        if quantity_data is not None:
+            quantity_data = dict(quantity_data)
+            quantity_data["Total_quantity"] = quantity_data["Total_quantity"] * units_multiplier
+
         if quantity_data is not None:
             result_row["Quantity_per_element"] = round(quantity_data["Quantity_per_element"], 12)
             result_row["Total_quantity"] = round(quantity_data["Total_quantity"], 12)
@@ -945,6 +1015,7 @@ def main():
 
     try:
         subsystems = _discover_subsystems(base)
+        subsystem_units_map = _sync_subsystem_units_file(base, list(subsystems.keys()))
         selected_subsystems = _choose_subsystems(subsystems, requested_selection)
     except ValueError as exc:
         print(f"Validation error: {exc}")
@@ -957,12 +1028,14 @@ def main():
         )
         print(f"\nRunning subsystem: {subsystem}")
         try:
+            subsystem_units = subsystem_units_map.get(subsystem, 1.0)
             results, component_flows, grouped_flows, errors = run_pipeline(
                 input_csv,
                 results_csv,
                 component_flows_csv,
                 grouped_flows_csv,
                 subsystem_name=subsystem,
+                subsystem_units=subsystem_units,
             )
         except ValueError as exc:
             failed_subsystems.append((subsystem, str(exc)))
@@ -976,6 +1049,7 @@ def main():
         grouped_flows_count = len(grouped_flows)
 
         print(f"Processed component rows: {processed_rows}")
+        print(f"Subsystem units multiplier: {format(subsystem_units, '.12g')}")
         print(f"Component IO rows: {io_rows}")
         print(f"Exported grouped flows: {grouped_flows_count}")
         print(f"Results file: {results_csv}")
