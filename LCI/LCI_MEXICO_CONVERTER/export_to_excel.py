@@ -33,6 +33,32 @@ def load_csv_optional(path: Path) -> Tuple[List[str], List[Dict[str, str]]]:
     return headers, rows
 
 
+def load_consolidated_mass_results(base_dir: Path) -> Tuple[List[str], List[Dict[str, str]]]:
+    headers: List[str] = []
+    rows: List[Dict[str, str]] = []
+
+    for csv_path in sorted(base_dir.glob("*_component_results.csv")):
+        subsystem = csv_path.name[: -len("_component_results.csv")]
+        file_headers, file_rows = load_csv_optional(csv_path)
+        if not file_headers:
+            continue
+
+        merged_headers = list(file_headers)
+        if "Subsystem" not in merged_headers:
+            merged_headers.append("Subsystem")
+
+        for header in merged_headers:
+            if header not in headers:
+                headers.append(header)
+
+        for row in file_rows:
+            new_row = dict(row)
+            new_row["Subsystem"] = subsystem
+            rows.append(new_row)
+
+    return headers, rows
+
+
 def write_sheet(ws, headers: List[str], rows: List[Dict[str, str]]) -> None:
     if headers:
         ws.append(headers)
@@ -177,18 +203,21 @@ def export_total_bom_to_excel(
         print("Install it with: .\\.venv\\Scripts\\python.exe -m pip install openpyxl")
         return None
 
-    sources = [
-        ("Parameters_All", base_dir / "component_library_parameters_all.csv"),
-        ("Mass_Results_All", base_dir / "component_library_mass_results_all.csv"),
-        ("Ecoinvent_Totals", base_dir / "component_library_ecoinvent_totals.csv"),
-    ]
-
     workbook = Workbook()
     workbook.remove(workbook.active)
     exported = 0
 
+    sources = [
+        ("Parameters_All", base_dir / "component_library_parameters_all.csv"),
+        ("Mass_Results_All", None),
+        ("Ecoinvent_Totals", base_dir / "component_library_ecoinvent_totals.csv"),
+    ]
+
     for sheet_name, csv_path in sources:
-        headers, rows = load_csv_optional(csv_path)
+        if sheet_name == "Mass_Results_All":
+            headers, rows = load_consolidated_mass_results(base_dir)
+        else:
+            headers, rows = load_csv_optional(csv_path) if csv_path is not None else ([], [])
         if not headers:
             continue
         ws = workbook.create_sheet(sheet_name[:31])

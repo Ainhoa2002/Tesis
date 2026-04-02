@@ -162,6 +162,18 @@ def _validate_input_consistency(raw_rows):
 
     return conflicts
 
+
+def _validate_disallowed_mass_units(raw_rows):
+    """Reject gram-based inputs to keep the system mass context strictly in kg."""
+    gram_rows = []
+    for idx, row in raw_rows:
+        resolved_unit = _get_quantity_context_unit(row)
+        if resolved_unit == "g":
+            designators = _clean_text(row.get("Designators")) or "no designator"
+            gram_rows.append((idx, designators))
+
+    return gram_rows
+
 #For calculating the density
 def _resolve_density(row):
     """Resolve effective density for mass calculation.
@@ -245,12 +257,8 @@ def _build_quantity_data(row, mass_data):
         }
 
     if is_mass_unit(unit) and mass_data is not None:
-        if unit == "kg":
-            qty_per_element = mass_data["Mass_per_element_g"] / 1000.0
-            total_quantity = mass_data["Total_mass_kg"]
-        else:
-            qty_per_element = mass_data["Mass_per_element_g"]
-            total_quantity = mass_data["Total_mass_g"]
+        qty_per_element = mass_data["Mass_per_element_kg"]
+        total_quantity = mass_data["Total_mass_kg"]
 
         return {
             "Quantity_per_element": qty_per_element,
@@ -276,11 +284,7 @@ def _compute_total_mass_kg_from_quantity(row, unit, quantity_data):
     total_quantity = quantity_data["Total_quantity"]
 
     if is_mass_unit(unit):
-        if unit == "kg":
-            return round(total_quantity, 12)
-        if unit == "g":
-            return round(total_quantity, 12)
-        return ""
+        return round(total_quantity, 12)
 
     if unit == "m2":
         relation = to_float(row.get("mass_space_relation_m2/kg"))
@@ -328,8 +332,8 @@ def _try_geometry_mass(row, metal_extra_g):
     if volume_cm3 is None:
         return None, None, None, density_source
 
-    mass_per_element_g = (volume_cm3 * density_g_cm3) + metal_extra_g
-    return volume_cm3, mass_per_element_g, density_g_cm3, density_source
+    mass_per_element_kg = ((volume_cm3 * density_g_cm3) + metal_extra_g) / 1000.0
+    return volume_cm3, mass_per_element_kg, density_g_cm3, density_source
 
 
 def _try_m2_mass_equivalent(row, quantity_data):
@@ -350,8 +354,7 @@ def _try_m2_mass_equivalent(row, quantity_data):
     return {
         "Method": "M2_EQUIVALENT",
         "Volume_cm3": None,
-        "Mass_per_element_g": mass_per_element_kg * 1000.0,
-        "Total_mass_g": total_mass_kg * 1000.0,
+        "Mass_per_element_kg": mass_per_element_kg,
         "Total_mass_kg": total_mass_kg,
         "Density_used_g_cm3": None,
         "Density_source": "M2_RELATION",
@@ -360,7 +363,7 @@ def _try_m2_mass_equivalent(row, quantity_data):
 
 def compute_component_mass(row):
     """Try to compute mass. Returns None if data is insufficient (not an error
-    unless the ecoinvent unit is kg/g, which is checked separately)."""
+    unless the ecoinvent unit is kg, which is checked separately)."""
     quantity = _get_number_elements(row)
     quantity = 1.0 if quantity is None else quantity
 
@@ -370,32 +373,30 @@ def compute_component_mass(row):
     is_mass_context = is_mass_unit(unit_context)
 
     metal_extra_g = to_float(row.get("Metal_extra_g")) or 0.0
-    volume_cm3, mass_from_geometry_g, density_used_g_cm3, density_source = _try_geometry_mass(
+    volume_cm3, mass_from_geometry_kg, density_used_g_cm3, density_source = _try_geometry_mass(
         row,
         metal_extra_g,
     )
 
     if has_datasheet_info and is_mass_context and qty_per_element is not None:
-        mass_per_element_g = qty_per_element * 1000.0
+        mass_per_element_kg = qty_per_element
         method = "DATASHEET_QTY_KG"
         volume_cm3 = None
-    elif (not has_datasheet_info) and (mass_from_geometry_g is not None):
-        mass_per_element_g = mass_from_geometry_g
+    elif (not has_datasheet_info) and (mass_from_geometry_kg is not None):
+        mass_per_element_kg = mass_from_geometry_kg
         method = "CALCULATED"
-    elif mass_from_geometry_g is not None:
-        mass_per_element_g = mass_from_geometry_g
+    elif mass_from_geometry_kg is not None:
+        mass_per_element_kg = mass_from_geometry_kg
         method = "CALCULATED_FALLBACK"
     else:
-        return None  # No mass data yet — only an error if unit is kg/g
+        return None  # No mass data yet — only an error if unit is kg
 
-    total_mass_g = mass_per_element_g * quantity
-    total_mass_kg = total_mass_g / 1000.0
+    total_mass_kg = mass_per_element_kg * quantity
 
     return {
         "Method": method,
         "Volume_cm3": volume_cm3,
-        "Mass_per_element_g": mass_per_element_g,
-        "Total_mass_g": total_mass_g,
+        "Mass_per_element_kg": mass_per_element_kg,
         "Total_mass_kg": total_mass_kg,
         "Density_used_g_cm3": density_used_g_cm3,
         "Density_source": density_source,
@@ -403,7 +404,7 @@ def compute_component_mass(row):
 
 
 def is_mass_unit(unit):
-    return str(unit or "").strip().lower() in {"kg", "g"}
+    return str(unit or "").strip().lower() in {"kg"}
 
 
 def _normalize_direction(direction, database=None):
@@ -471,7 +472,7 @@ def _split_ecoinvent_flow_components(flow, direction):
 
 def ecoinvent_amount(row, mass_data, quantity_data):
     """Compute the ecoinvent flow amount for a component row.
-    - kg/g units  → taken from calculated mass (mass_data must not be None)
+    - kg unit     → taken from calculated mass (mass_data must not be None)
     - m2 unit     → taken from calculated area quantity (quantity_data must not be None)
     """
     flow = str(row.get("Ecoinvent_flow") or "").strip()
@@ -486,7 +487,7 @@ def ecoinvent_amount(row, mass_data, quantity_data):
             raise ValueError(
                 f"Unit is '{unit}' but mass data is missing — fill Quantity_per_element (kg, with Has_datasheet_info=YES) or geometry + density"
             )
-        amount = mass_data["Total_mass_kg"] if unit.lower() == "kg" else mass_data["Total_mass_g"]
+        amount = mass_data["Total_mass_kg"]
     elif unit.lower() == "m2":
         if quantity_data is None:
             raise ValueError(
@@ -495,7 +496,7 @@ def ecoinvent_amount(row, mass_data, quantity_data):
         amount = quantity_data["Total_quantity"]
     else:
         raise ValueError(
-            f"Unsupported unit '{unit}'. Use kg/g for mass-based flows or m2 for area-based flows."
+            f"Unsupported unit '{unit}'. Use kg for mass-based flows or m2 for area-based flows."
         )
 
     return {
@@ -555,6 +556,16 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv,
             f"Missing values found in: {' | '.join(details)}"
         )
 
+    disallowed_gram_rows = _validate_disallowed_mass_units(raw_rows)
+    if disallowed_gram_rows:
+        preview = "; ".join([f"row {idx} ({designators})" for idx, designators in disallowed_gram_rows[:10]])
+        if len(disallowed_gram_rows) > 10:
+            preview += f"; ... (+{len(disallowed_gram_rows) - 10} more)"
+        raise ValueError(
+            "Unit 'g' is not allowed in this pipeline. Use kg for all mass rows. "
+            f"Rows with disallowed unit: {preview}"
+        )
+
     input_conflicts = _validate_input_consistency(raw_rows)
     if input_conflicts:
         preview_lines = []
@@ -611,7 +622,6 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv,
                 {
                     "Method": mass_data["Method"],
                     "Volume_cm3": "" if mass_data["Volume_cm3"] is None else round(mass_data["Volume_cm3"], 9),
-                    "Mass_per_element_g": round(mass_data["Mass_per_element_g"], 6),
                     "Density_used_g_cm3": ""
                     if mass_data["Density_used_g_cm3"] is None
                     else round(mass_data["Density_used_g_cm3"], 6),
@@ -624,14 +634,13 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv,
                 {
                     "Method": "PENDING" if not needs_mass else "MISSING_MASS",
                     "Volume_cm3": "",
-                    "Mass_per_element_g": "",
                     "Density_used_g_cm3": "",
                     "Density_source": "",
                     "Validation_error": "Mass data not yet filled" if needs_mass else "",
                 }
             )
             if needs_mass:
-                validation_error = "Mass data not yet filled (unit is kg/g — fill Quantity_per_element in kg with Has_datasheet_info=YES, or geometry + density)"
+                validation_error = "Mass data not yet filled (unit is kg — fill Quantity_per_element in kg with Has_datasheet_info=YES, or geometry + density)"
                 errors.append({"row": idx, "component": row.get("Designators", ""), "error": validation_error})
 
         if needs_area and quantity_data is None:
@@ -662,8 +671,6 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv,
                 "Ecoinvent_unit": unit,
                 "Direction": str(row.get("Direction") or "Input").strip(),
                 "Amount": "",
-                "Mass_per_element_g": "" if mass_data is None else round(mass_data["Mass_per_element_g"], 6),
-                "Total_mass_g": "" if mass_data is None else round(mass_data["Total_mass_g"], 6),
                 "Total_mass_kg": "" if mass_data is None else round(mass_data["Total_mass_kg"], 12),
                 "Formula_basis": "",
                 "Validation_error": "",
@@ -722,8 +729,6 @@ def run_pipeline(input_csv, results_csv, component_flows_csv, grouped_flows_csv,
         "Ecoinvent_unit",
         "Direction",
         "Amount",
-        "Mass_per_element_g",
-        "Total_mass_g",
         "Total_mass_kg",
         "Formula_basis",
         "Validation_error",
@@ -1016,12 +1021,13 @@ def main():
 
     # Prompt user to optionally show overall operation summary
     try:
-        show_summary = input("\nDo you want to see the overall operation summary (number of subsystems, sections, subsections, warnings, total mass)? (y/n): ").strip().lower()
+        show_summary = input("\nDo you want to see the overall operation summary (number of subsystems, sections, subsections, total elements analyzed, warnings, total mass)? (y/n): ").strip().lower()
         if show_summary in {"y", "yes", "s", "si"}:
             print("\n--- Pipeline Operation Summary ---")
             print(f"Number of subsystems: {len(all_subsystems)}")
             print(f"Number of sections: {len(all_sections)}")
             print(f"Number of subsections: {len(all_subsections)}")
+            print(f"Total elements (component rows) analyzed: {total_processed_rows}")
             print(f"Total mass (kg): {total_mass:.6f}")
             print("--- End of Summary ---\n")
         else:

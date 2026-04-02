@@ -84,6 +84,7 @@ Las filas con `Direction=Output` (como la fila de masa total) ahora se tratan co
 - `Section` y `Ecoinvent_flow` son obligatorios.
 - Si falta alguno en una fila, ese subsistema falla validacion.
 - El resto de subsistemas seleccionados continua.
+- **IMPORTANTE (MASA)**: Solo unidad `kg` es aceptada para contexto de masa. Cualquier fila con `unit='g'` sera rechazada con error explicito listando las filas problematicas. Todas las masas deben ingresar en kg, sin excepciones.
 
 ## Variables de Entorno Utiles
 

@@ -7,8 +7,8 @@ This app:
 Streamlit is a library for building interactive web apps in Python, used for data visualization and exploration.
 
 HOW TO USE IT:
-- In the terminal: streamlit run "LCI_CONNECTION/LCI/mass_visuals_app.py"
-    - Make sure you have Streamlit installed: .\.venv\Scripts\python.exe -m pip install streamlit plotly pandas numpy
+- In the terminal: python -m streamlit run "LCI/LCI_MEXICO_CONVERTER/mass_visuals_app.py"
+    - Make sure you have Streamlit installed: python -m pip install streamlit plotly pandas numpy
 - The app will open in your web browser, showing mass results from all subsystems.
 - You can change parameters in the web app to update visualizations.
 - You can edit the code while the app is running; save changes to auto-reload.

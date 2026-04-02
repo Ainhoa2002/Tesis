@@ -158,17 +158,21 @@ Expected key fields:
 
 ### 8.1 Quantity/Mass Basis
 
-- Context `kg` or `g`:
-  - Mass-based calculation.
-  - Datasheet route: `Has_datasheet_info=YES` requires `Quantity_per_element`.
-  - Geometric route: dimensions/volume + density + extras.
+**MASS UNITS: KG ONLY**
+
+The mass calculation system accepts **only kilogram (kg)** as the unit for mass inputs. Gram unit (`g`) is explicitly rejected at validation time with an error message listing problematic rows.
+
+- Context `kg` (mass-based calculation, **only supported mass unit**):
+  - Datasheet route: `Has_datasheet_info=YES` requires `Quantity_per_element` in kg.
+  - Geometric route: dimensions/volume + density + extras → calculated directly in kg.
+  - Direct calculation avoids intermediate gram conversions.
 
 - Context `m2` with `Has_datasheet_info=YES`:
   - Quantity by area:
   - `Area per element (m2) = (L_mm * W_mm) / 1,000,000`
 
 - Other units:
-  - Not supported in this workflow. Use `kg`, `g`, or `m2`.
+  - Not supported in this workflow. Use `kg` or `m2`.
 
 ### 8.2 Flow Generation
 
@@ -190,11 +194,12 @@ Expected key fields:
 
 Mass result column details:
 
-- `<subsystem>_component_mass_results.csv` includes `Total_mass_kg` after `Total_quantity`.
+- `<subsystem>_component_mass_results.csv` includes **only `Total_mass_kg`** as the mass output column.
 - `Total_mass_kg` rules:
-  - mass unit context (`kg`/`g`): value follows mass-based total quantity in kg context.
+  - mass unit context (kg): value follows mass-based total quantity computed directly in kg.
   - `m2` unit context: `Total_mass_kg = Total_quantity * mass_space_relation_m2/kg`.
   - if `mass_space_relation_m2/kg` is empty for `m2` rows, `Total_mass_kg` remains empty.
+- **Gram-based columns removed**: Historical columns `Mass_per_element_g` and `Total_mass_g` are no longer exported. All mass reporting is in kilograms.
 
 ### 8.4 Component Library Logic
 
@@ -270,15 +275,24 @@ Layer summary:
 
 ## 11. Important Operational Notes
 
-- The pipeline may emit validation warnings when mass data is missing or inconsistent in `kg/g` context.
+### Mass Units (KG ONLY)
+
+- **All mass inputs must be in kilograms (kg)**. Gram unit inputs are rejected at validation with an explicit error listing problematic rows.
+- The pipeline calculates mass directly in kg with no intermediate gram conversions, ensuring consistency and clarity.
+- All CSV outputs contain only `Total_mass_kg` column for mass reporting.
+- Historical gram-based columns (`Mass_per_element_g`, `Total_mass_g`) are permanently removed from pipeline exports.
+
+### General Operational Notes
+
+- The pipeline may emit validation warnings when mass data is missing or inconsistent in kg context.
 - The warning does not imply total execution failure, but does indicate a row pending completion.
 - To maintain consistency, use the per-subsystem naming convention across all CSVs.
 - If parameter CSVs are edited manually outside scripts, run `build_component_libraries.py` (or `Pipeline.py`) to refresh libraries.
 - Runtime toggles:
   - `MASS_CALC_AUTO_SYNC_FROM_LIBRARY=0` disables library-to-parameter sync at pipeline start.
+  - `MASS_CALC_AUTO_REFRESH_LIBRARIES=0` disables automatic library rebuild after pipeline execution.
 
 Mass visualization (`mass_visuals_app.py`):
 
-- Uses `Total_mass_kg` as the single source for all mass charts and totals.
+- Uses `Total_mass_kg` as the single authoritative source for all mass charts and totals.
 - Includes components with any EcoInvent unit when `Total_mass_kg` is available.
-  - `MASS_CALC_AUTO_REFRESH_LIBRARIES=0` disables automatic library rebuild after pipeline execution.
