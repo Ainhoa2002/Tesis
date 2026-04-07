@@ -193,7 +193,6 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
                 provider_ref.name = provider.name
                 provider_ref.ref_type = o.RefType.Process
                 in_ex.default_provider = provider_ref
-                print(f"    Provider assigned: {provider.name}")
             else:
                 print(f"    Warning: Provider UUID {provider_uuid} not found")
 

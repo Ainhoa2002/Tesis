@@ -125,6 +125,43 @@ Las filas con `Direction=Output` (como la fila de masa total) ahora se tratan co
 - `find_component.py`: busqueda/edicion de componentes.
 - `mass_visuals_app.py`: visualizacion de masa basada en `Total_mass_kg`.
 
+## Nueva libreria de providers
+
+Se agrego una nueva libreria:
+
+- `component_library_ecoinvent_uuid_provider_map.csv`
+
+Columnas esperadas:
+
+- `Ecoinvent_flow_reference`
+- `Ecoinvent_process`
+- `UUID_provider`
+
+Uso:
+
+- `fill_ipe_columns_from_library.py` rellena `UUID_provider` en cada `*_ipe_flows_from_parameters.csv` por coincidencia de `Flow` con `Ecoinvent_flow_reference`.
+- El script no sobrescribe filas `Direction=Output`.
+- Los providers no encontrados no generan warning por fila (comportamiento intencional).
+
+## Actualizacion del pipeline (UUID y provider)
+
+`Pipeline.py` ahora ejecuta al final, de forma automatica, el llenado de UUID/provider para mantener los IPE listos para importacion:
+
+- ejecuta `fill_ipe_columns_from_library.py`
+- usa `component_library_ecoinvent_uuid_map.csv`
+- usa `component_library_ecoinvent_uuid_provider_map.csv`
+
+Esto evita procesos con entradas vacias en openLCA cuando los UUID no se habian rellenado manualmente.
+
+## Importacion en openLCA con provider por exchange
+
+En `LCI/process_builder.py`, si una fila de input trae `UUID_provider`:
+
+1. Se busca ese UUID como `Process` en openLCA.
+2. Se asigna `default_provider` del exchange usando `o.Ref` (`o.RefType.Process`).
+
+Nota: en esta version de `olca_schema`, usar una referencia `o.Ref` para `default_provider` es mas confiable que asignar directamente el objeto `Process`.
+
 ## Nota de integracion con openLCA
 
 Los `*_ipe_flows_from_parameters.csv` son la base para la importacion posterior hacia openLCA en el flujo de este proyecto.

@@ -27,12 +27,22 @@ If not, it reads CSV files directly from `<SYSTEM>/`.
 
 `main.py` now scans all system folders under this directory and imports all matching CSV files.
 
+Before importing a system, `main.py` can auto-run UUID enrichment when the system folder contains:
+
+- `fill_ipe_columns_from_library.py`
+- `component_library_ecoinvent_uuid_map.csv`
+- optional `component_library_ecoinvent_uuid_provider_map.csv`
+
+This prevents the common failure mode where inputs exist but are skipped because UUIDs are empty.
+
 For each CSV file:
 
 1. It creates/updates one process in openLCA.
 2. The process name is taken from the file name before `_ipe`.
 3. Inputs are built from rows where `Direction == Input`.
 4. Outputs are built from rows where `Direction == Output`.
+
+`Direction` matching is case-insensitive in `csv_reader.py` (`input`, `Input`, `INPUT`, etc.).
 
 ## Output Handling Logic
 
@@ -91,6 +101,17 @@ Real import:
 
 - `Skipping <SYSTEM>: no *_ipe_flows_from_parameters.csv files found.`
   - The system folder is present but has no import CSV files yet.
+
+## Provider Assignment
+
+If an input row contains `UUID_provider`, importer logic assigns a default provider to that exchange.
+
+Implementation details in `process_builder.py`:
+
+1. The provider UUID is resolved as an openLCA `Process`.
+2. `Exchange.default_provider` is set using `o.Ref` with `ref_type = o.RefType.Process`.
+
+Using `o.Ref` is required for stable persistence of provider links in this workspace's `olca_schema` version.
 
 ## Related Scripts
 
