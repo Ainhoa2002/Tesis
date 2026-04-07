@@ -401,7 +401,16 @@ def _load_result_quantity_map(
     subsystem: str,
     parameter_path: Path | None = None,
 ) -> Dict[Tuple[str, ...], str]:
-    result_path = base_dir / f"{subsystem}_component_mass_results.csv"
+    # Current pipeline writes "*_component_results.csv".
+    # Keep backward compatibility with the old "*_component_mass_results.csv" name.
+    result_path = base_dir / f"{subsystem}_component_results.csv"
+    if not result_path.exists():
+        legacy_result_path = base_dir / f"{subsystem}_component_mass_results.csv"
+        if legacy_result_path.exists():
+            result_path = legacy_result_path
+        else:
+            return {}
+
     if not result_path.exists():
         return {}
 

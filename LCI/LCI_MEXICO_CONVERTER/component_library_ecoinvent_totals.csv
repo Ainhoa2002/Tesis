@@ -4,7 +4,7 @@ Ecoinvent_flow,Ecoinvent_unit,Direction,UUID,Total_amount,Total_mass_kg,Subsyste
 4Q_power_card,kg,Output,,0.65336820164,0.65336820164,4Q_power_card
 "aluminium alloy, AlMg3",kg,Input,8c3b8032-b310-4dfe-9a9b-93fbd369142d,10.35367127,10.35367127,mechanical_components
 "aluminium, primary, cast alloy slab from continuous casting",kg,Input,f6161096-34e3-49c9-911e-060659b0dea1,0.008388,0.008388,"4Q_output_control_card, 4Q_power_card"
-analog_control,kg,Output,,0.12238665996,0.12238665996,analog_control
+analog_control,kg,Output,,0.29010849864,0.29010849864,analog_control
 brass,kg,Input,57771ae0-5e8b-47be-bb73-ba59f2bf8cc8,0.032,0.032,"4Q_output_power_card, 4Q_power_card"
 "capacitor production, electrolyte type, < 2cm height",kg,Input,5036886d-4b0a-4c87-956d-50d85d9abaab,0.0167333565,0.0167333565,"4Q_output_control_card, 4Q_power_card, analog_control, digital_control, fan_supervision_card, inverter_power_card"
 "capacitor production, electrolyte type, > 2cm height",kg,Input,5f06394c-4efd-4c65-9e82-5fd3cbebbd15,0.8915588,0.8915588,"4Q_power_card, filter_card"
@@ -13,21 +13,21 @@ brass,kg,Input,57771ae0-5e8b-47be-bb73-ba59f2bf8cc8,0.032,0.032,"4Q_output_power
 contactor_card,kg,Output,,0.171603921864,0.171603921864,contactor_card
 control_backplane_card,kg,Output,,0.11457526648,0.11457526648,control_backplane_card
 "copper, cathode",kg,Input,fbb039f7-f9cc-46d2-b631-313ddb125c1a,0.6542633,0.6542633,"HF_Power_Transformer_PM624929, contactor_card, inverter_power_card, mechanical_components, power_inductor_PM6249"
-digital_control,kg,Output,,0.40851006221,0.40851006221,digital_control
+digital_control,kg,Output,,0.40851206221,0.40851206221,digital_control
 "diode production, glass-, for surface-mounting",kg,Input,38dddb73-6677-4128-9a82-5c6668eceb29,0.007565800916,0.007565800916,"4Q_output_control_card, 4Q_power_card, analog_control, contactor_card, digital_control, inverter_power_card"
 "diode production, glass-, for through-hole mounting",kg,Input,0fd2627f-cd91-40c7-b168-8d7847ffb1fc,0.00028748,0.00028748,"4Q_output_power_card, 4Q_power_card"
 "electric connector production, peripheral type buss",kg,Input,9cc41404-5a63-4005-82a2-884dc147fc3f,0.418935,0.418935,"analog_control, contactor_card, digital_control, filter_card, fuse_card, inverter_power_card"
 "electric connector production, wire clamp",kg,Input,6716b460-7ba0-4cea-baa4-32ae24bfb88c,0.25360066856,0.25360066856,"4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, HF_Power_Transformer_PM624929, analog_control, contactor_card, control_backplane_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card"
 "electronic component production, active, unspecified",kg,Input,d1e72526-546c-48f2-a363-e1e3b1c9aebc,1.265996,1.265996,"4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, analog_control, contactor_card, digital_control, inverter_power_card"
-"electronic component, passive, unspecified",kg,Input,4e252b55-fb08-4447-8391-d09e8bbb0238,0.149318404083,0.149318404083,"4Q_output_control_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card"
+"electronic component, passive, unspecified",kg,Input,4e252b55-fb08-4447-8391-d09e8bbb0238,0.149334356083,0.149334356083,"4Q_output_control_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card"
 "epoxy resin, liquid",kg,Input,51c7e57a-00b7-4412-b56c-94c17b211ee7,0.02536443,0.02536443,4Q_output_power_card
 fan_supervision_card,kg,Output,,0.083182218,0.083182218,fan_supervision_card
 filter_card,kg,Output,,0.85598204,0.85598204,filter_card
 fuse_card,kg,Output,,0.224916375,0.224916375,fuse_card
 "grain oriented electrical steel, 0.23 mm coil",kg,Input,f3186ac1-ba73-4a01-b686-834e1f279986,2.380512,2.380512,"HF_Power_Transformer_PM624929, power_inductor_PM6249"
-HF_Power_Transformer_PM624929,kg,Output,,0.5486283,0.5486283,HF_Power_Transformer_PM624929
+HF_Power_Transformer_PM624929,kg,Output,,0.5502283,0.5502283,HF_Power_Transformer_PM624929
 "inductor production, low value multilayer chip",kg,Input,,0.00068144,0.00068144,"analog_control, digital_control"
-"inductor production, ring core choke type",kg,Input,3c3632b8-ce5b-4957-ac59-54e931ccd247,0.01111996232,0.01111996232,"analog_control, digital_control"
+"inductor production, ring core choke type",kg,Input,3c3632b8-ce5b-4957-ac59-54e931ccd247,0.178841,0.178841,"analog_control, digital_control"
 injection moulding,kg,Input,68d6dfcf-2089-4586-9bbf-ad75591105cf,0.11129,0.11129,"HF_Power_Transformer_PM624929, digital_control, power_inductor_PM6249"
 "insulated gate bipolar transistor production, for electric vehicle applications",kg,Input,4c5db6d0-a23c-4794-a259-3f63b780d853,0.02168,0.02168,inverter_power_card
 "integrated circuit production, logic type",kg,Input,ad2a5d44-4e6d-430d-873b-0068ea24b9d5,0.028863814526,0.028863814526,"4Q_output_control_card, 4Q_power_card, analog_control, digital_control, inverter_power_card"
@@ -46,11 +46,11 @@ mechanical_components,kg,Output,,10.35767127,10.35767127,mechanical_components
 nylon 6,kg,Input,d16b5d3f-b5e4-45b6-9a04-23cde05220c0,0.0036,0.0036,power_inductor_PM6249
 polycarbonate,kg,Input,e0d6f217-d1e3-4d5d-8b8a-b13c846d4ad6,0.00129,0.00129,digital_control
 "polyester resin, unsaturated",kg,Input,4bf60736-bc87-4e3d-8d34-ea8bcc46f551,0.11,0.11,"HF_Power_Transformer_PM624929, power_inductor_PM6249"
-polytetrafluoroethylene,kg,Input,53556443-eb03-5fa4-886b-bd89d3526a6c,0.0048,0.0048,power_inductor_PM6249
+polytetrafluoroethylene,kg,Input,53556443-eb03-5fa4-886b-bd89d3526a6c,0.0064,0.0064,"HF_Power_Transformer_PM624929, power_inductor_PM6249"
 power_inductor_PM6249,kg,Output,,2.566551,2.566551,power_inductor_PM6249
 "printed wiring board production, for through-hole mounting, Pb free surface",m2,Input,cf11031f-462b-48ce-857b-f36ed83e0095,0.16784,,"4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card"
 "resistor production, metal film type, through-hole mounting",kg,Input,92d9032c-7554-43a7-87b7-59ced4c2516a,0.0028,0.0028,4Q_output_control_card
-"resistor production, surface-mounted",kg,Input,b826a1ab-8be4-41bf-80ad-a6665ec8f9b8,0.0108814035,0.0108814035,"4Q_output_control_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, inverter_power_card"
+"resistor production, surface-mounted",kg,Input,b826a1ab-8be4-41bf-80ad-a6665ec8f9b8,0.0108682525,0.0108682525,"4Q_output_control_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, inverter_power_card"
 "resistor production, wirewound, through-hole mounting",kg,Input,db1c2047-0778-4de6-a5ce-2e1714278d34,0.005948,0.005948,contactor_card
 "resistor, metal film type, through-hole mounting",kg,Input,92d9032c-7554-43a7-87b7-59ced4c2516a,0.00641001,0.00641001,"4Q_output_power_card, filter_card, fuse_card"
 "steel, chromium steel 18/8",kg,Input,c33b5236-001e-49b5-aa3d-810c0214f9ce,0.00164785,0.00164785,4Q_output_power_card
