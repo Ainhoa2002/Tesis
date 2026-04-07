@@ -3,6 +3,19 @@ import olca_schema as o
 from csv_reader import read_input_rows, read_output_rows
 
 
+def _normalize_category_path(value):
+    """Return a normalized openLCA category path as plain string."""
+    if value is None:
+        return ""
+    if isinstance(value, str):
+        return value.strip()
+    if isinstance(value, (list, tuple)):
+        parts = [str(v).strip() for v in value if str(v).strip()]
+        return "/".join(parts)
+    return str(value).strip()
+
+
+# search for the name in openLCA
 def _get_entity_by_name(client, model_type, name):
     ref = client.find(model_type, name=name)
     if not ref:
@@ -10,6 +23,7 @@ def _get_entity_by_name(client, model_type, name):
     return client.get(model_type, uid=ref.id)
 
 
+# Search for the flow property in openLCA, it can be Number, Piece or Item
 def _get_number_flow_property(client):
     for prop_name in ("Number", "Piece", "Item"):
         prop = _get_entity_by_name(client, o.FlowProperty, prop_name)
@@ -18,17 +32,36 @@ def _get_number_flow_property(client):
     return None
 
 
+# Search for the flow property in openLCA, it can be Mass or Weight
 def _get_mass_flow_property(client):
     return _get_entity_by_name(client, o.FlowProperty, "Mass")
 
 
-def _find_or_create_output_flow(client, flow_name, mass_per_lu):
+################ Find or create an output ############################
+# Used when the output flow is missing a UUID
+# It creates a new flow with the name of the flow and the conversion factor
+# from LU to kg based on the amount in the CSV.
+# If the flow already exists (by name), it will be moved to the desired category.
+def _find_or_create_output_flow(client, flow_name, mass_per_lu, category_path):
+    desired_category = _normalize_category_path(category_path)
+
+    # Try to find it by name to reuse if it already exists
     existing_ref = client.find(o.Flow, name=flow_name)
     if existing_ref:
         flow = client.get(o.Flow, uid=existing_ref.id)
         if flow:
+            # Check current category
+            current_cat = _normalize_category_path(flow.category)
+            if current_cat != desired_category:
+                # Move the flow to the desired category
+                flow.category = desired_category
+                client.put(flow)
+                print(f"  INFO: Flow '{flow_name}' moved from category '{current_cat}' to '{desired_category}'.")
+            else:
+                print(f"  INFO: Flow '{flow_name}' already exists in correct category. Reusing it.")
             return flow
 
+    # Obtain the properties for the flow, error if they do not exist
     number_prop = _get_number_flow_property(client)
     mass_prop = _get_mass_flow_property(client)
 
@@ -37,15 +70,19 @@ def _find_or_create_output_flow(client, flow_name, mass_per_lu):
     if not mass_prop:
         raise ValueError("Flow property 'Mass' not found")
 
+    # Creates new flow (the output flow)
     flow = o.Flow()
     flow.name = flow_name
     flow.flow_type = o.FlowType.PRODUCT_FLOW
+    flow.category = desired_category   # assign the same category as the process
 
-    factor_number = o.FlowPropertyFactor()
+    # Factor for number reference
+    factor_number = o.FlowPropertyFactor()   # <-- fixed: was missing
     factor_number.flow_property = number_prop
     factor_number.conversion_factor = 1.0
     factor_number.is_ref_flow_property = True
 
+    # Factor for mass for the conversion from LU to kg
     factor_mass = o.FlowPropertyFactor()
     factor_mass.flow_property = mass_prop
     factor_mass.conversion_factor = mass_per_lu
@@ -53,7 +90,10 @@ def _find_or_create_output_flow(client, flow_name, mass_per_lu):
 
     flow.flow_properties = [factor_number, factor_mass]
 
+    # Save the flow
     client.put(flow)
+
+    # Optionally, verify it was created and return the full flow object.
     created_ref = client.find(o.Flow, name=flow_name)
     if not created_ref:
         raise ValueError(f"Flow '{flow_name}' could not be created")
@@ -62,8 +102,10 @@ def _find_or_create_output_flow(client, flow_name, mass_per_lu):
         raise ValueError(f"Flow '{flow_name}' could not be retrieved after creation")
     return created_flow
 
+
+################ Creates the process in openLCA with the inputs and outputs ############################
 def build_process_from_inputs(client, process_name, inputs, category_name, output_rows=None):
-    # Create a unit process and attach it to the system category.
+    # Create an empty unit process with the given name and category
     process = o.Process()
     process.name = process_name
     process.process_type = o.ProcessType.UNIT_PROCESS
@@ -71,7 +113,10 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
     # In this olca_schema version, process.category is a category path string.
     process.category = category_name
 
+    # Build output exchange(s) first: if present we take the UUID, if not we create a new flow
     output_created = False
+    flow_category_path = _normalize_category_path(category_name)
+
     for output_row in (output_rows or []):
         output_name = str(output_row.get("Flow", "")).strip()
         uuid = str(output_row.get("UUID", "")).strip()
@@ -102,7 +147,7 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
 
         # If UUID is missing, create/reuse a custom output flow with LU->kg conversion.
         try:
-            output_flow = _find_or_create_output_flow(client, output_name, output_amount)
+            output_flow = _find_or_create_output_flow(client, output_name, output_amount, flow_category_path)
 
             out_ex = o.Exchange()
             out_ex.flow = output_flow
@@ -115,6 +160,7 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
         except Exception as e:
             print(f"  Failed to build output flow '{output_name}': {e}")
 
+    ######## Build input exchanges: each row with valid UUID and amount creates one input exchange.
     input_count = 0
     for row in inputs:
         # UUID is required to resolve each input flow from openLCA.
@@ -160,15 +206,18 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
 
     return process
 
+
+########## PROCESS CREATION FUNCTION END ############################
 def process_csv(client, csv_path, category_name):
-    # Reader filters rows to Direction == Input.
+    # Read inputs and outputs from the CSV, if there are no valid inputs or outputs, skip the process creation.
     inputs = read_input_rows(csv_path)
     output_rows = read_output_rows(csv_path)
     if not inputs and not output_rows:
         print(f"No inputs or outputs found in {csv_path}, skipping.")
         return
-
+    # Extract the process name from the CSV file name, it is the part before _ipe
     base = os.path.basename(csv_path)
     process_name = base.split("_ipe")[0]
     print(f"\nProcessing {base} -> process '{process_name}' in category '{category_name}'")
+    # Builds the process
     build_process_from_inputs(client, process_name, inputs, category_name, output_rows)

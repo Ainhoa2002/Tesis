@@ -5,9 +5,8 @@ from process_builder import process_csv
 
 BASE_DIR = Path(__file__).resolve().parent
 
-
+# Each first-level folder under LCI is treated as one system source.
 def iter_system_folders(base_dir: Path):
-    # Each first-level folder under LCI is treated as one system source.
     for child in sorted(base_dir.iterdir()):
         if not child.is_dir():
             continue
@@ -15,14 +14,14 @@ def iter_system_folders(base_dir: Path):
             continue
         yield child
 
-
+#To create openLCA foler; eliminates the LCI_ of the name
 def resolve_category_name(folder_name: str) -> str:
     # openLCA category drops the technical LCI_ prefix when present.
     if folder_name.startswith("LCI_") and len(folder_name) > 4:
         return folder_name[4:]
     return folder_name
 
-
+#Search correct folders in the system folder, it gives back a list with the fields.
 def iter_system_csvs(system_folder: Path):
     # Support both layouts:
     # 1) <system>/LCI/*.csv
@@ -39,34 +38,37 @@ def main():
     parser = argparse.ArgumentParser(
         description="Import all system CSVs under LCI and store processes in matching openLCA categories."
     )
+    # Si se usa el script asi: python main.py --dry-run, no se crean los archivos en openLCA
     parser.add_argument(
         "--dry-run",
         action="store_true",
         help="Only list what would be imported and target categories, without connecting to openLCA.",
     )
     args = parser.parse_args()
-
+    #Find the folders
     systems = list(iter_system_folders(BASE_DIR))
     if not systems:
         print(f"No system folders found in {BASE_DIR}")
         return
-
+    #Connect to IPC
     client = None
     if not args.dry_run:
         # Real import mode writes processes into openLCA via IPC.
         client = ipc.Client(8080)   # or ipc.IpC(8080) if needed
         print("Connected to openLCA IPC server")
-
+    
+    ####PROCESS EACH FOLDER AND FILES:####
     total_files = 0
     for system_folder in systems:
         # Folder name determines the destination process category in openLCA.
         category_name = resolve_category_name(system_folder.name)
+        #Search correct folders in the system folder, it gives back a list with the fields.
         csv_files = iter_system_csvs(system_folder)
         if not csv_files:
             print(f"Skipping {system_folder.name}: no *_ipe_flows_from_parameters.csv files found.")
             continue
-
         print(f"\nSystem: {system_folder.name} -> openLCA category: {category_name}")
+        #Acumulates the number of files
         for csv_file in csv_files:
             total_files += 1
             if args.dry_run:
