@@ -9,7 +9,7 @@ Ecoinvent_flow_reference,Ecoinvent_process,UUID_provider
 "electric connector production, wire clamp","electric connector production, wire clamp | electric connector, wire clamp | APOS, U",dd86962a-dd7e-316b-9ae3-bb22cf1fcbc2
 "electronic component production, active, unspecified","electronic component production, active, unspecified | electronic component, active, unspecified | APOS, U",aab92320-5f7c-3d87-aafa-7dcd00f7295b
 "electronic component, passive, unspecified","electronic component production, passive, unspecified | electronic component, passive, unspecified | APOS, U",f3d352d4-6c0c-3a0d-819a-cdac67904aae
-"inductor, low value multilayer chip","inductor production, low value multilayer chip | inductor, low value multilayer chip | APOS, U",3ab9b906-aafe-3619-af19-8f898a2caab6
+"inductor production, low value multilayer chip","inductor production, low value multilayer chip | inductor, low value multilayer chip | APOS, U",3ab9b906-aafe-3619-af19-8f898a2caab6
 "inductor production, ring core choke type","inductor production, ring core choke type | inductor, ring core choke type | APOS, U",6fbd98c3-1c92-3f5f-ba66-bda680ca0ebc
 "insulated gate bipolar transistor production, for electric vehicle applications","insulated gate bipolar transistor production, for electric vehicle applications | insulated gate bipolar transistor, electric vehicle application | APOS, U",898316bb-c09c-3745-80b4-a5262fd2a9f9
 "integrated circuit production, logic type","integrated circuit production, logic type | integrated circuit, logic type | APOS, U",bc6841b3-b7b5-35d7-bd6c-a4aea2d9319a
@@ -22,3 +22,26 @@ Ecoinvent_flow_reference,Ecoinvent_process,UUID_provider
 "transistor production, surface-mounted","transistor production, surface-mounted | transistor, surface-mounted | APOS, U",fe412dc1-c484-36e1-9799-648be3ecec7c
 "transistor production, wired, big size, through-hole mounting","transistor production, wired, big size, through-hole mounting | transistor, wired, big size, through-hole mounting | APOS, U",dc537ffb-6da8-3c92-b6e9-9ba0d7a74803
 "transistor production, wired, small size, through-hole mounting","transistor production, wired, small size, through-hole mounting | transistor, wired, small size, through-hole mounting | APOS, U",f3ef86cc-7a61-3cfd-b5ef-fb23a5546472
+"transformer production, low voltage use","transformer production, low voltage use | transformer, low voltage use | APOS, U",33903d25-0ea9-3fde-96d4-f3e0c10deb33
+ferrite,"ferrite production | ferrite | APOS, U",0e2aad85-6f2d-3cc4-ac35-2405033e455b
+"metal working, average for steel product manufacturing","metal working, average for steel product manufacturing | metal working, average for steel product manufacturing | APOS, U",8185cec5-3801-3507-a689-cde0fb0721f2
+"metal working, average for aluminium product manufacturing","metal working, average for aluminium product manufacturing | metal working, average for aluminium product manufacturing | APOS, U", 81386fc4-f172-3b15-b9de-ecdb4ddfa9a8
+"steel, low-alloyed","market for steel, low-alloyed | steel, low-alloyed | APOS, U",fa03ac80-8409-3532-8909-e482fa560643
+"aluminium, primary, cast alloy slab from continuous casting","market for aluminium, primary, cast alloy slab from continuous casting | aluminium, primary, cast alloy slab from continuous casting | APOS, U",fa03ac80-8409-3532-8909-e482fa560643
+brass,"market for brass | brass | APOS, U",a40761c5-9464-331e-829b-986aaab70d19
+"metal working, average for copper product manufacturing","metal working, average for copper product manufacturing | metal working, average for copper product manufacturing | APOS, U",1b2956e7-27a2-3d24-bdc7-8d4d96c596c9
+"steel, chromium steel 18/8","market for steel, chromium steel 18/8 | steel, chromium steel 18/8 | APOS, U",3ef3feaa-01a1-3782-bf50-6b75c6381c57
+"epoxy resin, liquid","market for epoxy resin, liquid | epoxy resin, liquid | APOS, U",329af65f-12b0-3257-ad8a-80946d29298d
+"market for metal working, average for metal product manufacturing","market for metal working, average for metal product manufacturing | metal working, average for metal product manufacturing | APOS, U",ee2d0c92-a051-3a2d-a58b-0edfc89f19c7
+"copper, cathode","market for copper, cathode | copper, cathode | APOS, U",40dc9f2f-40c2-37b4-8f38-53d043a5f756
+polycarbonate,"market for polycarbonate | polycarbonate | APOS, U",7ff5dc85-d1ce-3c91-a067-662b423570ec
+injection moulding,"injection moulding | injection moulding | APOS, U",03cb3867-eb74-3a1a-a332-13b200ce4def
+"wire drawing, copper","wire drawing, copper | wire drawing, copper | APOS, U",efa1c88d-6f36-3b05-810d-bed12fa4f2f5
+"grain oriented electrical steel, 0.23 mm coil","market for grain oriented electrical steel, 0.23 mm coil | grain oriented electrical steel, 0.23 mm coil | APOS, U",65207dd6-f7ae-3d4a-9765-e4d246801208
+"polyester resin, unsaturated","market for polyester resin, unsaturated | polyester resin, unsaturated | APOS, U",4d744be8-e65e-3e05-9db5-8a7ccb6a45d0
+polytetrafluoroethylene,"polytetrafluoroethylene production, emulsion polymerization | polytetrafluoroethylene | APOS, U",69158efc-9728-3129-885e-539341db6148
+"aluminium alloy, AlMg3","aluminium alloy production, AlMg3 | aluminium alloy, AlMg3 | APOS, U",9b3a865d-832d-337a-adbb-da7da57dd9d6
+"nylon 6","nylon 6 production | nylon 6 | APOS, U",e8cda1f3-0747-3840-b977-9198fcb429f6
+
+"mounting, through-hole technology, Pb-free solder","mounting, through-hole technology, Pb-free solder | mounting, through-hole technology, Pb-free solder | APOS, U",ad142cc0-19c8-38d0-853b-31ab69af414d
+"mounting, surface mount technology, Pb-free solder","mounting, surface mount technology, Pb-free solder | mounting, surface mount technology, Pb-free solder | APOS, U",e801d0ad-859c-3ce4-82ac-8bf10d8e9ab4

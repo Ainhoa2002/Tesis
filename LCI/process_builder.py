@@ -183,6 +183,20 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
         in_ex.amount = amount
         in_ex.is_input = True
         process.exchanges.append(in_ex)
+        #assign the provider if the UUID_provider column is present and not empty
+        provider_uuid = row.get("UUID_provider", "").strip()
+        if provider_uuid:
+            provider = client.get(o.Process, uid=provider_uuid)
+            if provider:
+                provider_ref = o.Ref()
+                provider_ref.id = provider.id
+                provider_ref.name = provider.name
+                provider_ref.ref_type = o.RefType.Process
+                in_ex.default_provider = provider_ref
+                print(f"    Provider assigned: {provider.name}")
+            else:
+                print(f"    Warning: Provider UUID {provider_uuid} not found")
+
         input_count += 1
 
     # Skip process creation when no valid exchanges were built.
