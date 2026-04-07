@@ -4,7 +4,7 @@ Ecoinvent_flow,Ecoinvent_unit,Direction,UUID,Total_amount,Total_mass_kg,Subsyste
 4Q_power_card,kg,Output,,0.65336820164,0.65336820164,4Q_power_card
 "aluminium alloy, AlMg3",kg,Input,8c3b8032-b310-4dfe-9a9b-93fbd369142d,10.35367127,10.35367127,mechanical_components
 "aluminium, primary, cast alloy slab from continuous casting",kg,Input,f6161096-34e3-49c9-911e-060659b0dea1,0.008388,0.008388,"4Q_output_control_card, 4Q_power_card"
-analog_control,kg,Output,,0.29010849864,0.29010849864,analog_control
+analog_control,kg,Output,,0.29010529864,0.29010529864,analog_control
 brass,kg,Input,57771ae0-5e8b-47be-bb73-ba59f2bf8cc8,0.032,0.032,"4Q_output_power_card, 4Q_power_card"
 "capacitor production, electrolyte type, < 2cm height",kg,Input,5036886d-4b0a-4c87-956d-50d85d9abaab,0.0167333565,0.0167333565,"4Q_output_control_card, 4Q_power_card, analog_control, digital_control, fan_supervision_card, inverter_power_card"
 "capacitor production, electrolyte type, > 2cm height",kg,Input,5f06394c-4efd-4c65-9e82-5fd3cbebbd15,0.8915588,0.8915588,"4Q_power_card, filter_card"
@@ -30,7 +30,7 @@ HF_Power_Transformer_PM624929,kg,Output,,0.5502283,0.5502283,HF_Power_Transforme
 "inductor production, ring core choke type",kg,Input,3c3632b8-ce5b-4957-ac59-54e931ccd247,0.178841,0.178841,"analog_control, digital_control"
 injection moulding,kg,Input,68d6dfcf-2089-4586-9bbf-ad75591105cf,0.11129,0.11129,"HF_Power_Transformer_PM624929, digital_control, power_inductor_PM6249"
 "insulated gate bipolar transistor production, for electric vehicle applications",kg,Input,4c5db6d0-a23c-4794-a259-3f63b780d853,0.02168,0.02168,inverter_power_card
-"integrated circuit production, logic type",kg,Input,ad2a5d44-4e6d-430d-873b-0068ea24b9d5,0.028863814526,0.028863814526,"4Q_output_control_card, 4Q_power_card, analog_control, digital_control, inverter_power_card"
+"integrated circuit production, logic type",kg,Input,ad2a5d44-4e6d-430d-873b-0068ea24b9d5,0.028860614526,0.028860614526,"4Q_output_control_card, 4Q_power_card, analog_control, digital_control, inverter_power_card"
 inverter_power_card,kg,Output,,0.353315533964,0.353315533964,inverter_power_card
 light emitting diode production,kg,Input,084469ca-e2a7-4951-8753-60629e461823,0.00098096,0.00098096,"contactor_card, digital_control, inverter_power_card"
 "market for metal working, average for metal product manufacturing",kg,Input,,0.00126385,0.00126385,4Q_power_card

@@ -1,12 +1,12 @@
-Flow,UUID,Unit,Amount,Direction
-"printed wiring board production, for through-hole mounting, Pb free surface",,m2,0.00374,Input
-"electronic component, passive, unspecified",,kg,0.057948,Input
-"electric connector production, wire clamp",,kg,0.007854,Input
-"resistor production, surface-mounted",,kg,0.000231408,Input
-"market for steel, low-alloyed",,kg,0.00126385,Input
-"metal working, average for metal product manufacturing",,kg,0.00126385,Input
-"mounting, surface mount technology, Pb-free solder",,m2,0.028,Input
-"mounting, through-hole technology, Pb-free solder",,m2,0.028,Input
-"capacitor production, electrolyte type, < 2cm height",,kg,0.0038,Input
-"capacitor production, for surface-mounting",,kg,0.00056576,Input
-fan_supervision_card,,kg,0.083182218,Output
+Flow,UUID,Unit,Amount,Direction,UUID_provider
+"printed wiring board production, for through-hole mounting, Pb free surface",cf11031f-462b-48ce-857b-f36ed83e0095,m2,0.00374,Input,
+"electronic component, passive, unspecified",4e252b55-fb08-4447-8391-d09e8bbb0238,kg,0.057948,Input,
+"electric connector production, wire clamp",6716b460-7ba0-4cea-baa4-32ae24bfb88c,kg,0.007854,Input,
+"resistor production, surface-mounted",b826a1ab-8be4-41bf-80ad-a6665ec8f9b8,kg,0.000231408,Input,
+"market for steel, low-alloyed",817c3650-4fed-4ef2-b9b6-404a198834e6,kg,0.00126385,Input,
+"metal working, average for metal product manufacturing",79632c4b-f876-4c89-bf27-b864b30566be,kg,0.00126385,Input,
+"mounting, surface mount technology, Pb-free solder",ca2b5076-f230-473d-9272-da1a678b4f93,m2,0.028,Input,
+"mounting, through-hole technology, Pb-free solder",66084f92-4bed-46cb-931e-7ea8300c0972,m2,0.028,Input,
+"capacitor production, electrolyte type, < 2cm height",5036886d-4b0a-4c87-956d-50d85d9abaab,kg,0.0038,Input,
+"capacitor production, for surface-mounting",c924ae77-ba85-4856-bc7a-2f249809872b,kg,0.00056576,Input,
+fan_supervision_card,,kg,0.083182218,Output,

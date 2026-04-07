@@ -1119,23 +1119,21 @@ def main():
     except Exception as exc:
         print(f"[Warning] Error while trying to show library merge warnings: {exc}")
 
-    # Prompt user to optionally run UUID filling script (English)
+    # Always fill UUID and UUID_provider at the end so ipe files remain usable.
     try:
-        answer = input("\nDo you want to automatically fill UUIDs using the mapping script? (y/n): ").strip().lower()
-        if answer in {"y", "yes", "s", "si"}:
-            import subprocess
-            print("Running fill_ipe_columns_from_library.py to fill UUIDs...")
-            subprocess.run([
-                sys.executable,
-                str(Path(__file__).parent / "fill_ipe_columns_from_library.py"),
-                "--library",
-                str(Path(__file__).parent / "component_library_ecoinvent_uuid_map.csv"),
-                "--root",
-                str(Path(__file__).parent)
-            ], check=True)
-            print("UUIDs filled successfully.")
-        else:
-            print("UUID filling skipped.")
+        import subprocess
+        print("\nRunning fill_ipe_columns_from_library.py to fill UUID and UUID_provider...")
+        subprocess.run([
+            sys.executable,
+            str(Path(__file__).parent / "fill_ipe_columns_from_library.py"),
+            "--library",
+            str(Path(__file__).parent / "component_library_ecoinvent_uuid_map.csv"),
+            "--provider-library",
+            str(Path(__file__).parent / "component_library_ecoinvent_uuid_provider_map.csv"),
+            "--root",
+            str(Path(__file__).parent)
+        ], check=True)
+        print("UUID filling completed.")
     except Exception as exc:
         print(f"[Warning] Error while trying to fill UUIDs: {exc}")
 

@@ -4,6 +4,7 @@ import argparse
 import sys
 import re
 
+
 def normalize_key(val):
     """Remove quotes, all whitespace, and lowercase for robust matching."""
     if pd.isna(val):
@@ -99,10 +100,80 @@ def fill_columns_from_library(target_file, lib_df, key_col_lib='Ecoinvent_flow',
         for val in missing_rows:
             print(f"  - {val}")
 
+
+def fill_uuid_provider_from_library(target_file, provider_df, key_col_target='Flow'):
+    """Fill UUID_provider in one ipe file using provider library.
+
+    Matching logic:
+    - target Flow -> provider Ecoinvent_flow_reference (normalized)
+    - copy provider UUID_provider into target UUID_provider
+
+    Rules:
+    - no warning for non-matching flows
+    - do not overwrite output rows
+    - return number of rows filled in this run
+    """
+    try:
+        df = pd.read_csv(target_file, dtype=str, keep_default_na=False)
+    except Exception as e:
+        print(f"Error reading {target_file}: {e}")
+        return 0
+
+    if key_col_target not in df.columns:
+        return 0
+
+    provider_key_col = 'Ecoinvent_flow_reference'
+    provider_uuid_col = 'UUID_provider'
+    if provider_key_col not in provider_df.columns or provider_uuid_col not in provider_df.columns:
+        print(
+            "Provider library missing required columns: "
+            "Ecoinvent_flow_reference, UUID_provider"
+        )
+        sys.exit(1)
+
+    if 'UUID_provider' not in df.columns:
+        df['UUID_provider'] = ''
+
+    provider_tmp = provider_df.copy()
+    provider_tmp['_norm_key'] = provider_tmp[provider_key_col].apply(normalize_key)
+    provider_dict = (
+        provider_tmp.drop_duplicates('_norm_key')
+        .set_index('_norm_key')[provider_uuid_col]
+        .to_dict()
+    )
+
+    filled_count = 0
+    for idx, row in df.iterrows():
+        direction_val = str(row.get('Direction', '')).strip().lower()
+        if direction_val == 'output':
+            continue
+
+        norm_key = normalize_key(row.get(key_col_target, ''))
+        provider_uuid = str(provider_dict.get(norm_key, '')).strip()
+        if provider_uuid == '':
+            continue
+
+        old_val = str(row.get('UUID_provider', '')).strip()
+        if old_val == provider_uuid:
+            continue
+
+        df.at[idx, 'UUID_provider'] = provider_uuid
+        filled_count += 1
+
+    try:
+        df.to_csv(target_file, index=False, encoding='utf-8')
+    except Exception as e:
+        print(f"Error writing {target_file}: {e}")
+        return 0
+
+    return filled_count
+
 def main():
     parser = argparse.ArgumentParser(description='Fill columns in _ipe_flows_from_parameters CSV files using a library.')
     parser.add_argument('--library', default='LCI_CONNECTION/LCI/component_library_ecoinvent_uuid_map.csv',
                         help='Ruta al archivo CSV de la librería (por defecto: LCI_CONNECTION/LCI/component_library_ecoinvent_uuid_map.csv)')
+    parser.add_argument('--provider-library', default='component_library_ecoinvent_uuid_provider_map.csv',
+                        help='Path al CSV de provider map (default: component_library_ecoinvent_uuid_provider_map.csv)')
     parser.add_argument('--root', default='.',
                         help='Root directory to search for target files (default: current directory)')
     args = parser.parse_args()
@@ -112,6 +183,13 @@ def main():
         print(f"Loaded library from {args.library}")
     except Exception as e:
         print(f"Error loading library {args.library}: {e}")
+        sys.exit(1)
+
+    try:
+        provider_df = pd.read_csv(args.provider_library, dtype=str, keep_default_na=False)
+        print(f"Loaded provider library from {args.provider_library}")
+    except Exception as e:
+        print(f"Error loading provider library {args.provider_library}: {e}")
         sys.exit(1)
 
     # Use the correct key column for the library
@@ -124,11 +202,14 @@ def main():
 
     target_key_col = 'Flow'
     count = 0
+    provider_filled_total = 0
     for target_file in find_target_files(args.root):
         fill_columns_from_library(target_file, lib_df, key_col_lib=lib_key_col, key_col_target=target_key_col, fill_cols=available_fill)
+        provider_filled_total += fill_uuid_provider_from_library(target_file, provider_df, key_col_target=target_key_col)
         count += 1
 
     print(f"\nProcessed {count} file(s).")
+    print(f"number of flows that have provider: {provider_filled_total}")
 
 if __name__ == '__main__':
     main()

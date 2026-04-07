@@ -1,5 +1,7 @@
 import argparse
 from pathlib import Path
+import subprocess
+import sys
 import olca_ipc as ipc
 from process_builder import process_csv
 
@@ -32,6 +34,35 @@ def iter_system_csvs(system_folder: Path):
     else:
         search_dir = system_folder
     return sorted(search_dir.glob("*_ipe_flows_from_parameters.csv"))
+
+
+def run_uuid_fill_if_available(system_folder: Path, dry_run: bool = False):
+    """Run UUID enrichment for systems that ship a fill script and UUID library."""
+    fill_script = system_folder / "fill_ipe_columns_from_library.py"
+    uuid_library = system_folder / "component_library_ecoinvent_uuid_map.csv"
+    provider_library = system_folder / "component_library_ecoinvent_uuid_provider_map.csv"
+
+    if not fill_script.exists() or not uuid_library.exists():
+        return
+
+    cmd = [
+        sys.executable,
+        str(fill_script),
+        "--library",
+        str(uuid_library),
+        "--root",
+        str(system_folder),
+    ]
+    if provider_library.exists():
+        cmd.extend(["--provider-library", str(provider_library)])
+
+    if dry_run:
+        print(f"  [DRY-RUN] Would run UUID fill: {' '.join(cmd)}")
+        return
+
+    print(f"  Running UUID fill in {system_folder.name}...")
+    subprocess.run(cmd, check=True)
+    print("  UUID fill completed.")
 
 
 def main():
@@ -68,6 +99,10 @@ def main():
             print(f"Skipping {system_folder.name}: no *_ipe_flows_from_parameters.csv files found.")
             continue
         print(f"\nSystem: {system_folder.name} -> openLCA category: {category_name}")
+        try:
+            run_uuid_fill_if_available(system_folder, dry_run=args.dry_run)
+        except Exception as exc:
+            print(f"  [Warning] UUID fill failed in {system_folder.name}: {exc}")
         #Acumulates the number of files
         for csv_file in csv_files:
             total_files += 1
