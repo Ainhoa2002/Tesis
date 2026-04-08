@@ -1,9 +1,9 @@
-Flow,UUID,Unit,Amount,Direction,UUID_provider
-"copper, cathode",fbb039f7-f9cc-46d2-b631-313ddb125c1a,kg,0.498231,Input,40dc9f2f-40c2-37b4-8f38-53d043a5f756
-"wire drawing, copper",cdb7b939-f508-49ed-80f3-b39f6137fe1c,kg,0.498231,Input,efa1c88d-6f36-3b05-810d-bed12fa4f2f5
-nylon 6,d16b5d3f-b5e4-45b6-9a04-23cde05220c0,kg,0.0036,Input,e8cda1f3-0747-3840-b977-9198fcb429f6
-polytetrafluoroethylene,53556443-eb03-5fa4-886b-bd89d3526a6c,kg,0.0048,Input,69158efc-9728-3129-885e-539341db6148
-"polyester resin, unsaturated",4bf60736-bc87-4e3d-8d34-ea8bcc46f551,kg,0.09,Input,4d744be8-e65e-3e05-9db5-8a7ccb6a45d0
-injection moulding,68d6dfcf-2089-4586-9bbf-ad75591105cf,kg,0.09,Input,03cb3867-eb74-3a1a-a332-13b200ce4def
-"grain oriented electrical steel, 0.23 mm coil",f3186ac1-ba73-4a01-b686-834e1f279986,kg,1.96992,Input,65207dd6-f7ae-3d4a-9765-e4d246801208
-power_inductor_PM6249,,kg,2.566551,Output,
+Flow,UUID,Unit,Amount,Direction,UUID_provider,Transport_phase_codes
+"copper, cathode",fbb039f7-f9cc-46d2-b631-313ddb125c1a,kg,0.498231,Input,40dc9f2f-40c2-37b4-8f38-53d043a5f756,
+"wire drawing, copper",cdb7b939-f508-49ed-80f3-b39f6137fe1c,kg,0.498231,Input,efa1c88d-6f36-3b05-810d-bed12fa4f2f5,
+nylon 6,d16b5d3f-b5e4-45b6-9a04-23cde05220c0,kg,0.0036,Input,e8cda1f3-0747-3840-b977-9198fcb429f6,
+polytetrafluoroethylene,53556443-eb03-5fa4-886b-bd89d3526a6c,kg,0.0048,Input,69158efc-9728-3129-885e-539341db6148,
+"polyester resin, unsaturated",4bf60736-bc87-4e3d-8d34-ea8bcc46f551,kg,0.09,Input,4d744be8-e65e-3e05-9db5-8a7ccb6a45d0,
+injection moulding,68d6dfcf-2089-4586-9bbf-ad75591105cf,kg,0.09,Input,03cb3867-eb74-3a1a-a332-13b200ce4def,
+"grain oriented electrical steel, 0.23 mm coil",f3186ac1-ba73-4a01-b686-834e1f279986,kg,1.96992,Input,65207dd6-f7ae-3d4a-9765-e4d246801208,
+power_inductor_PM6249,,kg,2.566551,Output,,

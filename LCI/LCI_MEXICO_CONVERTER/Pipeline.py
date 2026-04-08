@@ -522,6 +522,46 @@ def _split_ecoinvent_flow_components(flow, direction):
     return components
 
 
+def _grouped_flow_key(flow, unit, direction):
+    return (
+        str(flow or "").strip(),
+        str(unit or "").strip(),
+        _normalize_direction(direction),
+    )
+
+
+def _load_existing_grouped_flow_rows(grouped_flows_csv):
+    """Load existing grouped flow rows keyed by (Flow, Unit, Direction).
+
+    This lets the pipeline preserve user-managed columns (for example
+    Transport_phase_codes) across reruns.
+    """
+    path = Path(grouped_flows_csv)
+    if not path.exists():
+        return ["Flow", "UUID", "Unit", "Amount", "Direction"], {}
+
+    try:
+        with open(path, newline="", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f)
+            fieldnames = [name for name in list(reader.fieldnames or []) if name]
+            if not fieldnames:
+                fieldnames = ["Flow", "UUID", "Unit", "Amount", "Direction"]
+
+            existing_rows = {}
+            for row in reader:
+                key = _grouped_flow_key(
+                    row.get("Flow", ""),
+                    row.get("Unit", ""),
+                    row.get("Direction", ""),
+                )
+                existing_rows[key] = dict(row)
+
+            return fieldnames, existing_rows
+    except Exception:
+        # If legacy/corrupted data cannot be read, continue with fresh output.
+        return ["Flow", "UUID", "Unit", "Amount", "Direction"], {}
+
+
 def ecoinvent_amount(row, mass_data, quantity_data):
     """Compute the ecoinvent flow amount for a component row.
     - kg unit     → taken from calculated mass (mass_data must not be None)
@@ -809,17 +849,42 @@ def run_pipeline(
         if component_flows:
             writer.writerows(component_flows)
 
-    # Write grouped_flows_csv (without UUID/flow-process logic)
-    with open(grouped_flows_csv, "w", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        writer.writerow(["Flow", "UUID", "Unit", "Amount", "Direction"])
-        for (flow, unit, direction), amount in grouped_flows.items():
-            writer.writerow([flow, '', unit, round(amount, 12), direction])
+    # Write grouped_flows_csv preserving existing user-managed columns.
+    existing_fieldnames, existing_rows = _load_existing_grouped_flow_rows(grouped_flows_csv)
+    base_fieldnames = ["Flow", "UUID", "Unit", "Amount", "Direction"]
+    ordered_fieldnames = []
+    for name in existing_fieldnames + base_fieldnames:
+        if name and name not in ordered_fieldnames:
+            ordered_fieldnames.append(name)
 
-        # Append subsystem total mass summary row if subsystem_name is provided
-        if subsystem_name:
-            subsystem_total_mass = calculate_subsystem_total_mass(str(results_csv))
-            writer.writerow([subsystem_name, '', 'kg', round(subsystem_total_mass, 12), 'Output'])
+    grouped_rows_to_write = []
+    for (flow, unit, direction), amount in grouped_flows.items():
+        key = _grouped_flow_key(flow, unit, direction)
+        row_out = dict(existing_rows.get(key, {}))
+        row_out["Flow"] = flow
+        row_out["UUID"] = str(row_out.get("UUID", "") or "")
+        row_out["Unit"] = unit
+        row_out["Amount"] = round(amount, 12)
+        row_out["Direction"] = _normalize_direction(direction)
+        grouped_rows_to_write.append(row_out)
+
+    # Append subsystem total mass summary row if subsystem_name is provided.
+    if subsystem_name:
+        subsystem_total_mass = calculate_subsystem_total_mass(str(results_csv))
+        summary_key = _grouped_flow_key(subsystem_name, "kg", "Output")
+        summary_row = dict(existing_rows.get(summary_key, {}))
+        summary_row["Flow"] = subsystem_name
+        summary_row["UUID"] = str(summary_row.get("UUID", "") or "")
+        summary_row["Unit"] = "kg"
+        summary_row["Amount"] = round(subsystem_total_mass, 12)
+        summary_row["Direction"] = "Output"
+        grouped_rows_to_write.append(summary_row)
+
+    with open(grouped_flows_csv, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=ordered_fieldnames, extrasaction="ignore")
+        writer.writeheader()
+        if grouped_rows_to_write:
+            writer.writerows(grouped_rows_to_write)
 
     return component_results, component_flows, grouped_flows, errors
 
