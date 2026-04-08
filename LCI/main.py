@@ -76,6 +76,45 @@ def run_uuid_fill_if_available(system_folder: Path, dry_run: bool = False):
     print("  UUID fill completed.")
 
 
+def run_created_uuid_fill_if_available(system_folder: Path, dry_run: bool = False):
+    """Run second UUID enrichment pass using created_* libraries."""
+    fill_script = BASE_DIR / "fill_ipe_columns_from_library.py"
+    uuid_library = BASE_DIR / "created_flows_uuid_map.csv"
+    provider_library = BASE_DIR / "created_process_uuid_map.csv"
+
+    if not fill_script.exists():
+        print(f"  [Warning] UUID fill script not found: {fill_script}")
+        return
+    if not uuid_library.exists() or not provider_library.exists():
+        print(
+            "  [Warning] Created UUID libraries not found. "
+            "Expected both created_flows_uuid_map.csv and "
+            "created_process_uuid_map.csv in LCI/."
+        )
+        return
+
+    cmd = [
+        sys.executable,
+        str(fill_script),
+        "--library",
+        str(uuid_library),
+        "--provider-library",
+        str(provider_library),
+        "--root",
+        str(system_folder),
+        "--no-sync-provider-library",
+    ]
+
+    if dry_run:
+        cmd.append("--dry-run")
+        print(f"  [DRY-RUN] Would run created UUID fill: {' '.join(cmd)}")
+        return
+
+    print(f"  Running second UUID fill (created libraries) in {system_folder.name}...")
+    subprocess.run(cmd, check=True)
+    print("  Second UUID fill completed.")
+
+
 def ensure_ipc_server_available(host: str = "localhost", port: int = 8080, timeout_seconds: float = 2.0) -> bool:
     try:
         with socket.create_connection((host, port), timeout=timeout_seconds):
@@ -106,7 +145,7 @@ def _upsert_created_flows_library(path: Path, rows):
             index[key] = i
 
     added = 0
-    updated = 0
+    skipped_existing = 0
     for row in rows:
         flow = str(row.get("Flow", "") or "").strip()
         uid = str(row.get("UUID", "") or "").strip()
@@ -115,9 +154,7 @@ def _upsert_created_flows_library(path: Path, rows):
         key = _normalize_key(flow)
         mapped = {"Ecoinvent_flow": flow, "UUID": uid}
         if key in index:
-            if existing_rows[index[key]].get("UUID", "") != uid:
-                existing_rows[index[key]] = mapped
-                updated += 1
+            skipped_existing += 1
         else:
             existing_rows.append(mapped)
             index[key] = len(existing_rows) - 1
@@ -128,7 +165,7 @@ def _upsert_created_flows_library(path: Path, rows):
         writer.writeheader()
         writer.writerows(existing_rows)
 
-    return added, updated
+    return added, skipped_existing
 
 
 def _upsert_created_process_library(path: Path, rows):
@@ -149,7 +186,7 @@ def _upsert_created_process_library(path: Path, rows):
             index[key] = i
 
     added = 0
-    updated = 0
+    skipped_existing = 0
     for row in rows:
         flow_ref = str(row.get("Ecoinvent_flow_reference", "") or "").strip()
         proc_name = str(row.get("Ecoinvent_process", "") or "").strip()
@@ -164,10 +201,7 @@ def _upsert_created_process_library(path: Path, rows):
             "UUID_provider": proc_uuid,
         }
         if key in index:
-            old = existing_rows[index[key]]
-            if old.get("UUID_provider", "") != proc_uuid or old.get("Ecoinvent_process", "") != proc_name:
-                existing_rows[index[key]] = mapped
-                updated += 1
+            skipped_existing += 1
         else:
             existing_rows.append(mapped)
             index[key] = len(existing_rows) - 1
@@ -178,7 +212,7 @@ def _upsert_created_process_library(path: Path, rows):
         writer.writeheader()
         writer.writerows(existing_rows)
 
-    return added, updated
+    return added, skipped_existing
 
 
 def main():
@@ -218,6 +252,7 @@ def main():
     created_flows = 0
     created_flow_rows = []
     created_process_rows = []
+    systems_with_csv = []
     for system_folder in systems:
         # Folder name determines the destination process category in openLCA.
         category_name = resolve_category_name(system_folder.name)
@@ -226,6 +261,7 @@ def main():
         if not csv_files:
             print(f"Skipping {system_folder.name}: no *_ipe_flows_from_parameters.csv files found.")
             continue
+        systems_with_csv.append(system_folder)
         print(f"\nSystem: {system_folder.name} -> openLCA category: {category_name}")
         try:
             run_uuid_fill_if_available(system_folder, dry_run=args.dry_run)
@@ -250,22 +286,23 @@ def main():
 
             process_uuid = str(result.get("process_uuid", "") or "").strip()
             process_name = str(result.get("process_name", "") or "").strip()
-            for flow_ref in result.get("output_flow_references", []):
-                created_process_rows.append(
-                    {
-                        "Ecoinvent_flow_reference": flow_ref,
-                        "Ecoinvent_process": process_name,
-                        "UUID_provider": process_uuid,
-                    }
-                )
+            if result.get("process_created"):
+                for flow_ref in result.get("output_flow_references", []):
+                    created_process_rows.append(
+                        {
+                            "Ecoinvent_flow_reference": flow_ref,
+                            "Ecoinvent_process": process_name,
+                            "UUID_provider": process_uuid,
+                        }
+                    )
 
     if args.dry_run:
         print(f"\nDry run complete. Files detected: {total_files}")
     else:
         created_flows_library = BASE_DIR / "created_flows_uuid_map.csv"
         created_process_library = BASE_DIR / "created_process_uuid_map.csv"
-        flow_added, flow_updated = _upsert_created_flows_library(created_flows_library, created_flow_rows)
-        process_added, process_updated = _upsert_created_process_library(created_process_library, created_process_rows)
+        flow_added, flow_skipped_existing = _upsert_created_flows_library(created_flows_library, created_flow_rows)
+        process_added, process_skipped_existing = _upsert_created_process_library(created_process_library, created_process_rows)
 
         print(
             f"\nStep 2 complete. Processes created: {created_processes}. "
@@ -274,9 +311,16 @@ def main():
         )
         print(
             f"Created libraries updated. "
-            f"Flows added/updated: {flow_added}/{flow_updated}. "
-            f"Process providers added/updated: {process_added}/{process_updated}."
+            f"Flows added/skipped_existing: {flow_added}/{flow_skipped_existing}. "
+            f"Process providers added/skipped_existing: {process_added}/{process_skipped_existing}."
         )
+
+        for system_folder in systems_with_csv:
+            try:
+                run_created_uuid_fill_if_available(system_folder, dry_run=False)
+            except Exception as exc:
+                print(f"  [Warning] Second UUID fill failed in {system_folder.name}: {exc}")
+
         print("\nAll done! Please refresh openLCA to see the new processes.")
 
 if __name__ == "__main__":

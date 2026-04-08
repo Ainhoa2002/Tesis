@@ -131,6 +131,8 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
     # Build output exchange(s) first: if present we take the UUID, if not we create a new flow
     output_created = False
     created_output_flows = []
+    output_flows_for_library = []
+    seen_output_flow_library_keys = set()
     output_flow_references = []
     seen_output_refs = set()
     flow_category_path = _normalize_category_path(category_name)
@@ -161,6 +163,12 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
             process.exchanges.append(out_ex)
             output_created = True
             print(f"  Existing output flow '{output_name}' added with amount {output_amount}.")
+
+            output_flow_key = output_name.lower()
+            if output_flow_key not in seen_output_flow_library_keys:
+                seen_output_flow_library_keys.add(output_flow_key)
+                output_flows_for_library.append({"Flow": output_name, "UUID": flow.id})
+
             output_key = output_name.lower()
             if output_key not in seen_output_refs:
                 seen_output_refs.add(output_key)
@@ -186,6 +194,12 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
             print(f"  Output flow '{output_name}' ready: 1 LU = {output_amount} kg")
             if flow_was_created:
                 created_output_flows.append({"Flow": output_name, "UUID": output_flow.id})
+
+            output_flow_key = output_name.lower()
+            if output_flow_key not in seen_output_flow_library_keys:
+                seen_output_flow_library_keys.add(output_flow_key)
+                output_flows_for_library.append({"Flow": output_name, "UUID": output_flow.id})
+
             output_key = output_name.lower()
             if output_key not in seen_output_refs:
                 seen_output_refs.add(output_key)
@@ -260,6 +274,7 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
         "process_uuid": process.id,
         "process_created": not process_exists,
         "created_output_flows": created_output_flows,
+        "output_flows_for_library": output_flows_for_library,
         "output_flow_references": output_flow_references,
     }
 
