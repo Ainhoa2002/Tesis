@@ -1,168 +1,175 @@
 ﻿# LCI_MEXICO_CONVERTER Workflow
 
-Este README describe la logica actual dentro de esta carpeta.
+This README documents the current converter pipeline in this folder, including the global interaction with LCI/main.py.
 
-## Quick Start
+## Purpose
 
-Ejecuta desde la carpeta del repositorio:
+The converter workflow transforms subsystem component parameters into:
 
-1. Editar o agregar componentes (opcional):
+1. subsystem component mass results
+2. subsystem component input-output flow rows
+3. grouped subsystem ipe rows ready for UUID filling and openLCA import
+4. one converter-level ipe file synchronized from subsystem units
+
+## Main Files
+
+Pipeline and helpers:
+
+- [LCI/LCI_MEXICO_CONVERTER/Pipeline.py](LCI/LCI_MEXICO_CONVERTER/Pipeline.py)
+- [LCI/fill_ipe_columns_from_library.py](LCI/fill_ipe_columns_from_library.py)
+
+Important data files:
+
+- [LCI/LCI_MEXICO_CONVERTER/subsystem_units.csv](LCI/LCI_MEXICO_CONVERTER/subsystem_units.csv)
+- [LCI/LCI_MEXICO_CONVERTER/MEXICO_ipe_flows_from_parameters.csv](LCI/LCI_MEXICO_CONVERTER/MEXICO_ipe_flows_from_parameters.csv)
+
+Per-subsystem patterns:
+
+- input: subsystem_component_parameters.csv
+- outputs:
+  - subsystem_component_results.csv
+  - subsystem_component_io_flows.csv
+  - subsystem_ipe_flows_from_parameters.csv
+
+## Quick Run
+
+From repository root:
+
+Run interactive selection:
 
 ```powershell
-python .\LCI\LCI_MEXICO_CONVERTER\add_eliminate_component.py
+.\.venv\Scripts\python.exe .\LCI\LCI_MEXICO_CONVERTER\Pipeline.py
 ```
 
-2. Ejecutar pipeline para generar resultados y flujos:
+Run all subsystems:
 
 ```powershell
-python .\LCI\LCI_MEXICO_CONVERTER\Pipeline.py
+.\.venv\Scripts\python.exe .\LCI\LCI_MEXICO_CONVERTER\Pipeline.py all
 ```
 
-Tambien puedes pasar subsistemas por CLI:
+Run specific subsystems:
 
 ```powershell
-python .\LCI\LCI_MEXICO_CONVERTER\Pipeline.py all
-python .\LCI\LCI_MEXICO_CONVERTER\Pipeline.py fuse_card inverter_power_card
+.\.venv\Scripts\python.exe .\LCI\LCI_MEXICO_CONVERTER\Pipeline.py fuse_card inverter_power_card
 ```
 
-3. Exportar a Excel (opcional):
+Optional tools:
 
-```powershell
-python .\LCI\LCI_MEXICO_CONVERTER\export_to_excel.py
-```
+- add or remove components with [LCI/LCI_MEXICO_CONVERTER/add_eliminate_component.py](LCI/LCI_MEXICO_CONVERTER/add_eliminate_component.py)
+- export to Excel with [LCI/LCI_MEXICO_CONVERTER/export_to_excel.py](LCI/LCI_MEXICO_CONVERTER/export_to_excel.py)
 
-## Entradas y Salidas por Subsystem
+## Execution Dynamics
 
-Entrada principal por subsistema:
+Main runtime sequence in [LCI/LCI_MEXICO_CONVERTER/Pipeline.py](LCI/LCI_MEXICO_CONVERTER/Pipeline.py):
 
-- `<subsystem>_component_parameters.csv`
+1. Discover subsystems from files ending with _component_parameters.csv.
+2. Synchronize subsystem units table:
+   - [_sync_subsystem_units_file](LCI/LCI_MEXICO_CONVERTER/Pipeline.py)
+3. Synchronize converter-level ipe from subsystem units:
+   - [_sync_mexico_ipe_from_subsystem_units](LCI/LCI_MEXICO_CONVERTER/Pipeline.py)
+4. Execute selected subsystem pipelines:
+   - [run_pipeline](LCI/LCI_MEXICO_CONVERTER/Pipeline.py)
+5. Fill UUID and UUID_provider for each generated subsystem ipe:
+   - [_fill_uuid_for_subsystem_ipe](LCI/LCI_MEXICO_CONVERTER/Pipeline.py)
 
-Salidas principales por subsistema:
+## Subsystem Units Behavior
 
-- `<subsystem>_component_results.csv`
-- `<subsystem>_component_io_flows.csv`
-- `<subsystem>_ipe_flows_from_parameters.csv`
+File: [LCI/LCI_MEXICO_CONVERTER/subsystem_units.csv](LCI/LCI_MEXICO_CONVERTER/subsystem_units.csv)
 
-Control adicional de cantidad por subsistema:
+Columns:
 
-- `subsystem_units.csv`
-  - Columnas: `Subsystem`, `Quantity_per_subsystem`
-  - Se sincroniza automaticamente cuando corre el pipeline.
-  - Cada subsistema nuevo se agrega con valor default `1`.
-  - El usuario decide este valor; el pipeline no lo sobreescribe.
+- Subsystem
+- Quantity_per_subsystem
 
-Uso:
+Rules:
 
-- Si `Quantity_per_subsystem = 2` para un subsistema, el pipeline escala por 2 los totales de ese subsistema (`Total_quantity`, `Total_mass_kg` y `Amount` en flows).
-- `Quantity_per_element` permanece como valor unitario por componente (no se escala), para conservar trazabilidad del BOM base.
+- New discovered subsystems are added with default value 1.
+- Removed subsystems are removed from this file on sync.
+- Existing subsystem values are preserved.
+- Invalid, empty, or non-positive values fallback to 1.0 via [_parse_subsystem_units](LCI/LCI_MEXICO_CONVERTER/Pipeline.py).
 
-## Nueva Logica de Masa Total por Subsystem
+Scaling effect:
 
-En `Pipeline.py` existe la funcion reutilizable:
+- Quantity_per_subsystem scales total_quantity, total_mass_kg, and grouped flow amounts.
+- Quantity_per_element remains per-component and is not scaled.
 
-- `calculate_subsystem_total_mass(results_csv_path)`
+## MEXICO ipe Sync Behavior
 
-Esta funcion:
+File: [LCI/LCI_MEXICO_CONVERTER/MEXICO_ipe_flows_from_parameters.csv](LCI/LCI_MEXICO_CONVERTER/MEXICO_ipe_flows_from_parameters.csv)
 
-- lee `<subsystem>_component_results.csv`
-- suma `Total_mass_kg`
-- devuelve la masa total del subsistema en kg
+Function: [_sync_mexico_ipe_from_subsystem_units](LCI/LCI_MEXICO_CONVERTER/Pipeline.py)
 
-Nota de parametrizacion:
+Current rules:
 
-- `Total_mass_kg` en resultados ya incorpora `Quantity_per_subsystem`.
-- Por lo tanto, la fila final de masa en `_ipe_flows_from_parameters.csv` tambien refleja ese multiplicador.
+- Flow is filled from Subsystem.
+- Amount is filled from Quantity_per_subsystem.
+- Unit is forced to LU for subsystem-managed rows.
+- Direction is forced to Input for subsystem-managed rows.
+- Existing matching flow rows are reused, not duplicated.
+- Free rows are filled first; new rows are appended only if needed.
+- Non-target rows and additional columns are preserved.
 
-Uso actual de esta funcion (2 lugares):
+## Mass Calculation and Total Mass Reporting
 
-1. Resumen global del pipeline (`total_mass` acumulado)
-2. Fila adicional en `<subsystem>_ipe_flows_from_parameters.csv`
+Reusable helper:
 
-## Fila Adicional en _ipe_flows_from_parameters.csv
+- [calculate_subsystem_total_mass](LCI/LCI_MEXICO_CONVERTER/Pipeline.py)
 
-Al terminar cada subsistema, se agrega una fila con esta estructura:
+What it does:
 
-- `Flow`: nombre del subsystem (ejemplo: `control_backplane_card`)
-- `UUID`: vacio
-- `Unit`: `kg`
-- `Amount`: masa total del subsystem (calculada por `calculate_subsystem_total_mass`)
-- `Direction`: `Output`
+- reads subsystem_component_results.csv
+- sums Total_mass_kg
 
-Objetivo: exponer la masa total del subsistema directamente en el archivo IPE.
+Where used:
 
-## Reglas de Warnings para filas Output
+1. Per-subsystem output row in subsystem ipe files
+2. Overall runtime summary print for total mass across selected subsystems
 
-Las filas con `Direction=Output` (como la fila de masa total) ahora se tratan como filas intencionales y no como faltantes de mapeo:
+Important practical note:
 
-- `fill_ipe_columns_from_library.py` no intenta rellenarlas ni reportarlas como "could not be filled".
-- `update_ipe_with_uuid.py` no intenta mapear UUID para esas filas ni imprime warning por UUID faltante.
+- The overall total mass shown in terminal summary is currently printed, not persisted into a dedicated summary csv by this pipeline.
 
-## Validaciones Principales en Pipeline
+## UUID Fill Behavior in Converter Pipeline
 
-- `Section` y `Ecoinvent_flow` son obligatorios.
-- Si falta alguno en una fila, ese subsistema falla validacion.
-- El resto de subsistemas seleccionados continua.
-- **IMPORTANTE (MASA)**: Solo unidad `kg` es aceptada para contexto de masa. Cualquier fila con `unit='g'` sera rechazada con error explicito listando las filas problematicas. Todas las masas deben ingresar en kg, sin excepciones.
+During converter pipeline execution, each generated subsystem ipe file is enriched through [LCI/fill_ipe_columns_from_library.py](LCI/fill_ipe_columns_from_library.py).
 
-## Variables de Entorno Utiles
+Default mapping libraries used by converter pipeline:
 
-- `MASS_CALC_AUTO_SYNC_FROM_LIBRARY`
-  - `1`: habilita sync automatico de parametros desde librerias al inicio.
-  - `0` (default): deshabilitado.
+- [LCI/component_library_ecoinvent_uuid_map.csv](LCI/component_library_ecoinvent_uuid_map.csv)
+- [LCI/component_library_ecoinvent_uuid_provider_map.csv](LCI/component_library_ecoinvent_uuid_provider_map.csv)
 
-- `MASS_CALC_AUTO_REFRESH_LIBRARIES`
-  - controla el refresh automatico de librerias al finalizar pipeline.
+Direction=Output rows are intentionally skipped by UUID fill logic.
 
-- `MASS_CALC_CLEAR_OUTPUTS_ON_FAILURE`
-  - `1`: borra salidas del subsistema que fallo validacion.
-  - `0` (default): conserva salidas previas.
+## Global Import Integration
 
-## Librerias y utilidades relacionadas
+After converter pipeline outputs are ready, [LCI/main.py](LCI/main.py) imports all ipe files to openLCA.
 
-- `build_component_libraries.py`: recompone librerias consolidadas.
-- `fill_ipe_columns_from_library.py`: rellena columnas IPE desde libreria.
-- `update_ipe_with_uuid.py`: completa UUID/flow-process desde mapa.
-- `find_component.py`: busqueda/edicion de componentes.
-- `mass_visuals_app.py`: visualizacion de masa basada en `Total_mass_kg`.
+Global main.py currently performs:
 
-## Nueva libreria de providers
+1. First fill pass using global libraries.
+2. Process create or overwrite.
+3. Append-only update of created libraries.
+4. Second fill pass using created libraries:
+   - [LCI/created_flows_uuid_map.csv](LCI/created_flows_uuid_map.csv)
+   - [LCI/created_process_uuid_map.csv](LCI/created_process_uuid_map.csv)
 
-Se agrego una nueva libreria:
+## Validation and Guardrails
 
-- `component_library_ecoinvent_uuid_provider_map.csv`
+Current validation highlights in [LCI/LCI_MEXICO_CONVERTER/Pipeline.py](LCI/LCI_MEXICO_CONVERTER/Pipeline.py):
 
-Columnas esperadas:
+- Section and Ecoinvent_flow are required.
+- g is rejected for mass context; kg is required for mass-based inputs.
+- subsystem-level failures do not force all subsystems to fail.
 
-- `Ecoinvent_flow_reference`
-- `Ecoinvent_process`
-- `UUID_provider`
+Optional environment flags:
 
-Uso:
+- MASS_CALC_AUTO_SYNC_FROM_LIBRARY
+- MASS_CALC_AUTO_REFRESH_LIBRARIES
+- MASS_CALC_CLEAR_OUTPUTS_ON_FAILURE
 
-- `fill_ipe_columns_from_library.py` rellena `UUID_provider` en cada `*_ipe_flows_from_parameters.csv` por coincidencia de `Flow` con `Ecoinvent_flow_reference`.
-- El script no sobrescribe filas `Direction=Output`.
-- Los providers no encontrados no generan warning por fila (comportamiento intencional).
+## Related Utilities
 
-## Actualizacion del pipeline (UUID y provider)
-
-`Pipeline.py` ahora ejecuta al final, de forma automatica, el llenado de UUID/provider para mantener los IPE listos para importacion:
-
-- ejecuta `fill_ipe_columns_from_library.py`
-- usa `component_library_ecoinvent_uuid_map.csv`
-- usa `component_library_ecoinvent_uuid_provider_map.csv`
-
-Esto evita procesos con entradas vacias en openLCA cuando los UUID no se habian rellenado manualmente.
-
-## Importacion en openLCA con provider por exchange
-
-En `LCI/process_builder.py`, si una fila de input trae `UUID_provider`:
-
-1. Se busca ese UUID como `Process` en openLCA.
-2. Se asigna `default_provider` del exchange usando `o.Ref` (`o.RefType.Process`).
-
-Nota: en esta version de `olca_schema`, usar una referencia `o.Ref` para `default_provider` es mas confiable que asignar directamente el objeto `Process`.
-
-## Nota de integracion con openLCA
-
-Los `*_ipe_flows_from_parameters.csv` son la base para la importacion posterior hacia openLCA en el flujo de este proyecto.
+- [LCI/LCI_MEXICO_CONVERTER/build_component_libraries.py](LCI/LCI_MEXICO_CONVERTER/build_component_libraries.py)
+- [LCI/LCI_MEXICO_CONVERTER/find_component.py](LCI/LCI_MEXICO_CONVERTER/find_component.py)
+- [LCI/LCI_MEXICO_CONVERTER/mass_visuals_app.py](LCI/LCI_MEXICO_CONVERTER/mass_visuals_app.py)
 

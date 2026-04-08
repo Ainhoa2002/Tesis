@@ -1,120 +1,153 @@
 # LCI Import Workflow
 
-This folder contains the Python importer that reads system CSV files and creates openLCA processes.
+This folder contains the full openLCA import workflow used by all LCI systems in this repository.
 
-## Folder Structure
+## Scope and Goal
 
-Each system must be a subfolder inside this `LCI` folder.
+The importer does three things in sequence:
 
-Expected current pattern:
+1. Fill UUID and UUID_provider values in ipe files.
+2. Create or update openLCA processes from those ipe files.
+3. Run a second UUID fill pass using only created-object libraries.
 
-- `LCI_CONNECTION/`
-- `LCI_MAGNET/`
-- `LCI_MEXICO_CONVERTER/`
+This supports two needs at the same time:
 
-Inside each system folder, place one or more CSV files with names ending in:
+- standard mapping from global ecoinvent libraries
+- iterative mapping of project-created flows and providers
 
-- `*_ipe_flows_from_parameters.csv`
+## Folder Layout
 
-Optional subfolder pattern also supported:
+Each first-level folder under this LCI folder is treated as one system source.
 
-- `<SYSTEM>/LCI/*.csv`
+Current examples:
 
-If `<SYSTEM>/LCI/` exists, the importer reads from that subfolder.
-If not, it reads CSV files directly from `<SYSTEM>/`.
+- LCI_CONNECTION
+- LCI_MAGNET
+- LCI_MEXICO_CONVERTER
 
-## What main.py Does
+Supported input discovery patterns per system:
 
-`main.py` now scans all system folders under this directory and imports all matching CSV files.
+- system_root/*.csv
+- system_root/LCI/*.csv
 
-Before importing a system, `main.py` can auto-run UUID enrichment when the system folder contains:
+Only files ending with *_ipe_flows_from_parameters.csv are imported.
 
-- `fill_ipe_columns_from_library.py`
-- `component_library_ecoinvent_uuid_map.csv`
-- optional `component_library_ecoinvent_uuid_provider_map.csv`
+## Main Execution Dynamics
 
-This prevents the common failure mode where inputs exist but are skipped because UUIDs are empty.
+Main orchestration is implemented in [LCI/main.py](LCI/main.py).
 
-## UUID and Provider Fill Helper
+Per system, the runtime sequence is:
 
-The repository includes a shared helper script:
+1. First UUID fill using global libraries:
+   - component_library_ecoinvent_uuid_map.csv
+   - component_library_ecoinvent_uuid_provider_map.csv
+2. Process import for each ipe file:
+   - create new process when missing
+   - overwrite existing process when already present
+3. Append-only update of created-object libraries:
+   - created_flows_uuid_map.csv
+   - created_process_uuid_map.csv
+4. Second UUID fill using created-object libraries only.
 
-- `fill_ipe_columns_from_library.py`
+Important: the created libraries are append-only for new keys and are intended to capture newly created objects that were not already in those files.
 
-It fills `UUID` and `UUID_provider` in every `*_ipe_flows_from_parameters.csv` file.
+## Core Functions and Responsibility
 
-Default behavior:
+Main entry and orchestration:
 
-- `UUID` is looked up by matching `Flow` against `component_library_ecoinvent_uuid_map.csv`.
-- `UUID_provider` is looked up by matching `Flow` against `component_library_ecoinvent_uuid_provider_map.csv`.
-- Missing provider mappings can be auto-synced from openLCA when the script runs, so the library is updated and the same run can finish filling the file.
-- `Direction=Output` rows are skipped.
+- [main](LCI/main.py)
+- [iter_system_folders](LCI/main.py)
+- [iter_system_csvs](LCI/main.py)
+- [resolve_category_name](LCI/main.py)
 
-Run it with no long argument list:
+UUID filling helpers:
+
+- [run_uuid_fill_if_available](LCI/main.py)
+- [run_created_uuid_fill_if_available](LCI/main.py)
+
+Created-library updates:
+
+- [_upsert_created_flows_library](LCI/main.py)
+- [_upsert_created_process_library](LCI/main.py)
+
+Process construction and persistence:
+
+- [process_csv](LCI/process_builder.py)
+- [build_process_from_inputs](LCI/process_builder.py)
+- [_find_or_create_output_flow](LCI/process_builder.py)
+
+## Process Creation Rules
+
+Process names are derived from file names before _ipe.
+
+Example:
+
+- connector_system_ipe_flows_from_parameters.csv -> connector_system
+
+If a process with that name exists, it is reused and overwritten (exchanges rebuilt). If not, it is created.
+
+Category mapping rule:
+
+- folder names starting with LCI_ lose that prefix when mapped to openLCA category
+- example: LCI_MEXICO_CONVERTER -> MEXICO_CONVERTER
+
+## Input and Output Exchange Rules
+
+Input rows:
+
+- UUID is required to resolve the flow
+- Amount must be numeric
+- UUID_provider is optional and, if valid, is assigned as exchange default provider
+
+Output rows:
+
+1. Output row with UUID:
+   - use existing flow by UUID
+   - set output exchange amount directly from Amount
+
+2. Output row without UUID:
+   - find flow by name or create it
+   - if created, configure Number as reference flow property and Mass as secondary property
+   - use conversion Amount as kg per 1 LU
+   - write quantitative reference output exchange with amount 1.0
+
+## UUID Fill Script Behavior
+
+Shared script: [fill_ipe_columns_from_library.py](LCI/fill_ipe_columns_from_library.py)
+
+Behavior summary:
+
+- fills UUID and UUID_provider by matching Flow
+- skips Direction=Output rows
+- can auto-sync provider mappings from openLCA unless disabled
+
+Typical command:
 
 ```powershell
 .\.venv\Scripts\python.exe .\LCI\fill_ipe_columns_from_library.py
 ```
 
-To fill just one file:
+Single target file:
 
 ```powershell
 .\.venv\Scripts\python.exe .\LCI\fill_ipe_columns_from_library.py --target-file .\LCI\LCI_CONNECTION\connector_system_ipe_flows_from_parameters.csv
 ```
 
-If you do not want automatic provider-library syncing from openLCA, add:
+Disable provider auto-sync:
 
 ```powershell
 --no-sync-provider-library
 ```
 
-For each CSV file:
-
-1. It creates/updates one process in openLCA.
-2. The process name is taken from the file name before `_ipe`.
-3. Inputs are built from rows where `Direction == Input`.
-4. Outputs are built from rows where `Direction == Output`.
-
-`Direction` matching is case-insensitive in `csv_reader.py` (`input`, `Input`, `INPUT`, etc.).
-
-## Output Handling Logic
-
-Output rows are handled in two modes:
-
-1. Output row with UUID:
-- The existing flow is retrieved from openLCA using that UUID.
-- A normal output exchange is added with `amount = Amount` from the CSV.
-- No new flow is created.
-
-2. Output row without UUID:
-- A product flow is created (or reused by name).
-- The flow is configured with two flow properties:
-  - Number (reference, factor 1.0)
-  - Mass (conversion factor = `Amount`, interpreted as kg per 1 LU)
-- The process output exchange is created as quantitative reference with `amount = 1.0`.
-
-This means your CSV can mix both patterns in the same file, and each output row is treated accordingly.
-
-## openLCA Category Mapping
-
-Processes are stored in openLCA using `Process.category`.
-
-Category name comes from the system folder name:
-
-- If folder starts with `LCI_`, that prefix is removed.
-- Example: `LCI_MEXICO_CONVERTER` -> category `MEXICO_CONVERTER`.
-
-In this workspace's `olca_schema` version, process category must be a string path (not `o.Category`).
-
-## How To Run
+## Running the Workflow
 
 From repository root:
+
+Dry run:
 
 ```powershell
 .\.venv\Scripts\python.exe .\LCI\main.py --dry-run
 ```
-
-Dry run only reports detected files and target categories.
 
 Real import:
 
@@ -122,39 +155,30 @@ Real import:
 .\.venv\Scripts\python.exe .\LCI\main.py
 ```
 
-## Common Warnings
+## Practical Notes and Limits
 
-- `Flow with UUID ... not found, skipping.`
-  - The UUID does not exist in the connected openLCA database.
-  - Import continues with the remaining valid inputs.
+- openLCA IPC must be reachable at localhost:8080 in real mode.
+- Direction matching is case-insensitive in CSV readers.
+- created_process_uuid_map uses flow reference as key. If two processes share the same output flow name, that key can collide by design.
+- created libraries are not intended to mirror all existing database objects; they are intended to record newly created project objects.
 
-- `Output flow UUID ... not found for '...', skipping output.`
-  - The output row had `Direction=Output` and UUID, but that flow was not found in openLCA.
-  - The process is still created if it has other valid exchanges.
+## Troubleshooting Patterns
 
-- `Skipping <SYSTEM>: no *_ipe_flows_from_parameters.csv files found.`
-  - The system folder is present but has no import CSV files yet.
+Common messages and meaning:
 
-- `Warning: no UUID_provider mapping found for '...'`
-  - The helper could not find a provider mapping for that flow in the provider library.
-  - If auto-sync is enabled and openLCA is reachable, the script will try to discover and save a provider mapping before filling.
+- Flow with UUID ... not found, skipping.
+  - UUID not found in the connected openLCA database.
 
-## Provider Assignment
+- Output flow UUID ... not found for ..., skipping output.
+  - output row references missing flow UUID.
 
-If an input row contains `UUID_provider`, importer logic assigns a default provider to that exchange.
+- no UUID mapping found for ...
+  - current library set has no mapping for that flow key.
 
-Implementation details in `process_builder.py`:
+## Related Files
 
-1. The provider UUID is resolved as an openLCA `Process`.
-2. `Exchange.default_provider` is set using `o.Ref` with `ref_type = o.RefType.Process`.
-
-Using `o.Ref` is required for stable persistence of provider links in this workspace's `olca_schema` version.
-
-The provider fill helper can populate these `UUID_provider` values before import, so `main.py` and `process_builder.py` can use them without extra manual steps.
-
-## Related Scripts
-
-- `process_builder.py`: Builds process exchanges and saves processes (inputs + outputs).
-- `csv_reader.py`: Reads input rows and output rows from CSV files.
-- `diagnosis.py`: Utility script for UUID troubleshooting.
-- `finder.py`: Utility script to search flows in openLCA.
+- [LCI/process_builder.py](LCI/process_builder.py)
+- [LCI/csv_reader.py](LCI/csv_reader.py)
+- [LCI/fill_ipe_columns_from_library.py](LCI/fill_ipe_columns_from_library.py)
+- [LCI/diagnosis.py](LCI/diagnosis.py)
+- [LCI/finder.py](LCI/finder.py)
