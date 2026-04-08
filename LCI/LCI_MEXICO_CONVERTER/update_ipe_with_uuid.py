@@ -57,7 +57,7 @@ def update_ipe_files(base_dir, uuid_map):
 
 def main():
     base_dir = Path(__file__).parent
-    map_path = base_dir / 'component_library_ecoinvent_uuid_map.csv'
+    map_path = Path(__file__).parent.parent / 'component_library_ecoinvent_uuid_map.csv'
     uuid_map = load_uuid_map(map_path)
     update_ipe_files(base_dir, uuid_map)
 

@@ -8,6 +8,7 @@ Subsystem names are resolved from files named <subsystem>_component_parameters.c
 
 import csv
 import os
+import subprocess
 import sys
 from collections import OrderedDict
 from pathlib import Path
@@ -1059,8 +1060,43 @@ def _clear_subsystem_outputs(results_csv, component_flows_csv, grouped_flows_csv
             print(f"Warning: could not remove stale output '{output_path.name}': {exc}")
 
 
+def _fill_uuid_for_subsystem_ipe(grouped_flows_csv: Path):
+    """Fill UUID columns for one subsystem IPE using global LCI libraries."""
+    lci_root = Path(__file__).parent.parent
+    fill_script = lci_root / "fill_ipe_columns_from_library.py"
+    uuid_library = lci_root / "component_library_ecoinvent_uuid_map.csv"
+    provider_library = lci_root / "component_library_ecoinvent_uuid_provider_map.csv"
+
+    if not fill_script.exists():
+        print(f"[Warning] UUID fill script not found: {fill_script}")
+        return
+
+    if not uuid_library.exists() or not provider_library.exists():
+        print(
+            "[Warning] Global UUID libraries not found in LCI/. "
+            "Skipping UUID fill for this subsystem output."
+        )
+        return
+
+    subprocess.run(
+        [
+            sys.executable,
+            str(fill_script),
+            "--library",
+            str(uuid_library),
+            "--provider-library",
+            str(provider_library),
+            "--root",
+            str(Path(__file__).parent),
+            "--target-file",
+            str(grouped_flows_csv),
+        ],
+        check=True,
+    )
+
+
 def main():
-    # UUID FILLING: (Desactivado, ahora se usa fill_ipe_columns_from_library.py por separado)
+    # UUID filling is delegated to fill_ipe_columns_from_library.py after each subsystem file is written.
 
     base = Path(__file__).parent
     requested_selection = sys.argv[1:] if len(sys.argv) > 1 else None
@@ -1120,6 +1156,12 @@ def main():
         print(f"Results file: {results_csv}")
         print(f"Component IO file: {component_flows_csv}")
         print(f"Grouped flows file: {grouped_flows_csv}")
+
+        try:
+            _fill_uuid_for_subsystem_ipe(Path(grouped_flows_csv))
+            print("UUID filling completed for subsystem grouped flows file.")
+        except Exception as exc:
+            print(f"[Warning] Error while filling UUIDs for subsystem output: {exc}")
 
         total_processed_rows += processed_rows
         total_io_rows += io_rows
@@ -1183,24 +1225,6 @@ def main():
             print("Library merge warnings skipped.")
     except Exception as exc:
         print(f"[Warning] Error while trying to show library merge warnings: {exc}")
-
-    # Always fill UUID and UUID_provider at the end so ipe files remain usable.
-    try:
-        import subprocess
-        print("\nRunning fill_ipe_columns_from_library.py to fill UUID and UUID_provider...")
-        subprocess.run([
-            sys.executable,
-            str(Path(__file__).parent / "fill_ipe_columns_from_library.py"),
-            "--library",
-            str(Path(__file__).parent / "component_library_ecoinvent_uuid_map.csv"),
-            "--provider-library",
-            str(Path(__file__).parent / "component_library_ecoinvent_uuid_provider_map.csv"),
-            "--root",
-            str(Path(__file__).parent)
-        ], check=True)
-        print("UUID filling completed.")
-    except Exception as exc:
-        print(f"[Warning] Error while trying to fill UUIDs: {exc}")
 
 if __name__ == "__main__":
     main()

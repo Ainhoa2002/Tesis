@@ -614,7 +614,7 @@ def _build_storage_library(
 
 def build_ecoinvent_totals_library(base_dir: Path) -> int:
     # Load mapping
-    map_path = base_dir / 'component_library_ecoinvent_uuid_map.csv'
+    map_path = Path(__file__).parent.parent / 'component_library_ecoinvent_uuid_map.csv'
     uuid_map = {}
     with open(map_path, newline='', encoding='utf-8-sig') as f:
         reader = csv.DictReader(f)

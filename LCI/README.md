@@ -35,6 +35,39 @@ Before importing a system, `main.py` can auto-run UUID enrichment when the syste
 
 This prevents the common failure mode where inputs exist but are skipped because UUIDs are empty.
 
+## UUID and Provider Fill Helper
+
+The repository includes a shared helper script:
+
+- `fill_ipe_columns_from_library.py`
+
+It fills `UUID` and `UUID_provider` in every `*_ipe_flows_from_parameters.csv` file.
+
+Default behavior:
+
+- `UUID` is looked up by matching `Flow` against `component_library_ecoinvent_uuid_map.csv`.
+- `UUID_provider` is looked up by matching `Flow` against `component_library_ecoinvent_uuid_provider_map.csv`.
+- Missing provider mappings can be auto-synced from openLCA when the script runs, so the library is updated and the same run can finish filling the file.
+- `Direction=Output` rows are skipped.
+
+Run it with no long argument list:
+
+```powershell
+.\.venv\Scripts\python.exe .\LCI\fill_ipe_columns_from_library.py
+```
+
+To fill just one file:
+
+```powershell
+.\.venv\Scripts\python.exe .\LCI\fill_ipe_columns_from_library.py --target-file .\LCI\LCI_CONNECTION\connector_system_ipe_flows_from_parameters.csv
+```
+
+If you do not want automatic provider-library syncing from openLCA, add:
+
+```powershell
+--no-sync-provider-library
+```
+
 For each CSV file:
 
 1. It creates/updates one process in openLCA.
@@ -102,6 +135,10 @@ Real import:
 - `Skipping <SYSTEM>: no *_ipe_flows_from_parameters.csv files found.`
   - The system folder is present but has no import CSV files yet.
 
+- `Warning: no UUID_provider mapping found for '...'`
+  - The helper could not find a provider mapping for that flow in the provider library.
+  - If auto-sync is enabled and openLCA is reachable, the script will try to discover and save a provider mapping before filling.
+
 ## Provider Assignment
 
 If an input row contains `UUID_provider`, importer logic assigns a default provider to that exchange.
@@ -112,6 +149,8 @@ Implementation details in `process_builder.py`:
 2. `Exchange.default_provider` is set using `o.Ref` with `ref_type = o.RefType.Process`.
 
 Using `o.Ref` is required for stable persistence of provider links in this workspace's `olca_schema` version.
+
+The provider fill helper can populate these `UUID_provider` values before import, so `main.py` and `process_builder.py` can use them without extra manual steps.
 
 ## Related Scripts
 

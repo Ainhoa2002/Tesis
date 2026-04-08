@@ -1,5 +1,6 @@
 import argparse
 from pathlib import Path
+import socket
 import subprocess
 import sys
 import olca_ipc as ipc
@@ -37,12 +38,20 @@ def iter_system_csvs(system_folder: Path):
 
 
 def run_uuid_fill_if_available(system_folder: Path, dry_run: bool = False):
-    """Run UUID enrichment for systems that ship a fill script and UUID library."""
-    fill_script = system_folder / "fill_ipe_columns_from_library.py"
-    uuid_library = system_folder / "component_library_ecoinvent_uuid_map.csv"
-    provider_library = system_folder / "component_library_ecoinvent_uuid_provider_map.csv"
+    """Run UUID enrichment using global libraries for one system folder."""
+    fill_script = BASE_DIR / "fill_ipe_columns_from_library.py"
+    uuid_library = BASE_DIR / "component_library_ecoinvent_uuid_map.csv"
+    provider_library = BASE_DIR / "component_library_ecoinvent_uuid_provider_map.csv"
 
-    if not fill_script.exists() or not uuid_library.exists():
+    if not fill_script.exists():
+        print(f"  [Warning] UUID fill script not found: {fill_script}")
+        return
+    if not uuid_library.exists() or not provider_library.exists():
+        print(
+            "  [Warning] Global UUID libraries not found. "
+            "Expected both component_library_ecoinvent_uuid_map.csv and "
+            "component_library_ecoinvent_uuid_provider_map.csv in LCI/."
+        )
         return
 
     cmd = [
@@ -50,19 +59,28 @@ def run_uuid_fill_if_available(system_folder: Path, dry_run: bool = False):
         str(fill_script),
         "--library",
         str(uuid_library),
+        "--provider-library",
+        str(provider_library),
         "--root",
         str(system_folder),
     ]
-    if provider_library.exists():
-        cmd.extend(["--provider-library", str(provider_library)])
 
     if dry_run:
+        cmd.append("--dry-run")
         print(f"  [DRY-RUN] Would run UUID fill: {' '.join(cmd)}")
         return
 
     print(f"  Running UUID fill in {system_folder.name}...")
     subprocess.run(cmd, check=True)
     print("  UUID fill completed.")
+
+
+def ensure_ipc_server_available(host: str = "localhost", port: int = 8080, timeout_seconds: float = 2.0) -> bool:
+    try:
+        with socket.create_connection((host, port), timeout=timeout_seconds):
+            return True
+    except OSError:
+        return False
 
 
 def main():
@@ -84,8 +102,15 @@ def main():
     #Connect to IPC
     client = None
     if not args.dry_run:
+        if not ensure_ipc_server_available(host="localhost", port=8080):
+            print(
+                "openLCA IPC server is not reachable on localhost:8080. "
+                "Start openLCA and enable the IPC server, or run with --dry-run."
+            )
+            return
+
         # Real import mode writes processes into openLCA via IPC.
-        client = ipc.Client(8080)   # or ipc.IpC(8080) if needed
+        client = ipc.Client(8080)
         print("Connected to openLCA IPC server")
     
     ####PROCESS EACH FOLDER AND FILES:####

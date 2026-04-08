@@ -22,12 +22,12 @@ digital_control,kg,Output,,0.40851206221,0.40851206221,digital_control
 "electronic component, passive, unspecified",kg,Input,4e252b55-fb08-4447-8391-d09e8bbb0238,0.149334356083,0.149334356083,"4Q_output_control_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card"
 "epoxy resin, liquid",kg,Input,51c7e57a-00b7-4412-b56c-94c17b211ee7,0.02536443,0.02536443,4Q_output_power_card
 fan_supervision_card,kg,Output,,0.083182218,0.083182218,fan_supervision_card
-ferrite,kg,Input,,0.410592,0.410592,HF_Power_Transformer_PM624929
+ferrite,kg,Input,fa6aa6bf-07c9-45bf-9fdc-a358a497b7e1,0.410592,0.410592,HF_Power_Transformer_PM624929
 filter_card,kg,Output,,0.85598204,0.85598204,filter_card
 fuse_card,kg,Output,,0.224916375,0.224916375,fuse_card
 "grain oriented electrical steel, 0.23 mm coil",kg,Input,f3186ac1-ba73-4a01-b686-834e1f279986,1.96992,1.96992,power_inductor_PM6249
 HF_Power_Transformer_PM624929,kg,Output,,0.5502283,0.5502283,HF_Power_Transformer_PM624929
-"inductor production, low value multilayer chip",kg,Input,,0.00068144,0.00068144,"analog_control, digital_control"
+"inductor production, low value multilayer chip",kg,Input,736906f7-164e-4155-9fb4-894177303917,0.00068144,0.00068144,"analog_control, digital_control"
 "inductor production, ring core choke type",kg,Input,3c3632b8-ce5b-4957-ac59-54e931ccd247,0.178841,0.178841,"analog_control, digital_control"
 injection moulding,kg,Input,68d6dfcf-2089-4586-9bbf-ad75591105cf,0.11129,0.11129,"HF_Power_Transformer_PM624929, digital_control, power_inductor_PM6249"
 "insulated gate bipolar transistor production, for electric vehicle applications",kg,Input,4c5db6d0-a23c-4794-a259-3f63b780d853,0.02168,0.02168,inverter_power_card
