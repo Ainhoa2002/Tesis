@@ -17,6 +17,7 @@ from pathlib import Path
 MAX_SELECTION_ATTEMPTS = 3
 SUBSYSTEM_UNITS_FILENAME = "subsystem_units.csv"
 SUBSYSTEM_UNITS_FIELDS = ["Subsystem", "Quantity_per_subsystem"]
+MEXICO_IPE_FILENAME = "MEXICO_ipe_flows_from_parameters.csv"
 DEPRECATED_INPUT_FIELDS = {
     "Ecoinvent_amount_override",
     "Notes",
@@ -71,6 +72,108 @@ def _sync_subsystem_units_file(base_dir, subsystem_names):
             })
 
     return units_map
+
+
+def _sync_mexico_ipe_from_subsystem_units(base_dir, subsystem_units_map):
+    """Fill MEXICO_ipe_flows_from_parameters.csv from subsystem units.
+
+    Rules:
+    - Fill Flow from Subsystem and Amount from Quantity_per_subsystem.
+    - Reuse existing matching Flow rows (update Amount only when needed).
+    - Fill free rows first (rows with empty Flow), then append as needed.
+    - Preserve all non-target rows and user-managed columns.
+    """
+    path = base_dir / MEXICO_IPE_FILENAME
+    base_fields = ["Flow", "UUID", "Unit", "Amount", "Direction"]
+
+    rows = []
+    fieldnames = []
+    if path.exists():
+        try:
+            with open(path, newline="", encoding="utf-8-sig") as f:
+                reader = csv.DictReader(f)
+                fieldnames = [name for name in list(reader.fieldnames or []) if name]
+                rows = [dict(row) for row in reader]
+        except Exception as exc:
+            print(f"[Warning] Could not read {path.name}: {exc}. Recreating with defaults.")
+            rows = []
+
+    if not fieldnames:
+        fieldnames = list(base_fields)
+
+    for name in base_fields:
+        if name not in fieldnames:
+            fieldnames.append(name)
+
+    def _norm(value):
+        return "".join(str(value or "").strip().lower().split())
+
+    existing_idx_by_flow = {}
+    free_row_indices = []
+    for i, row in enumerate(rows):
+        flow = _clean_text(row.get("Flow"))
+        if flow == "":
+            free_row_indices.append(i)
+            continue
+        key = _norm(flow)
+        if key and key not in existing_idx_by_flow:
+            existing_idx_by_flow[key] = i
+
+    added = 0
+    updated = 0
+    for subsystem, units in subsystem_units_map.items():
+        flow_name = _clean_text(subsystem)
+        if flow_name == "":
+            continue
+
+        amount_text = format(_parse_subsystem_units(units), ".12g")
+        key = _norm(flow_name)
+
+        if key in existing_idx_by_flow:
+            row = rows[existing_idx_by_flow[key]]
+            current_amount = _clean_text(row.get("Amount"))
+            current_unit = _clean_text(row.get("Unit"))
+            current_direction = _clean_text(row.get("Direction"))
+            if current_amount != amount_text:
+                row["Amount"] = amount_text
+                updated += 1
+            if current_unit != "LU":
+                row["Unit"] = "LU"
+                updated += 1
+            if current_direction.lower() != "input":
+                row["Direction"] = "Input"
+                updated += 1
+            continue
+
+        if free_row_indices:
+            idx = free_row_indices.pop(0)
+            row = rows[idx]
+            row["Flow"] = flow_name
+            row["Amount"] = amount_text
+            row["Unit"] = "LU"
+            row["Direction"] = "Input"
+            existing_idx_by_flow[key] = idx
+        else:
+            row = {name: "" for name in fieldnames}
+            row["Flow"] = flow_name
+            row["Amount"] = amount_text
+            row["Unit"] = "LU"
+            row["Direction"] = "Input"
+            rows.append(row)
+            existing_idx_by_flow[key] = len(rows) - 1
+
+        added += 1
+
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
+        writer.writeheader()
+        if rows:
+            writer.writerows(rows)
+
+    print(
+        f"Synchronized {path.name} from {SUBSYSTEM_UNITS_FILENAME}: "
+        f"added={added}, updated={updated}."
+    )
 
 def calculate_subsystem_total_mass(results_csv_path):
     """
@@ -1117,6 +1220,7 @@ def main():
     try:
         subsystems = _discover_subsystems(base)
         subsystem_units_map = _sync_subsystem_units_file(base, list(subsystems.keys()))
+        _sync_mexico_ipe_from_subsystem_units(base, subsystem_units_map)
         selected_subsystems = _choose_subsystems(subsystems, requested_selection)
     except ValueError as exc:
         print(f"Validation error: {exc}")

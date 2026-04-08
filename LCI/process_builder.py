@@ -67,7 +67,7 @@ def _find_or_create_output_flow(client, flow_name, mass_per_lu, category_path):
                 print(f"  INFO: Flow '{flow_name}' moved from category '{current_cat}' to '{desired_category}'.")
             else:
                 print(f"  INFO: Flow '{flow_name}' already exists in correct category. Reusing it.")
-            return flow
+            return flow, False
 
     # Obtain the properties for the flow, error if they do not exist
     number_prop = _get_number_flow_property(client)
@@ -108,13 +108,14 @@ def _find_or_create_output_flow(client, flow_name, mass_per_lu, category_path):
     created_flow = client.get(o.Flow, uid=created_ref.id)
     if not created_flow:
         raise ValueError(f"Flow '{flow_name}' could not be retrieved after creation")
-    return created_flow
+    return created_flow, True
 
 
 ################ Creates the process in openLCA with the inputs and outputs ############################
 def build_process_from_inputs(client, process_name, inputs, category_name, output_rows=None):
     # Reuse an existing process when possible so reruns overwrite instead of creating duplicates.
     process = _get_existing_process_by_name(client, process_name)
+    process_exists = process is not None
     if process:
         print(f"  Reusing existing process '{process_name}' (ID: {process.id}).")
     else:
@@ -129,6 +130,9 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
 
     # Build output exchange(s) first: if present we take the UUID, if not we create a new flow
     output_created = False
+    created_output_flows = []
+    output_flow_references = []
+    seen_output_refs = set()
     flow_category_path = _normalize_category_path(category_name)
 
     for output_row in (output_rows or []):
@@ -157,11 +161,20 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
             process.exchanges.append(out_ex)
             output_created = True
             print(f"  Existing output flow '{output_name}' added with amount {output_amount}.")
+            output_key = output_name.lower()
+            if output_key not in seen_output_refs:
+                seen_output_refs.add(output_key)
+                output_flow_references.append(output_name)
             continue
 
         # If UUID is missing, create/reuse a custom output flow with LU->kg conversion.
         try:
-            output_flow = _find_or_create_output_flow(client, output_name, output_amount, flow_category_path)
+            output_flow, flow_was_created = _find_or_create_output_flow(
+                client,
+                output_name,
+                output_amount,
+                flow_category_path,
+            )
 
             out_ex = o.Exchange()
             out_ex.flow = output_flow
@@ -171,6 +184,12 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
             process.exchanges.append(out_ex)
             output_created = True
             print(f"  Output flow '{output_name}' ready: 1 LU = {output_amount} kg")
+            if flow_was_created:
+                created_output_flows.append({"Flow": output_name, "UUID": output_flow.id})
+            output_key = output_name.lower()
+            if output_key not in seen_output_refs:
+                seen_output_refs.add(output_key)
+                output_flow_references.append(output_name)
         except Exception as e:
             print(f"  Failed to build output flow '{output_name}': {e}")
 
@@ -215,7 +234,7 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
     # Skip process creation when no valid exchanges were built.
     if input_count == 0 and not output_created:
         print("  No valid inputs and no valid output found, skipping process creation.")
-        return
+        return None
 
     if process.id:
         print("  Existing process will be overwritten in openLCA.")
@@ -236,7 +255,13 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
     else:
         print(f"  Warning: process '{process_name}' not found after saving.")
 
-    return process
+    return {
+        "process_name": process_name,
+        "process_uuid": process.id,
+        "process_created": not process_exists,
+        "created_output_flows": created_output_flows,
+        "output_flow_references": output_flow_references,
+    }
 
 
 ########## PROCESS CREATION FUNCTION END ############################
@@ -246,10 +271,10 @@ def process_csv(client, csv_path, category_name):
     output_rows = read_output_rows(csv_path)
     if not inputs and not output_rows:
         print(f"No inputs or outputs found in {csv_path}, skipping.")
-        return
+        return None
     # Extract the process name from the CSV file name, it is the part before _ipe
     base = os.path.basename(csv_path)
     process_name = base.split("_ipe")[0]
     print(f"\nProcessing {base} -> process '{process_name}' in category '{category_name}'")
     # Builds the process
-    build_process_from_inputs(client, process_name, inputs, category_name, output_rows)
+    return build_process_from_inputs(client, process_name, inputs, category_name, output_rows)
