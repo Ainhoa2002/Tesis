@@ -37,6 +37,14 @@ def _get_mass_flow_property(client):
     return _get_entity_by_name(client, o.FlowProperty, "Mass")
 
 
+def _get_existing_process_by_name(client, process_name):
+    """Return the existing openLCA process with this name, if any."""
+    existing_ref = client.find(o.Process, name=process_name)
+    if not existing_ref:
+        return None
+    return client.get(o.Process, uid=existing_ref.id)
+
+
 ################ Find or create an output ############################
 # Used when the output flow is missing a UUID
 # It creates a new flow with the name of the flow and the conversion factor
@@ -105,8 +113,14 @@ def _find_or_create_output_flow(client, flow_name, mass_per_lu, category_path):
 
 ################ Creates the process in openLCA with the inputs and outputs ############################
 def build_process_from_inputs(client, process_name, inputs, category_name, output_rows=None):
-    # Create an empty unit process with the given name and category
-    process = o.Process()
+    # Reuse an existing process when possible so reruns overwrite instead of creating duplicates.
+    process = _get_existing_process_by_name(client, process_name)
+    if process:
+        print(f"  Reusing existing process '{process_name}' (ID: {process.id}).")
+    else:
+        process = o.Process()
+        print(f"  Creating new process '{process_name}'.")
+
     process.name = process_name
     process.process_type = o.ProcessType.UNIT_PROCESS
     process.exchanges = []
@@ -202,6 +216,11 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
     if input_count == 0 and not output_created:
         print("  No valid inputs and no valid output found, skipping process creation.")
         return
+
+    if process.id:
+        print("  Existing process will be overwritten in openLCA.")
+    else:
+        print("  New process will be created in openLCA.")
 
     try:
         client.put(process)
