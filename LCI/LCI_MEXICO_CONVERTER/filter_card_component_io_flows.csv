@@ -5,6 +5,7 @@ Order_index,Category_order,Group_order,Category,Section,Subsection,Designators,C
 9,1,7,AUTO,Magnetics,Inductors,L1,,HCRAPQU001-0,EcoInvent,"transformer production, low voltage use",kg,Input,0.0827,0.0827,mass-based,
 10,1,8,AUTO,Passives,Resistors,R1-R4,,RMF_47K_5%_3W_250PPM_2286-1670X520,EcoInvent,"resistor, metal film type, through-hole mounting",kg,Input,0.00497724,0.00497724,mass-based,
 12,1,9,AUTO,Assembly Processes,THT,THT_PROCESS,,,EcoInvent,"mounting, through-hole technology, Pb-free solder",m2,Input,0.017,,area-based,
+13,1,10,AUTO,dummy element,,dummy,,,EcoInvent,wood wool,kg,Input,1e-13,1e-13,mass-based,
 2,2,2,Film,Passives,Capacitors,"C1, C4",,MKY22W21004B00MSSD,EcoInvent,"capacitor production, film type, for through-hole mounting",kg,Input,0.002673,0.002673,mass-based,
 3,2,2,Film,Passives,Capacitors,C3,,MKP4O141507G00MSSD,EcoInvent,"capacitor production, film type, for through-hole mounting",kg,Input,0.04425975,0.04425975,mass-based,
 5,2,2,Film,Passives,Capacitors,C8,,DCP4L055007JD4KSSD,EcoInvent,"capacitor production, film type, for through-hole mounting",kg,Input,0.09804375,0.09804375,mass-based,

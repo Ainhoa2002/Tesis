@@ -4,11 +4,14 @@ This folder contains the full openLCA import workflow used by all LCI systems in
 
 ## Scope and Goal
 
-The importer does three things in sequence:
+The importer now runs multiple coordinated passes:
 
-1. Fill UUID and UUID_provider values in ipe files.
-2. Create or update openLCA processes from those ipe files.
-3. Run a second UUID fill pass using only created-object libraries.
+1. Regenerate system CSVs through optional per-system pipelines.
+2. Fill UUID and UUID_provider values in ipe files from global libraries.
+3. Create or update openLCA processes from those ipe files.
+4. Run a second UUID fill pass using created-object libraries.
+5. Re-import the same ipe files so second-pass provider updates are persisted in openLCA.
+6. Run a third targeted UUID fill for system aggregate files when available.
 
 This supports two needs at the same time:
 
@@ -44,12 +47,19 @@ Per system, the runtime sequence is:
 2. Process import for each ipe file:
    - create new process when missing
    - overwrite existing process when already present
-3. Append-only update of created-object libraries:
+3. Upsert update of created-object libraries:
    - created_flows_uuid_map.csv
    - created_process_uuid_map.csv
-4. Second UUID fill using created-object libraries only.
+4. Second UUID fill using created-object libraries only:
+   - no provider-library sync from openLCA
+   - overwrite provider enabled
+5. Re-import all processed files to apply second-pass updates immediately.
+6. Third UUID fill for system aggregate files:
+   - target: LCI_SYSTEM/system_ipe_flows_from_parameters.csv
+   - source: created_flows_uuid_map.csv + created_process_uuid_map.csv
+   - overwrite UUID and UUID_provider enabled
 
-Important: the created libraries are append-only for new keys and are intended to capture newly created objects that were not already in those files.
+Important: created libraries are updated by key. Existing stale process/provider mappings are replaced, not only appended.
 
 ## Core Functions and Responsibility
 
@@ -64,6 +74,8 @@ UUID filling helpers:
 
 - [run_uuid_fill_if_available](LCI/main.py)
 - [run_created_uuid_fill_if_available](LCI/main.py)
+- [run_final_system_uuid_fill_if_available](LCI/main.py)
+- [run_system_pipeline_if_available](LCI/main.py)
 
 Created-library updates:
 
@@ -139,6 +151,18 @@ Disable provider auto-sync:
 --no-sync-provider-library
 ```
 
+Overwrite provider and UUID values:
+
+```powershell
+--overwrite-provider --overwrite-uuid
+```
+
+Third-round single target example (system aggregate file):
+
+```powershell
+.\.venv\Scripts\python.exe .\LCI\fill_ipe_columns_from_library.py --library .\LCI\created_flows_uuid_map.csv --provider-library .\LCI\created_process_uuid_map.csv --target-file .\LCI\LCI_SYSTEM\system_ipe_flows_from_parameters.csv --overwrite-uuid --overwrite-provider --no-sync-provider-library
+```
+
 ## Running the Workflow
 
 From repository root:
@@ -160,7 +184,25 @@ Real import:
 - openLCA IPC must be reachable at localhost:8080 in real mode.
 - Direction matching is case-insensitive in CSV readers.
 - created_process_uuid_map uses flow reference as key. If two processes share the same output flow name, that key can collide by design.
-- created libraries are not intended to mirror all existing database objects; they are intended to record newly created project objects.
+- created libraries are not intended to mirror all existing database objects; they are intended to record and refresh project-created object mappings.
+
+## Global Parameter Library
+
+The project now includes a general parameter library for cross-folder reuse.
+
+Files:
+
+- [LCI/global_parameters.json](LCI/global_parameters.json)
+- [LCI/parameter_library.py](LCI/parameter_library.py)
+- [LCI/params.py](LCI/params.py)
+
+Purpose:
+
+- Store shared parameters (for example: masa_patatas) in one place.
+- Expose get/set helpers for any script under the repository.
+- Store execution scope keys for orchestration control:
+   - execution.run_scope: all | single
+   - execution.target_system: e.g., MEXICO
 
 ## Troubleshooting Patterns
 

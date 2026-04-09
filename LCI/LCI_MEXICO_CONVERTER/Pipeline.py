@@ -222,6 +222,16 @@ def to_float(value):
 
     return None
 
+
+def _round_for_csv(value, digits=12):
+    """Round for readability, but preserve tiny non-zero values."""
+    if value is None:
+        return None
+    rounded = round(value, digits)
+    if rounded == 0.0 and value != 0.0:
+        return value
+    return rounded
+
 #Yes or no when input is in different formats
 def to_yes_no(value):
     text = str(value or "").strip().upper()
@@ -440,13 +450,13 @@ def _compute_total_mass_kg_from_quantity(row, unit, quantity_data):
     total_quantity = quantity_data["Total_quantity"]
 
     if is_mass_unit(unit):
-        return round(total_quantity, 12)
+        return _round_for_csv(total_quantity)
 
     if unit == "m2":
         relation = to_float(row.get("mass_space_relation_m2/kg"))
         if relation is None:
             return ""
-        return round(total_quantity * relation, 12)
+        return _round_for_csv(total_quantity * relation)
 
     return ""
 
@@ -817,8 +827,8 @@ def run_pipeline(
             quantity_data["Total_quantity"] = quantity_data["Total_quantity"] * units_multiplier
 
         if quantity_data is not None:
-            result_row["Quantity_per_element"] = round(quantity_data["Quantity_per_element"], 12)
-            result_row["Total_quantity"] = round(quantity_data["Total_quantity"], 12)
+            result_row["Quantity_per_element"] = _round_for_csv(quantity_data["Quantity_per_element"])
+            result_row["Total_quantity"] = _round_for_csv(quantity_data["Total_quantity"])
         else:
             result_row["Total_quantity"] = ""
         result_row["Total_mass_kg"] = _compute_total_mass_kg_from_quantity(
@@ -885,7 +895,7 @@ def run_pipeline(
                 "Ecoinvent_unit": unit,
                 "Direction": str(row.get("Direction") or "Input").strip(),
                 "Amount": "",
-                "Total_mass_kg": "" if mass_data is None else round(mass_data["Total_mass_kg"], 12),
+                "Total_mass_kg": "" if mass_data is None else _round_for_csv(mass_data["Total_mass_kg"]),
                 "Formula_basis": "",
                 "Validation_error": "",
             }
@@ -900,7 +910,7 @@ def run_pipeline(
                     split_entry = dict(flow_entry)
                     split_entry["Ecoinvent_flow"] = split_component["Flow"]
                     split_entry["Direction"] = split_component["Direction"]
-                    split_entry["Amount"] = round(flow_row["Amount"], 12)
+                    split_entry["Amount"] = _round_for_csv(flow_row["Amount"])
 
                     if is_mass_unit(unit):
                         split_entry["Formula_basis"] = "mass-based"
@@ -968,7 +978,7 @@ def run_pipeline(
         row_out["Flow"] = flow
         row_out["UUID"] = str(row_out.get("UUID", "") or "")
         row_out["Unit"] = unit
-        row_out["Amount"] = round(amount, 12)
+        row_out["Amount"] = _round_for_csv(amount)
         row_out["Direction"] = _normalize_direction(direction)
         grouped_rows_to_write.append(row_out)
 
@@ -980,7 +990,7 @@ def run_pipeline(
         summary_row["Flow"] = subsystem_name
         summary_row["UUID"] = str(summary_row.get("UUID", "") or "")
         summary_row["Unit"] = "kg"
-        summary_row["Amount"] = round(subsystem_total_mass, 12)
+        summary_row["Amount"] = _round_for_csv(subsystem_total_mass)
         summary_row["Direction"] = "Output"
         grouped_rows_to_write.append(summary_row)
 

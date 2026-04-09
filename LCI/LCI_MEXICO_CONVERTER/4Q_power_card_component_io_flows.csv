@@ -19,6 +19,7 @@ Order_index,Category_order,Group_order,Category,Section,Subsection,Designators,C
 41,1,24,AUTO,Hardware,Mounting hardware,J2 screws,,3341-5,EcoInvent,"market for metal working, average for metal product manufacturing",kg,Input,0.00126385,0.00126385,mass-based,
 42,1,25,AUTO,Assembly Processes,SMD,SMD_PROCESS,,,EcoInvent,"mounting, surface mount technology, Pb-free solder",m2,Input,0.028,,area-based,
 43,1,26,AUTO,Assembly Processes,THT,THT_PROCESS,,,EcoInvent,"mounting, through-hole technology, Pb-free solder",m2,Input,0.028,,area-based,
+44,1,27,AUTO,dummy element,,dummy,,,EcoInvent,wood wool,kg,Input,1e-13,1e-13,mass-based,
 4,2,4,MLCC,Passives,Capacitors,C2-C5,1206,CC1206_1NF_50V_10%_X7R,EcoInvent,"capacitor production, for surface-mounting",kg,Input,0.000226304,0.000226304,mass-based,
 5,2,4,MLCC,Passives,Capacitors,C6-C25,1206,CC1206_100NF_200V_10%_X7R,EcoInvent,"capacitor production, for surface-mounting",kg,Input,0.00113152,0.00113152,mass-based,
 6,2,4,MLCC,Passives,Capacitors,"C26, C34, C50, C52–C61, C65, C68, C69, C73, C77",1206,CC1206_100NF_50V_10%_X7R,EcoInvent,"capacitor production, for surface-mounting",kg,Input,0.001867008,0.001867008,mass-based,

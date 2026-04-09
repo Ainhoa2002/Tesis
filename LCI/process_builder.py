@@ -45,6 +45,84 @@ def _get_existing_process_by_name(client, process_name):
     return client.get(o.Process, uid=existing_ref.id)
 
 
+def _same_ref(ref_a, ref_b):
+    if not ref_a or not ref_b:
+        return False
+    id_a = str(getattr(ref_a, "id", "") or "").strip().lower()
+    id_b = str(getattr(ref_b, "id", "") or "").strip().lower()
+    if id_a and id_b:
+        return id_a == id_b
+    name_a = str(getattr(ref_a, "name", "") or "").strip().lower()
+    name_b = str(getattr(ref_b, "name", "") or "").strip().lower()
+    return bool(name_a and name_b and name_a == name_b)
+
+
+def _upsert_flow_property_factor(flow, flow_property, conversion_factor, is_reference):
+    if flow.flow_properties is None:
+        flow.flow_properties = []
+
+    for factor in flow.flow_properties:
+        if _same_ref(getattr(factor, "flow_property", None), flow_property):
+            changed = False
+            if float(getattr(factor, "conversion_factor", 0.0) or 0.0) != float(conversion_factor):
+                factor.conversion_factor = float(conversion_factor)
+                changed = True
+            if bool(getattr(factor, "is_ref_flow_property", False)) != bool(is_reference):
+                factor.is_ref_flow_property = bool(is_reference)
+                changed = True
+            return changed
+
+    factor = o.FlowPropertyFactor()
+    factor.flow_property = flow_property
+    factor.conversion_factor = float(conversion_factor)
+    factor.is_ref_flow_property = bool(is_reference)
+    flow.flow_properties.append(factor)
+    return True
+
+
+def _sync_output_flow_definition(client, flow, flow_name, mass_per_lu, category_path):
+    """Synchronize mutable output-flow attributes when possible.
+
+    This keeps reused flows aligned with the current CSV contract:
+    - product flow type
+    - expected category path
+    - Number as reference flow property (factor 1.0)
+    - Mass as secondary flow property (factor = kg per 1 LU)
+    """
+    if not flow:
+        return
+
+    desired_category = _normalize_category_path(category_path)
+    changed = False
+
+    if getattr(flow, "flow_type", None) != o.FlowType.PRODUCT_FLOW:
+        flow.flow_type = o.FlowType.PRODUCT_FLOW
+        changed = True
+
+    if _normalize_category_path(getattr(flow, "category", "")) != desired_category:
+        flow.category = desired_category
+        changed = True
+
+    number_prop = _get_number_flow_property(client)
+    mass_prop = _get_mass_flow_property(client)
+    if not number_prop:
+        raise ValueError("Flow property 'Number' (or equivalent) not found")
+    if not mass_prop:
+        raise ValueError("Flow property 'Mass' not found")
+
+    changed = _upsert_flow_property_factor(flow, number_prop, 1.0, True) or changed
+    changed = _upsert_flow_property_factor(flow, mass_prop, mass_per_lu, False) or changed
+
+    if not changed:
+        return
+
+    try:
+        client.put(flow)
+        print(f"  INFO: Flow '{flow_name}' synchronized (type/category/properties).")
+    except Exception as exc:
+        print(f"  Warning: Could not update flow '{flow_name}': {exc}. Reusing as-is.")
+
+
 ################ Find or create an output ############################
 # Used when the output flow is missing a UUID
 # It creates a new flow with the name of the flow and the conversion factor
@@ -53,23 +131,7 @@ def _get_existing_process_by_name(client, process_name):
 def _find_or_create_output_flow(client, flow_name, mass_per_lu, category_path):
     desired_category = _normalize_category_path(category_path)
 
-    # Try to find it by name to reuse if it already exists
-    existing_ref = client.find(o.Flow, name=flow_name)
-    if existing_ref:
-        flow = client.get(o.Flow, uid=existing_ref.id)
-        if flow:
-            # Check current category
-            current_cat = _normalize_category_path(flow.category)
-            if current_cat != desired_category:
-                # Move the flow to the desired category
-                flow.category = desired_category
-                client.put(flow)
-                print(f"  INFO: Flow '{flow_name}' moved from category '{current_cat}' to '{desired_category}'.")
-            else:
-                print(f"  INFO: Flow '{flow_name}' already exists in correct category. Reusing it.")
-            return flow, False
-
-    # Obtain the properties for the flow, error if they do not exist
+    # Obtain required flow properties once for both create and reuse paths.
     number_prop = _get_number_flow_property(client)
     mass_prop = _get_mass_flow_property(client)
 
@@ -77,6 +139,20 @@ def _find_or_create_output_flow(client, flow_name, mass_per_lu, category_path):
         raise ValueError("Flow property 'Number' (or equivalent) not found")
     if not mass_prop:
         raise ValueError("Flow property 'Mass' not found")
+
+    # Try to find it by name to reuse if it already exists
+    existing_ref = client.find(o.Flow, name=flow_name)
+    if existing_ref:
+        flow = client.get(o.Flow, uid=existing_ref.id)
+        if flow:
+            _sync_output_flow_definition(
+                client,
+                flow,
+                flow_name,
+                mass_per_lu,
+                desired_category,
+            )
+            return flow, False
 
     # Creates new flow (the output flow)
     flow = o.Flow()
@@ -113,13 +189,14 @@ def _find_or_create_output_flow(client, flow_name, mass_per_lu, category_path):
 
 ################ Creates the process in openLCA with the inputs and outputs ############################
 def build_process_from_inputs(client, process_name, inputs, category_name, output_rows=None):
-    # Reuse an existing process when possible so reruns overwrite instead of creating duplicates.
-    process = _get_existing_process_by_name(client, process_name)
-    process_exists = process is not None
-    if process:
-        print(f"  Reusing existing process '{process_name}' (ID: {process.id}).")
+    # Reuse process ID when possible, but rebuild from a clean object to avoid stale exchanges.
+    existing_process = _get_existing_process_by_name(client, process_name)
+    process_exists = existing_process is not None
+    process = o.Process()
+    if existing_process:
+        process.id = existing_process.id
+        print(f"  Rebuilding existing process '{process_name}' (ID: {process.id}).")
     else:
-        process = o.Process()
         print(f"  Creating new process '{process_name}'.")
 
     process.name = process_name
@@ -155,6 +232,17 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
             if not flow:
                 print(f"  Output flow UUID {uuid} not found for '{output_name}', skipping output.")
                 continue
+
+            try:
+                _sync_output_flow_definition(
+                    client,
+                    flow,
+                    output_name,
+                    output_amount,
+                    flow_category_path,
+                )
+            except Exception as e:
+                print(f"  Warning: Could not synchronize output flow '{output_name}' ({uuid}): {e}")
 
             out_ex = o.Exchange()
             out_ex.flow = flow
@@ -212,6 +300,34 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
     for row in inputs:
         # UUID is required to resolve each input flow from openLCA.
         uuid = row.get("UUID", "").strip()
+        provider_uuid = row.get("UUID_provider", "").strip()
+
+        if not uuid and provider_uuid == "NO_PROVIDER":
+            flow_name = str(row.get("Flow", "")).strip()
+            if not flow_name:
+                continue
+            try:
+                amount = float(row.get("Amount", 0))
+            except (ValueError, TypeError):
+                print(f"  Invalid amount '{row.get('Amount')}' for '{flow_name}', skipping.")
+                continue
+
+            try:
+                flow, _ = _find_or_create_output_flow(client, flow_name, 1.0, flow_category_path)
+            except Exception as e:
+                print(f"  Failed to create no-provider input flow '{flow_name}': {e}")
+                continue
+
+            in_ex = o.Exchange()
+            in_ex.flow = flow
+            # openLCA may drop or hide zero-value exchanges; keep a tiny amount for explicit dummy rows.
+            in_ex.amount = amount if amount > 0 else 1e-12
+            in_ex.is_input = True
+            in_ex.default_provider = None
+            process.exchanges.append(in_ex)
+            input_count += 1
+            continue
+
         if not uuid:
             continue
         flow = client.get(o.Flow, uid=uuid)
@@ -230,9 +346,8 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
         in_ex.amount = amount
         in_ex.is_input = True
         process.exchanges.append(in_ex)
-        #assign the provider if the UUID_provider column is present and not empty
-        provider_uuid = row.get("UUID_provider", "").strip()
-        if provider_uuid:
+        # Assign the provider unless the CSV explicitly marks no provider.
+        if provider_uuid and provider_uuid != "NO_PROVIDER":
             provider = client.get(o.Process, uid=provider_uuid)
             if provider:
                 provider_ref = o.Ref()
@@ -242,6 +357,8 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
                 in_ex.default_provider = provider_ref
             else:
                 print(f"    Warning: Provider UUID {provider_uuid} not found")
+        else:
+            in_ex.default_provider = None
 
         input_count += 1
 

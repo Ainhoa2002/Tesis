@@ -98,3 +98,4 @@ T1,SOT223,Discrete Semiconductors,Small signal,Bipolar semiconductors,ONSEMI,PZT
 "TP43, TP44_ANA_CAL_0, TP44_ANA_CAL_1, TP45, TP46, TP47, TP48, TP49, TP50, TP51, TP53",,Passives,Test PIN,,HARWIN,S2761-46R,"Through-Hole Test Point, PC Test Pin",11,kg,0.000006,YES,,,,,,0,,,EcoInvent,"electronic component, passive, unspecified",kg,Input,https://www.mouser.ch/ProductDetail/Harwin/S2761-46R?qs=DaxoyN%2FvrebHvZaagZ7Fog%3D%3D
 SMD_PROCESS,,Assembly Processes,SMD,,,,Assambly SMD components in the PCB,1,m2,,YES,195,100,,,,,,,EcoInvent,"mounting, surface mount technology, Pb-free solder",m2,Input,
 THT_PROCESS,,Assembly Processes,THT,,,,Assambly THT components in the PCB,1,m2,,YES,195,100,,,,,,,EcoInvent,"mounting, through-hole technology, Pb-free solder",m2,Input,
+dummy,,dummy element,,,,,,1,kg,0.0000000000001,YES,,,,,,,,,EcoInvent,"wood wool",kg,Input,"Dummy flow to avoid errors in the LCI model. It has a negligible mass and it is not considered in the calculations."

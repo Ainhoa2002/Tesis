@@ -19,6 +19,7 @@ Order_index,Category_order,Group_order,Category,Section,Subsection,Designators,C
 30,1,15,AUTO,Electromechanical,Relays,"RL4, RL5",,G2RL-24-DC24,EcoInvent,"transformer production, low voltage use",kg,Input,0.03398,0.03398,mass-based,
 32,1,17,AUTO,Assembly Processes,SMD,SMD_PROCESS,,,EcoInvent,"mounting, surface mount technology, Pb-free solder",m2,Input,0.017,,area-based,
 33,1,18,AUTO,Assembly Processes,THT,THT_PROCESS,,,EcoInvent,"mounting, through-hole technology, Pb-free solder",m2,Input,0.017,,area-based,
+34,1,19,AUTO,dummy element,,dummy,,,EcoInvent,wood wool,kg,Input,1e-13,1e-13,mass-based,
 3,2,3,MLCC,Passives,Capacitors,"C1, C3",1206,CC1206_100PF_50V_5%_NP0,EcoInvent,"capacitor production, for surface-mounting",kg,Input,0.000113152,0.000113152,mass-based,
 4,2,3,MLCC,Passives,Capacitors,"C2, C6, C7",1206,CC1206_1NF_50V_10%_X7R,EcoInvent,"capacitor production, for surface-mounting",kg,Input,0.000169728,0.000169728,mass-based,
 5,2,3,MLCC,Passives,Capacitors,"C4, C5",1206,CC1206_100NF_50V_10%_X7R,EcoInvent,"capacitor production, for surface-mounting",kg,Input,0.000113152,0.000113152,mass-based,

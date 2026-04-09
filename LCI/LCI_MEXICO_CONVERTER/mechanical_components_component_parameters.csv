@@ -12,3 +12,4 @@ puls_panel,,Mechanical components,panel,,,,,1,kg,0.02,YES,,,,,,,,,Ecoinvent,"alu
 igbt_spacer,,Mechanical components,spacer,,,,,1,kg,0.004,YES,,,,,,,,,Ecoinvent,"copper, cathode + metal working, average for copper product manufacturing",kg,Input ,Explain in the documentation
 FGC4 frame,,Mechanical components,control,,,,,1,kg,0.454,YES,,,,,,,,,Ecoinvent,"aluminium alloy, AlMg3 + metal working, average for aluminium product manufacturing",kg,Input ,Explain in the documentation
 Schroff crate,,Mechanical components,control,,,,,1,kg,,NO,,,,258.038,2.66,2.67,,,Ecoinvent,"aluminium alloy, AlMg3 + metal working, average for aluminium product manufacturing",kg,Input ,Mass calculated from volume and density of the AG3 aluminium
+dummy,,dummy element,,,,,,1,kg,0.0000000000001,YES,,,,,,,,,EcoInvent,"wood wool",kg,Input,"Dummy flow to avoid errors in the LCI model. It has a negligible mass and it is not considered in the calculations."
