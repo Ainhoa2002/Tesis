@@ -431,6 +431,16 @@ def main():
         except Exception as exc:
             print(f"  [Warning] Third UUID fill failed for {system_folder.name}: {exc}")
 
+        # Re-import the system aggregate file after the third pass so the newly
+        # filled UUID/UUID_provider values are actually pushed into openLCA.
+        system_target_file = system_folder / "system_ipe_flows_from_parameters.csv"
+        if system_target_file.exists():
+            try:
+                process_csv(client, str(system_target_file), resolve_category_name(system_folder.name))
+                print("  Third-round system file re-imported into openLCA.")
+            except Exception as exc:
+                print(f"  [Warning] Could not re-import third-round system file: {exc}")
+
         print("\nAll done! Please refresh openLCA to see the new processes.")
 
 if __name__ == "__main__":
