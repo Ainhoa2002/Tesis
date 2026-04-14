@@ -179,6 +179,59 @@ Real import:
 .\.venv\Scripts\python.exe .\LCI\main.py
 ```
 
+## Transport Validation and PCB Handling
+
+Transport aggregation is implemented in [LCI/LCI_TRANSPORT/calculate_transport_mass_by_code.py](LCI/LCI_TRANSPORT/calculate_transport_mass_by_code.py).
+
+Validation checks that should pass after a normal run:
+
+1. No double multiplication in transport:
+   - IPE Amount values are already produced by each pipeline and are consumed as-is.
+2. Coded totals are stable:
+   - `--overall` prints one mass total per transport code.
+3. Per-subsystem coded totals are available:
+   - default mode prints per subsystem + code and total coded mass.
+
+Important modeling detail:
+
+- PCB/OCB rows in several converter cards are modeled as `m2` flows.
+- Component mass totals are in `kg` in `*_component_results.csv`.
+- If comparing transport against converter mass on a `kg` basis, PCB/OCB can be added from results using the dedicated flag below.
+
+Commands:
+
+Overall coded mass by transport code:
+
+```powershell
+.\.venv\Scripts\python.exe .\LCI\LCI_TRANSPORT\calculate_transport_mass_by_code.py --root .\LCI --overall
+```
+
+Per-subsystem coded mass (default mode):
+
+```powershell
+.\.venv\Scripts\python.exe .\LCI\LCI_TRANSPORT\calculate_transport_mass_by_code.py --root .\LCI
+```
+
+Coded/uncoded diagnostic breakdown:
+
+```powershell
+.\.venv\Scripts\python.exe .\LCI\LCI_TRANSPORT\calculate_transport_mass_by_code.py --root .\LCI --breakdown
+```
+
+Include PCB/OCB `kg` mass from component results in transport totals:
+
+```powershell
+.\.venv\Scripts\python.exe .\LCI\LCI_TRANSPORT\calculate_transport_mass_by_code.py --root .\LCI --overall --include-pcb-mass-from-results
+```
+
+How the PCB/OCB option works:
+
+1. Reads PCB/OCB `Total_mass_kg` from each module `*_component_results.csv`.
+2. Reads PCB transport code(s) from each module `*_ipe_flows_from_parameters.csv` PCB flow row.
+3. Adds that PCB mass to those same transport code totals.
+
+This avoids duplicating the PCB `m2 -> kg` conversion logic in the transport script and keeps the pipeline result as the single source of truth for PCB mass.
+
 ## Practical Notes and Limits
 
 - openLCA IPC must be reachable at localhost:8080 in real mode.

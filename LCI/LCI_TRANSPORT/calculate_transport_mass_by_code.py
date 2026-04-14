@@ -56,6 +56,59 @@ def _iter_ipe_files(root_dir):
             yield path
 
 
+def _module_name_from_ipe_path(csv_path):
+    suffix = "_ipe_flows_from_parameters.csv"
+    name = Path(csv_path).name
+    if not name.endswith(suffix):
+        return ""
+    return name[: -len(suffix)]
+
+
+def _is_pcb_flow(flow_name):
+    return "printed wiring board production" in _normalize_text(flow_name).lower()
+
+
+def _load_pcb_mass_from_results(csv_path):
+    """Load PCB/OCB mass (kg) from sibling *_component_results.csv for one module."""
+    module = _module_name_from_ipe_path(csv_path)
+    if module == "":
+        return 0.0
+
+    results_path = Path(csv_path).with_name(f"{module}_component_results.csv")
+    if not results_path.exists():
+        return 0.0
+
+    pcb_mass_kg = 0.0
+    with open(results_path, newline="", encoding="utf-8-sig") as handle:
+        reader = csv.DictReader(handle)
+        for row in reader:
+            designator = _normalize_text(row.get("Designators")).upper()
+            if designator not in {"PCB", "OCB"}:
+                continue
+            mass_kg = _to_float(row.get("Total_mass_kg"))
+            if mass_kg is not None:
+                pcb_mass_kg += mass_kg
+
+    return pcb_mass_kg
+
+
+def _collect_pcb_codes_from_ipe(csv_path):
+    """Collect transport codes present on PCB rows in one *_ipe file."""
+    codes = set()
+    with open(csv_path, newline="", encoding="utf-8-sig") as handle:
+        reader = csv.DictReader(handle)
+        if not reader.fieldnames or "Transport_phase_codes" not in reader.fieldnames:
+            return codes
+        for row in reader:
+            if _normalize_text(row.get("Direction")).lower() == "output":
+                continue
+            if not _is_pcb_flow(row.get("Flow")):
+                continue
+            for code in _parse_codes(row.get("Transport_phase_codes", "")):
+                codes.add(code)
+    return codes
+
+
 def _load_mexico_subsystem_units(root_dir):
     """Load Quantity_per_subsystem map for LCI_MEXICO_CONVERTER."""
     units_path = Path(root_dir) / "LCI_MEXICO_CONVERTER" / "subsystem_units.csv"
@@ -177,7 +230,7 @@ def _subsystem_name_from_path(root_dir, csv_path):
     return top.lower()
 
 
-def calculate_total_mass_by_transport_code(root_dir):
+def calculate_total_mass_by_transport_code(root_dir, include_pcb_mass_from_results=False):
     """Calculate total mass in kg aggregated by Transport_phase_codes.
 
     Rules:
@@ -215,10 +268,19 @@ def calculate_total_mass_by_transport_code(root_dir):
                 for code in codes:
                     totals_kg[code] += mass_kg
 
+    if include_pcb_mass_from_results:
+        for csv_path in _iter_ipe_files(root_dir):
+            pcb_mass_kg = _load_pcb_mass_from_results(csv_path)
+            if pcb_mass_kg <= 0:
+                continue
+            pcb_codes = _collect_pcb_codes_from_ipe(csv_path)
+            for code in pcb_codes:
+                totals_kg[code] += pcb_mass_kg
+
     return dict(sorted(totals_kg.items(), key=lambda kv: kv[0].lower()))
 
 
-def calculate_total_mass_by_transport_code_per_subsystem(root_dir):
+def calculate_total_mass_by_transport_code_per_subsystem(root_dir, include_pcb_mass_from_results=False):
     """Calculate total mass in kg per subsystem and Transport_phase_codes.
     
     NOTE: IPE file amounts are already multiplied by subsystem_units in Pipeline,
@@ -254,6 +316,21 @@ def calculate_total_mass_by_transport_code_per_subsystem(root_dir):
 
                 for code in codes:
                     subsystem_totals[subsystem][code] += mass_kg
+
+    if include_pcb_mass_from_results:
+        for csv_path in _iter_ipe_files(root_dir):
+            pcb_mass_kg = _load_pcb_mass_from_results(csv_path)
+            if pcb_mass_kg <= 0:
+                continue
+
+            pcb_codes = _collect_pcb_codes_from_ipe(csv_path)
+            if not pcb_codes:
+                continue
+
+            subsystem = _subsystem_name_from_path(root_dir, csv_path)
+            subsystem_total_coded_mass_kg[subsystem] += pcb_mass_kg
+            for code in pcb_codes:
+                subsystem_totals[subsystem][code] += pcb_mass_kg
 
     ordered = {}
     for subsystem in sorted(subsystem_totals.keys()):
@@ -342,6 +419,11 @@ def main():
         action="store_true",
         help="Print coded/uncoded mass breakdown per subsystem.",
     )
+    parser.add_argument(
+        "--include-pcb-mass-from-results",
+        action="store_true",
+        help="Include PCB/OCB kg mass from *_component_results.csv using PCB transport codes from IPE rows.",
+    )
     args = parser.parse_args()
 
     if args.breakdown:
@@ -358,7 +440,10 @@ def main():
         return
 
     if args.overall:
-        totals = calculate_total_mass_by_transport_code(args.root)
+        totals = calculate_total_mass_by_transport_code(
+            args.root,
+            include_pcb_mass_from_results=args.include_pcb_mass_from_results,
+        )
 
         if not totals:
             print("No coded mass rows found.")
@@ -368,7 +453,10 @@ def main():
             print(f"{code}: {mass_kg:.12g} kg")
         return
 
-    per_subsystem = calculate_total_mass_by_transport_code_per_subsystem(args.root)
+    per_subsystem = calculate_total_mass_by_transport_code_per_subsystem(
+        args.root,
+        include_pcb_mass_from_results=args.include_pcb_mass_from_results,
+    )
     if not per_subsystem:
         print("No coded mass rows found.")
         return

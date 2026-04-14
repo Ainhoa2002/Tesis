@@ -103,6 +103,7 @@ def run_created_uuid_fill_if_available(system_folder: Path, dry_run: bool = Fals
         str(provider_library),
         "--root",
         str(system_folder),
+        "--overwrite-uuid",
         "--no-sync-provider-library",
         "--overwrite-provider",
     ]
@@ -534,6 +535,7 @@ def _upsert_created_flows_library(path: Path, rows):
             index[key] = i
 
     added = 0
+    updated = 0
     skipped_existing = 0
     for row in rows:
         flow = str(row.get("Flow", "") or "").strip()
@@ -543,7 +545,15 @@ def _upsert_created_flows_library(path: Path, rows):
         key = _normalize_key(flow)
         mapped = {"Ecoinvent_flow": flow, "UUID": uid}
         if key in index:
-            skipped_existing += 1
+            i = index[key]
+            existing = existing_rows[i]
+            existing_uid = str(existing.get("UUID", "") or "").strip()
+            existing_flow = str(existing.get("Ecoinvent_flow", "") or "").strip()
+            if existing_uid != uid or existing_flow != flow:
+                existing_rows[i] = mapped
+                updated += 1
+            else:
+                skipped_existing += 1
         else:
             existing_rows.append(mapped)
             index[key] = len(existing_rows) - 1
@@ -554,7 +564,7 @@ def _upsert_created_flows_library(path: Path, rows):
         writer.writeheader()
         writer.writerows(existing_rows)
 
-    return added, skipped_existing
+    return added, updated, skipped_existing
 
 
 def _upsert_created_process_library(path: Path, rows):
@@ -692,7 +702,7 @@ def main():
             else:
                 updated_processes += 1
             created_flows += len(result.get("created_output_flows", []))
-            created_flow_rows.extend(result.get("created_output_flows", []))
+            created_flow_rows.extend(result.get("output_flows_for_library", []))
 
             process_uuid = str(result.get("process_uuid", "") or "").strip()
             process_name = str(result.get("process_name", "") or "").strip()
@@ -710,7 +720,10 @@ def main():
     else:
         created_flows_library = BASE_DIR / "created_flows_uuid_map.csv"
         created_process_library = BASE_DIR / "created_process_uuid_map.csv"
-        flow_added, flow_skipped_existing = _upsert_created_flows_library(created_flows_library, created_flow_rows)
+        flow_added, flow_updated, flow_skipped_existing = _upsert_created_flows_library(
+            created_flows_library,
+            created_flow_rows,
+        )
         process_added, process_updated, process_skipped_existing = _upsert_created_process_library(
             created_process_library,
             created_process_rows,
@@ -723,7 +736,7 @@ def main():
         )
         print(
             f"Created libraries updated. "
-            f"Flows added/skipped_existing: {flow_added}/{flow_skipped_existing}. "
+            f"Flows added/updated/skipped_existing: {flow_added}/{flow_updated}/{flow_skipped_existing}. "
             f"Process providers added/updated/skipped_existing: "
             f"{process_added}/{process_updated}/{process_skipped_existing}."
         )

@@ -40,6 +40,8 @@ def _get_mass_flow_property(client):
 def _get_transport_work_flow_property(client):
     # Common openLCA names for tkm-like properties.
     for prop_name in (
+        "Mass transport",
+        "Item transport",
         "Goods transport (mass*distance)",
         "Transport",
         "Transport work",
@@ -48,6 +50,22 @@ def _get_transport_work_flow_property(client):
         prop = _get_entity_by_name(client, o.FlowProperty, prop_name)
         if prop:
             return prop
+
+    # Fallback: pick a flow property that clearly represents transport work.
+    # This covers database variants with localized/custom names.
+    try:
+        descriptors = list(client.get_descriptors(o.FlowProperty))
+    except Exception:
+        descriptors = []
+
+    for descriptor in descriptors:
+        name = str(getattr(descriptor, "name", "") or "").strip().lower()
+        if name == "":
+            continue
+        if "transport" in name and ("mass" in name or "distance" in name):
+            prop = client.get(o.FlowProperty, uid=descriptor.id)
+            if prop:
+                return prop
     return None
 
 
@@ -94,6 +112,34 @@ def _upsert_flow_property_factor(flow, flow_property, conversion_factor, is_refe
     return True
 
 
+def _prune_non_reference_flow_properties(flow, keep_props):
+    """Keep non-reference factors only for allowed flow properties.
+
+    This avoids stale unit factors (for example old Mass/kg) when a flow is
+    remapped to a different output unit such as tkm.
+    """
+    if flow.flow_properties is None:
+        return False
+
+    changed = False
+    kept = []
+    for factor in flow.flow_properties:
+        if bool(getattr(factor, "is_ref_flow_property", False)):
+            kept.append(factor)
+            continue
+
+        factor_prop = getattr(factor, "flow_property", None)
+        keep = any(_same_ref(factor_prop, p) for p in keep_props if p is not None)
+        if keep:
+            kept.append(factor)
+        else:
+            changed = True
+
+    if changed:
+        flow.flow_properties = kept
+    return changed
+
+
 def _sync_output_flow_definition(client, flow, flow_name, amount_per_lu, output_unit, category_path):
     """Synchronize mutable output-flow attributes when possible.
 
@@ -137,6 +183,7 @@ def _sync_output_flow_definition(client, flow, flow_name, amount_per_lu, output_
 
     changed = _upsert_flow_property_factor(flow, number_prop, 1.0, True) or changed
     changed = _upsert_flow_property_factor(flow, secondary_prop, amount_per_lu, False) or changed
+    changed = _prune_non_reference_flow_properties(flow, keep_props=[secondary_prop]) or changed
 
     if not changed:
         return
