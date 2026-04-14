@@ -1,22 +1,31 @@
 # LCI Import Workflow
 
-This folder contains the full openLCA import workflow used by all LCI systems in this repository.
+This folder contains the orchestration layer that rebuilds LCI CSVs, fills openLCA UUID fields, creates or updates processes, and refreshes the created-object libraries used by later passes.
 
-## Scope and Goal
+## Overview
 
-The importer now runs multiple coordinated passes:
+The importer runs multiple coordinated passes:
 
 1. Regenerate system CSVs through optional per-system pipelines.
 2. Fill UUID and UUID_provider values in ipe files from global libraries.
 3. Create or update openLCA processes from those ipe files.
 4. Run a second UUID fill pass using created-object libraries.
-5. Re-import the same ipe files so second-pass provider updates are persisted in openLCA.
+5. Re-import the same ipe files so second-pass UUID and provider updates are persisted in openLCA.
 6. Run a third targeted UUID fill for system aggregate files when available.
 
 This supports two needs at the same time:
 
 - standard mapping from global ecoinvent libraries
 - iterative mapping of project-created flows and providers
+
+## Workflow At A Glance
+
+1. Optional per-system pipelines regenerate source CSVs.
+2. Global UUID libraries fill the first pass of each ipe file.
+3. openLCA processes are created or overwritten from those ipe files.
+4. Created-object libraries are upserted from the import results.
+5. A second UUID fill uses the created-object libraries and overwrites both UUID and provider fields.
+6. A third targeted fill refreshes aggregate system files when available.
 
 ## Folder Layout
 
@@ -52,6 +61,7 @@ Per system, the runtime sequence is:
    - created_process_uuid_map.csv
 4. Second UUID fill using created-object libraries only:
    - no provider-library sync from openLCA
+   - overwrite UUID enabled
    - overwrite provider enabled
 5. Re-import all processed files to apply second-pass updates immediately.
 6. Third UUID fill for system aggregate files:

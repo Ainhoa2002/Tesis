@@ -1,8 +1,8 @@
 ﻿# LCI_MEXICO_CONVERTER Workflow
 
-This README documents the current converter pipeline in this folder, including the global interaction with LCI/main.py.
+This folder turns component-level parameters into subsystem mass outputs, grouped ipe files, and the converter-level import files consumed by [LCI/main.py](LCI/main.py).
 
-## Purpose
+## Overview
 
 The converter workflow transforms subsystem component parameters into:
 
@@ -30,6 +30,14 @@ Per-subsystem patterns:
   - subsystem_component_results.csv
   - subsystem_component_io_flows.csv
   - subsystem_ipe_flows_from_parameters.csv
+
+## Workflow At A Glance
+
+1. Discover subsystem parameter files.
+2. Sync subsystem unit multipliers.
+3. Rebuild the converter-level MEXICO aggregate file from subsystem units.
+4. Run each selected subsystem pipeline.
+5. Fill UUID and UUID_provider for each generated subsystem ipe file.
 
 ## Quick Run
 
@@ -148,10 +156,12 @@ Global main.py currently performs:
 
 1. First fill pass using global libraries.
 2. Process create or overwrite.
-3. Append-only update of created libraries.
+3. Upsert update of created libraries.
 4. Second fill pass using created libraries:
    - [LCI/created_flows_uuid_map.csv](LCI/created_flows_uuid_map.csv)
    - [LCI/created_process_uuid_map.csv](LCI/created_process_uuid_map.csv)
+   - overwrite UUID enabled
+   - overwrite provider enabled
 
 ## Validation and Guardrails
 
