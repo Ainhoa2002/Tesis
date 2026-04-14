@@ -42,6 +42,10 @@ def read_existing_ipe_rows(ipe_path):
         return list(reader)
 
 
+def _row_key(flow, unit, direction):
+    return (normalize_text(flow), normalize_text(unit) or "kg", normalize_direction(direction))
+
+
 def split_flows(flow_value):
     text = normalize_text(flow_value)
     if text == "":
@@ -60,9 +64,18 @@ def normalize_direction(value):
 
 def build_ipe_rows(parameter_rows):
     aggregated = {}
+    existing_rows_by_key = {}
     skipped = 0
     total_mass_kg = 0.0
     component_count = 0
+
+    # Preserve user-managed columns from the previous IPE file when rerunning
+    # the pipeline so Transport_phase_codes are not erased.
+    existing_ipe_rows = read_existing_ipe_rows(Path(__file__).resolve().parent / "magnet_ipe_flows_from_parameters.csv")
+    for row in existing_ipe_rows:
+        key = _row_key(row.get("Flow"), row.get("Unit"), row.get("Direction"))
+        if key not in existing_rows_by_key:
+            existing_rows_by_key[key] = row
 
     for row in parameter_rows:
         direction = normalize_direction(row.get("Direction"))
@@ -81,14 +94,15 @@ def build_ipe_rows(parameter_rows):
         for flow in ecoinvent_flows:
             key = (flow, unit, direction)
             if key not in aggregated:
+                existing_row = existing_rows_by_key.get(key, {})
                 aggregated[key] = {
                     "Flow": flow,
-                    "UUID": "",
+                    "UUID": normalize_text(existing_row.get("UUID")),
                     "Unit": unit,
                     "Amount": 0.0,
                     "Direction": direction,
-                    "UUID_provider": "",
-                    "Transport_phase_codes": "",
+                    "UUID_provider": normalize_text(existing_row.get("UUID_provider")),
+                    "Transport_phase_codes": normalize_text(existing_row.get("Transport_phase_codes")),
                 }
             aggregated[key]["Amount"] += amount
 
