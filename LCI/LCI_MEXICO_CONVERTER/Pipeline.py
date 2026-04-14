@@ -821,21 +821,28 @@ def run_pipeline(
         if mass_data is not None:
             mass_data = dict(mass_data)
             mass_data["Total_mass_kg"] = mass_data["Total_mass_kg"] * units_multiplier
+            mass_data["Mass_per_element_kg"] = mass_data["Mass_per_element_kg"] * units_multiplier
 
         if quantity_data is not None:
             quantity_data = dict(quantity_data)
             quantity_data["Total_quantity"] = quantity_data["Total_quantity"] * units_multiplier
+            quantity_data["Quantity_per_element"] = quantity_data["Quantity_per_element"] * units_multiplier
 
         if quantity_data is not None:
             result_row["Quantity_per_element"] = _round_for_csv(quantity_data["Quantity_per_element"])
             result_row["Total_quantity"] = _round_for_csv(quantity_data["Total_quantity"])
         else:
             result_row["Total_quantity"] = ""
-        result_row["Total_mass_kg"] = _compute_total_mass_kg_from_quantity(
-            row,
-            unit,
-            quantity_data,
-        )
+        
+        # Use multiplied mass_data directly if available; fall back to computed quantity_data
+        if mass_data is not None and is_mass_unit(unit):
+            result_row["Total_mass_kg"] = _round_for_csv(mass_data["Total_mass_kg"])
+        else:
+            result_row["Total_mass_kg"] = _compute_total_mass_kg_from_quantity(
+                row,
+                unit,
+                quantity_data,
+            )
 
         needs_mass = is_mass_unit(unit)
         needs_area = unit.lower() == "m2"

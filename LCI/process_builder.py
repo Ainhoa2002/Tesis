@@ -37,6 +37,20 @@ def _get_mass_flow_property(client):
     return _get_entity_by_name(client, o.FlowProperty, "Mass")
 
 
+def _get_transport_work_flow_property(client):
+    # Common openLCA names for tkm-like properties.
+    for prop_name in (
+        "Goods transport (mass*distance)",
+        "Transport",
+        "Transport work",
+        "Mass*distance",
+    ):
+        prop = _get_entity_by_name(client, o.FlowProperty, prop_name)
+        if prop:
+            return prop
+    return None
+
+
 def _get_existing_process_by_name(client, process_name):
     """Return the existing openLCA process with this name, if any."""
     existing_ref = client.find(o.Process, name=process_name)
@@ -80,14 +94,14 @@ def _upsert_flow_property_factor(flow, flow_property, conversion_factor, is_refe
     return True
 
 
-def _sync_output_flow_definition(client, flow, flow_name, mass_per_lu, category_path):
+def _sync_output_flow_definition(client, flow, flow_name, amount_per_lu, output_unit, category_path):
     """Synchronize mutable output-flow attributes when possible.
 
     This keeps reused flows aligned with the current CSV contract:
     - product flow type
     - expected category path
     - Number as reference flow property (factor 1.0)
-    - Mass as secondary flow property (factor = kg per 1 LU)
+    - Secondary flow property based on output unit (kg or tkm)
     """
     if not flow:
         return
@@ -105,13 +119,24 @@ def _sync_output_flow_definition(client, flow, flow_name, mass_per_lu, category_
 
     number_prop = _get_number_flow_property(client)
     mass_prop = _get_mass_flow_property(client)
+    transport_prop = _get_transport_work_flow_property(client)
     if not number_prop:
         raise ValueError("Flow property 'Number' (or equivalent) not found")
-    if not mass_prop:
-        raise ValueError("Flow property 'Mass' not found")
+
+    unit_norm = str(output_unit or "").strip().lower()
+    secondary_prop = mass_prop
+    unit_label = "kg"
+    if unit_norm == "tkm" and transport_prop:
+        secondary_prop = transport_prop
+        unit_label = "tkm"
+    elif unit_norm == "tkm" and not transport_prop:
+        print("  Warning: Flow property for 'tkm' not found. Falling back to 'Mass'.")
+
+    if not secondary_prop:
+        raise ValueError("Required flow property not found for output flow")
 
     changed = _upsert_flow_property_factor(flow, number_prop, 1.0, True) or changed
-    changed = _upsert_flow_property_factor(flow, mass_prop, mass_per_lu, False) or changed
+    changed = _upsert_flow_property_factor(flow, secondary_prop, amount_per_lu, False) or changed
 
     if not changed:
         return
@@ -128,17 +153,25 @@ def _sync_output_flow_definition(client, flow, flow_name, mass_per_lu, category_
 # It creates a new flow with the name of the flow and the conversion factor
 # from LU to kg based on the amount in the CSV.
 # If the flow already exists (by name), it will be moved to the desired category.
-def _find_or_create_output_flow(client, flow_name, mass_per_lu, category_path):
+def _find_or_create_output_flow(client, flow_name, amount_per_lu, output_unit, category_path):
     desired_category = _normalize_category_path(category_path)
 
     # Obtain required flow properties once for both create and reuse paths.
     number_prop = _get_number_flow_property(client)
     mass_prop = _get_mass_flow_property(client)
+    transport_prop = _get_transport_work_flow_property(client)
 
     if not number_prop:
         raise ValueError("Flow property 'Number' (or equivalent) not found")
-    if not mass_prop:
-        raise ValueError("Flow property 'Mass' not found")
+    unit_norm = str(output_unit or "").strip().lower()
+    secondary_prop = mass_prop
+    if unit_norm == "tkm" and transport_prop:
+        secondary_prop = transport_prop
+    elif unit_norm == "tkm" and not transport_prop:
+        print("  Warning: Flow property for 'tkm' not found. Falling back to 'Mass'.")
+
+    if not secondary_prop:
+        raise ValueError("Required flow property not found for output flow")
 
     # Try to find it by name to reuse if it already exists
     existing_ref = client.find(o.Flow, name=flow_name)
@@ -149,7 +182,8 @@ def _find_or_create_output_flow(client, flow_name, mass_per_lu, category_path):
                 client,
                 flow,
                 flow_name,
-                mass_per_lu,
+                amount_per_lu,
+                output_unit,
                 desired_category,
             )
             return flow, False
@@ -166,13 +200,13 @@ def _find_or_create_output_flow(client, flow_name, mass_per_lu, category_path):
     factor_number.conversion_factor = 1.0
     factor_number.is_ref_flow_property = True
 
-    # Factor for mass for the conversion from LU to kg
-    factor_mass = o.FlowPropertyFactor()
-    factor_mass.flow_property = mass_prop
-    factor_mass.conversion_factor = mass_per_lu
-    factor_mass.is_ref_flow_property = False
+    # Secondary factor for conversion from LU to output unit (kg or tkm)
+    factor_secondary = o.FlowPropertyFactor()
+    factor_secondary.flow_property = secondary_prop
+    factor_secondary.conversion_factor = amount_per_lu
+    factor_secondary.is_ref_flow_property = False
 
-    flow.flow_properties = [factor_number, factor_mass]
+    flow.flow_properties = [factor_number, factor_secondary]
 
     # Save the flow
     client.put(flow)
@@ -217,6 +251,7 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
     for output_row in (output_rows or []):
         output_name = str(output_row.get("Flow", "")).strip()
         uuid = str(output_row.get("UUID", "")).strip()
+        output_unit = str(output_row.get("Unit", "") or "").strip().lower()
         try:
             output_amount = float(output_row.get("Amount", 0))
         except (ValueError, TypeError):
@@ -239,6 +274,7 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
                     flow,
                     output_name,
                     output_amount,
+                    output_unit,
                     flow_category_path,
                 )
             except Exception as e:
@@ -269,6 +305,7 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
                 client,
                 output_name,
                 output_amount,
+                output_unit,
                 flow_category_path,
             )
 
@@ -279,7 +316,8 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
             out_ex.is_quantitative_reference = True
             process.exchanges.append(out_ex)
             output_created = True
-            print(f"  Output flow '{output_name}' ready: 1 LU = {output_amount} kg")
+            unit_label = output_unit if output_unit else "kg"
+            print(f"  Output flow '{output_name}' ready: 1 LU = {output_amount} {unit_label}")
             if flow_was_created:
                 created_output_flows.append({"Flow": output_name, "UUID": output_flow.id})
 

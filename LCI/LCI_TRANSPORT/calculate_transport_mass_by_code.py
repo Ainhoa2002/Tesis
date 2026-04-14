@@ -185,18 +185,13 @@ def calculate_total_mass_by_transport_code(root_dir):
     - Uses only rows with non-empty Transport_phase_codes.
     - Supports kg, g, mg, t/ton/tonne units.
     - If a row has multiple codes (comma-separated), its full mass is added to each code.
+    
+    NOTE: IPE file amounts are already multiplied by subsystem_units in Pipeline,
+    so we use them as-is without further multiplication.
     """
     totals_kg = defaultdict(float)
-    mexico_units_map = _load_mexico_subsystem_units(root_dir)
-    system_units_map = _load_system_units(root_dir)
 
     for csv_path in _iter_ipe_files(root_dir):
-        subsystem_multiplier, include_file = _get_mass_multiplier_for_file(root_dir, csv_path, mexico_units_map)
-        if not include_file:
-            continue
-        system_multiplier = _get_system_multiplier_for_file(root_dir, csv_path, system_units_map)
-        multiplier = subsystem_multiplier * system_multiplier
-
         with open(csv_path, newline="", encoding="utf-8-sig") as handle:
             reader = csv.DictReader(handle)
             if not reader.fieldnames:
@@ -214,7 +209,8 @@ def calculate_total_mass_by_transport_code(root_dir):
                 if mass_kg is None:
                     continue
 
-                mass_kg = mass_kg * multiplier
+                # IPE amounts are already multiplied by subsystem_units in Pipeline
+                # Do NOT apply multiplier again here
 
                 for code in codes:
                     totals_kg[code] += mass_kg
@@ -223,19 +219,15 @@ def calculate_total_mass_by_transport_code(root_dir):
 
 
 def calculate_total_mass_by_transport_code_per_subsystem(root_dir):
-    """Calculate total mass in kg per subsystem and Transport_phase_codes."""
+    """Calculate total mass in kg per subsystem and Transport_phase_codes.
+    
+    NOTE: IPE file amounts are already multiplied by subsystem_units in Pipeline,
+    so we use them as-is without further multiplication.
+    """
     subsystem_totals = defaultdict(lambda: defaultdict(float))
     subsystem_total_coded_mass_kg = defaultdict(float)
-    mexico_units_map = _load_mexico_subsystem_units(root_dir)
-    system_units_map = _load_system_units(root_dir)
 
     for csv_path in _iter_ipe_files(root_dir):
-        subsystem_multiplier, include_file = _get_mass_multiplier_for_file(root_dir, csv_path, mexico_units_map)
-        if not include_file:
-            continue
-        system_multiplier = _get_system_multiplier_for_file(root_dir, csv_path, system_units_map)
-        multiplier = subsystem_multiplier * system_multiplier
-
         subsystem = _subsystem_name_from_path(root_dir, csv_path)
 
         with open(csv_path, newline="", encoding="utf-8-sig") as handle:
@@ -255,7 +247,8 @@ def calculate_total_mass_by_transport_code_per_subsystem(root_dir):
                 if mass_kg is None:
                     continue
 
-                mass_kg = mass_kg * multiplier
+                # IPE amounts are already multiplied by subsystem_units in Pipeline
+                # Do NOT apply multiplier again here
 
                 subsystem_total_coded_mass_kg[subsystem] += mass_kg
 
@@ -268,6 +261,64 @@ def calculate_total_mass_by_transport_code_per_subsystem(root_dir):
         ordered[subsystem] = {
             "codes": dict(sorted(codes.items(), key=lambda kv: kv[0].lower())),
             "total_coded_mass_kg": subsystem_total_coded_mass_kg[subsystem],
+        }
+    return ordered
+
+
+def calculate_mass_breakdown_by_subsystem(root_dir):
+    """Calculate coded and uncoded mass totals per subsystem.
+
+    This is a diagnostic view: it keeps the current transport-code behavior intact,
+    but makes it visible how much mass is excluded because Transport_phase_codes
+    is blank or missing.
+    """
+    coded_totals = defaultdict(float)
+    uncoded_totals = defaultdict(float)
+    all_totals = defaultdict(float)
+    row_counts = defaultdict(lambda: {"coded_rows": 0, "uncoded_rows": 0})
+    mexico_units_map = _load_mexico_subsystem_units(root_dir)
+    system_units_map = _load_system_units(root_dir)
+
+    for csv_path in _iter_ipe_files(root_dir):
+        subsystem_multiplier, include_file = _get_mass_multiplier_for_file(root_dir, csv_path, mexico_units_map)
+        if not include_file:
+            continue
+        system_multiplier = _get_system_multiplier_for_file(root_dir, csv_path, system_units_map)
+        multiplier = subsystem_multiplier * system_multiplier
+        subsystem = _subsystem_name_from_path(root_dir, csv_path)
+
+        with open(csv_path, newline="", encoding="utf-8-sig") as handle:
+            reader = csv.DictReader(handle)
+            if not reader.fieldnames:
+                continue
+            if "Amount" not in reader.fieldnames:
+                continue
+
+            for row in reader:
+                amount = _to_float(row.get("Amount"))
+                mass_kg = _unit_to_kg(amount, row.get("Unit"))
+                if mass_kg is None:
+                    continue
+
+                mass_kg = mass_kg * multiplier
+                all_totals[subsystem] += mass_kg
+
+                codes = _parse_codes(row.get("Transport_phase_codes", ""))
+                if codes:
+                    coded_totals[subsystem] += mass_kg
+                    row_counts[subsystem]["coded_rows"] += 1
+                else:
+                    uncoded_totals[subsystem] += mass_kg
+                    row_counts[subsystem]["uncoded_rows"] += 1
+
+    ordered = {}
+    for subsystem in sorted(all_totals.keys()):
+        ordered[subsystem] = {
+            "coded_mass_kg": coded_totals[subsystem],
+            "uncoded_mass_kg": uncoded_totals[subsystem],
+            "total_mass_kg": all_totals[subsystem],
+            "coded_rows": row_counts[subsystem]["coded_rows"],
+            "uncoded_rows": row_counts[subsystem]["uncoded_rows"],
         }
     return ordered
 
@@ -286,7 +337,25 @@ def main():
         action="store_true",
         help="Print overall totals across all subsystems (legacy behavior).",
     )
+    parser.add_argument(
+        "--breakdown",
+        action="store_true",
+        help="Print coded/uncoded mass breakdown per subsystem.",
+    )
     args = parser.parse_args()
+
+    if args.breakdown:
+        breakdown = calculate_mass_breakdown_by_subsystem(args.root)
+        if not breakdown:
+            print("No rows found.")
+            return
+        for subsystem, payload in breakdown.items():
+            print(
+                f"{subsystem}: coded={payload['coded_mass_kg']:.12g} kg, "
+                f"uncoded={payload['uncoded_mass_kg']:.12g} kg, total={payload['total_mass_kg']:.12g} kg, "
+                f"coded_rows={payload['coded_rows']}, uncoded_rows={payload['uncoded_rows']}"
+            )
+        return
 
     if args.overall:
         totals = calculate_total_mass_by_transport_code(args.root)

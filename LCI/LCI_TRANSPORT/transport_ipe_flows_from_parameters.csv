@@ -1,4 +1,6 @@
 Flow,UUID,Unit,Amount,Direction,UUID_provider,Transport_phase_codes
-
-transport,,kg,,Output,,
-
+connector_system_transport,ac722419-56ef-4264-a36f-3a8940231d41,LU,1,Input,5517c765-4c28-4178-bffe-cf0750e4fabb,
+magnet_transport,74830126-43dc-45e3-9308-622242e0fc82,LU,1,Input,25ceb970-0468-4ffd-a030-2bb303934573,
+mexico_transport,d72ca08f-c1db-4bce-bed5-995b52431eaf,LU,1,Input,7eba1c34-5574-46d2-8a39-da958fa2ff1b,
+wood wool,6e4f1a58-c17a-4c76-aecc-3b5180d4f6b5,kg,1e-13,Input,NO_PROVIDER,
+transport,,LU,1,Output,,
