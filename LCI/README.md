@@ -64,8 +64,9 @@ Per system, the runtime sequence is:
    - overwrite UUID enabled
    - overwrite provider enabled
 5. Re-import all processed files to apply second-pass updates immediately.
-6. Third UUID fill for system aggregate files:
-   - target: LCI_SYSTEM/system_ipe_flows_from_parameters.csv
+6. Third UUID fill for aggregate files:
+   - system target: LCI_SYSTEM/system_ipe_flows_from_parameters.csv
+   - transport target: LCI_TRANSPORT/transport_ipe_flows_from_parameters.csv
    - source: created_flows_uuid_map.csv + created_process_uuid_map.csv
    - overwrite UUID and UUID_provider enabled
 

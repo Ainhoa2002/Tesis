@@ -1,6 +1,69 @@
+"""openLCA process and flow creation logic.
+
+This module owns all openLCA-creation-related behavior for the import workflow:
+- flow lookup/synchronization/creation
+- process creation or rebuild with exchanges
+- per-file import reporting with centralized warnings and errors
+"""
+
+from __future__ import annotations
+
 import os
+from dataclasses import dataclass, field
+
 import olca_schema as o
+
 from csv_reader import read_input_rows, read_output_rows
+
+
+@dataclass
+class ProcessImportReport:
+    """Structured report for one imported *_ipe CSV file."""
+
+    csv_path: str
+    process_name: str
+    category_name: str
+    process_uuid: str = ""
+    process_created: bool = False
+    skipped: bool = False
+    created_output_flows: list[dict[str, str]] = field(default_factory=list)
+    output_flows_for_library: list[dict[str, str]] = field(default_factory=list)
+    process_provider_rows: list[dict[str, str]] = field(default_factory=list)
+    warnings: list[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
+    inputs_built: int = 0
+
+
+@dataclass
+class ProductSystemCreationReport:
+    process_name: str
+    product_system_name: str
+    product_system_uuid: str = ""
+    created: bool = False
+    updated: bool = False
+    skipped: bool = False
+    warnings: list[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
+
+
+def _warn_ps(report: ProductSystemCreationReport, message: str) -> None:
+    report.warnings.append(message)
+    print(message)
+
+
+def _error_ps(report: ProductSystemCreationReport, message: str) -> None:
+    report.errors.append(message)
+    print(message)
+
+
+def _warn(report: ProcessImportReport, message: str) -> None:
+    report.warnings.append(message)
+    print(message)
+
+
+def _error(report: ProcessImportReport, message: str) -> None:
+    report.errors.append(message)
+    print(message)
 
 
 def _normalize_category_path(value):
@@ -171,10 +234,8 @@ def _sync_output_flow_definition(client, flow, flow_name, amount_per_lu, output_
 
     unit_norm = str(output_unit or "").strip().lower()
     secondary_prop = mass_prop
-    unit_label = "kg"
     if unit_norm == "tkm" and transport_prop:
         secondary_prop = transport_prop
-        unit_label = "tkm"
     elif unit_norm == "tkm" and not transport_prop:
         print("  Warning: Flow property for 'tkm' not found. Falling back to 'Mass'.")
 
@@ -239,15 +300,13 @@ def _find_or_create_output_flow(client, flow_name, amount_per_lu, output_unit, c
     flow = o.Flow()
     flow.name = flow_name
     flow.flow_type = o.FlowType.PRODUCT_FLOW
-    flow.category = desired_category   # assign the same category as the process
+    flow.category = desired_category
 
-    # Factor for number reference
-    factor_number = o.FlowPropertyFactor()   # <-- fixed: was missing
+    factor_number = o.FlowPropertyFactor()
     factor_number.flow_property = number_prop
     factor_number.conversion_factor = 1.0
     factor_number.is_ref_flow_property = True
 
-    # Secondary factor for conversion from LU to output unit (kg or tkm)
     factor_secondary = o.FlowPropertyFactor()
     factor_secondary.flow_property = secondary_prop
     factor_secondary.conversion_factor = amount_per_lu
@@ -255,10 +314,8 @@ def _find_or_create_output_flow(client, flow_name, amount_per_lu, output_unit, c
 
     flow.flow_properties = [factor_number, factor_secondary]
 
-    # Save the flow
     client.put(flow)
 
-    # Optionally, verify it was created and return the full flow object.
     created_ref = client.find(o.Flow, name=flow_name)
     if not created_ref:
         raise ValueError(f"Flow '{flow_name}' could not be created")
@@ -268,9 +325,24 @@ def _find_or_create_output_flow(client, flow_name, amount_per_lu, output_unit, c
     return created_flow, True
 
 
+def _build_process_provider_rows(process_name: str, process_uuid: str, output_flow_references: list[str]):
+    rows = []
+    for flow_ref in output_flow_references:
+        flow_value = str(flow_ref or "").strip()
+        if flow_value == "" or process_uuid == "":
+            continue
+        rows.append(
+            {
+                "Ecoinvent_flow_reference": flow_value,
+                "Ecoinvent_process": process_name,
+                "UUID_provider": process_uuid,
+            }
+        )
+    return rows
+
+
 ################ Creates the process in openLCA with the inputs and outputs ############################
-def build_process_from_inputs(client, process_name, inputs, category_name, output_rows=None):
-    # Reuse process ID when possible, but rebuild from a clean object to avoid stale exchanges.
+def build_process_from_inputs(client, process_name, inputs, category_name, report: ProcessImportReport, output_rows=None):
     existing_process = _get_existing_process_by_name(client, process_name)
     process_exists = existing_process is not None
     process = o.Process()
@@ -283,10 +355,8 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
     process.name = process_name
     process.process_type = o.ProcessType.UNIT_PROCESS
     process.exchanges = []
-    # In this olca_schema version, process.category is a category path string.
     process.category = category_name
 
-    # Build output exchange(s) first: if present we take the UUID, if not we create a new flow
     output_created = False
     created_output_flows = []
     output_flows_for_library = []
@@ -302,17 +372,19 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
         try:
             output_amount = float(output_row.get("Amount", 0))
         except (ValueError, TypeError):
-            print(f"  Invalid output amount '{output_row.get('Amount')}' for '{output_name}', skipping output.")
+            _warn(
+                report,
+                f"  Invalid output amount '{output_row.get('Amount')}' for '{output_name}', skipping output.",
+            )
             continue
 
         if not output_name or output_amount <= 0:
             continue
 
-        # If UUID is present, use the existing flow and add a normal output exchange.
         if uuid:
             flow = client.get(o.Flow, uid=uuid)
             if not flow:
-                print(f"  Output flow UUID {uuid} not found for '{output_name}', skipping output.")
+                _warn(report, f"  Output flow UUID {uuid} not found for '{output_name}', skipping output.")
                 continue
 
             try:
@@ -325,7 +397,7 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
                     flow_category_path,
                 )
             except Exception as e:
-                print(f"  Warning: Could not synchronize output flow '{output_name}' ({uuid}): {e}")
+                _warn(report, f"  Warning: Could not synchronize output flow '{output_name}' ({uuid}): {e}")
 
             out_ex = o.Exchange()
             out_ex.flow = flow
@@ -346,7 +418,6 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
                 output_flow_references.append(output_name)
             continue
 
-        # If UUID is missing, create/reuse a custom output flow with LU->kg conversion.
         try:
             output_flow, flow_was_created = _find_or_create_output_flow(
                 client,
@@ -378,12 +449,10 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
                 seen_output_refs.add(output_key)
                 output_flow_references.append(output_name)
         except Exception as e:
-            print(f"  Failed to build output flow '{output_name}': {e}")
+            _error(report, f"  Failed to build output flow '{output_name}': {e}")
 
-    ######## Build input exchanges: each row with valid UUID and amount creates one input exchange.
     input_count = 0
     for row in inputs:
-        # UUID is required to resolve each input flow from openLCA.
         uuid = row.get("UUID", "").strip()
         provider_uuid = row.get("UUID_provider", "").strip()
 
@@ -394,18 +463,17 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
             try:
                 amount = float(row.get("Amount", 0))
             except (ValueError, TypeError):
-                print(f"  Invalid amount '{row.get('Amount')}' for '{flow_name}', skipping.")
+                _warn(report, f"  Invalid amount '{row.get('Amount')}' for '{flow_name}', skipping.")
                 continue
 
             try:
-                flow, _ = _find_or_create_output_flow(client, flow_name, 1.0, flow_category_path)
+                flow, _ = _find_or_create_output_flow(client, flow_name, 1.0, "", flow_category_path)
             except Exception as e:
-                print(f"  Failed to create no-provider input flow '{flow_name}': {e}")
+                _error(report, f"  Failed to create no-provider input flow '{flow_name}': {e}")
                 continue
 
             in_ex = o.Exchange()
             in_ex.flow = flow
-            # openLCA may drop or hide zero-value exchanges; keep a tiny amount for explicit dummy rows.
             in_ex.amount = amount if amount > 0 else 1e-12
             in_ex.is_input = True
             in_ex.default_provider = None
@@ -415,23 +483,24 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
 
         if not uuid:
             continue
+
         flow = client.get(o.Flow, uid=uuid)
         if not flow:
-            print(f"  Flow with UUID {uuid} not found, skipping.")
+            _warn(report, f"  Flow with UUID {uuid} not found, skipping.")
             continue
+
         try:
-            # Amount must be numeric to create a valid exchange.
             amount = float(row.get("Amount", 0))
         except (ValueError, TypeError):
-            print(f"  Invalid amount '{row.get('Amount')}' for UUID {uuid}, skipping.")
+            _warn(report, f"  Invalid amount '{row.get('Amount')}' for UUID {uuid}, skipping.")
             continue
-        # Build one input exchange for each valid CSV row.
+
         in_ex = o.Exchange()
         in_ex.flow = flow
         in_ex.amount = amount
         in_ex.is_input = True
         process.exchanges.append(in_ex)
-        # Assign the provider unless the CSV explicitly marks no provider.
+
         if provider_uuid and provider_uuid != "NO_PROVIDER":
             provider = client.get(o.Process, uid=provider_uuid)
             if provider:
@@ -441,16 +510,18 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
                 provider_ref.ref_type = o.RefType.Process
                 in_ex.default_provider = provider_ref
             else:
-                print(f"    Warning: Provider UUID {provider_uuid} not found")
+                _warn(report, f"    Warning: Provider UUID {provider_uuid} not found")
         else:
             in_ex.default_provider = None
 
         input_count += 1
 
-    # Skip process creation when no valid exchanges were built.
+    report.inputs_built = input_count
+
     if input_count == 0 and not output_created:
-        print("  No valid inputs and no valid output found, skipping process creation.")
-        return None
+        report.skipped = True
+        _warn(report, "  No valid inputs and no valid output found, skipping process creation.")
+        return report
 
     if process.id:
         print("  Existing process will be overwritten in openLCA.")
@@ -461,37 +532,127 @@ def build_process_from_inputs(client, process_name, inputs, category_name, outpu
         client.put(process)
         print(f"  Process '{process_name}' saved with {input_count} inputs.")
     except Exception as e:
-        print(f"  Failed to save process: {e}")
-        return
+        report.skipped = True
+        _error(report, f"  Failed to save process: {e}")
+        return report
 
-    # Quick read-back check to confirm persistence in openLCA.
     fetched = client.get(o.Process, name=process_name)
     if fetched:
+        report.process_uuid = str(getattr(fetched, "id", "") or "")
         print(f"  Verified: process '{fetched.name}' (ID: {fetched.id})")
     else:
-        print(f"  Warning: process '{process_name}' not found after saving.")
+        report.process_uuid = str(getattr(process, "id", "") or "")
+        _warn(report, f"  Warning: process '{process_name}' not found after saving.")
 
-    return {
-        "process_name": process_name,
-        "process_uuid": process.id,
-        "process_created": not process_exists,
-        "created_output_flows": created_output_flows,
-        "output_flows_for_library": output_flows_for_library,
-        "output_flow_references": output_flow_references,
-    }
+    report.process_created = not process_exists
+    report.created_output_flows = created_output_flows
+    report.output_flows_for_library = output_flows_for_library
+    report.process_provider_rows = _build_process_provider_rows(
+        process_name=process_name,
+        process_uuid=report.process_uuid,
+        output_flow_references=output_flow_references,
+    )
+    return report
 
 
 ########## PROCESS CREATION FUNCTION END ############################
 def process_csv(client, csv_path, category_name):
-    # Read inputs and outputs from the CSV, if there are no valid inputs or outputs, skip the process creation.
+    """Import one *_ipe CSV file into openLCA and return structured report."""
+    base = os.path.basename(csv_path)
+    process_name = base.split("_ipe")[0]
+    report = ProcessImportReport(
+        csv_path=csv_path,
+        process_name=process_name,
+        category_name=category_name,
+    )
+
     inputs = read_input_rows(csv_path)
     output_rows = read_output_rows(csv_path)
     if not inputs and not output_rows:
-        print(f"No inputs or outputs found in {csv_path}, skipping.")
-        return None
-    # Extract the process name from the CSV file name, it is the part before _ipe
-    base = os.path.basename(csv_path)
-    process_name = base.split("_ipe")[0]
+        report.skipped = True
+        _warn(report, f"No inputs or outputs found in {csv_path}, skipping.")
+        return report
+
     print(f"\nProcessing {base} -> process '{process_name}' in category '{category_name}'")
-    # Builds the process
-    return build_process_from_inputs(client, process_name, inputs, category_name, output_rows)
+    return build_process_from_inputs(client, process_name, inputs, category_name, report, output_rows)
+
+
+def _provider_linking_for_process(process_name: str) -> o.ProviderLinking:
+    name_key = str(process_name or "").strip().lower()
+    if name_key == "connector_system":
+        return o.ProviderLinking.PREFER_DEFAULTS
+    return o.ProviderLinking.ONLY_DEFAULTS
+
+
+def create_or_update_product_system(client, process_name: str) -> ProductSystemCreationReport:
+    """Create or replace one product system from an existing process name."""
+    report = ProductSystemCreationReport(
+        process_name=process_name,
+        product_system_name=process_name,
+    )
+
+    process_ref = client.find(o.Process, name=process_name)
+    if not process_ref:
+        report.skipped = True
+        _warn_ps(report, f"  Process '{process_name}' not found, product system skipped.")
+        return report
+
+    existing_ps_ref = client.find(o.ProductSystem, name=process_name)
+    if existing_ps_ref:
+        try:
+            client.delete(existing_ps_ref)
+            report.updated = True
+            print(f"  Existing product system '{process_name}' deleted for rebuild.")
+        except Exception as exc:
+            report.skipped = True
+            _error_ps(report, f"  Failed to delete existing product system '{process_name}': {exc}")
+            return report
+
+    config = o.LinkingConfig(
+        prefer_unit_processes=True,
+        provider_linking=_provider_linking_for_process(process_name),
+    )
+
+    try:
+        system_ref = client.create_product_system(process_ref, config)
+    except Exception as exc:
+        report.skipped = True
+        _error_ps(report, f"  Failed to create product system '{process_name}': {exc}")
+        return report
+
+    if not system_ref:
+        report.skipped = True
+        _error_ps(report, f"  Product system '{process_name}' could not be created.")
+        return report
+
+    report.product_system_uuid = str(getattr(system_ref, "id", "") or "")
+    if not report.updated:
+        report.created = True
+
+    linking_mode = (
+        "PREFER_DEFAULTS"
+        if _provider_linking_for_process(process_name) == o.ProviderLinking.PREFER_DEFAULTS
+        else "ONLY_DEFAULTS"
+    )
+    print(
+        f"  Product system '{process_name}' ready "
+        f"(ID: {report.product_system_uuid}, provider_linking={linking_mode})."
+    )
+    return report
+
+
+def create_product_systems_for_processes(client, process_names: list[str]) -> list[ProductSystemCreationReport]:
+    """Create or update product systems for the given process names."""
+    unique_names = []
+    seen = set()
+    for name in process_names:
+        key = str(name or "").strip().lower()
+        if key == "" or key in seen:
+            continue
+        seen.add(key)
+        unique_names.append(str(name).strip())
+
+    reports = []
+    for process_name in unique_names:
+        reports.append(create_or_update_product_system(client, process_name))
+    return reports
