@@ -1,18 +1,16 @@
-"""Library synchronization helpers for UUID and provider mappings.
+"""Library synchronization helpers for UUID/provider mapping.
 
-This module centralizes everything related to UUID and UUID_provider filling,
-plus created-object library upserts. It intentionally contains no openLCA
-object creation logic.
+This module centralizes:
+- UUID and UUID_provider filling
+- created-object library upserts
 """
 
 from __future__ import annotations
 
 import csv
-import subprocess
-import sys
+import os
 from dataclasses import dataclass
 from pathlib import Path
-
 
 @dataclass
 class CreatedLibrariesUpdateStats:
@@ -28,28 +26,409 @@ def _normalize_key(value: str) -> str:
     return "".join(str(value or "").lower().split())
 
 
-def _run_fill_command(cmd: list[str], dry_run: bool, dry_run_label: str, run_label: str) -> bool:
-    if dry_run:
-        dry_cmd = list(cmd)
-        dry_cmd.append("--dry-run")
-        print(f"  [DRY-RUN] Would run {dry_run_label}: {' '.join(dry_cmd)}")
-        return True
+def _normalize_fill_key(value: str) -> str:
+    text = str(value or "").replace('"', "").replace("'", "")
+    return "".join(text.split()).lower()
 
-    print(f"  Running {run_label}...")
-    subprocess.run(cmd, check=True)
-    print(f"  {run_label.capitalize()} completed.")
-    return True
+
+def _iter_target_files(root_dir: Path, suffix: str = "_ipe_flows_from_parameters.csv"):
+    for dirpath, _, filenames in os.walk(root_dir):
+        for name in filenames:
+            if name.endswith(suffix):
+                yield Path(dirpath) / name
+
+
+def _read_csv_rows(path: Path):
+    with open(path, newline="", encoding="utf-8-sig") as f:
+        reader = csv.DictReader(f)
+        fieldnames = [name for name in list(reader.fieldnames or []) if name]
+        rows = list(reader)
+    return fieldnames, rows
+
+
+def _build_mapping(rows: list[dict[str, str]], key_candidates: list[str], value_col: str, mapping_name: str):
+    key_col = None
+    for candidate in key_candidates:
+        if candidate in rows[0] if rows else []:
+            key_col = candidate
+            break
+
+    if key_col is None and rows:
+        first_keys = set(rows[0].keys())
+        for candidate in key_candidates:
+            if candidate in first_keys:
+                key_col = candidate
+                break
+
+    if key_col is None:
+        raise ValueError(
+            f"{mapping_name} library missing key column. Expected one of: {', '.join(key_candidates)}"
+        )
+
+    mapping = {}
+    conflicts = []
+    for idx, row in enumerate(rows, start=2):
+        key = _normalize_fill_key(row.get(key_col, ""))
+        value = str(row.get(value_col, "") or "").strip()
+        if key == "" or value == "":
+            continue
+
+        previous = mapping.get(key)
+        if previous is None:
+            mapping[key] = value
+        elif previous != value:
+            conflicts.append((idx, row.get(key_col, ""), previous, value))
+
+    if conflicts:
+        preview = "; ".join(
+            [
+                f"row {idx} key '{raw}' -> '{old}' vs '{new}'"
+                for idx, raw, old, new in conflicts[:10]
+            ]
+        )
+        raise ValueError(f"{mapping_name} library has ambiguous mappings: {preview}")
+
+    return mapping
+
+
+def _load_uuid_map(path: Path):
+    _, rows = _read_csv_rows(path)
+    if not rows:
+        return {}
+    return _build_mapping(
+        rows,
+        key_candidates=["Ecoinvent_flow", "Flow"],
+        value_col="UUID",
+        mapping_name="UUID",
+    )
+
+
+def _load_provider_map(path: Path):
+    _, rows = _read_csv_rows(path)
+    if not rows:
+        return {}
+    return _build_mapping(
+        rows,
+        key_candidates=["Ecoinvent_flow_reference", "Ecoinvent_flow", "Flow"],
+        value_col="UUID_provider",
+        mapping_name="UUID_provider",
+    )
+
+
+def _collect_missing_provider_flows(targets: list[Path], provider_map: dict[str, str]):
+    missing = []
+    seen = set()
+    for target in targets:
+        if not target.exists():
+            continue
+        fieldnames, rows = _read_csv_rows(target)
+        if "Flow" not in fieldnames:
+            continue
+
+        for row in rows:
+            direction = str(row.get("Direction", "") or "").strip().lower()
+            if direction == "output":
+                continue
+
+            flow = str(row.get("Flow", "") or "").strip()
+            if flow == "":
+                continue
+
+            key = _normalize_fill_key(flow)
+            if provider_map.get(key, "") != "":
+                continue
+
+            if key not in seen:
+                seen.add(key)
+                missing.append(flow)
+    return missing
+
+
+def _preferred_process_score(name_lower: str, flow_lower: str) -> int:
+    exact_market = f"market for {flow_lower} | {flow_lower} | apos, u"
+    exact_pipe = f"| {flow_lower} | apos, u"
+    if exact_market in name_lower:
+        return 0
+    if name_lower.startswith("market for ") and exact_pipe in name_lower:
+        return 1
+    if exact_pipe in name_lower:
+        return 2
+    if flow_lower in name_lower:
+        return 3
+    return 99
+
+
+def _resolve_missing_providers_from_openlca(flows: list[str]):
+    if not flows:
+        return []
+
+    try:
+        import olca_ipc as ipc
+        import olca_schema as o
+    except Exception as exc:
+        print(f"Warning: openLCA packages not available for provider auto-sync: {exc}")
+        return []
+
+    try:
+        client = ipc.Client(8080)
+        descriptors = list(client.get_descriptors(o.Process))
+    except Exception as exc:
+        print(f"Warning: could not connect to openLCA IPC for provider auto-sync: {exc}")
+        return []
+
+    resolved = []
+    for flow in flows:
+        flow_lower = flow.lower().strip()
+        ranked = []
+        for d in descriptors:
+            name = str(getattr(d, "name", "") or "")
+            name_lower = name.lower()
+            score = _preferred_process_score(name_lower, flow_lower)
+            if score < 99:
+                ranked.append((score, name, d.id))
+
+        if not ranked:
+            print(f"Warning: no provider candidate found in openLCA for '{flow}'")
+            continue
+
+        ranked.sort(key=lambda t: (t[0], t[1]))
+        _, process_name, process_uuid = ranked[0]
+        print(f"Auto-mapped provider for '{flow}': {process_name} -> {process_uuid}")
+        resolved.append(
+            {
+                "Ecoinvent_flow_reference": flow,
+                "Ecoinvent_process": process_name,
+                "UUID_provider": process_uuid,
+            }
+        )
+
+    return resolved
+
+
+def _append_provider_mappings(provider_library_path: Path, new_rows: list[dict[str, str]], dry_run: bool = False):
+    if not new_rows:
+        return 0
+
+    fieldnames, existing_rows = _read_csv_rows(provider_library_path)
+    if not fieldnames:
+        fieldnames = ["Ecoinvent_flow_reference", "Ecoinvent_process", "UUID_provider"]
+
+    if "Ecoinvent_flow_reference" not in fieldnames:
+        fieldnames.append("Ecoinvent_flow_reference")
+    if "Ecoinvent_process" not in fieldnames:
+        fieldnames.append("Ecoinvent_process")
+    if "UUID_provider" not in fieldnames:
+        fieldnames.append("UUID_provider")
+
+    existing_keys = {
+        _normalize_fill_key(r.get("Ecoinvent_flow_reference", ""))
+        for r in existing_rows
+        if str(r.get("UUID_provider", "") or "").strip() != ""
+    }
+
+    appended = 0
+    for row in new_rows:
+        key = _normalize_fill_key(row.get("Ecoinvent_flow_reference", ""))
+        if key == "" or key in existing_keys:
+            continue
+        existing_rows.append(row)
+        existing_keys.add(key)
+        appended += 1
+
+    if appended > 0 and not dry_run:
+        with open(provider_library_path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
+            writer.writeheader()
+            writer.writerows(existing_rows)
+
+    return appended
+
+
+def _fill_single_file(
+    path: Path,
+    uuid_map: dict[str, str],
+    provider_map: dict[str, str],
+    overwrite_uuid: bool = False,
+    overwrite_provider: bool = False,
+    dry_run: bool = False,
+):
+    fieldnames, rows = _read_csv_rows(path)
+    if not fieldnames:
+        return {
+            "file": str(path),
+            "updated": False,
+            "rows": 0,
+            "uuid": 0,
+            "provider": 0,
+            "missing": 0,
+            "missing_provider": 0,
+        }
+
+    if "Flow" not in fieldnames:
+        print(f"Warning: {path} has no 'Flow' column. Skipping.")
+        return {
+            "file": str(path),
+            "updated": False,
+            "rows": len(rows),
+            "uuid": 0,
+            "provider": 0,
+            "missing": 0,
+            "missing_provider": 0,
+        }
+
+    out_fieldnames = list(fieldnames)
+    if "UUID" not in out_fieldnames:
+        out_fieldnames.append("UUID")
+    if "UUID_provider" not in out_fieldnames:
+        out_fieldnames.append("UUID_provider")
+
+    uuid_filled = 0
+    provider_filled = 0
+    missing = 0
+    missing_provider = 0
+    touched = False
+
+    for row in rows:
+        direction = str(row.get("Direction", "") or "").strip().lower()
+        if direction == "output":
+            continue
+
+        key = _normalize_fill_key(row.get("Flow", ""))
+        if key == "":
+            continue
+
+        current_uuid = str(row.get("UUID", "") or "").strip()
+        mapped_uuid = uuid_map.get(key, "")
+        mapped_provider = provider_map.get(key, "")
+
+        if mapped_uuid == "" and current_uuid == "":
+            missing += 1
+            print(f"Warning: no UUID mapping found for '{row.get('Flow', '')}' in {path.name}")
+
+        if mapped_uuid and (overwrite_uuid or current_uuid == ""):
+            if current_uuid != mapped_uuid:
+                row["UUID"] = mapped_uuid
+                uuid_filled += 1
+                touched = True
+
+        current_provider = str(row.get("UUID_provider", "") or "").strip()
+        if mapped_provider and (overwrite_provider or current_provider == ""):
+            if current_provider != mapped_provider:
+                row["UUID_provider"] = mapped_provider
+                provider_filled += 1
+                touched = True
+        elif current_provider == "" and mapped_provider == "":
+            missing_provider += 1
+            print(f"Warning: no UUID_provider mapping found for '{row.get('Flow', '')}' in {path.name}")
+
+    if touched and not dry_run:
+        with open(path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=out_fieldnames, extrasaction="ignore")
+            writer.writeheader()
+            writer.writerows(rows)
+
+    return {
+        "file": str(path),
+        "updated": touched,
+        "rows": len(rows),
+        "uuid": uuid_filled,
+        "provider": provider_filled,
+        "missing": missing,
+        "missing_provider": missing_provider,
+    }
+
+
+def run_fill_ipe_columns_from_library(
+    *,
+    library_path: Path,
+    provider_library_path: Path,
+    root_dir: Path | None = None,
+    target_file: Path | None = None,
+    overwrite_uuid: bool = False,
+    overwrite_provider: bool = False,
+    sync_provider_library: bool = True,
+    dry_run: bool = False,
+) -> dict[str, int]:
+    """Fill UUID and UUID_provider fields in one file or all IPE files under root."""
+    uuid_library = Path(library_path).resolve()
+    provider_library = Path(provider_library_path).resolve()
+    if not uuid_library.exists():
+        raise FileNotFoundError(f"UUID library not found: {uuid_library}")
+    if not provider_library.exists():
+        raise FileNotFoundError(f"Provider library not found: {provider_library}")
+
+    uuid_map = _load_uuid_map(uuid_library)
+    provider_map = _load_provider_map(provider_library)
+
+    if target_file is not None:
+        targets = [Path(target_file).resolve()]
+    else:
+        if root_dir is None:
+            raise ValueError("Either target_file or root_dir must be provided")
+        targets = list(_iter_target_files(Path(root_dir).resolve()))
+
+    if sync_provider_library:
+        missing_flows = _collect_missing_provider_flows(targets, provider_map)
+        if missing_flows:
+            discovered = _resolve_missing_providers_from_openlca(missing_flows)
+            added = _append_provider_mappings(provider_library, discovered, dry_run=dry_run)
+            if added > 0:
+                print(f"Auto-sync: added {added} provider mapping(s) to {provider_library.name}")
+                provider_map = _load_provider_map(provider_library)
+            elif discovered:
+                print("Auto-sync: provider candidates found but no new mappings were added.")
+
+    processed = 0
+    changed = 0
+    total_uuid = 0
+    total_provider = 0
+    total_missing = 0
+    total_missing_provider = 0
+
+    for target in targets:
+        if not target.exists():
+            print(f"Warning: target file does not exist: {target}")
+            continue
+        result = _fill_single_file(
+            target,
+            uuid_map,
+            provider_map,
+            overwrite_uuid=overwrite_uuid,
+            overwrite_provider=overwrite_provider,
+            dry_run=dry_run,
+        )
+        processed += 1
+        changed += 1 if result["updated"] else 0
+        total_uuid += result["uuid"]
+        total_provider += result["provider"]
+        total_missing += result["missing"]
+        total_missing_provider += result["missing_provider"]
+        status = "updated" if result["updated"] else "unchanged"
+        print(
+            f"{status}: {result['file']} | uuid={result['uuid']} | provider={result['provider']} "
+            f"| missing_uuid_map={result['missing']} | missing_provider_map={result['missing_provider']}"
+        )
+
+    print(
+        f"\nProcessed {processed} file(s). Changed: {changed}. "
+        f"UUID filled: {total_uuid}. UUID_provider filled: {total_provider}. "
+        f"Unmapped input rows: {total_missing}. Unmapped provider rows: {total_missing_provider}."
+    )
+    return {
+        "processed": processed,
+        "changed": changed,
+        "uuid_filled": total_uuid,
+        "provider_filled": total_provider,
+        "missing_uuid": total_missing,
+        "missing_provider": total_missing_provider,
+    }
 
 
 def run_uuid_fill_if_available(base_dir: Path, system_folder: Path, dry_run: bool = False) -> bool:
     """Run first UUID enrichment pass using global libraries."""
-    fill_script = base_dir / "fill_ipe_columns_from_library.py"
     uuid_library = base_dir / "component_library_ecoinvent_uuid_map.csv"
     provider_library = base_dir / "component_library_ecoinvent_uuid_provider_map.csv"
 
-    if not fill_script.exists():
-        print(f"  [Warning] UUID fill script not found: {fill_script}")
-        return False
     if not uuid_library.exists() or not provider_library.exists():
         print(
             "  [Warning] Global UUID libraries not found. "
@@ -58,33 +437,22 @@ def run_uuid_fill_if_available(base_dir: Path, system_folder: Path, dry_run: boo
         )
         return False
 
-    cmd = [
-        sys.executable,
-        str(fill_script),
-        "--library",
-        str(uuid_library),
-        "--provider-library",
-        str(provider_library),
-        "--root",
-        str(system_folder),
-    ]
-    return _run_fill_command(
-        cmd,
+    print(f"  Running UUID fill in {system_folder.name}...")
+    run_fill_ipe_columns_from_library(
+        library_path=uuid_library,
+        provider_library_path=provider_library,
+        root_dir=system_folder,
         dry_run=dry_run,
-        dry_run_label="UUID fill",
-        run_label=f"UUID fill in {system_folder.name}",
     )
+    print(f"  UUID fill in {system_folder.name} completed.")
+    return True
 
 
 def run_created_uuid_fill_if_available(base_dir: Path, system_folder: Path, dry_run: bool = False) -> bool:
     """Run second UUID enrichment pass using created-object libraries."""
-    fill_script = base_dir / "fill_ipe_columns_from_library.py"
     uuid_library = base_dir / "created_flows_uuid_map.csv"
     provider_library = base_dir / "created_process_uuid_map.csv"
 
-    if not fill_script.exists():
-        print(f"  [Warning] UUID fill script not found: {fill_script}")
-        return False
     if not uuid_library.exists() or not provider_library.exists():
         print(
             "  [Warning] Created UUID libraries not found. "
@@ -93,37 +461,26 @@ def run_created_uuid_fill_if_available(base_dir: Path, system_folder: Path, dry_
         )
         return False
 
-    cmd = [
-        sys.executable,
-        str(fill_script),
-        "--library",
-        str(uuid_library),
-        "--provider-library",
-        str(provider_library),
-        "--root",
-        str(system_folder),
-        "--overwrite-uuid",
-        "--no-sync-provider-library",
-        "--overwrite-provider",
-    ]
-    return _run_fill_command(
-        cmd,
+    print(f"  Running second UUID fill in {system_folder.name}...")
+    run_fill_ipe_columns_from_library(
+        library_path=uuid_library,
+        provider_library_path=provider_library,
+        root_dir=system_folder,
+        overwrite_uuid=True,
+        overwrite_provider=True,
+        sync_provider_library=False,
         dry_run=dry_run,
-        dry_run_label="created UUID fill",
-        run_label=f"second UUID fill in {system_folder.name}",
     )
+    print(f"  Second UUID fill in {system_folder.name} completed.")
+    return True
 
 
 def run_final_system_uuid_fill_if_available(base_dir: Path, system_folder: Path, dry_run: bool = False) -> bool:
     """Run third UUID fill pass focused on LCI_SYSTEM aggregate file."""
-    fill_script = base_dir / "fill_ipe_columns_from_library.py"
     uuid_library = base_dir / "created_flows_uuid_map.csv"
     provider_library = base_dir / "created_process_uuid_map.csv"
     target_file = system_folder / "system_ipe_flows_from_parameters.csv"
 
-    if not fill_script.exists():
-        print(f"  [Warning] UUID fill script not found: {fill_script}")
-        return False
     if not target_file.exists():
         print(f"  [Warning] System target file not found: {target_file}")
         return False
@@ -134,37 +491,26 @@ def run_final_system_uuid_fill_if_available(base_dir: Path, system_folder: Path,
         )
         return False
 
-    cmd = [
-        sys.executable,
-        str(fill_script),
-        "--library",
-        str(uuid_library),
-        "--provider-library",
-        str(provider_library),
-        "--target-file",
-        str(target_file),
-        "--overwrite-uuid",
-        "--overwrite-provider",
-        "--no-sync-provider-library",
-    ]
-    return _run_fill_command(
-        cmd,
+    print(f"  Running third UUID fill for system file in {system_folder.name}...")
+    run_fill_ipe_columns_from_library(
+        library_path=uuid_library,
+        provider_library_path=provider_library,
+        target_file=target_file,
+        overwrite_uuid=True,
+        overwrite_provider=True,
+        sync_provider_library=False,
         dry_run=dry_run,
-        dry_run_label="final system fill",
-        run_label=f"third UUID fill for system file in {system_folder.name}",
     )
+    print(f"  Third UUID fill for system file in {system_folder.name} completed.")
+    return True
 
 
 def run_final_transport_uuid_fill_if_available(base_dir: Path, transport_folder: Path, dry_run: bool = False) -> bool:
     """Run third UUID fill pass focused on LCI_TRANSPORT aggregate file."""
-    fill_script = base_dir / "fill_ipe_columns_from_library.py"
     uuid_library = base_dir / "created_flows_uuid_map.csv"
     provider_library = base_dir / "created_process_uuid_map.csv"
     target_file = transport_folder / "transport_ipe_flows_from_parameters.csv"
 
-    if not fill_script.exists():
-        print(f"  [Warning] UUID fill script not found: {fill_script}")
-        return False
     if not target_file.exists():
         print(f"  [Warning] Transport target file not found: {target_file}")
         return False
@@ -175,25 +521,18 @@ def run_final_transport_uuid_fill_if_available(base_dir: Path, transport_folder:
         )
         return False
 
-    cmd = [
-        sys.executable,
-        str(fill_script),
-        "--library",
-        str(uuid_library),
-        "--provider-library",
-        str(provider_library),
-        "--target-file",
-        str(target_file),
-        "--overwrite-uuid",
-        "--overwrite-provider",
-        "--no-sync-provider-library",
-    ]
-    return _run_fill_command(
-        cmd,
+    print(f"  Running third UUID fill for transport file in {transport_folder.name}...")
+    run_fill_ipe_columns_from_library(
+        library_path=uuid_library,
+        provider_library_path=provider_library,
+        target_file=target_file,
+        overwrite_uuid=True,
+        overwrite_provider=True,
+        sync_provider_library=False,
         dry_run=dry_run,
-        dry_run_label="final transport fill",
-        run_label=f"third UUID fill for transport file in {transport_folder.name}",
     )
+    print(f"  Third UUID fill for transport file in {transport_folder.name} completed.")
+    return True
 
 
 def upsert_created_flows_library(path: Path, rows: list[dict[str, str]]):

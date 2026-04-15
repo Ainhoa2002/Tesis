@@ -1,6 +1,5 @@
 import argparse
 import csv
-import subprocess
 import sys
 from pathlib import Path
 
@@ -140,19 +139,16 @@ def write_csv(path, fieldnames, rows):
 
 
 def run_fill(ipe_path):
-    fill_script = Path(__file__).resolve().parent.parent / "fill_ipe_columns_from_library.py"
-    if not fill_script.exists():
-        print(f"[Warning] Fill helper not found: {fill_script}")
-        return
+    lci_root = Path(__file__).resolve().parent.parent
+    if str(lci_root) not in sys.path:
+        sys.path.insert(0, str(lci_root))
 
-    subprocess.run(
-        [
-            sys.executable,
-            str(fill_script),
-            "--target-file",
-            str(ipe_path),
-        ],
-        check=True,
+    from library_sync import run_fill_ipe_columns_from_library
+
+    run_fill_ipe_columns_from_library(
+        library_path=lci_root / "component_library_ecoinvent_uuid_map.csv",
+        provider_library_path=lci_root / "component_library_ecoinvent_uuid_provider_map.csv",
+        target_file=Path(ipe_path),
     )
 
 

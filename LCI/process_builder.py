@@ -46,16 +46,6 @@ class ProductSystemCreationReport:
     errors: list[str] = field(default_factory=list)
 
 
-def _warn_ps(report: ProductSystemCreationReport, message: str) -> None:
-    report.warnings.append(message)
-    print(message)
-
-
-def _error_ps(report: ProductSystemCreationReport, message: str) -> None:
-    report.errors.append(message)
-    print(message)
-
-
 def _warn(report: ProcessImportReport, message: str) -> None:
     report.warnings.append(message)
     print(message)
@@ -575,84 +565,3 @@ def process_csv(client, csv_path, category_name):
 
     print(f"\nProcessing {base} -> process '{process_name}' in category '{category_name}'")
     return build_process_from_inputs(client, process_name, inputs, category_name, report, output_rows)
-
-
-def _provider_linking_for_process(process_name: str) -> o.ProviderLinking:
-    name_key = str(process_name or "").strip().lower()
-    if name_key == "connector_system":
-        return o.ProviderLinking.PREFER_DEFAULTS
-    return o.ProviderLinking.ONLY_DEFAULTS
-
-
-def create_or_update_product_system(client, process_name: str) -> ProductSystemCreationReport:
-    """Create or replace one product system from an existing process name."""
-    report = ProductSystemCreationReport(
-        process_name=process_name,
-        product_system_name=process_name,
-    )
-
-    process_ref = client.find(o.Process, name=process_name)
-    if not process_ref:
-        report.skipped = True
-        _warn_ps(report, f"  Process '{process_name}' not found, product system skipped.")
-        return report
-
-    existing_ps_ref = client.find(o.ProductSystem, name=process_name)
-    if existing_ps_ref:
-        try:
-            client.delete(existing_ps_ref)
-            report.updated = True
-            print(f"  Existing product system '{process_name}' deleted for rebuild.")
-        except Exception as exc:
-            report.skipped = True
-            _error_ps(report, f"  Failed to delete existing product system '{process_name}': {exc}")
-            return report
-
-    config = o.LinkingConfig(
-        prefer_unit_processes=True,
-        provider_linking=_provider_linking_for_process(process_name),
-    )
-
-    try:
-        system_ref = client.create_product_system(process_ref, config)
-    except Exception as exc:
-        report.skipped = True
-        _error_ps(report, f"  Failed to create product system '{process_name}': {exc}")
-        return report
-
-    if not system_ref:
-        report.skipped = True
-        _error_ps(report, f"  Product system '{process_name}' could not be created.")
-        return report
-
-    report.product_system_uuid = str(getattr(system_ref, "id", "") or "")
-    if not report.updated:
-        report.created = True
-
-    linking_mode = (
-        "PREFER_DEFAULTS"
-        if _provider_linking_for_process(process_name) == o.ProviderLinking.PREFER_DEFAULTS
-        else "ONLY_DEFAULTS"
-    )
-    print(
-        f"  Product system '{process_name}' ready "
-        f"(ID: {report.product_system_uuid}, provider_linking={linking_mode})."
-    )
-    return report
-
-
-def create_product_systems_for_processes(client, process_names: list[str]) -> list[ProductSystemCreationReport]:
-    """Create or update product systems for the given process names."""
-    unique_names = []
-    seen = set()
-    for name in process_names:
-        key = str(name or "").strip().lower()
-        if key == "" or key in seen:
-            continue
-        seen.add(key)
-        unique_names.append(str(name).strip())
-
-    reports = []
-    for process_name in unique_names:
-        reports.append(create_or_update_product_system(client, process_name))
-    return reports

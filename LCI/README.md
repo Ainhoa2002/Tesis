@@ -136,7 +136,7 @@ Output rows:
 
 ## UUID Fill Script Behavior
 
-Shared script: [fill_ipe_columns_from_library.py](LCI/fill_ipe_columns_from_library.py)
+Shared CLI: [library_sync_cli.py](LCI/library_sync_cli.py)
 
 Behavior summary:
 
@@ -147,13 +147,13 @@ Behavior summary:
 Typical command:
 
 ```powershell
-.\.venv\Scripts\python.exe .\LCI\fill_ipe_columns_from_library.py
+.\.venv\Scripts\python.exe .\LCI\library_sync_cli.py
 ```
 
 Single target file:
 
 ```powershell
-.\.venv\Scripts\python.exe .\LCI\fill_ipe_columns_from_library.py --target-file .\LCI\LCI_CONNECTION\connector_system_ipe_flows_from_parameters.csv
+.\.venv\Scripts\python.exe .\LCI\library_sync_cli.py --target-file .\LCI\LCI_CONNECTION\connector_system_ipe_flows_from_parameters.csv
 ```
 
 Disable provider auto-sync:
@@ -171,8 +171,18 @@ Overwrite provider and UUID values:
 Third-round single target example (system aggregate file):
 
 ```powershell
-.\.venv\Scripts\python.exe .\LCI\fill_ipe_columns_from_library.py --library .\LCI\created_flows_uuid_map.csv --provider-library .\LCI\created_process_uuid_map.csv --target-file .\LCI\LCI_SYSTEM\system_ipe_flows_from_parameters.csv --overwrite-uuid --overwrite-provider --no-sync-provider-library
+.\.venv\Scripts\python.exe .\LCI\library_sync_cli.py --library .\LCI\created_flows_uuid_map.csv --provider-library .\LCI\created_process_uuid_map.csv --target-file .\LCI\LCI_SYSTEM\system_ipe_flows_from_parameters.csv --overwrite-uuid --overwrite-provider --no-sync-provider-library
 ```
+
+## Product System Linking Behavior
+
+Product system creation is implemented in [process_builder.py](LCI/process_builder.py).
+
+Provider-linking strategy behavior:
+
+- primary mode: `ONLY_DEFAULTS` for all processes except `connector_system`, which starts with `PREFER_DEFAULTS`
+- automatic fallback if zero links are generated: `PREFER_DEFAULTS`, then `IGNORE_DEFAULTS`
+- this avoids empty/unlinked product systems while still prioritizing explicit default providers
 
 ## Running the Workflow
 
@@ -285,6 +295,7 @@ Common messages and meaning:
 
 - [LCI/process_builder.py](LCI/process_builder.py)
 - [LCI/csv_reader.py](LCI/csv_reader.py)
-- [LCI/fill_ipe_columns_from_library.py](LCI/fill_ipe_columns_from_library.py)
+- [LCI/library_sync.py](LCI/library_sync.py)
+- [LCI/library_sync_cli.py](LCI/library_sync_cli.py)
 - [LCI/diagnosis.py](LCI/diagnosis.py)
 - [LCI/finder.py](LCI/finder.py)

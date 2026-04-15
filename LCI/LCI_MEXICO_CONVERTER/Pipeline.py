@@ -1183,13 +1183,8 @@ def _clear_subsystem_outputs(results_csv, component_flows_csv, grouped_flows_csv
 def _fill_uuid_for_subsystem_ipe(grouped_flows_csv: Path):
     """Fill UUID columns for one subsystem IPE using global LCI libraries."""
     lci_root = Path(__file__).parent.parent
-    fill_script = lci_root / "fill_ipe_columns_from_library.py"
     uuid_library = lci_root / "component_library_ecoinvent_uuid_map.csv"
     provider_library = lci_root / "component_library_ecoinvent_uuid_provider_map.csv"
-
-    if not fill_script.exists():
-        print(f"[Warning] UUID fill script not found: {fill_script}")
-        return
 
     if not uuid_library.exists() or not provider_library.exists():
         print(
@@ -1198,25 +1193,21 @@ def _fill_uuid_for_subsystem_ipe(grouped_flows_csv: Path):
         )
         return
 
-    subprocess.run(
-        [
-            sys.executable,
-            str(fill_script),
-            "--library",
-            str(uuid_library),
-            "--provider-library",
-            str(provider_library),
-            "--root",
-            str(Path(__file__).parent),
-            "--target-file",
-            str(grouped_flows_csv),
-        ],
-        check=True,
+    if str(lci_root) not in sys.path:
+        sys.path.insert(0, str(lci_root))
+
+    from library_sync import run_fill_ipe_columns_from_library
+
+    run_fill_ipe_columns_from_library(
+        library_path=uuid_library,
+        provider_library_path=provider_library,
+        target_file=grouped_flows_csv,
     )
 
 
 def main():
-    # UUID filling is delegated to fill_ipe_columns_from_library.py after each subsystem file is written.
+    # UUID filling is delegated to library_sync.run_fill_ipe_columns_from_library
+    # after each subsystem file is written.
 
     base = Path(__file__).parent
     requested_selection = sys.argv[1:] if len(sys.argv) > 1 else None

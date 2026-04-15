@@ -16,7 +16,8 @@ The converter workflow transforms subsystem component parameters into:
 Pipeline and helpers:
 
 - [LCI/LCI_MEXICO_CONVERTER/Pipeline.py](LCI/LCI_MEXICO_CONVERTER/Pipeline.py)
-- [LCI/fill_ipe_columns_from_library.py](LCI/fill_ipe_columns_from_library.py)
+- [LCI/library_sync.py](LCI/library_sync.py)
+- [LCI/library_sync_cli.py](LCI/library_sync_cli.py)
 
 Important data files:
 
@@ -139,7 +140,7 @@ Important practical note:
 
 ## UUID Fill Behavior in Converter Pipeline
 
-During converter pipeline execution, each generated subsystem ipe file is enriched through [LCI/fill_ipe_columns_from_library.py](LCI/fill_ipe_columns_from_library.py).
+During converter pipeline execution, each generated subsystem ipe file is enriched through [LCI/library_sync.py](LCI/library_sync.py) using `run_fill_ipe_columns_from_library`.
 
 Default mapping libraries used by converter pipeline:
 

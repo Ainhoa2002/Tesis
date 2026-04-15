@@ -24,7 +24,7 @@ from library_sync import (
     update_created_libraries,
 )
 from process_builder import ProcessImportReport, process_csv
-from process_builder import create_product_systems_for_processes
+from product_system_builder import create_product_systems_for_processes
 from transport_workflow import prepare_transport_unit_processes
 
 BASE_DIR = Path(__file__).resolve().parent

@@ -5,15 +5,11 @@
     "target_system": ""
   },
   "parameters": {
-    "masa_patatas": 0.0
-  }
-}{
-  "version": 1,
-  "execution": {
-    "run_scope": "all",
-    "target_system": ""
-  },
-  "parameters": {
-    "masa_patatas": 0.0
+    "masa_patatas": 0.0,
+    "product_systems_prefer_defaults": [
+      "4Q_output_control_card",
+      "magnet",
+      "connection_cables"
+    ]
   }
 }
