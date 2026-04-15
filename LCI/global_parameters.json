@@ -5,11 +5,66 @@
     "target_system": ""
   },
   "parameters": {
-    "masa_patatas": 0.0,
+    // Process builder
+    // 0 = silent (use parameters only), 1 = interactive (ask user)
+    "product_systems_interactive_mode": 0,
+    // List of process names to build product systems for. If empty, uses all components from module.
     "product_systems_prefer_defaults": [
       "4Q_output_control_card",
       "magnet",
-      "connection_cables"
-    ]
+      "connection_cables",
+      "MEXICO"
+    ],
+    // Provider linking mode for each component: only-defaults, prefer-defaults, ignore-defaults
+    "product_systems_module": {
+      "components": [
+        {
+          "name": "4Q_output_control_card",
+          "provider_linking": "only-defaults"
+        },
+        {
+          "name": "magnet",
+          "provider_linking": "only-defaults"
+        },
+        {
+          "name": "connector_system",
+          "provider_linking": "prefer-defaults"
+        },
+        {
+          "name": "MEXICO",
+          "provider_linking": "only-defaults"
+        }
+      ]
+    },
+
+    // Result extraction
+    "result_extraction": {
+      // 0 = silent (use parameters only), 1 = interactive (ask user)
+      "results_interactive_mode": 0,
+      // Product systems to analyze in result extraction
+      "product_systems_result_analysis": [
+        "4Q_output_control_card",
+        "magnet",
+        "connector_system",
+        "MEXICO"
+      ],
+      // Impact method name in openLCA
+      "lcia_methodology": "EF v3.1",
+      // Optional impact category names to filter output, if it is empty, all categories are included
+      "impact_categories": [
+      ],
+      // Top N contributors for contribution analysis
+      "number_top_contributors": 5,
+      "sankey": {
+        // 0 = no sankey, 1 = sankey for flows, 2 = sankey for impacts
+        "sankey_mode": 1,
+        // Number of top flows to include in the sankey diagram
+        "sankey_top_flows": 10,
+        // Number of top impacts to include in the sankey diagram
+        "sankey_top_impacts": 5,
+        // Maximum depth of the sankey diagram
+        "sankey_max_depth": 3
+      }
+    }
   }
 }

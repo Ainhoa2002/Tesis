@@ -1,0 +1,117 @@
+{
+  "impact_category": "Acidification",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "4Q_output_control_card",
+      "direct_result": 0.0,
+      "total_result": 0.36289965440919275
+    },
+    {
+      "index": 2,
+      "provider": "integrated circuit production, logic type | integrated circuit, logic type | APOS, U",
+      "direct_result": 0.0,
+      "total_result": 0.1962387826820801
+    },
+    {
+      "index": 5,
+      "provider": "electronic component production, active, unspecified | electronic component, active, unspecified | APOS, U",
+      "direct_result": 0.0,
+      "total_result": 0.10432123684913225
+    },
+    {
+      "index": 2795,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | APOS, U",
+      "direct_result": 0.0,
+      "total_result": 0.10974273539026991
+    },
+    {
+      "index": 15853,
+      "provider": "market for gold | gold | APOS, U",
+      "direct_result": 0.0,
+      "total_result": 0.10134677262898041
+    },
+    {
+      "index": 19905,
+      "provider": "market for wafer, fabricated, for integrated circuit | wafer, fabricated, for integrated circuit | APOS, U",
+      "direct_result": 0.0,
+      "total_result": 0.05156848347548342
+    },
+    {
+      "index": 9388,
+      "provider": "market for integrated circuit, logic type | integrated circuit, logic type | APOS, U",
+      "direct_result": 0.0,
+      "total_result": 0.07889073903394352
+    },
+    {
+      "index": 24387,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | APOS, U",
+      "direct_result": 0.0,
+      "total_result": 0.11858065744462531
+    },
+    {
+      "index": 8644,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | APOS, U",
+      "direct_result": 0.0,
+      "total_result": 0.08247616681813144
+    },
+    {
+      "index": 25200,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | APOS, U",
+      "direct_result": 0.0,
+      "total_result": 0.07127628132811213
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 2,
+      "upstream_share": 0.597986900012209
+    },
+    {
+      "node_index": 0,
+      "provider_index": 5,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 2,
+      "provider_index": 2795,
+      "upstream_share": 0.4030357410857173
+    },
+    {
+      "node_index": 2,
+      "provider_index": 15853,
+      "upstream_share": 0.9663213330545102
+    },
+    {
+      "node_index": 2,
+      "provider_index": 19905,
+      "upstream_share": 0.813258436894908
+    },
+    {
+      "node_index": 5,
+      "provider_index": 9388,
+      "upstream_share": 0.9602596367013337
+    },
+    {
+      "node_index": 2795,
+      "provider_index": 24387,
+      "upstream_share": 0.7154318995590893
+    },
+    {
+      "node_index": 9388,
+      "provider_index": 2,
+      "upstream_share": 0.4020130999877912
+    },
+    {
+      "node_index": 24387,
+      "provider_index": 8644,
+      "upstream_share": 0.9338745137709284
+    },
+    {
+      "node_index": 8644,
+      "provider_index": 25200,
+      "upstream_share": 1.0
+    }
+  ]
+}

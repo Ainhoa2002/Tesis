@@ -1,5 +1,6 @@
 import argparse
 import json
+import json5
 from pathlib import Path
 from threading import RLock
 from typing import Any, Dict
@@ -32,7 +33,7 @@ def load_document() -> Dict[str, Any]:
     with _LOCK:
         _ensure_file_exists()
         with open(PARAMETER_FILE, "r", encoding="utf-8") as f:
-            data = json.load(f)
+            data = json5.load(f)
         if not isinstance(data, dict):
             return _default_document()
         data.setdefault("version", 1)

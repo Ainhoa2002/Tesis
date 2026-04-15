@@ -1,0 +1,112 @@
+{
+  "impact_category": "Acidification",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "MEXICO",
+      "direct_result": 0.0,
+      "total_result": 13.020311453151574
+    },
+    {
+      "index": 44,
+      "provider": "4Q_output_power_card",
+      "direct_result": 0.0,
+      "total_result": 9.331122063690596
+    },
+    {
+      "index": 12,
+      "provider": "electronic component production, active, unspecified | electronic component, active, unspecified | APOS, U",
+      "direct_result": 0.0,
+      "total_result": 9.744006829428116
+    },
+    {
+      "index": 9416,
+      "provider": "market for integrated circuit, logic type | integrated circuit, logic type | APOS, U",
+      "direct_result": 0.0,
+      "total_result": 7.1493537065875925
+    },
+    {
+      "index": 13,
+      "provider": "integrated circuit production, logic type | integrated circuit, logic type | APOS, U",
+      "direct_result": 0.0,
+      "total_result": 7.442622114158939
+    },
+    {
+      "index": 2832,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | APOS, U",
+      "direct_result": 0.0,
+      "total_result": 5.145398107708025
+    },
+    {
+      "index": 15874,
+      "provider": "market for gold | gold | APOS, U",
+      "direct_result": 0.0,
+      "total_result": 3.9269606819776666
+    },
+    {
+      "index": 24402,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | APOS, U",
+      "direct_result": 0.0,
+      "total_result": 5.2304184913197185
+    },
+    {
+      "index": 8672,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | APOS, U",
+      "direct_result": 0.0,
+      "total_result": 3.5896088212538744
+    },
+    {
+      "index": 25215,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | APOS, U",
+      "direct_result": 0.0,
+      "total_result": 3.1021563934433156
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 44,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 44,
+      "provider_index": 12,
+      "upstream_share": 0.9478702934290472
+    },
+    {
+      "node_index": 12,
+      "provider_index": 9416,
+      "upstream_share": 0.9897209584746307
+    },
+    {
+      "node_index": 9416,
+      "provider_index": 13,
+      "upstream_share": 0.960593927226788
+    },
+    {
+      "node_index": 13,
+      "provider_index": 2832,
+      "upstream_share": 0.32601793129962464
+    },
+    {
+      "node_index": 13,
+      "provider_index": 15874,
+      "upstream_share": 0.9458364911721377
+    },
+    {
+      "node_index": 2832,
+      "provider_index": 24402,
+      "upstream_share": 0.7604819616541663
+    },
+    {
+      "node_index": 24402,
+      "provider_index": 8672,
+      "upstream_share": 0.946438617846096
+    },
+    {
+      "node_index": 8672,
+      "provider_index": 25215,
+      "upstream_share": 1.0
+    }
+  ]
+}

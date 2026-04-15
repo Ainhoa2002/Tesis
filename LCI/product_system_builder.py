@@ -11,6 +11,8 @@ from parameter_library import get_param, set_param
 
 
 PREFER_DEFAULTS_PARAM = "product_systems_prefer_defaults"
+PRODUCT_SYSTEMS_MODULE_PARAM = "product_systems_module"
+INTERACTIVE_MODE_PARAM = "product_systems_interactive_mode"
 
 
 @dataclass
@@ -55,6 +57,20 @@ def get_prefer_defaults_processes() -> list[str]:
     return _as_name_list(get_param(PREFER_DEFAULTS_PARAM, default=[]))
 
 
+def get_interactive_mode() -> int:
+    """Get interactive mode: 0=silent (use params only), 1=interactive (can ask user)."""
+    value = get_param(INTERACTIVE_MODE_PARAM, default=1)
+    try:
+        return int(value)
+    except (ValueError, TypeError):
+        return 1  # Default to interactive if invalid
+
+
+def set_interactive_mode(mode: int) -> None:
+    """Set interactive mode: 0=silent, 1=interactive."""
+    set_param(INTERACTIVE_MODE_PARAM, int(mode))
+
+
 def set_prefer_defaults_processes(process_names: list[str]) -> None:
     cleaned = []
     seen = set()
@@ -66,6 +82,91 @@ def set_prefer_defaults_processes(process_names: list[str]) -> None:
         seen.add(key)
         cleaned.append(text)
     set_param(PREFER_DEFAULTS_PARAM, cleaned)
+
+
+def _normalize_mode_text(value: str) -> str:
+    text = str(value or "").strip().lower()
+    if text in {"prefer", "prefer-defaults", "prefer_defaults", "p"}:
+        return "prefer-defaults"
+    if text in {"only", "only-defaults", "only_defaults", "o"}:
+        return "only-defaults"
+    if text in {"ignore", "ignore-defaults", "ignore_defaults", "i"}:
+        return "ignore-defaults"
+    return ""
+
+
+def _default_product_systems_module() -> dict:
+    return {
+        "components": []
+    }
+
+
+def get_product_systems_module() -> dict:
+    raw = get_param(PRODUCT_SYSTEMS_MODULE_PARAM, default=_default_product_systems_module())
+    if not isinstance(raw, dict):
+        return _default_product_systems_module()
+
+    components = raw.get("components", [])
+    if not isinstance(components, list):
+        components = []
+
+    normalized_components = []
+    seen = set()
+    for item in components:
+        if not isinstance(item, dict):
+            continue
+        name = str(item.get("name", "") or "").strip()
+        mode = _normalize_mode_text(item.get("provider_linking", ""))
+        key = _normalize_name(name)
+        if key == "" or key in seen:
+            continue
+        seen.add(key)
+        if mode == "":
+            mode = "only-defaults"
+        normalized_components.append({"name": name, "provider_linking": mode})
+
+    return {"components": normalized_components}
+
+
+def set_product_systems_module(components: list[dict[str, str]]) -> None:
+    cleaned = []
+    seen = set()
+    for item in components:
+        name = str(item.get("name", "") or "").strip()
+        mode = _normalize_mode_text(item.get("provider_linking", ""))
+        key = _normalize_name(name)
+        if key == "" or key in seen:
+            continue
+        if mode == "":
+            mode = "only-defaults"
+        seen.add(key)
+        cleaned.append({"name": name, "provider_linking": mode})
+
+    set_param(PRODUCT_SYSTEMS_MODULE_PARAM, {"components": cleaned})
+
+
+def _module_component_mode_map(module_doc: dict) -> dict[str, str]:
+    component_mode_map = {}
+    for item in module_doc.get("components", []):
+        name_key = _normalize_name(item.get("name", ""))
+        mode = _normalize_mode_text(item.get("provider_linking", ""))
+        if name_key == "" or mode == "":
+            continue
+        component_mode_map[name_key] = mode
+    return component_mode_map
+
+
+def _module_component_names(module_doc: dict) -> list[str]:
+    out = []
+    seen = set()
+    for item in module_doc.get("components", []):
+        name = str(item.get("name", "") or "").strip()
+        key = _normalize_name(name)
+        if key == "" or key in seen:
+            continue
+        seen.add(key)
+        out.append(name)
+    return out
 
 
 def _mode_name(mode: o.ProviderLinking) -> str:
@@ -97,7 +198,12 @@ def _resolve_process_descriptor(client, process_input: str):
     return client.find(o.Process, name=token)
 
 
-def _select_provider_linking(process_name: str, strategy: str, prefer_defaults_set: set[str]) -> o.ProviderLinking:
+def _select_provider_linking(
+    process_name: str,
+    strategy: str,
+    prefer_defaults_set: set[str],
+    component_mode_map: dict[str, str] | None = None,
+) -> o.ProviderLinking:
     mode = str(strategy or "parameter").strip().lower()
     if mode == "prefer-defaults":
         return o.ProviderLinking.PREFER_DEFAULTS
@@ -106,8 +212,21 @@ def _select_provider_linking(process_name: str, strategy: str, prefer_defaults_s
     if mode == "ignore-defaults":
         return o.ProviderLinking.IGNORE_DEFAULTS
 
-    # parameter strategy: process names in parameter vector use PREFER_DEFAULTS,
-    # all others use ONLY_DEFAULTS.
+    # parameter strategy:
+    # 1) if process has explicit mode in product_systems_module.components, use it
+    # 2) else fallback to legacy product_systems_prefer_defaults vector
+    # 3) default to ONLY_DEFAULTS
+    name_key = _normalize_name(process_name)
+    selected_mode = ""
+    if component_mode_map is not None:
+        selected_mode = _normalize_mode_text(component_mode_map.get(name_key, ""))
+    if selected_mode == "prefer-defaults":
+        return o.ProviderLinking.PREFER_DEFAULTS
+    if selected_mode == "only-defaults":
+        return o.ProviderLinking.ONLY_DEFAULTS
+    if selected_mode == "ignore-defaults":
+        return o.ProviderLinking.IGNORE_DEFAULTS
+
     if _normalize_name(process_name) in prefer_defaults_set:
         return o.ProviderLinking.PREFER_DEFAULTS
     return o.ProviderLinking.ONLY_DEFAULTS
@@ -118,6 +237,7 @@ def create_or_update_product_system(
     process_input: str,
     strategy: str = "parameter",
     prefer_defaults_processes: list[str] | None = None,
+    component_mode_map: dict[str, str] | None = None,
 ) -> ProductSystemCreationReport:
     report = ProductSystemCreationReport(process_input=str(process_input or "").strip())
 
@@ -133,7 +253,12 @@ def create_or_update_product_system(
 
     prefer_defaults_source = get_prefer_defaults_processes() if prefer_defaults_processes is None else prefer_defaults_processes
     prefer_defaults_set = {_normalize_name(n) for n in prefer_defaults_source}
-    mode = _select_provider_linking(process_name, strategy=strategy, prefer_defaults_set=prefer_defaults_set)
+    mode = _select_provider_linking(
+        process_name,
+        strategy=strategy,
+        prefer_defaults_set=prefer_defaults_set,
+        component_mode_map=component_mode_map,
+    )
     report.provider_linking = _mode_name(mode)
 
     existing_ps = client.find(o.ProductSystem, name=process_name)
@@ -182,6 +307,7 @@ def create_product_systems_for_processes(
     process_inputs: list[str],
     strategy: str = "parameter",
     prefer_defaults_processes: list[str] | None = None,
+    component_mode_map: dict[str, str] | None = None,
 ) -> list[ProductSystemCreationReport]:
     reports = []
     seen = set()
@@ -196,9 +322,36 @@ def create_product_systems_for_processes(
                 process_input=token,
                 strategy=strategy,
                 prefer_defaults_processes=prefer_defaults_processes,
+                component_mode_map=component_mode_map,
             )
         )
     return reports
+
+
+def _parse_component_modes(raw: str) -> list[dict[str, str]]:
+    out = []
+    seen = set()
+    for part in str(raw or "").split(","):
+        token = part.strip()
+        if token == "":
+            continue
+        if ":" in token:
+            name, mode_raw = token.split(":", 1)
+        elif "=" in token:
+            name, mode_raw = token.split("=", 1)
+        else:
+            name, mode_raw = token, "only-defaults"
+
+        clean_name = str(name or "").strip()
+        clean_mode = _normalize_mode_text(mode_raw)
+        key = _normalize_name(clean_name)
+        if key == "" or key in seen:
+            continue
+        if clean_mode == "":
+            clean_mode = "only-defaults"
+        seen.add(key)
+        out.append({"name": clean_name, "provider_linking": clean_mode})
+    return out
 
 
 def _prompt_linking_choice() -> str:
@@ -249,6 +402,17 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Update parameter vector product_systems_prefer_defaults and exit unless --process-names is also provided.",
     )
     parser.add_argument(
+        "--set-module-components",
+        default="",
+        help="Set product_systems_module.components using entries like 'magnet:prefer-defaults,connection_cables:only-defaults'.",
+    )
+    parser.add_argument(
+        "--set-interactive-mode",
+        type=int,
+        choices=[0, 1],
+        help="Set interactive mode: 0=silent (use params only), 1=interactive (ask user).",
+    )
+    parser.add_argument(
         "--interactive",
         action="store_true",
         help="Prompt for process names and linking mode interactively.",
@@ -270,6 +434,29 @@ def _run_cli() -> int:
         if not args.process_names and not args.interactive:
             return 0
 
+    if args.set_module_components:
+        module_components = _parse_component_modes(args.set_module_components)
+        set_product_systems_module(module_components)
+        print(
+            "Updated parameter 'product_systems_module.components': "
+            f"{module_components}"
+        )
+        if not args.process_names and not args.interactive:
+            return 0
+
+    if args.set_interactive_mode is not None:
+        set_interactive_mode(args.set_interactive_mode)
+        print(
+            f"Updated parameter 'product_systems_interactive_mode': {args.set_interactive_mode} "
+            f"({['silent (use params only)', 'interactive (ask user)'][args.set_interactive_mode]})"
+        )
+        if not args.process_names and not args.interactive:
+            return 0
+
+    # Check interactive mode flag from parameters
+    interactive_mode_param = get_interactive_mode()
+    allow_prompting = interactive_mode_param == 1 or args.interactive
+
     process_names = _parse_csv_names(args.process_names)
     mode = str(args.provider_linking or "").strip().lower()
     if args.interactive:
@@ -281,13 +468,26 @@ def _run_cli() -> int:
 
     client = ipc.Client(8080)
 
+    module_doc = get_product_systems_module()
+    module_component_mode_map = _module_component_mode_map(module_doc)
+    
+    # Auto-load module components only if NOT prompting user (silent mode)
+    if mode == "parameter" and not process_names and not allow_prompting:
+        process_names = _module_component_names(module_doc)
+
+    # Only prompt if interactive mode is enabled (1) and no process names provided
     if not process_names:
-        process_names = _prompt_process_inputs(client)
-        if not process_names:
-            print("No process names were provided.")
+        if allow_prompting:
+            process_names = _prompt_process_inputs(client)
+            if not process_names:
+                print("No process names were provided.")
+                return 1
+            if mode in {"", "parameter"}:
+                mode = _prompt_linking_choice()
+        else:
+            # Silent mode: no prompting allowed
+            print("No process names provided and interactive mode is disabled (product_systems_interactive_mode=0).")
             return 1
-        if mode in {"", "parameter"}:
-            mode = _prompt_linking_choice()
 
     if mode == "":
         mode = "parameter"
@@ -303,6 +503,7 @@ def _run_cli() -> int:
         process_inputs=process_names,
         strategy=mode,
         prefer_defaults_processes=merged_prefer_defaults,
+        component_mode_map=module_component_mode_map,
     )
 
     created = sum(1 for r in reports if r.created)

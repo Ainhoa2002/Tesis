@@ -174,15 +174,95 @@ Third-round single target example (system aggregate file):
 .\.venv\Scripts\python.exe .\LCI\library_sync_cli.py --library .\LCI\created_flows_uuid_map.csv --provider-library .\LCI\created_process_uuid_map.csv --target-file .\LCI\LCI_SYSTEM\system_ipe_flows_from_parameters.csv --overwrite-uuid --overwrite-provider --no-sync-provider-library
 ```
 
-## Product System Linking Behavior
+## Product System Creation and Provider Linking
 
-Product system creation is implemented in [process_builder.py](LCI/process_builder.py).
+Product system creation is implemented in [product_system_builder.py](LCI/product_system_builder.py).
 
-Provider-linking strategy behavior:
+### Provider-Linking Modes
 
-- primary mode: `ONLY_DEFAULTS` for all processes except `connector_system`, which starts with `PREFER_DEFAULTS`
-- automatic fallback if zero links are generated: `PREFER_DEFAULTS`, then `IGNORE_DEFAULTS`
-- this avoids empty/unlinked product systems while still prioritizing explicit default providers
+Three provider-linking strategies are available when creating product systems:
+
+- `prefer-defaults`: Prefer default providers when available, fall back to any provider if needed.
+- `only-defaults`: Link only to default providers; fail if no default provider is available.
+- `ignore-defaults`: Ignore default providers and link to any available provider.
+
+### Configuration via Parameters
+
+Product system behavior is controlled by parameters stored in [global_parameters.json](LCI/global_parameters.json):
+
+#### Interactive Mode Flag
+- **Parameter**: `product_systems_interactive_mode`
+- **Value 0**: Silent mode (uses parameter-defined components only, no user prompts)
+- **Value 1**: Interactive mode (prompts user to enter process names and provider-linking mode)
+
+Set the flag:
+```powershell
+.\.venv\Scripts\python.exe .\LCI\product_system_builder.py --set-interactive-mode 0
+```
+
+#### Component Module
+- **Parameter**: `product_systems_module`
+- **Purpose**: Defines which components should be analyzed and their provider-linking mode per component
+
+Example structure:
+```json
+"product_systems_module": {
+  "components": [
+    {"name": "4Q_output_control_card", "provider_linking": "prefer-defaults"},
+    {"name": "magnet", "provider_linking": "only-defaults"},
+    {"name": "MEXICO", "provider_linking": "only-defaults"}
+  ]
+}
+```
+
+Set module components via CLI:
+```powershell
+.\.venv\Scripts\python.exe .\LCI\product_system_builder.py --set-module-components "magnet:prefer-defaults,connection_cables:only-defaults"
+```
+
+#### Legacy Vector (Deprecated)
+- **Parameter**: `product_systems_prefer_defaults`
+- **Purpose**: Legacy vector for backward compatibility; specify process names that default to `prefer-defaults` mode
+- **Fallback**: Used only if component module mode is not specified for a process
+
+### Running the Product System Builder
+
+Standalone usage with parameter mode (uses components from `product_systems_module`):
+```powershell
+.\.venv\Scripts\python.exe .\LCI\product_system_builder.py
+```
+
+With explicit process names and linking mode:
+```powershell
+.\.venv\Scripts\python.exe .\LCI\product_system_builder.py --process-names "magnet,connector_system" --provider-linking prefer-defaults
+```
+
+Interactive mode (prompts for input):
+```powershell
+.\.venv\Scripts\python.exe .\LCI\product_system_builder.py --interactive
+```
+
+Force interactive even when `product_systems_interactive_mode=0`:
+```powershell
+.\.venv\Scripts\python.exe .\LCI\product_system_builder.py --interactive --process-names "magnet"
+```
+
+### Mode Selection Logic
+
+When `--provider-linking parameter` (default), the builder selects linking mode by cascading:
+
+1. Check component-specific mode in `product_systems_module.components`
+2. Fall back to legacy `product_systems_prefer_defaults` vector
+3. Default to `only-defaults` if not specified elsewhere
+
+### Behavior in Main Workflow
+
+When integrated in [main.py](LCI/main.py):
+
+- Phase 5 of the workflow calls the product system builder
+- Builder respects the `product_systems_interactive_mode` flag
+- If mode=0 (silent), components from `product_systems_module` are created without prompting
+- If mode=1 (interactive), user is prompted to enter process names and mode
 
 ## Running the Workflow
 
@@ -278,6 +358,21 @@ Purpose:
    - execution.run_scope: all | single
    - execution.target_system: e.g., MEXICO
 
+Commented configuration support:
+
+- `global_parameters.json` can contain `//` comments.
+- Parameter readers in this repository use `json5` to parse that file.
+- Ensure dependency is installed in the active environment:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install json5
+```
+
+Important behavior:
+
+- Reading preserves compatibility with comments.
+- Writing parameters via `parameter_library.py` currently serializes with standard JSON (`json.dump`), so inline `//` comments may be removed after set/delete operations.
+
 ## Troubleshooting Patterns
 
 Common messages and meaning:
@@ -294,6 +389,7 @@ Common messages and meaning:
 ## Related Files
 
 - [LCI/process_builder.py](LCI/process_builder.py)
+- [LCI/product_system_builder.py](LCI/product_system_builder.py)
 - [LCI/csv_reader.py](LCI/csv_reader.py)
 - [LCI/library_sync.py](LCI/library_sync.py)
 - [LCI/library_sync_cli.py](LCI/library_sync_cli.py)
