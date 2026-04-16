@@ -244,7 +244,11 @@ def calculate_total_mass_by_transport_code(root_dir, include_pcb_mass_from_resul
     """
     totals_kg = defaultdict(float)
 
+    # Load system-level multipliers
+    system_units_map = _load_system_units(root_dir)
+
     for csv_path in _iter_ipe_files(root_dir):
+        system_multiplier = _get_system_multiplier_for_file(root_dir, csv_path, system_units_map)
         with open(csv_path, newline="", encoding="utf-8-sig") as handle:
             reader = csv.DictReader(handle)
             if not reader.fieldnames:
@@ -262,11 +266,11 @@ def calculate_total_mass_by_transport_code(root_dir, include_pcb_mass_from_resul
                 if mass_kg is None:
                     continue
 
-                # IPE amounts are already multiplied by subsystem_units in Pipeline
-                # Do NOT apply multiplier again here
+                # Apply system-level multiplier
+                mass_kg_scaled = mass_kg * system_multiplier
 
                 for code in codes:
-                    totals_kg[code] += mass_kg
+                    totals_kg[code] += mass_kg_scaled
 
     if include_pcb_mass_from_results:
         for csv_path in _iter_ipe_files(root_dir):
@@ -274,8 +278,10 @@ def calculate_total_mass_by_transport_code(root_dir, include_pcb_mass_from_resul
             if pcb_mass_kg <= 0:
                 continue
             pcb_codes = _collect_pcb_codes_from_ipe(csv_path)
+            system_multiplier = _get_system_multiplier_for_file(root_dir, csv_path, system_units_map)
+            pcb_mass_kg_scaled = pcb_mass_kg * system_multiplier
             for code in pcb_codes:
-                totals_kg[code] += pcb_mass_kg
+                totals_kg[code] += pcb_mass_kg_scaled
 
     return dict(sorted(totals_kg.items(), key=lambda kv: kv[0].lower()))
 
@@ -289,8 +295,12 @@ def calculate_total_mass_by_transport_code_per_subsystem(root_dir, include_pcb_m
     subsystem_totals = defaultdict(lambda: defaultdict(float))
     subsystem_total_coded_mass_kg = defaultdict(float)
 
+    # Load system-level multipliers
+    system_units_map = _load_system_units(root_dir)
+
     for csv_path in _iter_ipe_files(root_dir):
         subsystem = _subsystem_name_from_path(root_dir, csv_path)
+        system_multiplier = _get_system_multiplier_for_file(root_dir, csv_path, system_units_map)
 
         with open(csv_path, newline="", encoding="utf-8-sig") as handle:
             reader = csv.DictReader(handle)
@@ -309,13 +319,13 @@ def calculate_total_mass_by_transport_code_per_subsystem(root_dir, include_pcb_m
                 if mass_kg is None:
                     continue
 
-                # IPE amounts are already multiplied by subsystem_units in Pipeline
-                # Do NOT apply multiplier again here
+                # Apply system-level multiplier
+                mass_kg_scaled = mass_kg * system_multiplier
 
-                subsystem_total_coded_mass_kg[subsystem] += mass_kg
+                subsystem_total_coded_mass_kg[subsystem] += mass_kg_scaled
 
                 for code in codes:
-                    subsystem_totals[subsystem][code] += mass_kg
+                    subsystem_totals[subsystem][code] += mass_kg_scaled
 
     if include_pcb_mass_from_results:
         for csv_path in _iter_ipe_files(root_dir):
@@ -328,9 +338,11 @@ def calculate_total_mass_by_transport_code_per_subsystem(root_dir, include_pcb_m
                 continue
 
             subsystem = _subsystem_name_from_path(root_dir, csv_path)
-            subsystem_total_coded_mass_kg[subsystem] += pcb_mass_kg
+            system_multiplier = _get_system_multiplier_for_file(root_dir, csv_path, system_units_map)
+            pcb_mass_kg_scaled = pcb_mass_kg * system_multiplier
+            subsystem_total_coded_mass_kg[subsystem] += pcb_mass_kg_scaled
             for code in pcb_codes:
-                subsystem_totals[subsystem][code] += pcb_mass_kg
+                subsystem_totals[subsystem][code] += pcb_mass_kg_scaled
 
     ordered = {}
     for subsystem in sorted(subsystem_totals.keys()):
