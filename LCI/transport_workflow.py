@@ -36,8 +36,6 @@ def _distance_to_km(distance, unit):
         return distance_value
     if unit_norm in {"m", "meter", "meters", "metre", "metres"}:
         return distance_value / 1000.0
-    if unit_norm in {"mi", "mile", "miles"}:
-        return distance_value * 1.609344
     return None
 
 
