@@ -7,21 +7,31 @@
   "parameters": {
     // Process builder
     // 0 = silent (use parameters only), 1 = interactive (ask user)
-    "product_systems_interactive_mode": 1,
+    "product_systems_interactive_mode": 0,
     // List of process names to build product systems for. If empty, uses all components from module.
     "product_systems_prefer_defaults": [
-      "fuse_card",
+      "4Q_output_control_card",
       "magnet",
+      "connection_cables",
+      "MEXICO"
     ],
     // Provider linking mode for each component: only-defaults, prefer-defaults, ignore-defaults
     "product_systems_module": {
       "components": [
         {
-          "name": "fuse_card",
+          "name": "4Q_output_control_card",
           "provider_linking": "only-defaults"
         },
         {
           "name": "magnet",
+          "provider_linking": "only-defaults"
+        },
+        {
+          "name": "connector_system",
+          "provider_linking": "prefer-defaults"
+        },
+        {
+          "name": "MEXICO",
           "provider_linking": "only-defaults"
         }
       ]
