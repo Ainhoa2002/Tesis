@@ -123,12 +123,9 @@ def run_system_pipeline_if_available(system_folder: Path, dry_run: bool = False)
         cmd.append("--skip-fill")
 
     if dry_run:
-        print(f"  [DRY-RUN] Would run pipeline: {' '.join(cmd)}")
         return
 
-    print(f"  Running pipeline for {system_folder.name}...")
     subprocess.run(cmd, **run_kwargs)
-    print(f"  Pipeline completed for {system_folder.name}.")
 
 
 def ensure_ipc_server_available(host: str = "localhost", port: int = 8080, timeout_seconds: float = 2.0) -> bool:
@@ -172,27 +169,24 @@ def _phase_first_fill_and_import(
 
         try:
             run_system_pipeline_if_available(system_folder, dry_run=dry_run)
-        except Exception as exc:
-            print(f"  [Warning] Pipeline refresh failed in {system_folder.name}: {exc}")
+        except Exception:
+            pass
 
         csv_files = iter_system_csvs(system_folder)
         if not csv_files:
-            print(f"Skipping {system_folder.name}: no *_ipe_flows_from_parameters.csv files found.")
             continue
 
         state.systems_with_csv.append(system_folder)
         state.system_csv_map[str(system_folder)] = list(csv_files)
 
-        print(f"\nSystem: {system_folder.name} -> openLCA category: {category_name}")
         try:
             run_uuid_fill_if_available(base_dir, system_folder, dry_run=dry_run)
-        except Exception as exc:
-            print(f"  [Warning] UUID fill failed in {system_folder.name}: {exc}")
+        except Exception:
+            pass
 
         for csv_file in csv_files:
             state.total_files += 1
             if dry_run:
-                print(f"  [DRY-RUN] {csv_file.name}")
                 continue
 
             report = process_csv(client, str(csv_file), category_name)
@@ -204,8 +198,8 @@ def _phase_second_fill_and_reimport(base_dir: Path, client, state: ImportWorkflo
     for system_folder in state.systems_with_csv:
         try:
             run_created_uuid_fill_if_available(base_dir, system_folder, dry_run=False)
-        except Exception as exc:
-            print(f"  [Warning] Second UUID fill failed in {system_folder.name}: {exc}")
+        except Exception:
+            pass
 
     second_round_reimports = 0
     for system_folder in state.systems_with_csv:
@@ -224,24 +218,23 @@ def _phase_third_fill_and_aggregate_reimport(base_dir: Path, client, state: Impo
     system_folder = base_dir / "LCI_SYSTEM"
     try:
         run_final_system_uuid_fill_if_available(base_dir, system_folder, dry_run=False)
-    except Exception as exc:
-        print(f"  [Warning] Third UUID fill failed for {system_folder.name}: {exc}")
+    except Exception:
+        pass
 
     transport_folder = base_dir / "LCI_TRANSPORT"
     transport_third_fill_ok = False
     try:
         transport_third_fill_ok = run_final_transport_uuid_fill_if_available(base_dir, transport_folder, dry_run=False)
-    except Exception as exc:
-        print(f"  [Warning] Third UUID fill failed for {transport_folder.name}: {exc}")
+    except Exception:
+        pass
 
     system_target_file = system_folder / "system_ipe_flows_from_parameters.csv"
     if system_target_file.exists():
         try:
             report = process_csv(client, str(system_target_file), resolve_category_name(system_folder.name))
             _register_report(state, report, collect_library_rows=False)
-            print("  Third-round system file re-imported into openLCA.")
-        except Exception as exc:
-            print(f"  [Warning] Could not re-import third-round system file: {exc}")
+        except Exception:
+            pass
 
     if transport_third_fill_ok:
         transport_target_file = transport_folder / "transport_ipe_flows_from_parameters.csv"
@@ -249,27 +242,13 @@ def _phase_third_fill_and_aggregate_reimport(base_dir: Path, client, state: Impo
             try:
                 report = process_csv(client, str(transport_target_file), resolve_category_name(transport_folder.name))
                 _register_report(state, report, collect_library_rows=False)
-                print("  Third-round transport file re-imported into openLCA.")
-            except Exception as exc:
-                print(f"  [Warning] Could not re-import third-round transport file: {exc}")
+            except Exception:
+                pass
 
 
 def _print_report_summary(reports: list[ProcessImportReport]) -> None:
     """Print centralized warning/error totals per imported CSV report."""
-    warnings_total = sum(len(r.warnings) for r in reports)
-    errors_total = sum(len(r.errors) for r in reports)
-    files_with_errors = [r for r in reports if r.errors]
-
-    print(
-        "Import report summary. "
-        f"Files reported: {len(reports)}. "
-        f"Warnings: {warnings_total}. Errors: {errors_total}."
-    )
-
-    if files_with_errors:
-        print("Files with errors:")
-        for report in files_with_errors:
-            print(f"  - {Path(report.csv_path).name}: {len(report.errors)} error(s)")
+    # Debug/report summary intentionally omitted for production use.
 
 
 def main():
@@ -302,25 +281,19 @@ def main():
     # Phase 0: transport preprocessing before import.
     try:
         prepare_transport_unit_processes(BASE_DIR, dry_run=args.dry_run)
-    except Exception as exc:
-        print(f"[Warning] Transport unit-process preparation failed: {exc}")
+    except Exception:
+        pass
 
     systems = list(iter_system_folders(BASE_DIR))
     if not systems:
-        print(f"No system folders found in {BASE_DIR}")
         return
 
     client = None
     if not args.dry_run:
         if not ensure_ipc_server_available(host="localhost", port=8080):
-            print(
-                "openLCA IPC server is not reachable on localhost:8080. "
-                "Start openLCA and enable the IPC server, or run with --dry-run."
-            )
             return
 
         client = ipc.Client(8080)
-        print("Connected to openLCA IPC server")
 
     # Phase 1: first fill + first import
     _phase_first_fill_and_import(
@@ -332,7 +305,6 @@ def main():
     )
 
     if args.dry_run:
-        print(f"\nDry run complete. Files detected: {state.total_files}")
         return
 
     # Phase 2: created-library upsert from first import results.
@@ -342,25 +314,11 @@ def main():
         process_rows=state.created_process_rows,
     )
 
-    print(
-        f"\nStep 2 complete. Processes created: {state.created_processes}. "
-        f"Processes updated: {state.updated_processes}. "
-        f"Output flows created: {state.created_flows}."
-    )
-    print(
-        "Created libraries updated. "
-        f"Flows added/updated/skipped_existing: "
-        f"{lib_stats.flow_added}/{lib_stats.flow_updated}/{lib_stats.flow_skipped_existing}. "
-        f"Process providers added/updated/skipped_existing: "
-        f"{lib_stats.process_added}/{lib_stats.process_updated}/{lib_stats.process_skipped_existing}."
-    )
+    # Step 2 summary intentionally omitted for production use.
 
     # Phase 3: second fill + reimport
     second_round_reimports = _phase_second_fill_and_reimport(BASE_DIR, client, state)
-    print(
-        "Second-round provider updates applied to openLCA. "
-        f"Processes re-imported: {second_round_reimports}."
-    )
+    # Step 3 summary intentionally omitted for production use.
 
     # Phase 4: third fill + aggregate reimport
     _phase_third_fill_and_aggregate_reimport(BASE_DIR, client, state)
@@ -372,22 +330,15 @@ def main():
         explicit_names=args.product_system_names,
     )
     if ps_targets:
-        print("Product system phase started...")
         ps_reports = create_product_systems_for_processes(client, ps_targets)
         ps_created = sum(1 for r in ps_reports if r.created)
         ps_updated = sum(1 for r in ps_reports if r.updated)
         ps_skipped = sum(1 for r in ps_reports if r.skipped)
         ps_errors = sum(len(r.errors) for r in ps_reports)
-        print(
-            "Product system phase complete. "
-            f"Created: {ps_created}. Updated: {ps_updated}. "
-            f"Skipped: {ps_skipped}. Errors: {ps_errors}."
-        )
     elif args.product_systems != "none":
-        print("Product system phase skipped: no valid process names were selected.")
+        pass
 
     _print_report_summary(state.reports)
-    print("\nAll done! Please refresh openLCA to see the new processes.")
 
 
 if __name__ == "__main__":

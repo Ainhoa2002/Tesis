@@ -5,93 +5,93 @@
       "index": 0,
       "provider": "connector_system",
       "direct_result": 0.0,
-      "total_result": 0.05098170054576934
+      "total_result": 0.05098170054576999
     },
     {
-      "index": 1,
+      "index": 3,
       "provider": "market for copper, cathode | copper, cathode | APOS, U",
       "direct_result": 0.0,
-      "total_result": 0.04910287780778506
+      "total_result": 0.0491028778077855
     },
     {
       "index": 10681,
       "provider": "electrorefining of copper, anode | copper, cathode | APOS, U",
       "direct_result": 0.0,
-      "total_result": 0.04094513258700558
+      "total_result": 0.04094513258700567
     },
     {
       "index": 12290,
       "provider": "platinum group metal mine operation, ore with high palladium content | copper, cathode | APOS, U",
-      "direct_result": 0.003951842242470067,
-      "total_result": 0.003968974602892212
+      "direct_result": 0.003951842242470066,
+      "total_result": 0.0039689746028922146
     },
     {
       "index": 16804,
       "provider": "market for copper, anode | copper, anode | APOS, U",
       "direct_result": 0.0,
-      "total_result": 0.04031681569832353
+      "total_result": 0.040316815698323676
     },
     {
       "index": 196,
       "provider": "market for blasting | blasting | APOS, U",
       "direct_result": 0.0,
-      "total_result": 0.005178420822100317
+      "total_result": 0.005178420822100335
     },
     {
       "index": 25357,
       "provider": "smelting of copper concentrate, sulfide ore | copper, anode | APOS, U",
-      "direct_result": 0.013433213764711016,
-      "total_result": 0.015377365722659705
+      "direct_result": 0.01343321376471103,
+      "total_result": 0.015377365722659787
     },
     {
       "index": 7576,
       "provider": "smelting of copper concentrate, sulfide ore | copper, anode | APOS, U",
-      "direct_result": 0.012018810901883285,
-      "total_result": 0.013871851649459048
+      "direct_result": 0.012018810901883295,
+      "total_result": 0.013871851649459085
     },
     {
       "index": 23218,
       "provider": "smelting of copper concentrate, sulfide ore | copper, anode | APOS, U",
-      "direct_result": 0.004684147246035663,
-      "total_result": 0.0049217776563155015
+      "direct_result": 0.004684147246035668,
+      "total_result": 0.004921777656315512
     },
     {
       "index": 17671,
       "provider": "market for copper concentrate, sulfide ore | copper concentrate, sulfide ore | APOS, U",
       "direct_result": 0.0,
-      "total_result": 0.00445937474795692
+      "total_result": 0.004459374747957048
     }
   ],
   "edges": [
     {
       "node_index": 0,
-      "provider_index": 1,
-      "upstream_share": 0.9413008936317769
+      "provider_index": 3,
+      "upstream_share": 0.9413008936317773
     },
     {
-      "node_index": 1,
+      "node_index": 3,
       "provider_index": 10681,
-      "upstream_share": 1.0000000000000002
+      "upstream_share": 1.0
     },
     {
-      "node_index": 1,
+      "node_index": 3,
       "provider_index": 12290,
-      "upstream_share": 1.0000000000000002
+      "upstream_share": 1.0
     },
     {
       "node_index": 10681,
       "provider_index": 16804,
-      "upstream_share": 0.9988934730494317
+      "upstream_share": 0.9988934730494302
     },
     {
       "node_index": 12290,
       "provider_index": 196,
-      "upstream_share": 3.950723899578361e-07
+      "upstream_share": 3.95072389957835e-07
     },
     {
       "node_index": 16804,
       "provider_index": 25357,
-      "upstream_share": 0.9999999999999998
+      "upstream_share": 1.0
     },
     {
       "node_index": 16804,
@@ -111,7 +111,7 @@
     {
       "node_index": 7576,
       "provider_index": 17671,
-      "upstream_share": 0.3851697316795952
+      "upstream_share": 0.38516973167959523
     },
     {
       "node_index": 23218,

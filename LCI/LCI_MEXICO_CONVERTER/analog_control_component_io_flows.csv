@@ -1,7 +1,7 @@
 Order_index,Category_order,Group_order,Category,Section,Subsection,Designators,Casing,Part_Number,Database,Ecoinvent_flow,Ecoinvent_unit,Direction,Amount,Total_mass_kg,Formula_basis,Validation_error
 1,1,1,AUTO,PCB,,PCB,,PCB_ANAL_CONTROL,EcoInvent,"printed wiring board production, for through-hole mounting, Pb free surface",m2,Input,0.0195,0.006331168831,area-based,
 23,1,8,AUTO,Passives,Protection,F1,0603,0603L010,EcoInvent,"electronic component, passive, unspecified",kg,Input,1.8e-05,1.8e-05,mass-based,
-47,1,24,AUTO,Modules,DC/DC Converters,IC42,BGA-25,LTM8074IY,EcoInvent,"electronic component production, active, unspecified",kg,Input,0.001834,0.001834,mass-based,
+47,1,24,AUTO,Modules,DC/DC Converters,IC42,BGA-25,LTM8074IY,EcoInvent,"insulated gate bipolar transistor, electric vehicle application",kg,Input,0.001834,0.001834,mass-based,
 97,1,40,AUTO,Passives,Test PIN,"TP43, TP44_ANA_CAL_0, TP44_ANA_CAL_1, TP45, TP46, TP47, TP48, TP49, TP50, TP51, TP53",,S2761-46R,EcoInvent,"electronic component, passive, unspecified",kg,Input,6.6e-05,6.6e-05,mass-based,
 98,1,41,AUTO,Assembly Processes,SMD,SMD_PROCESS,,,EcoInvent,"mounting, surface mount technology, Pb-free solder",m2,Input,0.0195,,area-based,
 99,1,42,AUTO,Assembly Processes,THT,THT_PROCESS,,,EcoInvent,"mounting, through-hole technology, Pb-free solder",m2,Input,0.0195,,area-based,
