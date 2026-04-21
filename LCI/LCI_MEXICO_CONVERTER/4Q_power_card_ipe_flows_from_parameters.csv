@@ -4,7 +4,7 @@ Flow,UUID,Unit,Amount,Direction,UUID_provider,Transport_phase_codes
 brass,57771ae0-5e8b-47be-bb73-ba59f2bf8cc8,kg,0.016,Input,a40761c5-9464-331e-829b-986aaab70d19,"P1,SS1,S1"
 "metal working, average for copper product manufacturing",ec161f58-adae-4afc-ba38-14659925b080,kg,0.016,Input,1b2956e7-27a2-3d24-bdc7-8d4d96c596c9,
 "electric connector production, wire clamp",6716b460-7ba0-4cea-baa4-32ae24bfb88c,kg,0.0219403712,Input,dd86962a-dd7e-316b-9ae3-bb22cf1fcbc2,"P1,SS1,S1"
-"electronic component production, active, unspecified",d1e72526-546c-48f2-a363-e1e3b1c9aebc,kg,0.0292,Input,aab92320-5f7c-3d87-aafa-7dcd00f7295b,"P1,SS1,S1"
+ten,,kg,0.0192,Input,6fa199bd-0402-3963-8358-16de6206fb7b,
 "integrated circuit production, logic type",ad2a5d44-4e6d-430d-873b-0068ea24b9d5,kg,0.003504454388,Input,bc6841b3-b7b5-35d7-bd6c-a4aea2d9319a,"P1,SS1,S1"
 "resistor production, surface-mounted",b826a1ab-8be4-41bf-80ad-a6665ec8f9b8,kg,0.001079904,Input,4ec1457b-7716-3a2b-b019-a95236792b9a,"P1,SS1,S1"
 "steel, low-alloyed",817c3650-4fed-4ef2-b9b6-404a198834e6,kg,0.00126385,Input,fa03ac80-8409-3532-8909-e482fa560643,"P1,SS1,S1"
@@ -19,6 +19,7 @@ wood wool,6e4f1a58-c17a-4c76-aecc-3b5180d4f6b5,kg,1e-13,Input,NO_PROVIDER,
 "transistor production, wired, small size, through-hole mounting",233843d2-7fda-443f-8735-547f06711c6d,kg,0.0038,Input,f3ef86cc-7a61-3cfd-b5ef-fb23a5546472,"P1,SS1,S1"
 "diode production, glass-, for through-hole mounting",0fd2627f-cd91-40c7-b168-8d7847ffb1fc,kg,3.748e-05,Input,863bb1f1-9c01-33bb-b157-c441b466754e,"P1,SS1,S1"
 "diode production, glass-, for surface-mounting",38dddb73-6677-4128-9a82-5c6668eceb29,kg,0.000317509552,Input,0be8d851-ba22-3358-9978-1e98418488c6,"P1,SS1,S1"
+"insulated gate bipolar transistor, electric vehicle application",4c5db6d0-a23c-4794-a259-3f63b780d853,kg,0.01,Input,898316bb-c09c-3745-80b4-a5262fd2a9f9,
 light emitting diode production,084469ca-e2a7-4951-8753-60629e461823,kg,0.000427,Input,068100d0-b364-33c5-9c23-4a2ad382e3b3,
 "transistor production, wired, big size, through-hole mounting",b88d0305-a1db-4575-abad-16cb9214b14d,kg,0.05962,Input,dc537ffb-6da8-3c92-b6e9-9ba0d7a74803,"P1,SS1,S1"
 "transistor production, surface-mounted",3422a31d-cb51-4f19-a659-28798bf18e54,kg,4.10625e-05,Input,fe412dc1-c484-36e1-9799-648be3ecec7c,"P1,SS1,S1"

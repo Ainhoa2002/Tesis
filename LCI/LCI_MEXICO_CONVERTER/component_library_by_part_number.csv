@@ -177,7 +177,7 @@ KEMET,P272SJ473M300A or PME271YD5470MR30,4Q_output_power_card,,"±20% 300VAC Met
 KEYSTONE,3576,fuse_card,,Fuse Holder for 10.3x38mm (5AG) Fuses,Electromechanical,Fuse holder,kg,0.0114338,NO,,,,9.88,1.12,1.15,0.22,,EcoInvent,"electronic component, passive, unspecified",kg,Input
 KEYSTONE,3576C,fuse_card,,Cover for Fuse Holder KEYSTONE 3576,Hardware,Enclosure,kg,0.00359,YES,,,,,,,,,EcoInvent,"electronic component, passive, unspecified",kg,Input
 KYCON,KUSBX-SL-CS1N14-B,digital_control,,"USB 2.0 Type C Receptacle, High Temp., Flag Style Through Hole 14 Pin, Black",Electromechanical,Connectors,kg,0.002841,YES,,,,,,,,,EcoInvent,"electric connector production, peripheral type buss",kg,Input
-LEM,LESR 25-NP,4Q_power_card,,Current Transducer 25A,Modules,Sensors,kg,0.01,YES,,,,,,,,,EcoInvent,"electronic component production, active, unspecified",kg,Input
+LEM,LESR 25-NP,4Q_power_card,,Current Transducer 25A,Modules,Sensors,kg,0.01,YES,,,,,,,,,EcoInvent,"insulated gate bipolar transistor, electric vehicle application",kg,Input
 LINEAR TECHNOLOGY,LT8610EMSE,analog_control,MSOP-16,"42V, 2.5A Synchronous Step-Down Regulator",IC,Analog,kg,0.000343,YES,,,,,,,,,EcoInvent,"integrated circuit production, logic type",kg,Input
 LINEAR TECHNOLOGY,LTC2378CMS-20,analog_control,MSOP-16,"20-Bit, 1Msps, Low Power SAR ADC",IC,Mixed-Signal,kg,0.000343,YES,,,,,,,,,EcoInvent,"integrated circuit production, logic type",kg,Input
 LITEON,LTST-C193KGKT-5A,digital_control,0603,"Extra Thin SMD Chip LED, Ultra Bright AlInGaP Green, Lens Water Clear",Discrete Semiconductors,Optoelectronics,kg,5.12e-06,NO,1.6,0.8,0.8,,4.5,5.5,,,EcoInvent,light emitting diode production,kg,Input
@@ -296,7 +296,7 @@ TEXAS INSTRUMENTS,TPL7407LAPW,digital_control,TSSOP16,30-V 7-Channel Low Side Dr
 TEXAS INSTRUMENTS,TPS7A4901DGN,analog_control,MSOP-8,"+36V, +150mA, Ultralow-Noise, Positive Linear Regulator",IC,Analog,kg,0.00014,YES,,,,,,,,,EcoInvent,"integrated circuit production, logic type",kg,Input
 TI,0402ESDA-MLP,digital_control,0402,0.05pF 8kV Bidirectional ESD Voltage Suppressor,Discrete Semiconductors,Small Signal,kg,1.625e-06,NO,1.0,0.5,0.5,,6,7,,,EcoInvent,"capacitor production, for surface-mounting",kg,Input
 TRACO POWER,TEN 6-2415N,4Q_output_control_card,,"18-36VDC to 24VDC, Iout (max) 250mA, 6W DC-DC Converter",Modules,DC/DC Converters,kg,0.0127,YES,,,,,,,,,EcoInvent,ten,kg,Input
-Traco Power,TRV 1-2413M,"4Q_power_card, inverter_power_card",,"19.2-28.8VDC to +15VDC/±67mA, Ripple and Noise (max) 100mVpk-pk,DC/DC Medical Converter",Modules,DC/DC Converters,kg,0.0048,YES,,,,,,,,,EcoInvent,"electronic component production, active, unspecified",kg,Input
+Traco Power,TRV 1-2413M,"4Q_power_card, inverter_power_card",,"19.2-28.8VDC to +15VDC/±67mA, Ripple and Noise (max) 100mVpk-pk,DC/DC Medical Converter",Modules,DC/DC Converters,kg,0.0048,YES,,,,,,,,,EcoInvent,ten,kg,Input
 TXC,7M-12.000MAAJ-T,digital_control,,"±30ppm 18pF -20°C to +70°C  4 Pins, 3.2x2.5X0.8mm, SMD Sealing Crystal, 7M Series",Passives,Crystals,kg,1.6e-05,YES,,,,,,,,,EcoInvent,"electronic component, passive, unspecified",kg,Input
 TYCO ELECTRONICS,1-770166-0,"4Q_output_control_card, 4Q_power_card",,"2 Circuits In-Line, Mini-Universal MATE-N-LOK Connetor",Electromechanical,Connectors,kg,0.00078,YES,,,,,,,,,EcoInvent,"electric connector production, wire clamp",kg,Input
 TYCO ELECTRONICS,1-770178-0,control_backplane_card,,Connector 6 Male MATE-N-LOK,Electromechanical,Connectors,kg,0.00738,YES,,,,,,,,,EcoInvent,"electric connector production, wire clamp",kg,Input
