@@ -18,6 +18,6 @@ Order_index,Category_order,Group_order,Category,Section,Subsection,Designators,C
 4,2,3,Paper,Passives,Capacitors,"C7, C8, C20, C21",,P272QE103M300A or PME271YB5100MR30,EcoInvent,"capacitor production, film type, for through-hole mounting",kg,Input,0.00818181,0.00818181,mass-based,
 5,2,3,Paper,Passives,Capacitors,"C9, C10",,P272SJ473M300A or PME271YD5470MR30,EcoInvent,"capacitor production, film type, for through-hole mounting",kg,Input,0.0297432,0.0297432,mass-based,
 6,3,4,Zener,Discrete Semiconductors,Small signal,"D1, D2",DO-35,BZX55C12,EcoInvent,"diode production, glass-, for through-hole mounting",kg,Input,0.00025,0.00025,mass-based,
-7,4,5,Current transducer,Modules,Sensors,"DCCTA, DCCTB",,CT-26,EcoInvent,"insulated gate bipolar transistor, electric vehicle application",kg,Input,0.6,0.6,mass-based,
+7,4,5,Current transducer,Modules,Sensors,"DCCTA, DCCTB",,CT-26,EcoInvent,can_els,kg,Input,0.6,0.6,mass-based,
 10,5,7,MOSFET,Discrete Semiconductors,Power,"T1,T2",TO-247-2,IRFP4768,EcoInvent,"transistor production, wired, big size, through-hole mounting",kg,Input,0.01084,0.01084,mass-based,
 11,6,8,CERN,Hardware,Mounting hardware,Misc1 for DCCTA and DCCTB,,,EcoInvent,"epoxy resin, liquid",kg,Input,0.02536443,0.02536443,mass-based,
