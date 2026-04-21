@@ -368,7 +368,10 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
             )
             continue
 
+        print(f"[DEBUG] Processing output: name='{output_name}', uuid='{uuid}', unit='{output_unit}', amount='{output_amount}'")
+
         if not output_name or output_amount <= 0:
+            print(f"[DEBUG] Skipping output '{output_name}' due to missing name or non-positive amount.")
             continue
 
         if uuid:
@@ -401,6 +404,7 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
             if output_flow_key not in seen_output_flow_library_keys:
                 seen_output_flow_library_keys.add(output_flow_key)
                 output_flows_for_library.append({"Flow": output_name, "UUID": flow.id})
+                print(f"[DEBUG] Added output flow to mapping: {output_name} -> {flow.id}")
 
             output_key = output_name.lower()
             if output_key not in seen_output_refs:
@@ -428,11 +432,13 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
             print(f"  Output flow '{output_name}' ready: 1 LU = {output_amount} {unit_label}")
             if flow_was_created:
                 created_output_flows.append({"Flow": output_name, "UUID": output_flow.id})
+                print(f"[DEBUG] Created new output flow: {output_name} -> {output_flow.id}")
 
             output_flow_key = output_name.lower()
             if output_flow_key not in seen_output_flow_library_keys:
                 seen_output_flow_library_keys.add(output_flow_key)
                 output_flows_for_library.append({"Flow": output_name, "UUID": output_flow.id})
+                print(f"[DEBUG] Added output flow to mapping: {output_name} -> {output_flow.id}")
 
             output_key = output_name.lower()
             if output_key not in seen_output_refs:
@@ -440,15 +446,18 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
                 output_flow_references.append(output_name)
         except Exception as e:
             _error(report, f"  Failed to build output flow '{output_name}': {e}")
+            print(f"[DEBUG] Exception while creating output flow '{output_name}': {e}")
 
     input_count = 0
     for row in inputs:
         uuid = row.get("UUID", "").strip()
         provider_uuid = row.get("UUID_provider", "").strip()
+        flow_name = str(row.get("Flow", "")).strip()
+        print(f"[DEBUG] Processing input: flow='{flow_name}', uuid='{uuid}', provider_uuid='{provider_uuid}', amount='{row.get('Amount', 0)}'")
 
         if not uuid and provider_uuid == "NO_PROVIDER":
-            flow_name = str(row.get("Flow", "")).strip()
             if not flow_name:
+                print(f"[DEBUG] Skipping input with empty flow name and NO_PROVIDER.")
                 continue
             try:
                 amount = float(row.get("Amount", 0))
@@ -458,8 +467,10 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
 
             try:
                 flow, _ = _find_or_create_output_flow(client, flow_name, 1.0, "", flow_category_path)
+                print(f"[DEBUG] Created no-provider input flow: {flow_name} -> {flow.id}")
             except Exception as e:
                 _error(report, f"  Failed to create no-provider input flow '{flow_name}': {e}")
+                print(f"[DEBUG] Exception while creating no-provider input flow '{flow_name}': {e}")
                 continue
 
             in_ex = o.Exchange()
@@ -472,17 +483,20 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
             continue
 
         if not uuid:
+            print(f"[DEBUG] Skipping input '{flow_name}' due to missing UUID and not NO_PROVIDER.")
             continue
 
         flow = client.get(o.Flow, uid=uuid)
         if not flow:
             _warn(report, f"  Flow with UUID {uuid} not found, skipping.")
+            print(f"[DEBUG] Input flow UUID '{uuid}' not found for '{flow_name}'.")
             continue
 
         try:
             amount = float(row.get("Amount", 0))
         except (ValueError, TypeError):
             _warn(report, f"  Invalid amount '{row.get('Amount')}' for UUID {uuid}, skipping.")
+            print(f"[DEBUG] Invalid amount for input '{flow_name}' with UUID '{uuid}'.")
             continue
 
         in_ex = o.Exchange()
@@ -490,6 +504,7 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
         in_ex.amount = amount
         in_ex.is_input = True
         process.exchanges.append(in_ex)
+        print(f"[DEBUG] Added input exchange for flow '{flow_name}' with UUID '{uuid}' and amount {amount}.")
 
         if provider_uuid and provider_uuid != "NO_PROVIDER":
             provider = client.get(o.Process, uid=provider_uuid)
@@ -499,8 +514,10 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
                 provider_ref.name = provider.name
                 provider_ref.ref_type = o.RefType.Process
                 in_ex.default_provider = provider_ref
+                print(f"[DEBUG] Set default provider for input '{flow_name}' to process '{provider.name}' ({provider.id})")
             else:
                 _warn(report, f"    Warning: Provider UUID {provider_uuid} not found")
+                print(f"[DEBUG] Provider UUID '{provider_uuid}' not found for input '{flow_name}'.")
         else:
             in_ex.default_provider = None
 
