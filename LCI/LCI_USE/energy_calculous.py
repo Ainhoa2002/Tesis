@@ -66,5 +66,4 @@ print(f"Converter losses:     {P_conv:.2f} W")
 print(f"Total power losses:   {P_loss:.2f} W\n")
 
 print(f"Total operational time: {T_op:.0f} h")
-print(f"Lifetime energy losses: {E_loss_total_kWh:.2f} kWh")
 print(f"Lifetime energy losses: {E_loss_total_MJ:.2f} MJ")

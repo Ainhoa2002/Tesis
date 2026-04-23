@@ -23,15 +23,15 @@
       "components": [
         {
           "name": "system",
-          "provider_linking": "only-defaults"
+          "provider_linking": "prefer-defaults"
         },
         {
           "name": "use_mix",
-          "provider_linking": "only-defaults"
+          "provider_linking": "prefer-defaults"
         },
         {
           "name": "use_renewables",
-          "provider_linking": "only-defaults"
+          "provider_linking": "prefer-defaults"
         },
         {
           "name": "connector_system",
@@ -39,7 +39,7 @@
         },
         {
           "name": "transport",
-          "provider_linking": "only-defaults"
+          "provider_linking": "prefer-defaults"
         }
       ]
     },
