@@ -22,7 +22,6 @@ Order_index,Category_order,Group_order,Category,Section,Subsection,Designators,C
 40,1,25,AUTO,Hardware,Mounting hardware,"J4, J5, J6  screws",,,EcoInvent,"metal working, average for steel product manufacturing",kg,Input,0.00379155,0.00379155,mass-based,
 43,1,27,AUTO,Assembly Processes,THT,THT_PROCESS,,,EcoInvent,"mounting, through-hole technology, Pb-free solder",m2,Input,0.02255,,area-based,
 44,1,28,AUTO,Assembly Processes,SMD,SMD_PROCESS,,,EcoInvent,"mounting, surface mount technology, Pb-free solder",m2,Input,0.02255,,area-based,
-45,1,29,AUTO,dummy element,,dummy,,,EcoInvent,wood wool,kg,Input,1e-13,1e-13,mass-based,
 2,2,2,MLCC,Passives,Capacitors,"C1, C4, C8, C12,C15, C16, C23 > C26,C36, C37, C41, C43, C44",1206,CC1206_100NF_50V_10%_X7R,EcoInvent,"capacitor production, for surface-mounting",kg,Input,0.00084864,0.00084864,mass-based,
 3,2,2,MLCC,Passives,Capacitors,"C2,C14",1206,CC1206_1UF_50V_10%_X7R,EcoInvent,"capacitor production, for surface-mounting",kg,Input,0.000113152,0.000113152,mass-based,
 4,2,2,MLCC,Passives,Capacitors,"C3, C6, C7, C10, C13,C17, C18, C21, C22,C33 > C35, C38 > C40,C42, C45",1206,CC1206_1NF_50V_10%_X7R,EcoInvent,"capacitor production, for surface-mounting",kg,Input,0.000961792,0.000961792,mass-based,

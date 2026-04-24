@@ -32,4 +32,3 @@ T1,SOT23-3,Discrete Semiconductors,Small signal,Bipolar Transistor,onsemi,MMBT39
 HS1-HS6,,Hardware,Thermal Management,Heatsink,FISCHER ELEKTRONIK,FK 245 MI 247 O,"TO-247 Heat Sink Rth: 20.2°C/W, Vertical Mount",6,kg,0.005,YES,,,,,,,,,EcoInvent,"copper, cathode + metal working, average for copper product manufacturing",kg,Input,"MASS FROM DATABASE, Aproximated as hardware"
 SMD_PROCESS,,Assembly Processes,SMD,,,,Assambly SMD components in the PCB,1,m2,,YES,170,100,,,,,,,EcoInvent,"mounting, surface mount technology, Pb-free solder",m2,Input,
 THT_PROCESS,,Assembly Processes,THT,,,,Assambly THT components in the PCB,1,m2,,YES,170,100,,,,,,,EcoInvent,"mounting, through-hole technology, Pb-free solder",m2,Input,
-dummy,,dummy element,,,,,,1,kg,0.0000000000001,YES,,,,,,,,,EcoInvent,wood wool,kg,Input,Dummy flow to avoid errors in the LCI model. It has a negligible mass and it is not considered in the calculations.

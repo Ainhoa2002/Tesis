@@ -33,7 +33,8 @@ P_magnet = I**2 * R_magnet   # [W]
 P_cable = I**2 * R_cable     # [W]
 
 # Converter output power
-P_out = I*V_out# [W]
+#(if we knoe the output voltage) P_out = I*V_out# [W]
+P_out = P_magnet + P_cable  # [W]
 
 # Converter losses
 P_conv = P_out * (1 / eff_conv - 1)  # [W]
