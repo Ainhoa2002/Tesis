@@ -6,6 +6,8 @@ Ecoinvent_flow,Ecoinvent_unit,Direction,UUID,Total_amount,Total_mass_kg,Subsyste
 "aluminium, primary, cast alloy slab from continuous casting",kg,Input,f6161096-34e3-49c9-911e-060659b0dea1,0.008388,0.008388,"4Q_output_control_card, 4Q_power_card"
 analog_control,kg,Output,,0.29010529864,0.29010529864,analog_control
 brass,kg,Input,57771ae0-5e8b-47be-bb73-ba59f2bf8cc8,0.032,0.032,"4Q_output_power_card, 4Q_power_card"
+"cable, unspecified",kg,Input,,0.176,0.176,cabling
+cabling,kg,Output,,0.176,0.176,cabling
 can_els,kg,Input,,0.6,0.6,4Q_output_power_card
 "capacitor production, electrolyte type, < 2cm height",kg,Input,5036886d-4b0a-4c87-956d-50d85d9abaab,0.0167333565,0.0167333565,"4Q_output_control_card, 4Q_power_card, analog_control, digital_control, fan_supervision_card, inverter_power_card"
 "capacitor production, electrolyte type, > 2cm height",kg,Input,5f06394c-4efd-4c65-9e82-5fd3cbebbd15,0.8915588,0.8915588,"4Q_power_card, filter_card"
