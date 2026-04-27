@@ -15,7 +15,7 @@ can_els,kg,Input,,0.6,0.6,4Q_output_power_card
 "capacitor production, for surface-mounting",kg,Input,c924ae77-ba85-4856-bc7a-2f249809872b,0.01311343696,0.01311343696,"4Q_output_control_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, inverter_power_card"
 contactor_card,kg,Output,,0.171603921864,0.171603921864,contactor_card
 control_backplane_card,kg,Output,,0.11457526648,0.11457526648,control_backplane_card
-"copper, cathode",kg,Input,fbb039f7-f9cc-46d2-b631-313ddb125c1a,0.6542633,0.6542633,"HF_Power_Transformer_PM624929, contactor_card, inverter_power_card, mechanical_components, power_inductor_PM6249"
+"copper, cathode",kg,Input,fbb039f7-f9cc-46d2-b631-313ddb125c1a,0.6502633,0.6502633,"HF_Power_Transformer_PM624929, contactor_card, mechanical_components, power_inductor_PM6249"
 digital_control,kg,Output,,0.40851206221,0.40851206221,digital_control
 "diode production, glass-, for surface-mounting",kg,Input,38dddb73-6677-4128-9a82-5c6668eceb29,0.007565800916,0.007565800916,"4Q_output_control_card, 4Q_power_card, analog_control, contactor_card, digital_control, inverter_power_card"
 "diode production, glass-, for through-hole mounting",kg,Input,0fd2627f-cd91-40c7-b168-8d7847ffb1fc,0.00028748,0.00028748,"4Q_output_power_card, 4Q_power_card"
@@ -36,13 +36,13 @@ injection moulding,kg,Input,68d6dfcf-2089-4586-9bbf-ad75591105cf,0.11129,0.11129
 "insulated gate bipolar transistor production, for electric vehicle applications",kg,Input,4c5db6d0-a23c-4794-a259-3f63b780d853,0.02168,0.02168,inverter_power_card
 "insulated gate bipolar transistor, electric vehicle application",kg,Input,4c5db6d0-a23c-4794-a259-3f63b780d853,0.011834,0.011834,"4Q_power_card, analog_control"
 "integrated circuit production, logic type",kg,Input,ad2a5d44-4e6d-430d-873b-0068ea24b9d5,0.028860614526,0.028860614526,"4Q_output_control_card, 4Q_power_card, analog_control, digital_control, inverter_power_card"
-inverter_power_card,kg,Output,,0.353315533964,0.353315533964,inverter_power_card
+inverter_power_card,kg,Output,,0.349315533964,0.349315533964,inverter_power_card
 light emitting diode production,kg,Input,084469ca-e2a7-4951-8753-60629e461823,0.00098096,0.00098096,"contactor_card, digital_control, inverter_power_card"
 "market for steel, low-alloyed",kg,Input,,0.00884695,0.00884695,control_backplane_card
 mechanical_components,kg,Output,,10.35767127,10.35767127,mechanical_components
 "metal working, average for aluminium product manufacturing",kg,Input,8c3b8032-b310-4dfe-9a9b-93fbd369142d,10.36205927,10.36205927,"4Q_output_control_card, 4Q_power_card, mechanical_components"
 "metal working, average for chromium steel product manufacturing",kg,Input,a5fc651b-3ee2-405f-b2f0-d035c8132be1,0.00164785,0.00164785,4Q_output_power_card
-"metal working, average for copper product manufacturing",kg,Input,ec161f58-adae-4afc-ba38-14659925b080,0.0808,0.0808,"4Q_output_power_card, 4Q_power_card, HF_Power_Transformer_PM624929, contactor_card, inverter_power_card, mechanical_components"
+"metal working, average for copper product manufacturing",kg,Input,ec161f58-adae-4afc-ba38-14659925b080,0.0768,0.0768,"4Q_output_power_card, 4Q_power_card, HF_Power_Transformer_PM624929, contactor_card, mechanical_components"
 "metal working, average for steel product manufacturing",kg,Input,79632c4b-f876-4c89-bf27-b864b30566be,0.01643005,0.01643005,"4Q_output_control_card, 4Q_power_card, control_backplane_card, fan_supervision_card, inverter_power_card"
 "mounting, surface mount technology, Pb-free solder",m2,Input,ca2b5076-f230-473d-9272-da1a678b4f93,0.15135,,"4Q_output_control_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, inverter_power_card"
 "mounting, through-hole technology, Pb-free solder",m2,Input,66084f92-4bed-46cb-931e-7ea8300c0972,0.2031,,"4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card"
