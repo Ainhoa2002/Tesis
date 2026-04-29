@@ -1,5 +1,5 @@
-Flow,UUID,Unit,Amount,Direction,UUID_provider,Transport_phase_codes
-connector_system_transport,0350e490-6f4a-46f8-8203-49050c4047fe,LU,1,Input,196a2373-7acb-4bef-9c62-990ab841cdbf,
-magnet_transport,102d164e-f15a-457b-8794-fa1c7bee954f,LU,1,Input,78e12a21-d73a-44e9-84b3-bdde2c5e4da7,
-mexico_transport,3ec34cda-79a0-48a0-9c44-c87c178a1d18,LU,1,Input,7436c09a-eca4-4fd6-b9b4-71497b5c99ec,
-transport,,LU,1,Output,,
+Flow,Unit,Amount,Direction,Transport_phase_codes,UUID,UUID_provider
+connector_system_transport,LU,1,Input,,1c9dbd85-0826-4483-8d8e-aaaffd69788b,b2eee5a1-39f6-4358-a07f-3de78bb6ee63
+magnet_transport,LU,1,Input,,25207ea5-8d21-480a-8464-9a8701b97251,af054b90-a52d-4119-9f68-03cad5eafd8b
+mexico_transport,LU,1,Input,,057a7d7b-0cc9-4bf1-91c1-266de9e55d0f,3e944d8b-3c6e-4e4a-85b3-117779e7da7e
+transport,LU,1,Output,,,

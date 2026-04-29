@@ -1,4 +1,4 @@
-from parameter_library import (
+LCI/component_library_ecoinvent_uuid_map.csvfrom parameter_library import (
     delete_param,
     get_execution_scope,
     get_param,

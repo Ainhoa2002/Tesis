@@ -5,4 +5,7 @@ Flow,UUID,Unit,Amount,Direction,UUID_provider,Transport_phase_codes
 rolling mill,2044879b-7d88-43d4-8525-8cb0a9ba62b7,Item(s),0.0000000000001928755,Input,9c50ed69-94ad-322b-989f-839b77e10648,
 tap water,c5adb1fb-872e-4446-a3bb-c4b61aa4bd45,kg,0.158268,Input,645250d8-630c-3103-8d85-f8f40ab69520,
 "wire drawing, copper",cdb7b939-f508-49ed-80f3-b39f6137fe1c,kg,0.0717002,Input,9dd1ce4b-030a-33ee-a66e-05dc9455269a,
-connector_system,4e379e07-957d-4a75-9309-05b67f0252ad,,,kg,19da36f5-dae3-48db-a007-5f4b86772d87,Output
+connector_system,,,,kg,0.109,Output,,S2
+"hazardous waste, for incineration",,kg,0.109,Output,809fc4b5-6007-334f-8a1d-4f41599411e4,
+"waste plastic, mixture",,kg,0.00013466723,Output,,
+Water,,m3,0.00015758348,Output,,
