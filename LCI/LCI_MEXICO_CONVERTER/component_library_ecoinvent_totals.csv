@@ -6,7 +6,7 @@ Ecoinvent_flow,Ecoinvent_unit,Direction,UUID,Total_amount,Total_mass_kg,Subsyste
 "aluminium, primary, cast alloy slab from continuous casting",kg,Input,f6161096-34e3-49c9-911e-060659b0dea1,0.008388,0.008388,"4Q_output_control_card, 4Q_power_card"
 analog_control,kg,Output,,0.29010529864,0.29010529864,analog_control
 brass,kg,Input,57771ae0-5e8b-47be-bb73-ba59f2bf8cc8,0.032,0.032,"4Q_output_power_card, 4Q_power_card"
-"cable, unspecified",kg,Input,,0.62964,0.62964,cabling
+"cable, unspecified",kg,Input,8b988c18-f03b-46aa-83ae-d72d4639ff76,0.62964,0.62964,cabling
 cabling,kg,Output,,0.62964,0.62964,cabling
 can_els,kg,Input,,0.6,0.6,4Q_output_power_card
 "capacitor production, electrolyte type, < 2cm height",kg,Input,5036886d-4b0a-4c87-956d-50d85d9abaab,0.0167333565,0.0167333565,"4Q_output_control_card, 4Q_power_card, analog_control, digital_control, fan_supervision_card, inverter_power_card"
@@ -37,7 +37,7 @@ injection moulding,kg,Input,68d6dfcf-2089-4586-9bbf-ad75591105cf,0.11129,0.11129
 "integrated circuit production, logic type",kg,Input,ad2a5d44-4e6d-430d-873b-0068ea24b9d5,0.028860614526,0.028860614526,"4Q_output_control_card, 4Q_power_card, analog_control, digital_control, inverter_power_card"
 inverter_power_card,kg,Output,,0.349315533964,0.349315533964,inverter_power_card
 light emitting diode production,kg,Input,084469ca-e2a7-4951-8753-60629e461823,0.00098096,0.00098096,"contactor_card, digital_control, inverter_power_card"
-"market for steel, low-alloyed",kg,Input,,0.00884695,0.00884695,control_backplane_card
+"market for steel, low-alloyed",kg,Input,817c3650-4fed-4ef2-b9b6-404a198834e6,0.00884695,0.00884695,control_backplane_card
 mechanical_components,kg,Output,,10.35767127,10.35767127,mechanical_components
 "metal working, average for aluminium product manufacturing",kg,Input,8c3b8032-b310-4dfe-9a9b-93fbd369142d,10.36205927,10.36205927,"4Q_output_control_card, 4Q_power_card, mechanical_components"
 "metal working, average for chromium steel product manufacturing",kg,Input,a5fc651b-3ee2-405f-b2f0-d035c8132be1,0.00164785,0.00164785,4Q_output_power_card
