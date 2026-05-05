@@ -176,6 +176,51 @@ def _sync_mexico_ipe_from_subsystem_units(base_dir, subsystem_units_map):
         f"added={added}, updated={updated}."
     )
 
+
+def _sync_mexico_ipe_output_from_section_total(base_dir, section_mass_total):
+    """Align the Mexico aggregate output amount with the total section mass."""
+    path = base_dir / MEXICO_IPE_FILENAME
+    if not path.exists():
+        print(f"[Warning] Mexico aggregate file not found: {path.name}")
+        return False
+
+    try:
+        with open(path, newline="", encoding="utf-8-sig") as f:
+            reader = csv.DictReader(f)
+            fieldnames = [name for name in list(reader.fieldnames or []) if name]
+            rows = [dict(row) for row in reader]
+    except Exception as exc:
+        print(f"[Warning] Could not read {path.name} for output sync: {exc}")
+        return False
+
+    if "Amount" not in fieldnames:
+        fieldnames.append("Amount")
+
+    updated = False
+    output_amount = _round_for_csv(float(section_mass_total or 0.0))
+    for row in rows:
+        direction = _clean_text(row.get("Direction")).lower()
+        flow_name = _clean_text(row.get("Flow"))
+        if direction == "output" or flow_name == "MEXICO_CONVERTER":
+            if _clean_text(row.get("Amount")) != output_amount:
+                row["Amount"] = output_amount
+                updated = True
+            if _clean_text(row.get("Unit")) != "kg":
+                row["Unit"] = "kg"
+                updated = True
+            if _clean_text(row.get("Direction")).lower() != "output":
+                row["Direction"] = "output"
+                updated = True
+            break
+
+    if updated:
+        with open(path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
+            writer.writeheader()
+            writer.writerows(rows)
+
+    return updated
+
 def calculate_subsystem_total_mass(results_csv_path):
     """
     Read component results CSV and sum all Total_mass_kg values.
@@ -1628,6 +1673,7 @@ def main():
         section_file_count, diagnostic_count, section_mass_total = _build_section_ipe_outputs(base)
         if section_file_count > 0:
             _fill_uuid_for_section_ipe_files(base)
+            _sync_mexico_ipe_output_from_section_total(base, section_mass_total)
         if completed_subsystems:
             mass_delta = abs(section_mass_total - total_mass)
             print(
