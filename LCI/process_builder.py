@@ -455,35 +455,12 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
         flow_name = str(row.get("Flow", "")).strip()
         print(f"[DEBUG] Processing input: flow='{flow_name}', uuid='{uuid}', provider_uuid='{provider_uuid}', amount='{row.get('Amount', 0)}'")
 
-        if not uuid and provider_uuid == "NO_PROVIDER":
-            if not flow_name:
-                print(f"[DEBUG] Skipping input with empty flow name and NO_PROVIDER.")
-                continue
-            try:
-                amount = float(row.get("Amount", 0))
-            except (ValueError, TypeError):
-                _warn(report, f"  Invalid amount '{row.get('Amount')}' for '{flow_name}', skipping.")
-                continue
-
-            try:
-                flow, _ = _find_or_create_output_flow(client, flow_name, 1.0, "", flow_category_path)
-                print(f"[DEBUG] Created no-provider input flow: {flow_name} -> {flow.id}")
-            except Exception as e:
-                _error(report, f"  Failed to create no-provider input flow '{flow_name}': {e}")
-                print(f"[DEBUG] Exception while creating no-provider input flow '{flow_name}': {e}")
-                continue
-
-            in_ex = o.Exchange()
-            in_ex.flow = flow
-            in_ex.amount = amount if amount > 0 else 1e-12
-            in_ex.is_input = True
-            in_ex.default_provider = None
-            process.exchanges.append(in_ex)
-            input_count += 1
-            continue
-
         if not uuid:
-            print(f"[DEBUG] Skipping input '{flow_name}' due to missing UUID and not NO_PROVIDER.")
+            if flow_name:
+                _warn(report, f"  Missing UUID for input '{flow_name}', skipping to avoid creating a new flow.")
+                print(f"[DEBUG] Skipping input '{flow_name}' due to missing UUID.")
+            else:
+                print(f"[DEBUG] Skipping input with empty flow name and missing UUID.")
             continue
 
         flow = client.get(o.Flow, uid=uuid)

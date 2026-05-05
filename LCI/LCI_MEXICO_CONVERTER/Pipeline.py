@@ -1491,6 +1491,33 @@ def _fill_uuid_for_subsystem_ipe(grouped_flows_csv: Path):
     )
 
 
+def _fill_uuid_for_section_ipe_files(base_dir: Path):
+    """Fill UUID columns for the generated section-level IPE files."""
+    lci_root = Path(__file__).parent.parent
+    uuid_library = lci_root / "component_library_ecoinvent_uuid_map.csv"
+    provider_library = lci_root / "component_library_ecoinvent_uuid_provider_map.csv"
+
+    if not uuid_library.exists() or not provider_library.exists():
+        print(
+            "[Warning] Global UUID libraries not found in LCI/. "
+            "Skipping UUID fill for section outputs."
+        )
+        return
+
+    if str(lci_root) not in sys.path:
+        sys.path.insert(0, str(lci_root))
+
+    from library_sync import run_fill_ipe_columns_from_library
+
+    section_files = sorted(base_dir.glob("SECTION_*_ipe_flows_from_parameters.csv"))
+    for section_file in section_files:
+        run_fill_ipe_columns_from_library(
+            library_path=uuid_library,
+            provider_library_path=provider_library,
+            target_file=section_file,
+        )
+
+
 def main():
     # UUID filling is delegated to library_sync.run_fill_ipe_columns_from_library
     # after each subsystem file is written.
@@ -1599,6 +1626,8 @@ def main():
 
     try:
         section_file_count, diagnostic_count, section_mass_total = _build_section_ipe_outputs(base)
+        if section_file_count > 0:
+            _fill_uuid_for_section_ipe_files(base)
         if completed_subsystems:
             mass_delta = abs(section_mass_total - total_mass)
             print(

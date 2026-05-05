@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import csv
 import os
+import re
 from dataclasses import dataclass
 from pathlib import Path
 
@@ -107,12 +108,38 @@ def _load_provider_map(path: Path):
     _, rows = _read_csv_rows(path)
     if not rows:
         return {}
-    return _build_mapping(
-        rows,
-        key_candidates=["Ecoinvent_flow_reference", "Ecoinvent_flow", "Flow"],
-        value_col="UUID_provider",
-        mapping_name="UUID_provider",
+
+    key_candidates = ["Ecoinvent_flow_reference", "Ecoinvent_flow", "Flow"]
+    uuid_pattern = re.compile(
+        r"^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}$"
     )
+
+    key_col = None
+    for candidate in key_candidates:
+        if candidate in rows[0] if rows else []:
+            key_col = candidate
+            break
+    if key_col is None and rows:
+        first_keys = set(rows[0].keys())
+        for candidate in key_candidates:
+            if candidate in first_keys:
+                key_col = candidate
+                break
+
+    if key_col is None:
+        raise ValueError(
+            f"UUID_provider library missing key column. Expected one of: {', '.join(key_candidates)}"
+        )
+
+    mapping = {}
+    for row in rows:
+        key = _normalize_fill_key(row.get(key_col, ""))
+        value = str(row.get("UUID_provider", "") or "").strip()
+        if key == "" or value == "" or not uuid_pattern.match(value):
+            continue
+        mapping.setdefault(key, value)
+
+    return mapping
 
 
 def _collect_missing_provider_flows(targets: list[Path], provider_map: dict[str, str]):
@@ -358,7 +385,11 @@ def run_fill_ipe_columns_from_library(
         raise FileNotFoundError(f"Provider library not found: {provider_library}")
 
     uuid_map = _load_uuid_map(uuid_library)
-    provider_map = _load_provider_map(provider_library)
+    try:
+        provider_map = _load_provider_map(provider_library)
+    except ValueError as exc:
+        print(f"Warning: provider library could not be loaded cleanly: {exc}")
+        provider_map = {}
 
     if target_file is not None:
         targets = [Path(target_file).resolve()]

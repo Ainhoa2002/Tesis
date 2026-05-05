@@ -3,6 +3,19 @@
 This script coordinates workflow phases only. Creation of openLCA entities lives
 in process_builder.py, UUID/provider library operations live in library_sync.py,
 and transport preprocessing lives in transport_workflow.py.
+
+Usage notes:
+- Use --systems to limit which LCI folders are imported.
+- Use --ipe-prefixes to import only selected *_ipe_flows_from_parameters.csv files.
+- Use --product-systems and --product-system-names to create openLCA product systems only for selected processes.
+
+Examples:
+- Import only SECTION IPEs from the Mexico converter:
+    .\.venv\Scripts\python.exe .\LCI\main.py --systems LCI_MEXICO_CONVERTER --ipe-prefixes SECTION_ --product-systems none
+- Import only one section, for example Assembly Processes:
+    .\.venv\Scripts\python.exe .\LCI\main.py --systems LCI_MEXICO_CONVERTER --ipe-prefixes SECTION_Assembly_Processes --product-systems none
+- Import all IPEs from one system folder and create product systems for imported processes:
+    .\.venv\Scripts\python.exe .\LCI\main.py --systems LCI_MEXICO_CONVERTER --product-systems imported
 """
 
 from __future__ import annotations
@@ -52,6 +65,19 @@ def _parse_product_system_names(value: str) -> list[str]:
     return items
 
 
+def _parse_selection_names(value: str) -> list[str]:
+    items = []
+    seen = set()
+    for part in str(value or "").split(","):
+        name = part.strip()
+        key = name.lower()
+        if not name or key in seen:
+            continue
+        seen.add(key)
+        items.append(name)
+    return items
+
+
 def _resolve_product_system_targets(state: ImportWorkflowState, selection_mode: str, explicit_names: str) -> list[str]:
     mode = str(selection_mode or "none").strip().lower()
     if mode == "none":
@@ -76,6 +102,22 @@ def _resolve_product_system_targets(state: ImportWorkflowState, selection_mode: 
     return []
 
 
+def _matches_selected_prefixes(file_name: str, selected_prefixes: list[str]) -> bool:
+    if not selected_prefixes:
+        return True
+
+    stem = Path(file_name).stem.lower()
+    normalized_stem = stem.replace(".csv", "")
+    for prefix in selected_prefixes:
+        candidate = str(prefix or "").strip().lower()
+        if not candidate:
+            continue
+        candidate = candidate.removesuffix(".csv")
+        if normalized_stem == candidate or normalized_stem.startswith(candidate):
+            return True
+    return False
+
+
 # Each first-level folder under LCI is treated as one system source.
 def iter_system_folders(base_dir: Path):
     for child in sorted(base_dir.iterdir()):
@@ -95,13 +137,28 @@ def resolve_category_name(folder_name: str) -> str:
 
 
 # Search correct folders in the system folder, it gives back a list with the files.
-def iter_system_csvs(system_folder: Path):
+def iter_system_csvs(system_folder: Path, selected_prefixes: list[str] | None = None):
     # Support both layouts:
     # 1) <system>/LCI/*.csv
     # 2) <system>/*.csv
     lci_subfolder = system_folder / "LCI"
     search_dir = lci_subfolder if lci_subfolder.is_dir() else system_folder
-    return sorted(search_dir.glob("*_ipe_flows_from_parameters.csv"))
+    csv_files = sorted(search_dir.glob("*_ipe_flows_from_parameters.csv"))
+    if not selected_prefixes:
+        return csv_files
+
+    return [path for path in csv_files if _matches_selected_prefixes(path.name, selected_prefixes)]
+
+
+def filter_system_folders(system_folders: list[Path], selected_systems: list[str] | None = None) -> list[Path]:
+    if not selected_systems:
+        return system_folders
+
+    selected = {str(name or "").strip().lower() for name in selected_systems if str(name or "").strip()}
+    if not selected:
+        return system_folders
+
+    return [folder for folder in system_folders if folder.name.lower() in selected]
 
 
 def run_system_pipeline_if_available(system_folder: Path, dry_run: bool = False):
@@ -162,6 +219,7 @@ def _phase_first_fill_and_import(
     state: ImportWorkflowState,
     client,
     dry_run: bool,
+    selected_ipe_prefixes: list[str] | None = None,
 ) -> None:
     """Phase 1: pipeline refresh + first UUID fill + first process import."""
     for system_folder in systems:
@@ -172,7 +230,7 @@ def _phase_first_fill_and_import(
         except Exception:
             pass
 
-        csv_files = iter_system_csvs(system_folder)
+        csv_files = iter_system_csvs(system_folder, selected_prefixes=selected_ipe_prefixes)
         if not csv_files:
             continue
 
@@ -274,6 +332,22 @@ def main():
         default="",
         help="Comma-separated process names to use with --product-systems names.",
     )
+    parser.add_argument(
+        "--systems",
+        default="",
+        help=(
+            "Comma-separated LCI folder names to import. "
+            "Default is all folders. Example: LCI_MEXICO_CONVERTER."
+        ),
+    )
+    parser.add_argument(
+        "--ipe-prefixes",
+        default="",
+        help=(
+            "Comma-separated IPE filename prefixes or exact stems to import. "
+            "Default is all IPE files. Example: SECTION_PCB, SECTION_IC."
+        ),
+    )
     args = parser.parse_args()
 
     state = ImportWorkflowState()
@@ -285,8 +359,13 @@ def main():
         pass
 
     systems = list(iter_system_folders(BASE_DIR))
+    selected_systems = _parse_selection_names(args.systems)
+    if selected_systems:
+        systems = filter_system_folders(systems, selected_systems)
     if not systems:
         return
+
+    selected_ipe_prefixes = _parse_selection_names(args.ipe_prefixes)
 
     client = None
     if not args.dry_run:
@@ -302,6 +381,7 @@ def main():
         state=state,
         client=client,
         dry_run=args.dry_run,
+        selected_ipe_prefixes=selected_ipe_prefixes,
     )
 
     if args.dry_run:
