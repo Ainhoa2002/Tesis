@@ -18,6 +18,7 @@ MAX_SELECTION_ATTEMPTS = 3
 SUBSYSTEM_UNITS_FILENAME = "subsystem_units.csv"
 SUBSYSTEM_UNITS_FIELDS = ["Subsystem", "Quantity_per_subsystem"]
 MEXICO_IPE_FILENAME = "MEXICO_ipe_flows_from_parameters.csv"
+SECTION_MISSING_COMPONENTS_FILENAME = "SECTION_components_without_ipe_rows.csv"
 DEPRECATED_INPUT_FIELDS = {
     "Ecoinvent_amount_override",
     "Notes",
@@ -676,6 +677,291 @@ def _load_existing_grouped_flow_rows(grouped_flows_csv):
         return ["Flow", "UUID", "Unit", "Amount", "Direction"], {}
 
 
+def _sanitize_filename_part(value):
+    text = _clean_text(value)
+    if text == "":
+        return "UNKNOWN"
+
+    cleaned = []
+    previous_was_separator = False
+    for char in text:
+        if char.isalnum() or char in {"-", "_"}:
+            cleaned.append(char)
+            previous_was_separator = False
+        else:
+            if not previous_was_separator:
+                cleaned.append("_")
+                previous_was_separator = True
+
+    result = "".join(cleaned).strip("_")
+    return result or "UNKNOWN"
+
+
+def _write_csv_rows(path, fieldnames, rows):
+    with open(path, "w", newline="", encoding="utf-8") as f:
+        writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
+        writer.writeheader()
+        if rows:
+            writer.writerows(rows)
+
+
+def _build_section_ipe_outputs(base_dir):
+    """Create one IPE CSV per section using all available module result files.
+
+    The generated files follow the pattern:
+    SECTION_<section>_ipe_flows_from_parameters.csv
+
+    A diagnostic CSV is also written for components that did not generate any
+    component I/O rows, which usually means their Ecoinvent flow information is
+    missing or incomplete.
+    """
+    result_paths = sorted(base_dir.glob("*_component_results.csv"))
+    if not result_paths:
+        print("[Warning] No *_component_results.csv files were found for section aggregation.")
+        return 0, 0
+
+    section_flow_rows = {}
+    section_summary = {}
+    missing_rows = []
+    processed_subsystems = 0
+
+    for results_path in result_paths:
+        subsystem = results_path.name[: -len("_component_results.csv")]
+        flows_path = base_dir / f"{subsystem}_component_io_flows.csv"
+
+        if not flows_path.exists():
+            print(f"[Warning] Missing component I/O file for subsystem '{subsystem}'. Skipping section aggregation for that module.")
+            continue
+
+        with open(results_path, newline="", encoding="utf-8-sig") as f_results, open(
+            flows_path,
+            newline="",
+            encoding="utf-8-sig",
+        ) as f_flows:
+            results_reader = csv.DictReader(f_results)
+            flow_reader = csv.DictReader(f_flows)
+            result_rows = [dict(row) for row in results_reader]
+            flow_rows = [dict(row) for row in flow_reader]
+
+        processed_subsystems += 1
+
+        flows_by_designator = set()
+        for flow_row in flow_rows:
+            designators = _clean_text(flow_row.get("Designators"))
+            if designators:
+                flows_by_designator.add(designators)
+
+            section = _clean_text(flow_row.get("Section"))
+            subsection = _clean_text(flow_row.get("Subsection"))
+            flow_name = _clean_text(flow_row.get("Ecoinvent_flow")) or _clean_text(flow_row.get("Flow"))
+            unit = _clean_text(flow_row.get("Ecoinvent_unit")) or _clean_text(flow_row.get("Unit"))
+            direction = _normalize_direction(flow_row.get("Direction"))
+
+            if section == "":
+                missing_rows.append(
+                    {
+                        "Subsystem": subsystem,
+                        "Designators": designators,
+                        "Section": section,
+                        "Subsection": subsection,
+                        "Part_Number": _clean_text(flow_row.get("Part_Number")),
+                        "Ecoinvent_flow": flow_name,
+                        "Ecoinvent_unit": unit,
+                        "Direction": direction,
+                        "Reason": "Missing Section in component flow row",
+                    }
+                )
+                continue
+
+            if flow_name == "":
+                missing_rows.append(
+                    {
+                        "Subsystem": subsystem,
+                        "Designators": designators,
+                        "Section": section,
+                        "Subsection": subsection,
+                        "Part_Number": _clean_text(flow_row.get("Part_Number")),
+                        "Ecoinvent_flow": flow_name,
+                        "Ecoinvent_unit": unit,
+                        "Direction": direction,
+                        "Reason": "Missing Ecoinvent_flow in component flow row",
+                    }
+                )
+                continue
+
+            key = (section, flow_name, unit, direction)
+            entry = section_flow_rows.setdefault(
+                key,
+                {
+                    "Section": section,
+                    "Flow": flow_name,
+                    "Unit": unit,
+                    "Direction": direction,
+                    "Amount": 0.0,
+                    "Total_mass_kg": 0.0,
+                    "Component_rows": 0,
+                    "Subsections": set(),
+                    "Source_subsystems": set(),
+                },
+            )
+            entry["Amount"] += to_float(flow_row.get("Amount")) or 0.0
+            entry["Total_mass_kg"] += to_float(flow_row.get("Total_mass_kg")) or 0.0
+            entry["Component_rows"] += 1
+            if subsection:
+                entry["Subsections"].add(subsection)
+            entry["Source_subsystems"].add(subsystem)
+
+        for result_row in result_rows:
+            section = _clean_text(result_row.get("Section"))
+            subsection = _clean_text(result_row.get("Subsection"))
+            designators = _clean_text(result_row.get("Designators"))
+            part_number = _clean_text(result_row.get("Part_Number"))
+            flow_name = _clean_text(result_row.get("Ecoinvent_flow"))
+            total_mass_kg = to_float(result_row.get("Total_mass_kg")) or 0.0
+
+            if section == "":
+                missing_rows.append(
+                    {
+                        "Subsystem": subsystem,
+                        "Designators": designators,
+                        "Section": section,
+                        "Subsection": subsection,
+                        "Part_Number": part_number,
+                        "Ecoinvent_flow": flow_name,
+                        "Ecoinvent_unit": _clean_text(result_row.get("Ecoinvent_unit")),
+                        "Direction": _clean_text(result_row.get("Direction")),
+                        "Reason": "Missing Section in component results row",
+                    }
+                )
+                continue
+
+            summary = section_summary.setdefault(
+                section,
+                {
+                    "Section": section,
+                    "Section_flow": f"SECTION_{_sanitize_filename_part(section)}",
+                    "Component_rows": 0,
+                    "Total_mass_kg": 0.0,
+                    "Subsections": set(),
+                    "Source_subsystems": set(),
+                    "Missing_process_components": 0,
+                },
+            )
+            summary["Component_rows"] += 1
+            summary["Total_mass_kg"] += total_mass_kg
+            summary["Source_subsystems"].add(subsystem)
+            if subsection:
+                summary["Subsections"].add(subsection)
+
+            if designators and designators not in flows_by_designator:
+                summary["Missing_process_components"] += 1
+                missing_rows.append(
+                    {
+                        "Subsystem": subsystem,
+                        "Designators": designators,
+                        "Section": section,
+                        "Subsection": subsection,
+                        "Part_Number": part_number,
+                        "Ecoinvent_flow": flow_name,
+                        "Ecoinvent_unit": _clean_text(result_row.get("Ecoinvent_unit")),
+                        "Direction": _clean_text(result_row.get("Direction")),
+                        "Reason": "No component I/O rows were generated for this component",
+                    }
+                )
+
+    section_fieldnames = [
+        "Flow",
+        "UUID",
+        "Unit",
+        "Amount",
+        "Direction",
+        "Section",
+        "Subsections",
+        "Source_subsystems",
+        "Component_rows",
+        "Total_mass_kg",
+        "Missing_process_components",
+    ]
+
+    section_file_count = 0
+    section_mass_total = 0.0
+    for section in sorted(section_summary.keys(), key=lambda value: value.casefold()):
+        section_info = section_summary[section]
+        section_mass_total += float(section_info["Total_mass_kg"])
+        rows = []
+        for (row_section, flow_name, unit, direction), entry in sorted(
+            section_flow_rows.items(),
+            key=lambda item: (item[0][1].casefold(), item[0][2].casefold(), item[0][3].casefold()),
+        ):
+            if row_section != section:
+                continue
+
+            rows.append(
+                {
+                    "Flow": flow_name,
+                    "UUID": "",
+                    "Unit": unit,
+                    "Amount": _round_for_csv(entry["Amount"]),
+                    "Direction": direction,
+                    "Section": section,
+                    "Subsections": ", ".join(sorted(entry["Subsections"])),
+                    "Source_subsystems": ", ".join(sorted(entry["Source_subsystems"])),
+                    "Component_rows": str(entry["Component_rows"]),
+                    "Total_mass_kg": _round_for_csv(entry["Total_mass_kg"]),
+                    "Missing_process_components": str(section_info["Missing_process_components"]),
+                }
+            )
+
+        rows.append(
+            {
+                "Flow": section_info["Section_flow"],
+                "UUID": "",
+                "Unit": "kg",
+                "Amount": _round_for_csv(section_info["Total_mass_kg"]),
+                "Direction": "Output",
+                "Section": section,
+                "Subsections": ", ".join(sorted(section_info["Subsections"])),
+                "Source_subsystems": ", ".join(sorted(section_info["Source_subsystems"])),
+                "Component_rows": str(section_info["Component_rows"]),
+                "Total_mass_kg": _round_for_csv(section_info["Total_mass_kg"]),
+                "Missing_process_components": str(section_info["Missing_process_components"]),
+            }
+        )
+
+        section_filename = f"SECTION_{_sanitize_filename_part(section)}_ipe_flows_from_parameters.csv"
+        _write_csv_rows(base_dir / section_filename, section_fieldnames, rows)
+        section_file_count += 1
+
+    diagnostic_fieldnames = [
+        "Subsystem",
+        "Designators",
+        "Section",
+        "Subsection",
+        "Part_Number",
+        "Ecoinvent_flow",
+        "Ecoinvent_unit",
+        "Direction",
+        "Reason",
+    ]
+    diagnostic_rows = sorted(
+        missing_rows,
+        key=lambda row: (
+            row["Subsystem"].casefold(),
+            row["Section"].casefold(),
+            row["Subsection"].casefold(),
+            row["Designators"].casefold(),
+        ),
+    )
+    _write_csv_rows(base_dir / SECTION_MISSING_COMPONENTS_FILENAME, diagnostic_fieldnames, diagnostic_rows)
+
+    print(
+        f"Section-level IPE aggregation completed: sections={section_file_count}, "
+        f"modules_read={processed_subsystems}, missing_component_rows={len(diagnostic_rows)}"
+    )
+
+    return section_file_count, len(diagnostic_rows), section_mass_total
+
+
 def ecoinvent_amount(row, mass_data, quantity_data):
     """Compute the ecoinvent flow amount for a component row.
     - kg unit     → taken from calculated mass (mass_data must not be None)
@@ -1310,6 +1596,24 @@ def main():
 
     if not completed_subsystems:
         print("No subsystem completed successfully.")
+
+    try:
+        section_file_count, diagnostic_count, section_mass_total = _build_section_ipe_outputs(base)
+        if completed_subsystems:
+            mass_delta = abs(section_mass_total - total_mass)
+            print(
+                "Section total mass check: "
+                f"section_sum={section_mass_total:.6f} kg, "
+                f"pipeline_total={total_mass:.6f} kg, "
+                f"delta={mass_delta:.6f} kg"
+            )
+            if mass_delta > 1e-6:
+                print(
+                    f"[Warning] Section total mass does not match pipeline total mass. "
+                    f"sections={section_file_count}, diagnostic_rows={diagnostic_count}"
+                )
+    except Exception as exc:
+        print(f"[Warning] Section-level IPE aggregation failed: {exc}")
 
 
     # Prompt user to optionally show overall operation summary

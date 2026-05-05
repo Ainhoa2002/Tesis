@@ -1,0 +1,6 @@
+Flow,UUID,Unit,Amount,Direction,Section,Subsections,Source_subsystems,Component_rows,Total_mass_kg,Missing_process_components
+can_els,,kg,0.6,Input,Modules,Sensors,4Q_output_power_card,1,0.6,0
+"electronic component production, active, unspecified",,kg,0.002562,Input,Modules,Hybrid relays,"4Q_output_control_card, 4Q_power_card, contactor_card, digital_control, inverter_power_card",5,0.002562,0
+"insulated gate bipolar transistor, electric vehicle application",,kg,0.011834,Input,Modules,"DC/DC Converters, Sensors","4Q_power_card, analog_control",2,0.011834,0
+ten,,kg,0.0511,Input,Modules,DC/DC Converters,"4Q_output_control_card, 4Q_power_card, inverter_power_card",3,0.0511,0
+SECTION_Modules,,kg,0.665496,Output,Modules,"DC/DC Converters, Hybrid relays, Sensors","4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, analog_control, contactor_card, digital_control, inverter_power_card",11,0.665496,0

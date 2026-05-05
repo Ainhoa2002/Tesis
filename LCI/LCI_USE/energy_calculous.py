@@ -41,7 +41,9 @@ P_conv = P_out * (1 / eff_conv - 1)  # [W]
 
 # Total instantaneous losses
 P_loss = P_magnet + P_cable + P_conv  # [W]
-
+prop_loss_magnet = P_magnet / P_loss  # Proportion of losses relative to output power 
+prop_loss_cable = P_cable / P_loss
+prop_loss_conv = P_conv / P_loss
 # -----------------------
 # TIME INTEGRATION
 # -----------------------
@@ -59,12 +61,12 @@ E_loss_total_MJ = E_loss_total_kWh * 3.6
 # -----------------------
 
 print("=== FCC-ee Corrector Circuit Use Phase ===\n")
-print(f"Magnet resistance:        {R_magnet:.2f} W")
+print(f"Magnet resistance:        {R_magnet} W")
 print(f"Cable resistance:         {R_cable:.2f} W")
-print(f"Magnet losses:        {P_magnet:.2f} W")
-print(f"Cable losses:         {P_cable:.2f} W")
-print(f"Converter losses:     {P_conv:.2f} W")
-print(f"Total power losses:   {P_loss:.2f} W\n")
+print(f"Magnet losses:        {P_magnet} W, {prop_loss_magnet} of total losses")
+print(f"Cable losses:         {P_cable} W, {prop_loss_cable} of total losses")
+print(f"Converter losses:     {P_conv} W, {prop_loss_conv} of total losses")
+print(f"Total power losses:   {P_loss} W\n")
 
 print(f"Total operational time: {T_op:.0f} h")
-print(f"Lifetime energy losses: {E_loss_total_MJ:.2f} MJ")
+print(f"Lifetime energy losses: {E_loss_total_MJ} MJ")

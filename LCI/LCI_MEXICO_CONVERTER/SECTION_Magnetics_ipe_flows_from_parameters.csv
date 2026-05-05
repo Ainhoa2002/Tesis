@@ -1,0 +1,10 @@
+Flow,UUID,Unit,Amount,Direction,Section,Subsections,Source_subsystems,Component_rows,Total_mass_kg,Missing_process_components
+"copper, cathode",,kg,0.6054633,Input,Magnetics,Inductors,"HF_Power_Transformer_PM624929, power_inductor_PM6249",3,0.6054633,0
+ferrite,,kg,2.380512,Input,Magnetics,Inductors,"HF_Power_Transformer_PM624929, power_inductor_PM6249",2,2.380512,0
+injection moulding,,kg,0.11,Input,Magnetics,Inductors,"HF_Power_Transformer_PM624929, power_inductor_PM6249",2,0.11,0
+nylon 6,,kg,0.0036,Input,Magnetics,Inductors,power_inductor_PM6249,1,0.0036,0
+"polyester resin, unsaturated",,kg,0.11,Input,Magnetics,Inductors,"HF_Power_Transformer_PM624929, power_inductor_PM6249",2,0.11,0
+polytetrafluoroethylene,,kg,0.0064,Input,Magnetics,Inductors,"HF_Power_Transformer_PM624929, power_inductor_PM6249",2,0.0064,0
+"transformer production, low voltage use",,kg,0.0922,Input,Magnetics,"Current sensing, Inductors","filter_card, inverter_power_card",2,0.0922,0
+"wire drawing, copper",,kg,0.6054633,Input,Magnetics,Inductors,"HF_Power_Transformer_PM624929, power_inductor_PM6249",3,0.6054633,0
+SECTION_Magnetics,,kg,3.1981753,Output,Magnetics,"Current sensing, Inductors","HF_Power_Transformer_PM624929, filter_card, inverter_power_card, power_inductor_PM6249",12,3.1981753,0

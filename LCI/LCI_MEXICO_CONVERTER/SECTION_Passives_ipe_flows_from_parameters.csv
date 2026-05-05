@@ -1,0 +1,14 @@
+Flow,UUID,Unit,Amount,Direction,Section,Subsections,Source_subsystems,Component_rows,Total_mass_kg,Missing_process_components
+"capacitor production, electrolyte type, < 2cm height",,kg,0.0167333565,Input,Passives,Capacitors,"4Q_output_control_card, 4Q_power_card, analog_control, digital_control, fan_supervision_card, inverter_power_card",6,0.0167333565,0
+"capacitor production, electrolyte type, > 2cm height",,kg,0.8915588,Input,Passives,Capacitors,"4Q_power_card, filter_card",2,0.8915588,0
+"capacitor production, film type, for through-hole mounting",,kg,0.5895252225,Input,Passives,Capacitors,"4Q_output_power_card, 4Q_power_card, filter_card, fuse_card, inverter_power_card",21,0.5895252225,0
+"capacitor production, for surface-mounting",,kg,0.01309393696,Input,Passives,Capacitors,"4Q_output_control_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, inverter_power_card",57,0.01309393696,0
+"electric connector production, wire clamp",,kg,0.00137,Input,Passives,Electromechanical,filter_card,1,0.00137,0
+"electronic component, passive, unspecified",,kg,0.044876387333,Input,Passives,"Crystals, Protection, Resistors, Test PIN","4Q_output_control_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card",22,0.044876387333,0
+"inductor production, low value multilayer chip",,kg,0.00068144,Input,Passives,Inductors,"analog_control, digital_control",7,0.00068144,0
+"inductor production, ring core choke type",,kg,0.178841,Input,Passives,Inductors,"analog_control, digital_control",6,0.178841,0
+"resistor production, metal film type, through-hole mounting",,kg,0.0028,Input,Passives,Resistors,4Q_output_control_card,1,0.0028,0
+"resistor production, surface-mounted",,kg,0.0108682525,Input,Passives,Resistors,"4Q_output_control_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, inverter_power_card",102,0.0108682525,0
+"resistor production, wirewound, through-hole mounting",,kg,0.005948,Input,Passives,Resistors,contactor_card,1,0.005948,0
+"resistor, metal film type, through-hole mounting",,kg,0.00641001,Input,Passives,Resistors,"4Q_output_power_card, filter_card, fuse_card",3,0.00641001,0
+SECTION_Passives,,kg,1.762706405793,Output,Passives,"Capacitors, Crystals, Electromechanical, Inductors, Protection, Resistors, Test PIN","4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card",229,1.762706405793,0

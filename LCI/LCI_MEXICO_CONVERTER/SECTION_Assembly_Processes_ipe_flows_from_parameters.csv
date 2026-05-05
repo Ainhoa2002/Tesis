@@ -1,0 +1,4 @@
+Flow,UUID,Unit,Amount,Direction,Section,Subsections,Source_subsystems,Component_rows,Total_mass_kg,Missing_process_components
+"mounting, surface mount technology, Pb-free solder",,m2,0.15135,Input,Assembly Processes,SMD,"4Q_output_control_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, inverter_power_card",7,0.0,0
+"mounting, through-hole technology, Pb-free solder",,m2,0.2031,Input,Assembly Processes,THT,"4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card",10,0.0,0
+SECTION_Assembly_Processes,,kg,0.0,Output,Assembly Processes,"SMD, THT","4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, analog_control, contactor_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card",17,0.0,0

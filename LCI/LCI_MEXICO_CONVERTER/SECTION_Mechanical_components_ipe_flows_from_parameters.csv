@@ -1,0 +1,6 @@
+Flow,UUID,Unit,Amount,Direction,Section,Subsections,Source_subsystems,Component_rows,Total_mass_kg,Missing_process_components
+"aluminium alloy, AlMg3",,kg,10.35367127,Input,Mechanical components,"control, cover, heatsink, panel, separator",mechanical_components,12,10.35367127,0
+"copper, cathode",,kg,0.004,Input,Mechanical components,spacer,mechanical_components,1,0.004,0
+"metal working, average for aluminium product manufacturing",,kg,10.35367127,Input,Mechanical components,"control, cover, heatsink, panel, separator",mechanical_components,12,10.35367127,0
+"metal working, average for copper product manufacturing",,kg,0.004,Input,Mechanical components,spacer,mechanical_components,1,0.004,0
+SECTION_Mechanical_components,,kg,10.35767127,Output,Mechanical components,"control, cover, heatsink, panel, separator, spacer",mechanical_components,13,10.35767127,0

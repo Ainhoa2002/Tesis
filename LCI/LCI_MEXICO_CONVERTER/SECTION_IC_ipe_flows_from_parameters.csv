@@ -1,0 +1,4 @@
+Flow,UUID,Unit,Amount,Direction,Section,Subsections,Source_subsystems,Component_rows,Total_mass_kg,Missing_process_components
+"electronic component production, active, unspecified",,kg,0.0005,Input,IC,Analog,digital_control,1,0.0005,0
+"integrated circuit production, logic type",,kg,0.028860614526,Input,IC,"Analog, Digital, Logic / Mixed-Signal, Memory, Mixed signal, Mixed-Signal, Optoelectronics","4Q_output_control_card, 4Q_power_card, analog_control, digital_control, inverter_power_card",61,0.028860614526,0
+SECTION_IC,,kg,0.029360614526,Output,IC,"Analog, Digital, Logic / Mixed-Signal, Memory, Mixed signal, Mixed-Signal, Optoelectronics","4Q_output_control_card, 4Q_power_card, analog_control, digital_control, inverter_power_card",62,0.029360614526,0

@@ -1,0 +1,9 @@
+Flow,UUID,Unit,Amount,Direction,Section,Subsections,Source_subsystems,Component_rows,Total_mass_kg,Missing_process_components
+brass,,kg,0.032,Input,Electromechanical,Connectors,"4Q_output_power_card, 4Q_power_card",2,0.032,0
+"copper, cathode",,kg,0.0108,Input,Electromechanical,Connectors,HF_Power_Transformer_PM624929,1,0.0108,0
+"electric connector production, peripheral type buss",,kg,0.418935,Input,Electromechanical,Connectors,"analog_control, contactor_card, digital_control, filter_card, fuse_card, inverter_power_card",17,0.418935,0
+"electric connector production, wire clamp",,kg,0.25223066856,Input,Electromechanical,Connectors,"4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, HF_Power_Transformer_PM624929, analog_control, contactor_card, control_backplane_card, digital_control, fan_supervision_card, fuse_card, inverter_power_card",27,0.25223066856,0
+"electronic component, passive, unspecified",,kg,0.08368796875,Input,Electromechanical,"Fuse holder, Switches","4Q_output_control_card, digital_control, fan_supervision_card, fuse_card",7,0.08368796875,0
+"metal working, average for copper product manufacturing",,kg,0.0428,Input,Electromechanical,Connectors,"4Q_output_power_card, 4Q_power_card, HF_Power_Transformer_PM624929",3,0.0428,0
+"transformer production, low voltage use",,kg,0.03398,Input,Electromechanical,Relays,contactor_card,1,0.03398,0
+SECTION_Electromechanical,,kg,0.83163363731,Output,Electromechanical,"Connectors, Fuse holder, Relays, Switches","4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, HF_Power_Transformer_PM624929, analog_control, contactor_card, control_backplane_card, digital_control, fan_supervision_card, filter_card, fuse_card, inverter_power_card",55,0.83163363731,0

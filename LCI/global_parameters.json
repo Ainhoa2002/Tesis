@@ -12,33 +12,68 @@
     "product_systems_interactive_mode": 0,
     // List of process names to build product systems for. If empty, uses all components from module.
     "product_systems_prefer_defaults": [
-      "system",
-      "use_mix",
-      "use_renewables",
-      "transport",
-      "connector_system"
+      "use_cable_renewables",
+      "use_cable_mix",
+      "use_magnet_renewables",
+      "use_magnet_mix",
+      "use_converter_renewables",
+      "use_converter_mix",
+      "connector_system_transport",
+      "magnet_transport",
+      "mexico_transport",
+      "connector_disgregation",
+      "magnet_disgregation",
+      "MEXICO_disgregation"
     ],
     // Provider linking mode for each component: only-defaults, prefer-defaults, ignore-defaults
     "product_systems_module": {
       "components": [
         {
-          "name": "system",
+          "name": "use_cable_renewables",
           "provider_linking": "prefer-defaults"
         },
         {
-          "name": "use_mix",
+          "name": "use_cable_mix",
           "provider_linking": "prefer-defaults"
         },
         {
-          "name": "use_renewables",
+          "name": "use_magnet_renewables",
           "provider_linking": "prefer-defaults"
         },
         {
-          "name": "connector_system",
+          "name": "use_magnet_mix",
           "provider_linking": "prefer-defaults"
         },
         {
-          "name": "transport",
+          "name": "use_converter_renewables",
+          "provider_linking": "prefer-defaults"
+        },
+        {
+          "name": "use_converter_mix",
+          "provider_linking": "prefer-defaults"
+        },
+        {
+          "name": "connector_system_transport",
+          "provider_linking": "prefer-defaults"
+        },
+        {
+          "name": "magnet_transport",
+          "provider_linking": "prefer-defaults"
+        },
+        {
+          "name": "mexico_transport",
+          "provider_linking": "prefer-defaults"
+        },
+        {
+          "name": "connector_disgregation",
+          "provider_linking": "prefer-defaults"
+        },
+        {
+          "name": "magnet_disgregation",
+          "provider_linking": "prefer-defaults"
+        },
+        {
+          "name": "MEXICO_disgregation",
           "provider_linking": "prefer-defaults"
         }
       ]
