@@ -8,7 +8,7 @@
 
 # Electrical parameters
 I = 10.0                     # Circuit current [A]
-R_magnet = 8.52e-3           # Magnet resistance [Ohm] (8.52 mOhm)
+R_magnet = 1.924           # Magnet resistance [Ohm] (8.52 mOhm)
 R_cable_km = 1.95            # Cable resistance [Ohm/km]
 cable_length_km = 0.97567       # Total cable loop length [km]
 eff_conv = 0.80  # Converter efficiency [-]
@@ -61,8 +61,8 @@ E_loss_total_MJ = E_loss_total_kWh * 3.6
 # -----------------------
 
 print("=== FCC-ee Corrector Circuit Use Phase ===\n")
-print(f"Magnet resistance:        {R_magnet} W")
-print(f"Cable resistance:         {R_cable:.2f} W")
+print(f"Magnet resistance:        {R_magnet} ohm")
+print(f"Cable resistance:         {R_cable:.2f} ohm")
 print(f"Magnet losses:        {P_magnet} W, {prop_loss_magnet} of total losses")
 print(f"Cable losses:         {P_cable} W, {prop_loss_cable} of total losses")
 print(f"Converter losses:     {P_conv} W, {prop_loss_conv} of total losses")
