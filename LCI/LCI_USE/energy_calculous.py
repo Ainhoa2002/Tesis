@@ -7,8 +7,8 @@
 # -----------------------
 
 # Electrical parameters
-I = 10.0                     # Circuit current [A]
-R_magnet = 1.924           # Magnet resistance [Ohm] (8.52 mOhm)
+I = 6.572                    # Circuit current [A]
+R_magnet = 1.924           # Magnet resistance [Ohm]
 R_cable_km = 1.95            # Cable resistance [Ohm/km]
 cable_length_km = 0.97567       # Total cable loop length [km]
 eff_conv = 0.80  # Converter efficiency [-]
