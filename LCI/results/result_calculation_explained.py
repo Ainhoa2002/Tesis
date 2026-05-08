@@ -48,7 +48,9 @@ import traceback
 # Type: List of strings
 # Example: ["Buck Converter Assembly", "Li-ion Battery Module"]
 PRODUCT_SYSTEMS = [
-    "connector_system",  # ← Edit: Add your system names here
+    "connector_system",
+    "magnet",
+    "MEXICO",   # ← Edit: Add your system names here
 ]
 
 # Life Cycle Impact Assessment method name
@@ -87,13 +89,13 @@ TOP_N_CONTRIBUTORS = 5
 # Type: Boolean
 # True = include normalized impacts in output
 # False = skip normalization
-NORMALIZATION_ENABLED = False
+NORMALIZATION_ENABLED = True
 
 # Which Normalization/Weighting set to use
 # Type: String or None
 # None = use default from LCIA method
 # Example: "EF v3.1 Europe" for regional set
-NORMALIZATION_NW_SET = None 
+NORMALIZATION_NW_SET = "EF v3.1 (Global Reference 2010)" 
 
 
 
@@ -104,17 +106,33 @@ NORMALIZATION_NW_SET = None
 # Extract pedigree matrix scores for each process
 # Type: Boolean
 # True = retrieve quality scores from openLCA
-INCLUDE_PROCESS_DQ = True
+INCLUDE_PROCESS_DQ = False
 
 # Extract quality scores for individual flows
 # Type: Boolean
 # True = per-flow quality assessment
-INCLUDE_EXCHANGE_DQ = True
+INCLUDE_EXCHANGE_DQ = False
 
 # Save comprehensive data quality report to JSON
 # Type: Boolean
 # True = create *_data_quality.json
-EXPORT_DQ_SYSTEM_INFO = True
+EXPORT_DQ_SYSTEM_INFO = False
+
+
+# ============================================================================
+# RESULT EXPORT SETTINGS
+# ============================================================================
+
+# Enable exporting results to external folder
+# Type: Boolean
+# True = save results to EXPORT_RESULT_FOLDER
+# False = save only to current LCI/RESULTS directory
+EXPORT_RESULT = True
+
+# Folder where results will be exported
+# Type: String (absolute or relative path)
+# Default: C:\\Users\\alorzaga\\cernbox\\WINDOWS\\Desktop\\TESIS\\LCIA_Power systems
+EXPORT_RESULT_FOLDER = r"C:\Users\alorzaga\cernbox\WINDOWS\Desktop\TESIS\LCIA_Power systems"
 
 
 # ============================================================================
@@ -157,23 +175,13 @@ IPC_TIMEOUT = 60
 
 
 # ============================================================================
-# OUTPUT DIRECTORY (auto-set)
+# OUTPUT DIRECTORIES (auto-set)
 # ============================================================================
 # Results will be saved to: LCI/results/
 output_dir = str(Path(__file__).resolve().parent)
-os.makedirs(output_dir, exist_ok=True)
-
-print("=" * 70)
-print("LCA RESULT CALCULATION SCRIPT")
-print("=" * 70)
-print(f"Product systems: {PRODUCT_SYSTEMS}")
-print(f"LCIA method: {LCIA_METHOD}")
-print(f"Impact categories: {IMPACT_CATEGORIES if IMPACT_CATEGORIES else 'ALL'}")
-print(f"Top N contributors: {TOP_N_CONTRIBUTORS}")
-print(f"Normalization enabled: {NORMALIZATION_ENABLED}")
-print(f"Data quality extraction: {INCLUDE_PROCESS_DQ or INCLUDE_EXCHANGE_DQ}")
-print(f"Output directory: {output_dir}")
-print("=" * 70 + "\n")
+export_output_dir = EXPORT_RESULT_FOLDER if EXPORT_RESULT else None
+client = None
+method_ref = None
 
 
 # ============================================================================
@@ -222,7 +230,7 @@ def safe_filename(value):
     Convert any string to a filesystem-safe filename.
     
     Removes or replaces characters that are invalid in Windows/Linux filenames:
-    - Special chars: < > : " / \ | ? *
+    - Special chars: < > : " / \\ | ? *
     - Control characters (\x00-\x1f)
     - Leading/trailing spaces and dots
     
@@ -240,6 +248,39 @@ def safe_filename(value):
     text = re.sub(r"\s+", " ", text).strip()
     text = text.rstrip(" .")
     return text or "unnamed"
+
+
+def save_to_results(filename, content_saver):
+    """
+    Save content to both output directories (local and export folder).
+    
+    Parameters:
+        filename: Name of the file to save
+        content_saver: Function that takes a file path and saves content there
+                      (e.g., lambda path: df.to_csv(path, index=False))
+    
+    Returns:
+        Tuple of (local_path, export_path or None)
+    """
+    # Save to local directory
+    local_path = os.path.join(output_dir, filename)
+    content_saver(local_path)
+    
+    # Save to export directory if enabled
+    export_path = None
+    if export_output_dir:
+        try:
+            Path(export_output_dir).mkdir(parents=True, exist_ok=True)
+            export_path = os.path.join(export_output_dir, filename)
+            content_saver(export_path)
+        except Exception as e:
+            print(f"⚠ Warning: Could not save to export folder: {e}")
+    
+    return local_path, export_path
+
+
+def normalize_key(value):
+    return re.sub(r"\s+", " ", str(value).strip().lower())
 
 
 def run_with_timeout(fn, timeout=IPC_TIMEOUT):
@@ -479,17 +520,7 @@ def extract_exchange_dq_info(client, process_id):
 # 4. SERVER CONNECTION & INITIALIZATION
 # ============================================================================
 
-# Connect to openLCA IPC server
-# Note: openLCA application must be running and listening on this port
-client = ipc.Client(OPENLCA_PORT)
-print(f"Connected to openLCA server on port {OPENLCA_PORT}.\n")
-
-# Find and validate the LCIA method in openLCA database
-method_ref = client.find(o.ImpactMethod, name=LCIA_METHOD)
-if not method_ref:
-    raise ValueError(f"Impact method '{LCIA_METHOD}' not found in openLCA database.\n"
-                     f"Available methods must be imported in openLCA first.")
-print(f"✓ LCIA method found: {method_ref.name} (ID: {method_ref.id})\n")
+# Connection and LCIA method setup are initialized inside `main()` so the module can be imported safely.
 
 
 # ============================================================================
@@ -544,7 +575,34 @@ def process_system(system_name):
     # CalculationSetup specifies:
     #   - target: which product system to calculate
     #   - impact_method: which LCIA method to use for characterization
+    #   - nw_set: which Normalization/Weighting set to use (if normalization enabled)
     setup = o.CalculationSetup(target=ps, impact_method=method_ref)
+    
+    # Add NW set to setup if normalization is enabled
+    if NORMALIZATION_ENABLED and NORMALIZATION_NW_SET:
+        try:
+            # Find the NW set by name in the LCIA method
+            nw_sets = method_ref.nw_sets if hasattr(method_ref, 'nw_sets') else []
+            if not nw_sets:
+                # Get full method object to access NW sets
+                full_method = client.get(o.ImpactMethod, method_ref.id)
+                nw_sets = full_method.nw_sets if full_method and full_method.nw_sets else []
+            
+            if nw_sets:
+                # Find NW set by name
+                selected_nw = next(
+                    (nw for nw in nw_sets if nw.name == NORMALIZATION_NW_SET),
+                    None
+                )
+                if selected_nw:
+                    setup.nw_set = selected_nw
+                    print(f"  → Normalization enabled: {selected_nw.name}")
+                else:
+                    print(f"  ⚠ NW set '{NORMALIZATION_NW_SET}' not found in method")
+            else:
+                print(f"  ⚠ No NW sets available in method for normalization")
+        except Exception as e:
+            print(f"  ⚠ Could not set NW set: {e}")
 
     # Step 3: Run LCA calculation on openLCA server (with timeout protection)
     try:
@@ -587,33 +645,44 @@ def process_system(system_name):
     if NORMALIZATION_ENABLED:
         try:
             all_normalized_impacts = result.get_normalized_impacts()
-            # Also get the reference values for comparison
-            normalization_factors = get_normalization_reference_factors(
-                client, method_ref, NORMALIZATION_NW_SET
-            )
-            print("✓ Normalized impacts calculated.")
+            if all_normalized_impacts:
+                print(f"✓ Normalized impacts calculated ({len(all_normalized_impacts)} categories).")
+            else:
+                print(f"⚠ Normalized impacts returned empty. Ensure NW set is properly defined in CalculationSetup.")
+                all_normalized_impacts = None
         except Exception as e:
             print(f"  ⚠ Could not get normalized impacts: {e}")
     
     if all_impacts:
         # Apply impact category filter (if specified in config)
         impacts = filter_impacts_by_names(all_impacts, IMPACT_CATEGORIES)
+        normalized_lookup = {}
+        if all_normalized_impacts:
+            for index, normalized_impact in enumerate(all_normalized_impacts):
+                category = getattr(normalized_impact, "impact_category", None)
+                if category is None:
+                    continue
+                normalized_lookup[normalize_key(category.name)] = normalized_impact
+                normalized_lookup.setdefault(category.id, normalized_impact)
+                normalized_lookup.setdefault(index, normalized_impact)
         
         # Prepare DataFrame with both raw and normalized values
         impacts_data = []
-        for i in impacts:
+        for index, i in enumerate(impacts):
             row = {
                 "Impact category": i.impact_category.name,
                 "Amount (Raw)": i.amount,
                 "Unit": i.impact_category.ref_unit,
+                "Amount (Normalized)": None,
+                "Normalized Unit": None,
             }
             
             # Add normalized value if available
             if all_normalized_impacts:
-                norm_impact = next(
-                    (n for n in all_normalized_impacts 
-                     if n.impact_category.id == i.impact_category.id),
-                    None
+                norm_impact = (
+                    normalized_lookup.get(i.impact_category.id)
+                    or normalized_lookup.get(normalize_key(i.impact_category.name))
+                    or normalized_lookup.get(index)
                 )
                 if norm_impact:
                     row["Amount (Normalized)"] = norm_impact.amount
@@ -628,9 +697,20 @@ def process_system(system_name):
         # Save impacts to CSV
         safe_system = safe_filename(system_name)
         safe_method = safe_filename(method_ref.name)
-        imp_path = os.path.join(output_dir, f"{safe_system}_{safe_method}_impacts.csv")
-        df_impacts.to_csv(imp_path, index=False)
-        print(f"✓ Saved impacts: {len(df_impacts)} categories → {imp_path}")
+        
+        imp_filename = f"{safe_system}_{safe_method}_impacts.csv"
+        local_imp_path, export_imp_path = save_to_results(imp_filename, lambda p: df_impacts.to_csv(p, index=False))
+        print(f"✓ Saved impacts: {len(df_impacts)} categories → {local_imp_path}")
+        if export_imp_path:
+            print(f"  ✓ Exported to: {export_imp_path}")
+        
+        if all_normalized_impacts and "Amount (Normalized)" in df_impacts.columns:
+            norm_filename = f"{safe_system}_{safe_method}_impacts_normalized.csv"
+            norm_df = df_impacts[["Impact category", "Amount (Normalized)", "Normalized Unit"]]
+            local_norm_path, export_norm_path = save_to_results(norm_filename, lambda p: norm_df.to_csv(p, index=False))
+            print(f"✓ Saved normalized impacts → {local_norm_path}")
+            if export_norm_path:
+                print(f"  ✓ Exported to: {export_norm_path}")
     else:
         print("⚠ No impacts found.")
         impacts = []
@@ -676,9 +756,11 @@ def process_system(system_name):
         # Save inventory to CSV
         safe_system = safe_filename(system_name)
         safe_method = safe_filename(method_ref.name)
-        flo_path = os.path.join(output_dir, f"{safe_system}_{safe_method}_inventory.csv")
-        df_flows.to_csv(flo_path, index=False)
-        print(f"✓ Saved inventory: {len(df_flows)} flows → {flo_path}")
+        flo_filename = f"{safe_system}_{safe_method}_inventory.csv"
+        local_flo_path, export_flo_path = save_to_results(flo_filename, lambda p: df_flows.to_csv(p, index=False))
+        print(f"✓ Saved inventory: {len(df_flows)} flows → {local_flo_path}")
+        if export_flo_path:
+            print(f"  ✓ Exported to: {export_flo_path}")
     else:
         print("⚠ No inventory flows found.")
 
@@ -716,6 +798,7 @@ def process_system(system_name):
                 except TimeoutError:
                     print(f"    ✗ Contribution extraction for {cat.name} timed out; skipping category.")
                     continue
+
                 print(f"      Found {len(contributions)} contributing processes")
                 
                 # Filter out processes with zero contribution
@@ -747,11 +830,14 @@ def process_system(system_name):
                 safe_system = safe_filename(system_name)
                 safe_method = safe_filename(method_ref.name)
                 safe_category = safe_filename(cat.name)
-                contrib_path = os.path.join(
-                    output_dir, f"{safe_system}_{safe_method}_{safe_category}_upstream.csv"
+                contrib_filename = f"{safe_system}_{safe_method}_{safe_category}_upstream.csv"
+                local_contrib_path, export_contrib_path = save_to_results(
+                    contrib_filename,
+                    lambda p: df_contrib.to_csv(p, index=False)
                 )
-                df_contrib.to_csv(contrib_path, index=False)
-                print(f"    ✓ Saved top {len(df_contrib)} contributors → {contrib_path}")
+                print(f"    ✓ Saved top {len(df_contrib)} contributors → {local_contrib_path}")
+                if export_contrib_path:
+                    print(f"      ✓ Exported to: {export_contrib_path}")
             
             except Exception as e:
                 print(f"    ✗ Error analyzing contributions for {cat.name}: {e}")
@@ -862,11 +948,13 @@ def process_system(system_name):
             if all_dq_data["processes"] and EXPORT_DQ_SYSTEM_INFO:
                 safe_system = safe_filename(system_name)
                 safe_method = safe_filename(method_ref.name)
-                dq_path = os.path.join(
-                    output_dir, f"{safe_system}_{safe_method}_data_quality.json"
-                )
-                with open(dq_path, "w", encoding="utf-8") as f:
-                    json.dump(all_dq_data, f, indent=2, default=str)
+                dq_filename = f"{safe_system}_{safe_method}_data_quality.json"
+                
+                def save_dq_json(path):
+                    with open(path, "w", encoding="utf-8") as f:
+                        json.dump(all_dq_data, f, indent=2, default=str)
+                
+                local_dq_path, export_dq_path = save_to_results(dq_filename, save_dq_json)
                 
                 print(f"    ✓ Extracted DQ scores from {all_dq_data['summary']['total_processes']} processes")
                 print(f"      → Processes with DQ data: {all_dq_data['summary']['processes_with_dq']}")
@@ -874,7 +962,9 @@ def process_system(system_name):
                     print(f"      → {all_dq_data['summary']['average_dq_entry']}")
                 if all_dq_data["summary"]["quality_distribution"]:
                     print(f"      → Quality breakdown: {all_dq_data['summary']['quality_distribution']}")
-                print(f"    ✓ Saved data quality report → {dq_path}")
+                print(f"    ✓ Saved data quality report → {local_dq_path}")
+                if export_dq_path:
+                    print(f"      ✓ Exported to: {export_dq_path}")
             elif all_dq_data["processes"]:
                 print(f"    ✓ Extracted DQ from {len(all_dq_data['processes'])} contributing processes")
 
@@ -956,12 +1046,18 @@ def process_system(system_name):
             # Save Sankey data to JSON
             safe_system = safe_filename(system_name)
             safe_method = safe_filename(method_ref.name)
-            sankey_path = os.path.join(output_dir, f"{safe_system}_{safe_method}_sankey.json")
-            with open(sankey_path, "w", encoding="utf-8") as f:
-                json.dump(sankey_data, f, indent=2)
+            sankey_filename = f"{safe_system}_{safe_method}_sankey.json"
+            
+            def save_sankey_json(path):
+                with open(path, "w", encoding="utf-8") as f:
+                    json.dump(sankey_data, f, indent=2)
+            
+            local_sankey_path, export_sankey_path = save_to_results(sankey_filename, save_sankey_json)
             
             print(f"    ✓ Saved Sankey graph ({len(sankey_graph.nodes)} nodes, "
-                  f"{len(sankey_graph.edges)} edges) → {sankey_path}")
+                  f"{len(sankey_graph.edges)} edges) → {local_sankey_path}")
+            if export_sankey_path:
+                print(f"      ✓ Exported to: {export_sankey_path}")
         else:
             print("    ⚠ Sankey graph not available; skipped saving.")
 
@@ -1032,13 +1128,17 @@ def process_system(system_name):
                 # Save tree to JSON
                 safe_system = safe_filename(system_name)
                 safe_method = safe_filename(method_ref.name)
-                tree_path = os.path.join(
-                    output_dir, f"{safe_system}_{safe_method}_process_tree.json"
-                )
-                with open(tree_path, "w", encoding="utf-8") as f:
-                    json.dump(tree_data, f, indent=2, default=str)
+                tree_filename = f"{safe_system}_{safe_method}_process_tree.json"
                 
-                print(f"    ✓ Saved process tree → {tree_path}")
+                def save_tree_json(path):
+                    with open(path, "w", encoding="utf-8") as f:
+                        json.dump(tree_data, f, indent=2, default=str)
+                
+                local_tree_path, export_tree_path = save_to_results(tree_filename, save_tree_json)
+                
+                print(f"    ✓ Saved process tree → {local_tree_path}")
+                if export_tree_path:
+                    print(f"      ✓ Exported to: {export_tree_path}")
         except Exception as e:
             print(f"    ⚠ Could not generate tree diagram: {e}")
 
@@ -1055,6 +1155,30 @@ def main():
     """
     Orchestrate result extraction for all configured product systems.
     """
+    global client, method_ref, output_dir
+
+    output_dir = str(Path(__file__).resolve().parent)
+    os.makedirs(output_dir, exist_ok=True)
+
+    print("=" * 70)
+    print("LCA RESULT CALCULATION SCRIPT")
+    print("=" * 70)
+    print(f"Product systems: {PRODUCT_SYSTEMS}")
+    print(f"LCIA method: {LCIA_METHOD}")
+    print(f"Impact categories: {IMPACT_CATEGORIES if IMPACT_CATEGORIES else 'ALL'}")
+    print(f"Top N contributors: {TOP_N_CONTRIBUTORS}")
+    print(f"Normalization enabled: {NORMALIZATION_ENABLED}")
+    print(f"Data quality extraction: {INCLUDE_PROCESS_DQ or INCLUDE_EXCHANGE_DQ}")
+    print(f"Output directory: {output_dir}")
+    print("=" * 70 + "\n")
+
+    client = ipc.Client(8080)
+
+    method_ref = client.find(o.ImpactMethod, name=LCIA_METHOD)
+    if not method_ref:
+        raise ValueError(f"Impact method '{LCIA_METHOD}' not found")
+    print(f"Using impact method: {method_ref.name} (ID: {method_ref.id})")
+
     print("\n" + "=" * 70)
     print("LCA RESULT EXTRACTION STARTING")
     print("=" * 70 + "\n")

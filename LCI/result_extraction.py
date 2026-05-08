@@ -9,20 +9,62 @@ import olca_ipc as ipc
 import olca_schema as o
 
 
+"""
+Parameter loading strategy:
+1. Prefer parameters defined at the top of `RESULTS/result_calculation_explained.py` (authoritative for ad-hoc runs).
+2. If that file or variables are not available, fall back to `global_parameters.json` (legacy/default).
+"""
+
+OVERRIDE_VARS = {}
+try:
+    # Safely parse top-level literal assignments from the explained script using AST
+    import ast
+
+    rc_path = Path(__file__).resolve().parent / "RESULTS" / "result_calculation_explained.py"
+    if rc_path.exists():
+        text = rc_path.read_text(encoding="utf-8")
+        mod = ast.parse(text)
+        # Minimal safe set: only basic run-control parameters (no normalization or DQ flags)
+        wanted = {
+            "PRODUCT_SYSTEMS",
+            "LCIA_METHOD",
+            "IMPACT_CATEGORIES",
+            "TOP_N_CONTRIBUTORS",
+            "SANKEY_MODE",
+            "SANKEY_TOP_FLOWS",
+            "SANKEY_TOP_IMPACTS",
+            "SANKEY_MAX_DEPTH",
+        }
+        for node in mod.body:
+            if isinstance(node, ast.Assign):
+                for target in node.targets:
+                    if isinstance(target, ast.Name) and target.id in wanted:
+                        try:
+                            value = ast.literal_eval(node.value)
+                        except Exception:
+                            # Non-literal expressions (computed at runtime) are skipped
+                            continue
+                        OVERRIDE_VARS[target.id] = value
+except Exception:
+    OVERRIDE_VARS = {}
+
+
 CONFIG_FILE = Path(__file__).resolve().parent / "global_parameters.json"
 with open(CONFIG_FILE, "r", encoding="utf-8") as f:
     data = json5.load(f)
-    config = data["parameters"]["result_extraction"]
+    config = data.get("parameters", {}).get("result_extraction", {})
 
-
-PRODUCT_SYSTEMS = config["product_systems_result_analysis"]
-LCIA_METHOD = config["lcia_methodology"]
-RAW_IMPACT_CATEGORIES = config.get("impact_categories", None)
-TOP_N_CONTRIBUTORS = config["number_top_contributors"]
-SANKEY_MODE = config["sankey"]["sankey_mode"]
-SANKEY_TOP_FLOWS = config["sankey"]["sankey_top_flows"]
-SANKEY_TOP_IMPACTS = config["sankey"]["sankey_top_impacts"]
-SANKEY_MAX_DEPTH = config["sankey"]["sankey_max_depth"]
+# Use overrides when present, otherwise read from config
+PRODUCT_SYSTEMS = OVERRIDE_VARS.get("PRODUCT_SYSTEMS", config.get("product_systems_result_analysis", []))
+LCIA_METHOD = OVERRIDE_VARS.get("LCIA_METHOD", config.get("lcia_methodology"))
+RAW_IMPACT_CATEGORIES = OVERRIDE_VARS.get("IMPACT_CATEGORIES", config.get("impact_categories", None))
+TOP_N_CONTRIBUTORS = OVERRIDE_VARS.get("TOP_N_CONTRIBUTORS", config.get("number_top_contributors", 5))
+SANKEY_MODE = OVERRIDE_VARS.get("SANKEY_MODE", config.get("sankey", {}).get("sankey_mode"))
+SANKEY_TOP_FLOWS = OVERRIDE_VARS.get("SANKEY_TOP_FLOWS", config.get("sankey", {}).get("sankey_top_flows"))
+SANKEY_TOP_IMPACTS = OVERRIDE_VARS.get("SANKEY_TOP_IMPACTS", config.get("sankey", {}).get("sankey_top_impacts"))
+SANKEY_MAX_DEPTH = OVERRIDE_VARS.get("SANKEY_MAX_DEPTH", config.get("sankey", {}).get("sankey_max_depth"))
+NORMALIZATION_ENABLED = OVERRIDE_VARS.get("NORMALIZATION_ENABLED", config.get("normalization", {}).get("enabled", False))
+NORMALIZATION_NW_SET = OVERRIDE_VARS.get("NORMALIZATION_NW_SET", config.get("normalization", {}).get("nw_set_name", None))
 
 
 
@@ -83,18 +125,35 @@ def process_system(system_name):
     print("Calculation completed.")
 
     all_impacts = result.get_total_impacts()
+    # Optionally request normalized impacts (if the calculation/setup supports it)
+    all_normalized_impacts = None
+    if NORMALIZATION_ENABLED:
+        try:
+            all_normalized_impacts = result.get_normalized_impacts()
+            print("Normalized impacts retrieved.")
+        except Exception as e:
+            print(f"  ⚠ Could not get normalized impacts: {e}")
+
     if all_impacts:
         impacts = filter_impacts_by_names(all_impacts, IMPACT_CATEGORIES)
-        df_impacts = pd.DataFrame(
-            [
-                {
-                    "Impact category": i.impact_category.name,
-                    "Amount": i.amount,
-                    "Unit": i.impact_category.ref_unit,
-                }
-                for i in impacts
-            ]
-        )
+        impacts_data = []
+        for i in impacts:
+            row = {
+                "Impact category": i.impact_category.name,
+                "Amount (Raw)": i.amount,
+                "Unit": i.impact_category.ref_unit,
+            }
+            if all_normalized_impacts:
+                norm_impact = next(
+                    (n for n in all_normalized_impacts if n.impact_category.id == i.impact_category.id),
+                    None,
+                )
+                if norm_impact:
+                    row["Amount (Normalized)"] = norm_impact.amount
+                    row["Normalized Unit"] = f"{i.impact_category.ref_unit}/ref"
+            impacts_data.append(row)
+
+        df_impacts = pd.DataFrame(impacts_data)
         safe_system = safe_filename(system_name)
         safe_method = safe_filename(method_ref.name)
         imp_path = os.path.join(output_dir, f"{safe_system}_{safe_method}_impacts.csv")
