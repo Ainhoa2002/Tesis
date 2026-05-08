@@ -59,6 +59,16 @@ def load_consolidated_mass_results(base_dir: Path) -> Tuple[List[str], List[Dict
     return headers, rows
 
 
+def discover_section_files(base_dir: Path) -> Dict[str, Path]:
+    """Discover all SECTION_*_ipe_flows_from_parameters.csv files."""
+    sections: Dict[str, Path] = {}
+    for csv_path in sorted(base_dir.glob("SECTION_*_ipe_flows_from_parameters.csv")):
+        # Extract section name from filename: SECTION_<name>_ipe_flows_from_parameters.csv
+        section_name = csv_path.name[len("SECTION_"): -len("_ipe_flows_from_parameters.csv")]
+        sections[section_name] = csv_path
+    return sections
+
+
 def write_sheet(ws, headers: List[str], rows: List[Dict[str, str]]) -> None:
     if headers:
         ws.append(headers)
@@ -104,17 +114,20 @@ def choose_export_mode() -> str:
     print("\nExport mode:")
     print("  1. Export one subsystem")
     print("  2. Export all subsystems")
+    print("  3. Export sections")
 
     attempts = 0
     while True:
-        raw = input("Mode [1/2]: ").strip().lower()
+        raw = input("Mode [1/2/3]: ").strip().lower()
         if raw in {"1", "one", "single", "subsystem"}:
             return "one"
         if raw in {"2", "all", "todo", "todos", "*"}:
             return "all"
+        if raw in {"3", "sections", "section"}:
+            return "sections"
 
         attempts += 1
-        print("Invalid option. Enter 1 or 2.")
+        print("Invalid option. Enter 1, 2, or 3.")
         if attempts >= MAX_SELECTION_ATTEMPTS:
             raise SelectionAborted("Too many invalid attempts. Operation canceled.")
 
@@ -233,6 +246,51 @@ def export_total_bom_to_excel(
     return output_path
 
 
+def export_sections_to_excel(
+    base_dir: Path,
+    output_dir: Path,
+    output_filename: str,
+) -> Path | None:
+    """Export all sections to a single Excel workbook, one section per sheet."""
+    try:
+        from openpyxl import Workbook
+    except ImportError:
+        print("openpyxl is required for Excel export.")
+        print("Install it with: .\\.venv\\Scripts\\python.exe -m pip install openpyxl")
+        return None
+
+    sections = discover_section_files(base_dir)
+    
+    if not sections:
+        print("No section files found to export.")
+        return None
+
+    workbook = Workbook()
+    workbook.remove(workbook.active)
+    exported = 0
+
+    for section_name in sorted(sections.keys()):
+        csv_path = sections[section_name]
+        headers, rows = load_csv_optional(csv_path)
+        
+        if not headers:
+            continue
+        
+        # Truncate sheet name to 31 chars (Excel limit)
+        sheet_name = section_name[:31]
+        ws = workbook.create_sheet(sheet_name)
+        write_sheet(ws, headers, rows)
+        exported += 1
+
+    if exported == 0:
+        print("No data found to export for sections.")
+        return None
+
+    output_path = output_dir / output_filename
+    workbook.save(output_path)
+    return output_path
+
+
 def write_export_readme(
     output_dir: Path,
     exported_items: List[Tuple[Path, str]],
@@ -278,6 +336,31 @@ def main() -> None:
                         (
                             output,
                             "Excel de subsistema con hojas: Parameters, Mass_Results, Component_IO, Grouped_Flows.",
+                        )
+                    ],
+                )
+                print(f"Readme creado: {readme_path}")
+            return
+
+        if export_mode == "sections":
+            export_dir = prompt_output_directory(DEFAULT_EXPORT_DIR)
+            stamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            default_filename = f"sections_export_{stamp}.xlsx"
+            export_filename = prompt_output_filename(default_filename)
+
+            output = export_sections_to_excel(
+                BASE_DIR,
+                export_dir,
+                export_filename,
+            )
+            if output is not None:
+                print(f"\nSections export completed: {output}")
+                readme_path = write_export_readme(
+                    export_dir,
+                    [
+                        (
+                            output,
+                            "Excel con hojas por sección, cada hoja contiene los flows de la sección con columnas: Flow, UUID, Unit, Amount, Direction, Section, Subsections, Source_subsystems, Component_rows, Total_mass_kg, Missing_process_components, UUID_provider.",
                         )
                     ],
                 )
