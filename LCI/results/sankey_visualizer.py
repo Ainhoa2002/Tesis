@@ -20,6 +20,7 @@ DEPENDENCIES:
 import json
 import plotly.graph_objects as go
 from pathlib import Path
+from collections import defaultdict, deque
 
 
 # ============================================================================
@@ -47,6 +48,10 @@ COLOR_SCHEMES = {
 # Default colors
 DEFAULT_NODE_COLOR = "#95a5a6"
 DEFAULT_EDGE_COLOR = "rgba(149, 165, 166, 0.4)"
+
+# Depth to keep in rendered Sankey (0 = root/product system)
+# Use 2 to always show first and second upstream layers.
+DISPLAY_MAX_DEPTH = 2
 
 
 # ============================================================================
@@ -89,6 +94,58 @@ def create_sankey_figure(sankey_data, title=None):
     edges = sankey_data.get("edges", [])
     mode = sankey_data.get("mode", 1)
     impact_category = sankey_data.get("impact_category", "Unknown")
+    index_to_node = {node["index"]: node for node in nodes}
+
+    # ========================================================================
+    # BUILD LAYERED SUBGRAPH (ROOT + LAYER 1 + LAYER 2)
+    # ========================================================================
+    # Edge direction in data is provider -> receiver.
+    # To compute upstream depth from final system(s), we walk reverse edges.
+    outgoing = defaultdict(list)
+    incoming = defaultdict(list)
+    for e in edges:
+        src = e["provider_index"]
+        tgt = e["node_index"]
+        outgoing[src].append(tgt)
+        incoming[tgt].append(src)
+
+    # Roots are downstream nodes that do not provide to other nodes.
+    candidate_roots = [n["index"] for n in nodes if len(outgoing[n["index"]]) == 0]
+    if not candidate_roots and nodes:
+        # Fallback: use max total_result node as root.
+        root_node = max(nodes, key=lambda n: n.get("total_result", 0))
+        candidate_roots = [root_node["index"]]
+
+    depth_map = {}
+    queue = deque()
+    for root in candidate_roots:
+        depth_map[root] = 0
+        queue.append(root)
+
+    while queue:
+        current = queue.popleft()
+        cur_depth = depth_map[current]
+        if cur_depth >= DISPLAY_MAX_DEPTH:
+            continue
+        for upstream in incoming.get(current, []):
+            next_depth = cur_depth + 1
+            if upstream not in depth_map or next_depth < depth_map[upstream]:
+                depth_map[upstream] = next_depth
+                queue.append(upstream)
+
+    selected_indices = {idx for idx, depth in depth_map.items() if depth <= DISPLAY_MAX_DEPTH}
+    filtered_nodes = [n for n in nodes if n["index"] in selected_indices]
+    filtered_edges = [
+        e for e in edges
+        if e["provider_index"] in selected_indices and e["node_index"] in selected_indices
+    ]
+
+    if filtered_nodes and filtered_edges:
+        nodes = filtered_nodes
+        edges = filtered_edges
+
+    index_to_position = {node["index"]: position for position, node in enumerate(nodes)}
+    index_to_node = {node["index"]: node for node in nodes}
     
     # Set title
     if not title:
@@ -120,21 +177,50 @@ def create_sankey_figure(sankey_data, title=None):
     # PREPARE EDGE DATA
     # ========================================================================
     
-    source_nodes = [e["node_index"] for e in edges]
-    target_nodes = [e["provider_index"] for e in edges]
-    edge_values = [e["upstream_share"] * 100 for e in edges]  # Convert to percentage
+    source_nodes = [index_to_position[e["provider_index"]] for e in edges if e["provider_index"] in index_to_position]
+    target_nodes = [index_to_position[e["node_index"]] for e in edges if e["node_index"] in index_to_position]
+    edge_values = []
+    edge_share_labels = []
+    for e in edges:
+        target_node = index_to_node.get(e["node_index"])
+        if target_node is None:
+            continue
+        absolute_value = e["upstream_share"] * target_node.get("total_result", 0)
+        edge_values.append(absolute_value)
+        edge_share_labels.append(e["upstream_share"])
     
     # ========================================================================
     # CREATE FIGURE
     # ========================================================================
     
+    # Explicit node positioning by depth to keep each layer clearly separated.
+    by_depth = defaultdict(list)
+    for n in nodes:
+        d = depth_map.get(n["index"], DISPLAY_MAX_DEPTH)
+        by_depth[d].append(n["index"])
+
+    max_depth_in_graph = max(by_depth.keys()) if by_depth else DISPLAY_MAX_DEPTH
+    depth_den = max(max_depth_in_graph, 1)
+
+    node_x = [0.5] * len(nodes)
+    node_y = [0.5] * len(nodes)
+    for d, idxs in by_depth.items():
+        idxs_sorted = sorted(idxs, key=lambda i: index_to_node[i].get("total_result", 0), reverse=True)
+        for k, idx in enumerate(idxs_sorted):
+            pos = index_to_position[idx]
+            node_x[pos] = 1.0 - (d / depth_den)
+            node_y[pos] = (k + 1) / (len(idxs_sorted) + 1)
+
     fig = go.Figure(data=[go.Sankey(
+        arrangement="fixed",
         node=dict(
             pad=15,
             thickness=20,
             line=dict(color="black", width=0.5),
             label=node_labels,
             color=node_colors,
+            x=node_x,
+            y=node_y,
             customdata=[f"Impact: {v:.4f}" for v in node_values],
             hovertemplate='<b>%{label}</b><br>%{customdata}<extra></extra>'
         ),
@@ -143,7 +229,8 @@ def create_sankey_figure(sankey_data, title=None):
             target=target_nodes,
             value=edge_values,
             color="rgba(200, 200, 200, 0.4)",
-            hovertemplate='%{source.label} → %{target.label}<br>Share: %{value:.2f}%<extra></extra>'
+            customdata=[f"Share: {share:.6f}" for share in edge_share_labels],
+            hovertemplate='%{source.label} → %{target.label}<br>%{customdata}<br>Contribution: %{value:.6f}<extra></extra>'
         )
     )])
     

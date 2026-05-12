@@ -170,7 +170,7 @@ SANKEY_MODE = 1
 
 # Max nodes in flow-based Sankey diagram (used when SANKEY_MODE == 1)
 # Type: Integer (typically 5-20)
-SANKEY_TOP_FLOWS = 10
+SANKEY_TOP_FLOWS = 50
 
 # Max nodes in impact-based Sankey diagram (used when SANKEY_MODE == 2)
 # Type: Integer (typically 3-10)
@@ -1013,75 +1013,79 @@ def process_system(system_name):
     #   - 2: Impact-based (shows impact contributions between processes)
     
     if SANKEY_MODE != 0 and impacts:
-        cat = impacts[0].impact_category
-        print(f"  → Creating Sankey diagram for: {cat.name}")
-        
         # Determine max nodes based on mode
         max_nodes = SANKEY_TOP_FLOWS if SANKEY_MODE == 1 else SANKEY_TOP_IMPACTS
-        
+
         if SANKEY_MAX_DEPTH is not None:
             print("  ⚠ Note: sankey_max_depth is configured but not yet supported by olca_schema.")
 
-        # Request Sankey graph from openLCA calculation
-        sankey_req = o.SankeyRequest(
-            impact_category=cat,
-            max_nodes=max_nodes,
-        )
-        try:
-            sankey_graph = run_with_timeout(lambda: result.get_sankey_graph(sankey_req), timeout=IPC_TIMEOUT)
-        except TimeoutError:
-            print(f"    ✗ Sankey generation timed out for {cat.name}; skipping Sankey.")
-            sankey_graph = None
-        except Exception as e:
-            print(f"    ✗ Sankey generation failed: {e}")
-            sankey_graph = None
-        
-        if sankey_graph:
-            # Convert to JSON-serializable format
-            sankey_data = {
-                "impact_category": cat.name,
-                "mode": SANKEY_MODE,  # Document which mode was used
-                "max_nodes": max_nodes,
-                "nodes": [
-                    {
-                        "index": n.index,
-                        "provider": (
-                            n.tech_flow.provider.name
-                            if getattr(n, "tech_flow", None) and getattr(n.tech_flow, "provider", None)
-                            else "Unknown"
-                        ),
-                        "direct_result": n.direct_result,  # Impact from this process only
-                        "total_result": n.total_result,    # Including all upstream
-                    }
-                    for n in sankey_graph.nodes
-                ],
-                "edges": [
-                    {
-                        "node_index": e.node_index,         # Receiving process
-                        "provider_index": e.provider_index, # Supplying process
-                        "upstream_share": e.upstream_share, # % contribution from supplier
-                    }
-                    for e in sankey_graph.edges
-                ],
-            }
-            
-            # Save Sankey data to JSON
-            safe_system = safe_filename(system_name)
-            safe_method = safe_filename(method_ref.name)
-            sankey_filename = f"{safe_system}_{safe_method}_sankey.json"
-            
-            def save_sankey_json(path):
-                with open(path, "w", encoding="utf-8") as f:
-                    json.dump(sankey_data, f, indent=2)
-            
-            local_sankey_path, export_sankey_path = save_to_results(sankey_filename, save_sankey_json)
-            
-            print(f"    ✓ Saved Sankey graph ({len(sankey_graph.nodes)} nodes, "
-                  f"{len(sankey_graph.edges)} edges) → {local_sankey_path}")
-            if export_sankey_path:
-                print(f"      ✓ Exported to: {export_sankey_path}")
-        else:
-            print("    ⚠ Sankey graph not available; skipped saving.")
+        for impact in impacts:
+            cat = impact.impact_category
+            print(f"  → Creating Sankey diagram for: {cat.name}")
+
+            # Request Sankey graph from openLCA calculation for THIS impact category
+            sankey_req = o.SankeyRequest(
+                impact_category=cat,
+                max_nodes=max_nodes,
+            )
+            try:
+                sankey_graph = run_with_timeout(lambda: result.get_sankey_graph(sankey_req), timeout=IPC_TIMEOUT)
+            except TimeoutError:
+                print(f"    ✗ Sankey generation timed out for {cat.name}; skipping Sankey.")
+                sankey_graph = None
+            except Exception as e:
+                print(f"    ✗ Sankey generation failed for {cat.name}: {e}")
+                sankey_graph = None
+
+            if sankey_graph:
+                # Convert to JSON-serializable format
+                sankey_data = {
+                    "impact_category": cat.name,
+                    "mode": SANKEY_MODE,  # Document which mode was used
+                    "max_nodes": max_nodes,
+                    "system_name": system_name,
+                    "method": method_ref.name,
+                    "nodes": [
+                        {
+                            "index": n.index,
+                            "provider": (
+                                n.tech_flow.provider.name
+                                if getattr(n, "tech_flow", None) and getattr(n.tech_flow, "provider", None)
+                                else "Unknown"
+                            ),
+                            "direct_result": n.direct_result,  # Impact from this process only
+                            "total_result": n.total_result,    # Including all upstream
+                        }
+                        for n in sankey_graph.nodes
+                    ],
+                    "edges": [
+                        {
+                            "node_index": e.node_index,         # Receiving process
+                            "provider_index": e.provider_index, # Supplying process
+                            "upstream_share": e.upstream_share, # % contribution from supplier
+                        }
+                        for e in sankey_graph.edges
+                    ],
+                }
+
+                # Save Sankey data to JSON with UNIQUE filename per impact category
+                safe_system = safe_filename(system_name)
+                safe_method = safe_filename(method_ref.name)
+                safe_impact = safe_filename(cat.name)
+                sankey_filename = f"{safe_system}_{safe_method}_{safe_impact}_sankey.json"
+
+                def save_sankey_json(path):
+                    with open(path, "w", encoding="utf-8") as f:
+                        json.dump(sankey_data, f, indent=2)
+
+                local_sankey_path, export_sankey_path = save_to_results(sankey_filename, save_sankey_json)
+
+                print(f"    ✓ Saved Sankey graph ({len(sankey_graph.nodes)} nodes, "
+                      f"{len(sankey_graph.edges)} edges) → {local_sankey_path}")
+                if export_sankey_path:
+                    print(f"      ✓ Exported to: {export_sankey_path}")
+            else:
+                print(f"    ⚠ Sankey graph not available for {cat.name}; skipped saving.")
 
     # ========================================================================
     # 5F. GENERATE TREE DIAGRAM (UPSTREAM PROCESS HIERARCHY)
