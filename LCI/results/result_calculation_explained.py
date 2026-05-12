@@ -48,9 +48,31 @@ import traceback
 # Type: List of strings
 # Example: ["Buck Converter Assembly", "Li-ion Battery Module"]
 PRODUCT_SYSTEMS = [
-    "connector_system",
-    "magnet",
-    "MEXICO",   # ← Edit: Add your system names here
+    "connecting_cable_man&ext",
+    "converter_man&ext_modules",
+    "converter_man&ext_sections",   
+    "magnet_man&ext",
+    "Raw material extraction and manufacturing phase",
+    "connecting_cable_transport",
+    "converter_transport",
+    "magnet_transport",
+    "transport",
+    "use_cable_mix",
+    "use_cable_renewables",
+    "use_magnet_mix",
+    "use_magnet_renewables",
+    "use_converter_mix",
+    "use_converter_renewables",
+    "use_mix",
+    "use_renewables",
+    "connecting_cable_EoL",
+    "converter_EoL",
+    "magnet_EoL",
+    "EoL",
+    "Connecting cable (all phases)",
+    "Converter (all phases)",
+    "Magnet (all phases)",
+    "Trimming circuit (all phases)",
 ]
 
 # Life Cycle Impact Assessment method name
@@ -78,7 +100,7 @@ IMPACT_CATEGORIES = None
 # Number of top contributing processes to report per impact
 # Type: Integer (typically 3-10)
 # Example: 5 = show top 5 processes causing each impact category
-TOP_N_CONTRIBUTORS = 5
+TOP_N_CONTRIBUTORS = 6
 
 
 # ============================================================================

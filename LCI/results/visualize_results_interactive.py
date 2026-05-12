@@ -25,6 +25,7 @@ REQUIREMENTS:
 import os
 import sys
 import glob
+import textwrap
 import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
@@ -386,13 +387,14 @@ def plot_relative_impact(systems_data, selected_systems, selected_impacts, outpu
         offset = (i - len(systems_list)/2 + 0.5) * width
         bars = ax.bar(x + offset, values, width, label=system, color=colors[i], 
                      edgecolor='black', linewidth=1)
-        
-        # Add value labels on bars
-        for bar, val in zip(bars, values):
-            if val > 0:
-                height = bar.get_height()
-                ax.text(bar.get_x() + bar.get_width()/2., height + 1,
-                       f"{val:.0f}%", ha='center', va='bottom', fontsize=8, fontweight='bold')
+
+        # Keep labels only when there are enough impacts to avoid clutter.
+        if len(impacts_list) >= 5:
+            for bar, val in zip(bars, values):
+                if val > 0:
+                    height = bar.get_height()
+                    ax.text(bar.get_x() + bar.get_width()/2., height + 1,
+                           f"{val:.0f}%", ha='center', va='bottom', fontsize=8, fontweight='bold')
     
     # Format plot
     ax.set_xlabel("Environmental Impact Categories", fontsize=12, fontweight='bold')
@@ -400,13 +402,21 @@ def plot_relative_impact(systems_data, selected_systems, selected_impacts, outpu
     ax.set_title(f"Relative Impact Comparison: {len(selected_impacts)} Environmental Impacts\n(% of maximum system value per impact)", 
                 fontsize=14, fontweight='bold')
     ax.set_xticks(x)
-    ax.set_xticklabels([imp[:30] + "..." if len(imp) > 30 else imp for imp in impacts_list], 
-                       rotation=45, ha='right', fontsize=9)
-    ax.legend(loc='upper left', fontsize=10, title='Product Systems', title_fontsize=11)
+    if len(impacts_list) < 5:
+        ax.set_xticklabels([textwrap.fill(imp, width=18) for imp in impacts_list],
+                           rotation=0, ha='center', fontsize=10)
+        ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.16), ncol=min(len(systems_list), 4), fontsize=10,
+                  title='Product Systems', title_fontsize=11)
+        plt.tight_layout(rect=[0, 0.08, 1, 1])
+    else:
+        ax.set_xticklabels([imp[:30] + "..." if len(imp) > 30 else imp for imp in impacts_list], 
+                           rotation=45, ha='right', fontsize=9)
+        ax.legend(loc='upper left', fontsize=10, title='Product Systems', title_fontsize=11)
     ax.set_ylim(0, 110)
     ax.grid(axis='y', alpha=0.3, linestyle='--')
-    
-    plt.tight_layout()
+
+    if len(impacts_list) >= 5:
+        plt.tight_layout()
     
     # Save figure to both directories
     local_path, export_path = save_graph_to_files("RELATIVE_IMPACT_COMBINED.png", fig, output_dir, export_folder)
@@ -483,13 +493,6 @@ def plot_normalized_comparison(systems_data, selected_systems, selected_impacts,
         offset = (i - len(systems_list)/2 + 0.5) * width
         bars = ax.bar(x + offset, values, width, label=system, color=colors[i], 
                      edgecolor='black', linewidth=1)
-        
-        # Add value labels on bars
-        for bar, val in zip(bars, values):
-            if val > 0:
-                height = bar.get_height()
-                ax.text(bar.get_x() + bar.get_width()/2., height,
-                       f"{val:.3e}", ha='center', va='bottom', fontsize=8)
     
     # Format plot
     ax.set_xlabel("Environmental Impact Categories", fontsize=12, fontweight='bold')
@@ -499,10 +502,11 @@ def plot_normalized_comparison(systems_data, selected_systems, selected_impacts,
     ax.set_xticks(x)
     ax.set_xticklabels([imp[:30] + "..." if len(imp) > 30 else imp for imp in impacts_list], 
                        rotation=45, ha='right', fontsize=9)
-    ax.legend(loc='upper left', fontsize=10, title='Product Systems', title_fontsize=11)
+    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.16), ncol=min(len(systems_list), 4), fontsize=10,
+              title='Product Systems', title_fontsize=11)
     ax.grid(axis='y', alpha=0.3, linestyle='--')
     
-    plt.tight_layout()
+    plt.tight_layout(rect=[0, 0.08, 1, 1])
     
     # Save figure to both directories
     local_path, export_path = save_graph_to_files("NORMALIZED_COMPARISON_COMBINED.png", fig, output_dir, export_folder)
@@ -553,23 +557,31 @@ def plot_absolute_impact_comparison(systems_data, selected_systems, selected_imp
         systems_list = list(values.keys())
         abs_vals = [values[sys] for sys in systems_list]
         
+        # Clean system names: replace underscores with spaces
+        systems_labels = [sys.replace('_', ' ') for sys in systems_list]
+        
         # Define colors for each system
         colors = plt.cm.Set3(np.linspace(0, 1, len(systems_list)))
         
-        bars = ax.bar(systems_list, abs_vals, color=colors, edgecolor='black', linewidth=1.5)
+        bars = ax.bar(systems_labels, abs_vals, color=colors, edgecolor='black', linewidth=1.5)
         
-        # Add value labels on bars
-        for bar, val in zip(bars, abs_vals):
-            if val > 0:
-                height = bar.get_height()
-                ax.text(bar.get_x() + bar.get_width()/2., height,
-                       f"{val:.3e}", ha='center', va='bottom', fontsize=11, fontweight='bold')
+        # Add value labels on bars only if there are 5 or fewer systems
+        if len(systems_list) <= 5:
+            for bar, val in zip(bars, abs_vals):
+                if val > 0:
+                    height = bar.get_height()
+                    ax.text(bar.get_x() + bar.get_width()/2., height,
+                           f"{val:.3e}", ha='center', va='bottom', fontsize=11, fontweight='bold')
         
         unit_label = f" ({unit})" if unit else ""
         ax.set_ylabel(f"Absolute Impact Value{unit_label}", fontsize=12, fontweight='bold')
         ax.set_xlabel("Product Systems", fontsize=12, fontweight='bold')
         ax.set_title(f"Absolute Impact Comparison: {impact}\n(Raw impact values across systems)", 
                     fontsize=14, fontweight='bold')
+        if len(systems_list) > 5:
+            plt.setp(ax.get_xticklabels(), rotation=90, ha='center')
+        else:
+            plt.setp(ax.get_xticklabels(), rotation=45, ha='right')
         ax.grid(axis='y', alpha=0.3, linestyle='--')
         
         plt.tight_layout()

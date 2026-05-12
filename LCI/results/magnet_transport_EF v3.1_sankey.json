@@ -1,0 +1,124 @@
+{
+  "impact_category": "Acidification",
+  "mode": 1,
+  "max_nodes": 10,
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "magnet_transport",
+      "direct_result": 0.0,
+      "total_result": 0.019761806391724698
+    },
+    {
+      "index": 15065,
+      "provider": "transport_code_P2",
+      "direct_result": 0.0,
+      "total_result": 0.014930986844178358
+    },
+    {
+      "index": 15063,
+      "provider": "transport_code_R3",
+      "direct_result": 0.0,
+      "total_result": 0.002415409773773185
+    },
+    {
+      "index": 15064,
+      "provider": "transport_code_S1",
+      "direct_result": 0.0,
+      "total_result": 0.002415409773773185
+    },
+    {
+      "index": 1523,
+      "provider": "transport, freight, lorry, >32 metric ton, diesel, EURO 4 | transport, freight, lorry, >32 metric ton, diesel, EURO 4 | Cutoff, U",
+      "direct_result": 0.0038141056976689273,
+      "total_result": 0.007973884094828777
+    },
+    {
+      "index": 15196,
+      "provider": "transport, freight, inland waterways, barge, diesel | transport, freight, inland waterways, barge, diesel | Cutoff, U",
+      "direct_result": 0.00553552188871032,
+      "total_result": 0.006854489218922083
+    },
+    {
+      "index": 513,
+      "provider": "market for transport, freight, train, fleet average | transport, freight, train, fleet average | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.004954308571421499
+    },
+    {
+      "index": 2093,
+      "provider": "market for road | road | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0019292445034011063
+    },
+    {
+      "index": 7594,
+      "provider": "transport, freight, train, diesel | transport, freight, train, fleet average | Cutoff, U",
+      "direct_result": 0.002456818893746511,
+      "total_result": 0.0032126430510390873
+    },
+    {
+      "index": 7501,
+      "provider": "road construction | road | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.001919551630038956
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 15065,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 15063,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 15064,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 15065,
+      "provider_index": 1523,
+      "upstream_share": 0.3936256124502114
+    },
+    {
+      "node_index": 15065,
+      "provider_index": 15196,
+      "upstream_share": 0.999490843539998
+    },
+    {
+      "node_index": 15065,
+      "provider_index": 513,
+      "upstream_share": 0.9954901055910983
+    },
+    {
+      "node_index": 15063,
+      "provider_index": 1523,
+      "upstream_share": 0.30278893265400875
+    },
+    {
+      "node_index": 15064,
+      "provider_index": 1523,
+      "upstream_share": 0.30278893265400875
+    },
+    {
+      "node_index": 1523,
+      "provider_index": 2093,
+      "upstream_share": 0.9525900973694856
+    },
+    {
+      "node_index": 513,
+      "provider_index": 7594,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 2093,
+      "provider_index": 7501,
+      "upstream_share": 0.9999999999999999
+    }
+  ]
+}
