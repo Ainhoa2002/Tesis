@@ -36,9 +36,30 @@ from pathlib import Path
 # UTILITY FUNCTIONS
 # ============================================================================
 
+def clean_filename_part(text):
+    """Make a text fragment safe for Windows filenames."""
+    cleaned_text = text.replace("_", " ").strip()
+    cleaned_text = cleaned_text.replace("/", "_").replace("\\", "_")
+    cleaned_text = cleaned_text.replace(":", "").replace("*", "").replace("?", "")
+    cleaned_text = cleaned_text.replace('"', "").replace("<", "").replace(">", "")
+    cleaned_text = cleaned_text.replace("|", "_")
+    cleaned_text = "_".join(cleaned_text.split())
+    return cleaned_text
+
+
+def build_graph_filename(prefix, selected_systems, impact=None):
+    """Build an exported filename from the graph type, systems, and optional impact."""
+    system_part = "_".join(clean_filename_part(system) for system in selected_systems)
+    filename_parts = [clean_filename_part(prefix), system_part]
+    if impact:
+        filename_parts.append(clean_filename_part(impact))
+    filename = "_".join(part for part in filename_parts if part)
+    return f"{filename}.png"
+
+
 def save_graph_to_files(filename, fig, output_dir=".", export_folder=None):
     """
-    Save graph to both local and export directories.
+    Save graph to the export directory when provided; otherwise save locally.
     
     Parameters:
         filename: Name of the PNG file
@@ -49,9 +70,7 @@ def save_graph_to_files(filename, fig, output_dir=".", export_folder=None):
     Returns:
         Tuple of (local_path, export_path or None)
     """
-    local_path = os.path.join(output_dir, filename)
-    fig.savefig(local_path, dpi=300, bbox_inches='tight')
-    
+    local_path = None
     export_path = None
     if export_folder:
         try:
@@ -60,8 +79,72 @@ def save_graph_to_files(filename, fig, output_dir=".", export_folder=None):
             fig.savefig(export_path, dpi=300, bbox_inches='tight')
         except Exception as e:
             print(f"  [!] Warning: Could not save to export folder: {e}")
+    else:
+        local_path = os.path.join(output_dir, filename)
+        fig.savefig(local_path, dpi=300, bbox_inches='tight')
     
     return local_path, export_path
+
+
+def cleanup_local_graph_files(output_dir):
+    """Remove locally saved graph PNGs from the results folder."""
+    patterns = [
+        "RELATIVE_IMPACT*.png",
+        "NORMALIZED_COMPARISON*.png",
+        "ABSOLUTE_COMPARISON*.png",
+    ]
+    for pattern in patterns:
+        for file_path in glob.glob(os.path.join(output_dir, pattern)):
+            try:
+                os.remove(file_path)
+            except Exception as e:
+                print(f"  [!] Warning: Could not remove local file {file_path}: {e}")
+
+
+def save_tables_to_excel(base_filename, tables, export_folder):
+    """Save one or more pandas DataFrames to an Excel file with multiple sheets.
+
+    base_filename: filename without extension
+    tables: dict of {sheet_name: DataFrame}
+    export_folder: folder where to save
+    Returns full path or None on error
+    """
+    try:
+        Path(export_folder).mkdir(parents=True, exist_ok=True)
+        excel_path = os.path.join(export_folder, f"{base_filename}.xlsx")
+        with pd.ExcelWriter(excel_path, engine='openpyxl') as writer:
+            for sheet, df in tables.items():
+                safe_sheet = clean_filename_part(sheet)[:31] if sheet else 'Sheet'
+                # ensure DataFrame exists
+                if isinstance(df, (pd.DataFrame, pd.Series)):
+                    df.to_excel(writer, sheet_name=safe_sheet)
+        return excel_path
+    except Exception as e:
+        print(f"  [!] Warning: Could not save Excel file: {e}")
+        return None
+
+
+def append_tables_to_excel(excel_path, tables):
+    """Append or create an Excel file with multiple sheets from dict of DataFrames."""
+    try:
+        Path(os.path.dirname(excel_path)).mkdir(parents=True, exist_ok=True)
+        if os.path.exists(excel_path):
+            # Append/replace sheets in existing workbook
+            with pd.ExcelWriter(excel_path, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+                for sheet, df in tables.items():
+                    safe_sheet = clean_filename_part(sheet)[:31] if sheet else 'Sheet'
+                    if isinstance(df, (pd.DataFrame, pd.Series)):
+                        df.to_excel(writer, sheet_name=safe_sheet)
+        else:
+            with pd.ExcelWriter(excel_path, engine='openpyxl') as writer:
+                for sheet, df in tables.items():
+                    safe_sheet = clean_filename_part(sheet)[:31] if sheet else 'Sheet'
+                    if isinstance(df, (pd.DataFrame, pd.Series)):
+                        df.to_excel(writer, sheet_name=safe_sheet)
+        return excel_path
+    except Exception as e:
+        print(f"  [!] Warning: Could not append/save Excel file: {e}")
+        return None
 
 
 def discover_impact_csvs(results_dir="."):
@@ -231,6 +314,8 @@ def interactive_select_graph_types():
         ("Relative Impact", "100% stacked bar per EI (max system = 100%, others scaled)"),
         ("Normalized Comparison", "Bar chart showing normalized values per EI"),
         ("Absolute Impact Comparison", "One graph per EI comparing raw values across systems"),
+        ("Relative Impact (Horizontal)", "Horizontal grouped bars per EI; legend bottom-right"),
+        ("Normalized Comparison (Horizontal)", "Horizontal grouped bars per EI; legend bottom-right"),
     ]
     
     print("\nAvailable graph types:")
@@ -279,7 +364,7 @@ def interactive_select_export_options():
     print("EXPORT OPTIONS")
     print("=" * 70)
     
-    default_export_folder = r"C:\Users\alorzaga\cernbox\WINDOWS\Desktop\TESIS\LCIA_Power systems"
+    default_export_folder = r"C:\Users\alorzaga\cernbox\WINDOWS\Desktop\TESIS\LCIA_Power systems\RESULTS_plots_and_values"
     
     print(f"\nDefault export folder:")
     print(f"  {default_export_folder}")
@@ -369,7 +454,7 @@ def plot_relative_impact(systems_data, selected_systems, selected_impacts, outpu
         return
     
     # Create grouped bar chart
-    fig, ax = plt.subplots(figsize=(16, 8))
+    fig, ax = plt.subplots(figsize=(22, 8))
     
     impacts_list = list(relative_data.keys())
     systems_list = selected_systems
@@ -403,28 +488,35 @@ def plot_relative_impact(systems_data, selected_systems, selected_impacts, outpu
                 fontsize=14, fontweight='bold')
     ax.set_xticks(x)
     if len(impacts_list) < 5:
-        ax.set_xticklabels([textwrap.fill(imp, width=18) for imp in impacts_list],
-                           rotation=0, ha='center', fontsize=10)
-        ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.16), ncol=min(len(systems_list), 4), fontsize=10,
-                  title='Product Systems', title_fontsize=11)
-        plt.tight_layout(rect=[0, 0.08, 1, 1])
+        ax.set_xticklabels(impacts_list, rotation=45, ha='right', fontsize=10)
     else:
-        ax.set_xticklabels([imp[:30] + "..." if len(imp) > 30 else imp for imp in impacts_list], 
-                           rotation=45, ha='right', fontsize=9)
-        ax.legend(loc='upper left', fontsize=10, title='Product Systems', title_fontsize=11)
+        ax.set_xticklabels(impacts_list, rotation=45, ha='right', fontsize=9)
+    ax.legend(loc='upper left', bbox_to_anchor=(1.02, 1), fontsize=10,
+              title='Product Systems', title_fontsize=11, borderaxespad=0)
     ax.set_ylim(0, 110)
     ax.grid(axis='y', alpha=0.3, linestyle='--')
 
-    if len(impacts_list) >= 5:
-        plt.tight_layout()
+    plt.tight_layout(rect=[0, 0, 0.82, 1])
     
-    # Save figure to both directories
-    local_path, export_path = save_graph_to_files("RELATIVE_IMPACT_COMBINED.png", fig, output_dir, export_folder)
+    # Save figure only to the export folder when enabled
+    filename = build_graph_filename("RELATIVE_IMPACT", systems_list)
+    local_path, export_path = save_graph_to_files(filename, fig, output_dir, export_folder)
+    # Export data to Excel for editing
+    if export_folder:
+        try:
+            df_rel = pd.DataFrame.from_dict(relative_data, orient='index')
+            df_rel = df_rel.reindex(columns=systems_list).fillna(0)
+            excel_filename = build_graph_filename("GRAPH_DATA", systems_list).rsplit('.', 1)[0] + ".xlsx"
+            excel_path = os.path.join(export_folder, excel_filename)
+            saved = append_tables_to_excel(excel_path, {"relative_values": df_rel})
+            if saved:
+                print(f"    [OK] Data exported to: {saved}")
+        except Exception as e:
+            print(f"    [!] Warning: could not export relative data to Excel: {e}")
     plt.close()
     
-    print(f"  [OK] All {len(selected_impacts)} impacts -> {local_path}")
-    if export_path:
-        print(f"    [OK] Exported to: {export_path}")
+    final_path = export_path or local_path
+    print(f"  [OK] All {len(selected_impacts)} impacts -> {final_path}")
 
 
 def plot_normalized_comparison(systems_data, selected_systems, selected_impacts, output_dir=".", export_folder=None):
@@ -475,7 +567,7 @@ def plot_normalized_comparison(systems_data, selected_systems, selected_impacts,
         return
     
     # Create grouped bar chart
-    fig, ax = plt.subplots(figsize=(16, 8))
+    fig, ax = plt.subplots(figsize=(22, 8))
     
     impacts_list = list(normalized_data.keys())
     systems_list = selected_systems
@@ -500,21 +592,167 @@ def plot_normalized_comparison(systems_data, selected_systems, selected_impacts,
     ax.set_title(f"Normalized Comparison: {len(impacts_list)} Environmental Impacts\n(Normalized reference values across systems)", 
                 fontsize=14, fontweight='bold')
     ax.set_xticks(x)
-    ax.set_xticklabels([imp[:30] + "..." if len(imp) > 30 else imp for imp in impacts_list], 
-                       rotation=45, ha='right', fontsize=9)
-    ax.legend(loc='upper center', bbox_to_anchor=(0.5, -0.16), ncol=min(len(systems_list), 4), fontsize=10,
-              title='Product Systems', title_fontsize=11)
+    ax.set_xticklabels(impacts_list, rotation=45, ha='right', fontsize=9)
+    ax.legend(loc='upper left', bbox_to_anchor=(1.02, 1), fontsize=10,
+              title='Product Systems', title_fontsize=11, borderaxespad=0)
     ax.grid(axis='y', alpha=0.3, linestyle='--')
     
-    plt.tight_layout(rect=[0, 0.08, 1, 1])
+    plt.tight_layout(rect=[0, 0, 0.82, 1])
     
-    # Save figure to both directories
-    local_path, export_path = save_graph_to_files("NORMALIZED_COMPARISON_COMBINED.png", fig, output_dir, export_folder)
+    # Save figure only to the export folder when enabled
+    filename = build_graph_filename("NORMALIZED_COMPARISON", systems_list)
+    local_path, export_path = save_graph_to_files(filename, fig, output_dir, export_folder)
+    # Export normalized data to Excel for editing
+    if export_folder:
+        try:
+            df_norm = pd.DataFrame.from_dict(normalized_data, orient='index')
+            df_norm = df_norm.reindex(columns=systems_list).fillna(0)
+            excel_filename = build_graph_filename("GRAPH_DATA", systems_list).rsplit('.', 1)[0] + ".xlsx"
+            excel_path = os.path.join(export_folder, excel_filename)
+            saved = append_tables_to_excel(excel_path, {"normalized_values": df_norm})
+            if saved:
+                print(f"    [OK] Data exported to: {saved}")
+        except Exception as e:
+            print(f"    [!] Warning: could not export normalized data to Excel: {e}")
     plt.close()
     
-    print(f"  [OK] All {len(impacts_list)} impacts -> {local_path}")
-    if export_path:
-        print(f"    [OK] Exported to: {export_path}")
+    final_path = export_path or local_path
+    print(f"  [OK] All {len(impacts_list)} impacts -> {final_path}")
+
+
+def plot_relative_impact_horizontal(systems_data, selected_systems, selected_impacts, output_dir=".", export_folder=None):
+    """
+    Horizontal variant of Relative Impact: impacts on Y axis, grouped horizontal bars.
+    Legend placed below-right; x-axis from 0 (left) to max (right).
+    """
+    print("\n[>] Generating RELATIVE IMPACT (Horizontal) graph...")
+    if not selected_impacts or not selected_systems:
+        print("  [!] No impacts or systems selected, skipping.")
+        return
+
+    # Prepare relative data
+    relative_data = {}
+    for impact in selected_impacts:
+        values = {}
+        for system in selected_systems:
+            df = systems_data[system]
+            impact_row = df[df["Impact category"] == impact]
+            if not impact_row.empty:
+                raw_value = impact_row["Amount (Raw)"].values[0]
+                values[system] = float(raw_value) if pd.notna(raw_value) else 0.0
+            else:
+                values[system] = 0.0
+        max_value = max(values.values()) if values else 1.0
+        if max_value == 0:
+            continue
+        relative_data[impact] = {sys: (val / max_value) * 100 for sys, val in values.items()}
+
+    if not relative_data:
+        print("  [!] All selected impacts have zero values, skipping.")
+        return
+
+    impacts_list = list(relative_data.keys())
+    systems_list = selected_systems
+
+    fig, ax = plt.subplots(figsize=(22, 10))
+
+    y = np.arange(len(impacts_list))
+    height = 0.8 / max(len(systems_list), 1)
+
+    colors = plt.cm.Set3(np.linspace(0, 1, len(systems_list)))
+
+    for i, system in enumerate(systems_list):
+        values = [relative_data[impact].get(system, 0) for impact in impacts_list]
+        offset = (i - len(systems_list)/2 + 0.5) * height
+        ax.barh(y + offset, values, height=height, label=system, color=colors[i], edgecolor='black')
+
+    ax.set_yticks(y)
+    ax.set_yticklabels(impacts_list, fontsize=10)
+    ax.set_xlabel('Relative Impact (%)', fontsize=12, fontweight='bold')
+    ax.set_title('Relative Impact Comparison (Horizontal)\n(% of maximum system value per impact)', fontsize=14, fontweight='bold')
+
+    ax.legend(loc='lower right', bbox_to_anchor=(1.02, -0.18), ncol=min(len(systems_list), 4), fontsize=10,
+              title='Product Systems', title_fontsize=11)
+
+    ax.set_xlim(0, 110)
+    ax.invert_yaxis()
+    ax.grid(axis='x', alpha=0.3, linestyle='--')
+
+    plt.tight_layout(rect=[0, 0.02, 1, 1])
+    filename = build_graph_filename("RELATIVE_IMPACT_HORIZONTAL", systems_list)
+    local_path, export_path = save_graph_to_files(filename, fig, output_dir, export_folder)
+    plt.close()
+    final_path = export_path or local_path
+    print(f"  [OK] All {len(selected_impacts)} impacts -> {final_path}")
+
+
+def plot_normalized_comparison_horizontal(systems_data, selected_systems, selected_impacts, output_dir=".", export_folder=None):
+    """
+    Horizontal variant of Normalized Comparison: impacts on Y axis, grouped horizontal bars.
+    Legend placed below-right; x-axis shows normalized values from 0 (left) to max (right).
+    """
+    print("\n[>] Generating NORMALIZED COMPARISON (Horizontal) graph...")
+    if not selected_impacts or not selected_systems:
+        print("  [!] No impacts or systems selected, skipping.")
+        return
+
+    normalized_data = {}
+    has_any_normalized = False
+    for impact in selected_impacts:
+        values = {}
+        for system in selected_systems:
+            df = systems_data[system]
+            impact_row = df[df["Impact category"] == impact]
+            if not impact_row.empty and "Amount (Normalized)" in df.columns:
+                norm_value = impact_row["Amount (Normalized)"].values[0]
+                if pd.notna(norm_value) and norm_value != 0:
+                    values[system] = float(norm_value)
+                    has_any_normalized = True
+                else:
+                    values[system] = 0.0
+            else:
+                values[system] = 0.0
+        if any(v > 0 for v in values.values()):
+            normalized_data[impact] = values
+
+    if not has_any_normalized or not normalized_data:
+        print("  [!] No normalized values available for selected impacts, skipping.")
+        return
+
+    impacts_list = list(normalized_data.keys())
+    systems_list = selected_systems
+
+    fig, ax = plt.subplots(figsize=(22, 10))
+    y = np.arange(len(impacts_list))
+    height = 0.8 / max(len(systems_list), 1)
+
+    colors = plt.cm.Set2(np.linspace(0, 1, len(systems_list)))
+
+    max_val = 0
+    for i, system in enumerate(systems_list):
+        values = [normalized_data[impact].get(system, 0) for impact in impacts_list]
+        max_val = max(max_val, max(values) if values else 0)
+        offset = (i - len(systems_list)/2 + 0.5) * height
+        ax.barh(y + offset, values, height=height, label=system, color=colors[i], edgecolor='black')
+
+    ax.set_yticks(y)
+    ax.set_yticklabels(impacts_list, fontsize=10)
+    ax.set_xlabel('Normalized Impact Value', fontsize=12, fontweight='bold')
+    ax.set_title('Normalized Comparison (Horizontal)\n(Normalized reference values across systems)', fontsize=14, fontweight='bold')
+
+    ax.legend(loc='lower right', bbox_to_anchor=(1.02, -0.18), ncol=min(len(systems_list), 4), fontsize=10,
+              title='Product Systems', title_fontsize=11)
+
+    ax.set_xlim(0, max_val * 1.1 if max_val > 0 else 1)
+    ax.invert_yaxis()
+    ax.grid(axis='x', alpha=0.3, linestyle='--')
+
+    plt.tight_layout(rect=[0, 0.02, 1, 1])
+    filename = build_graph_filename("NORMALIZED_COMPARISON_HORIZONTAL", systems_list)
+    local_path, export_path = save_graph_to_files(filename, fig, output_dir, export_folder)
+    plt.close()
+    final_path = export_path or local_path
+    print(f"  [OK] All {len(impacts_list)} impacts -> {final_path}")
 
 
 def plot_absolute_impact_comparison(systems_data, selected_systems, selected_impacts, output_dir=".", export_folder=None):
@@ -586,15 +824,25 @@ def plot_absolute_impact_comparison(systems_data, selected_systems, selected_imp
         
         plt.tight_layout()
         
-        # Save figure to both directories
-        safe_impact = impact.replace(":", "").replace("/", "_").replace(" ", "_")
-        filename = f"ABSOLUTE_COMPARISON_{safe_impact}.png"
+        # Save figure only to the export folder when enabled
+        filename = build_graph_filename("ABSOLUTE_COMPARISON", systems_list, impact)
         local_path, export_path = save_graph_to_files(filename, fig, output_dir, export_folder)
+        # Export absolute values for this impact to Excel
+        if export_folder:
+            try:
+                df_abs = pd.DataFrame({"System": systems_list, "Value": abs_vals})
+                excel_filename = build_graph_filename("GRAPH_DATA", systems_list).rsplit('.', 1)[0] + ".xlsx"
+                excel_path = os.path.join(export_folder, excel_filename)
+                sheet_name = f"absolute_{clean_filename_part(impact)}"
+                saved = append_tables_to_excel(excel_path, {sheet_name: df_abs})
+                if saved:
+                    print(f"    [OK] Data exported to: {saved}")
+            except Exception as e:
+                print(f"    [!] Warning: could not export absolute data to Excel: {e}")
         plt.close()
         
-        print(f"  [OK] {impact} -> {local_path}")
-        if export_path:
-            print(f"    [OK] Exported to: {export_path}")
+        final_path = export_path or local_path
+        print(f"  [OK] {impact} -> {final_path}")
 
 
 # ============================================================================
@@ -651,6 +899,9 @@ def main():
     
     output_dir = results_dir
     export_folder = export_options['export_folder'] if export_options['export'] else None
+
+    if export_folder:
+        cleanup_local_graph_files(output_dir)
     
     for graph_type in selected_graph_types:
         if graph_type == "Relative Impact":
@@ -659,11 +910,15 @@ def main():
             plot_normalized_comparison(systems_data, selected_systems, selected_impacts, output_dir, export_folder)
         elif graph_type == "Absolute Impact Comparison":
             plot_absolute_impact_comparison(systems_data, selected_systems, selected_impacts, output_dir, export_folder)
+        elif graph_type == "Relative Impact (Horizontal)":
+            plot_relative_impact_horizontal(systems_data, selected_systems, selected_impacts, output_dir, export_folder)
+        elif graph_type == "Normalized Comparison (Horizontal)":
+            plot_normalized_comparison_horizontal(systems_data, selected_systems, selected_impacts, output_dir, export_folder)
     
     print("\n" + "=" * 70)
     print("[OK] VISUALIZATION COMPLETE")
     print("=" * 70)
-    print(f"\nGraphs saved to: {output_dir}")
+    print(f"\nGraphs exported to: {export_folder if export_folder else output_dir}")
     print(f"Selected impacts: {len(selected_impacts)}")
     print(f"Compared systems: {len(selected_systems)}")
     print(f"Graph types generated: {len(selected_graph_types)}")
