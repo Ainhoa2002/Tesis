@@ -199,8 +199,10 @@ IPC_TIMEOUT = 60
 # ============================================================================
 # OUTPUT DIRECTORIES (auto-set)
 # ============================================================================
-# Results will be saved to: LCI/results/
-output_dir = str(Path(__file__).resolve().parent)
+# Results will be saved to: LCI/RESULTS/Deterministic results/
+RESULTS_ROOT = Path(__file__).resolve().parent
+DETERMINISTIC_RESULTS_DIR = RESULTS_ROOT / "Deterministic results"
+output_dir = str(DETERMINISTIC_RESULTS_DIR)
 export_output_dir = EXPORT_RESULT_FOLDER if EXPORT_RESULT else None
 client = None
 method_ref = None
@@ -1183,7 +1185,7 @@ def main():
     """
     global client, method_ref, output_dir
 
-    output_dir = str(Path(__file__).resolve().parent)
+    output_dir = str(DETERMINISTIC_RESULTS_DIR)
     os.makedirs(output_dir, exist_ok=True)
 
     print("=" * 70)
@@ -1223,7 +1225,7 @@ def main():
     print("=" * 70)
     print("LCA RESULT EXTRACTION COMPLETED")
     print("=" * 70 + "\n")
-    print("Output files saved to: LCI/results/")
+    print("Output files saved to: LCI/RESULTS/Deterministic results/")
 
 
 if __name__ == "__main__":

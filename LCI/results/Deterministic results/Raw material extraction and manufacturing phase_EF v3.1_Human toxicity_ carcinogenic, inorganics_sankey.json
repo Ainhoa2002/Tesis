@@ -1,0 +1,222 @@
+{
+  "impact_category": "Human toxicity: carcinogenic, inorganics",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "Raw material extraction and manufacturing phase",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "Raw material extraction and manufacturing phase",
+      "direct_result": 0.0,
+      "total_result": 5.506719201826891e-06
+    },
+    {
+      "index": 15189,
+      "provider": "connecting_cable_man&ext",
+      "direct_result": 0.0,
+      "total_result": 4.750136654462252e-06
+    },
+    {
+      "index": 15158,
+      "provider": "magnet_man&ext",
+      "direct_result": 0.0,
+      "total_result": 5.628876589232868e-07
+    },
+    {
+      "index": 15157,
+      "provider": "converter_man&ext_modules",
+      "direct_result": 0.0,
+      "total_result": 1.9369488844134186e-07
+    },
+    {
+      "index": 245,
+      "provider": "market for copper, cathode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.415739974405745e-06
+    },
+    {
+      "index": 1290,
+      "provider": "wire drawing, copper | wire drawing, copper | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.8003038091899433e-07
+    },
+    {
+      "index": 6318,
+      "provider": "electrorefining of copper, anode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.161088935835151e-06
+    },
+    {
+      "index": 6309,
+      "provider": "treatment of copper scrap by electrolytic refining | copper, cathode | Cutoff, U",
+      "direct_result": 9.344729861513052e-09,
+      "total_result": 1.5937441944721917e-07
+    },
+    {
+      "index": 6321,
+      "provider": "copper production, cathode, solvent extraction and electrowinning process | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.447235119478634e-08
+    },
+    {
+      "index": 4288,
+      "provider": "market for copper, anode | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.3307253417037785e-06
+    },
+    {
+      "index": 13471,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 2.163188968040405e-06,
+      "total_result": 2.2375842845109317e-06
+    },
+    {
+      "index": 13473,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 2.1270377944360778e-06,
+      "total_result": 2.200068844482058e-06
+    },
+    {
+      "index": 13467,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 4.2510347586602027e-07,
+      "total_result": 4.4012771494948595e-07
+    },
+    {
+      "index": 13469,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 2.549520997801372e-07,
+      "total_result": 2.642492548485261e-07
+    },
+    {
+      "index": 13472,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 1.6274617001741468e-07,
+      "total_result": 1.6887029386507656e-07
+    },
+    {
+      "index": 3929,
+      "provider": "market for copper concentrate, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.451372447358793e-07
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 15189,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 0,
+      "provider_index": 15158,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 15157,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 15189,
+      "provider_index": 245,
+      "upstream_share": 0.8378321156261229
+    },
+    {
+      "node_index": 15189,
+      "provider_index": 1290,
+      "upstream_share": 0.8731594394745719
+    },
+    {
+      "node_index": 15158,
+      "provider_index": 245,
+      "upstream_share": 0.09409260312904477
+    },
+    {
+      "node_index": 15158,
+      "provider_index": 1290,
+      "upstream_share": 0.11483071320184765
+    },
+    {
+      "node_index": 245,
+      "provider_index": 6318,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 245,
+      "provider_index": 6309,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 245,
+      "provider_index": 6321,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 1290,
+      "provider_index": 245,
+      "upstream_share": 0.03248440294793738
+    },
+    {
+      "node_index": 6318,
+      "provider_index": 4288,
+      "upstream_share": 0.9661265290480464
+    },
+    {
+      "node_index": 6309,
+      "provider_index": 4288,
+      "upstream_share": 0.02753005430870976
+    },
+    {
+      "node_index": 4288,
+      "provider_index": 13471,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 4288,
+      "provider_index": 13473,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 4288,
+      "provider_index": 13467,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 4288,
+      "provider_index": 13469,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 4288,
+      "provider_index": 13472,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 13471,
+      "provider_index": 3929,
+      "upstream_share": 0.39174020585075203
+    },
+    {
+      "node_index": 13473,
+      "provider_index": 3929,
+      "upstream_share": 0.3851934508521195
+    },
+    {
+      "node_index": 13467,
+      "provider_index": 3929,
+      "upstream_share": 0.07698362260717413
+    },
+    {
+      "node_index": 13469,
+      "provider_index": 3929,
+      "upstream_share": 0.04617025582394099
+    },
+    {
+      "node_index": 13472,
+      "provider_index": 3929,
+      "upstream_share": 0.02947232954955265
+    }
+  ]
+}

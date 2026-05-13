@@ -13,8 +13,10 @@ from datetime import datetime
 # CONFIGURATION
 # ============================================================================
 
-RESULTS_DIR = Path(__file__).parent
-EXPORT_DIR = Path("C:/Users/alorzaga/cernbox/WINDOWS/Desktop/TESIS/LCIA_Power systems/Data quality and monte carlo/.sankey_html_exports")
+RESULTS_DIR = Path(__file__).parent / "Deterministic results"
+if not RESULTS_DIR.exists():
+    RESULTS_DIR = Path(__file__).parent
+EXPORT_DIR = RESULTS_DIR / "sankey_html_exports"
 EXPORT_DIR.mkdir(parents=True, exist_ok=True)
 
 # ============================================================================

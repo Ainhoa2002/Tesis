@@ -7,7 +7,9 @@ Supports selecting one product system and one, many, or all impact categories.
 from pathlib import Path
 from sankey_visualizer import load_sankey_json, create_sankey_figure
 
-RESULTS_DIR = Path(__file__).parent
+RESULTS_DIR = Path(__file__).parent / "Deterministic results"
+if not RESULTS_DIR.exists():
+    RESULTS_DIR = Path(__file__).parent
 OUTPUT_DIR = RESULTS_DIR / "sankey_html_exports"
 OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 

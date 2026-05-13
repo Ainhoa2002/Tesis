@@ -28,10 +28,13 @@ from collections import defaultdict, deque
 # ============================================================================
 
 # Directory containing Sankey JSON files
-RESULTS_DIR = Path(__file__).parent  # LCI/RESULTS/
+RESULTS_DIR = Path(__file__).parent / "Deterministic results"
+if not RESULTS_DIR.exists():
+    RESULTS_DIR = Path(__file__).parent  # LCI/RESULTS/
 
 # Directory to save HTML visualizations
 OUTPUT_DIR = RESULTS_DIR / "sankey_html_exports"
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # Color schemes for different visualization modes
 COLOR_SCHEMES = {

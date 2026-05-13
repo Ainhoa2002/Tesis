@@ -174,6 +174,16 @@ def discover_impact_csvs(results_dir="."):
     return systems
 
 
+def resolve_results_dir() -> str:
+    base_dir = os.path.dirname(os.path.abspath(__file__)) or "."
+    deterministic_dir = os.path.join(base_dir, "Deterministic results")
+    if os.path.isdir(deterministic_dir):
+        has_results = any(name.endswith("_impacts.csv") for name in os.listdir(deterministic_dir))
+        if has_results:
+            return deterministic_dir
+    return base_dir
+
+
 def load_impacts_data(csv_paths):
     """
     Load and consolidate impact data from multiple CSV files.
@@ -859,7 +869,7 @@ def main():
     
     # Step 1: Discover available CSVs
     print("\n[>] Scanning for impact CSV files...")
-    results_dir = os.path.dirname(os.path.abspath(__file__)) or "."
+    results_dir = resolve_results_dir()
     csv_systems = discover_impact_csvs(results_dir)
     
     if not csv_systems:

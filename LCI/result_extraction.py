@@ -95,7 +95,7 @@ IMPACT_CATEGORIES = normalize_impact_categories(RAW_IMPACT_CATEGORIES)
 
 
 client = ipc.Client(8080)
-output_dir = str(Path(__file__).resolve().parent / "results")
+output_dir = str(Path(__file__).resolve().parent / "RESULTS" / "Deterministic results")
 os.makedirs(output_dir, exist_ok=True)
 
 method_ref = client.find(o.ImpactMethod, name=LCIA_METHOD)

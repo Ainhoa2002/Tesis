@@ -1,0 +1,433 @@
+{
+  "impact_category": "Climate change: biogenic",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "Magnet (all phases)",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "Magnet (all phases)",
+      "direct_result": 0.0,
+      "total_result": 6.760872745677679
+    },
+    {
+      "index": 17064,
+      "provider": "magnet_man&ext",
+      "direct_result": 0.0,
+      "total_result": 4.2382978112315834
+    },
+    {
+      "index": 17062,
+      "provider": "use_magnet_renewables",
+      "direct_result": 0.0,
+      "total_result": 1.799185458759847
+    },
+    {
+      "index": 17063,
+      "provider": "use_magnet_mix",
+      "direct_result": 0.0,
+      "total_result": 0.7222400649312081
+    },
+    {
+      "index": 1375,
+      "provider": "market for metal working, average for steel product manufacturing | metal working, average for steel product manufacturing | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.9634358514896073
+    },
+    {
+      "index": 245,
+      "provider": "market for copper, cathode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.17213043699476605
+    },
+    {
+      "index": 1218,
+      "provider": "market for electricity, high voltage, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.799185458759847
+    },
+    {
+      "index": 5111,
+      "provider": "market for electricity, high voltage | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.7229316792480205
+    },
+    {
+      "index": 11425,
+      "provider": "metal working, average for steel product manufacturing | metal working, average for steel product manufacturing | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.4460015390020993
+    },
+    {
+      "index": 1239,
+      "provider": "metal working, average for steel product manufacturing | metal working, average for steel product manufacturing | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.5174668638093112
+    },
+    {
+      "index": 6329,
+      "provider": "electrorefining of copper, anode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.11595815334392132
+    },
+    {
+      "index": 1228,
+      "provider": "heat and power co-generation, biogas, gas engine, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.17803760671405175,
+      "total_result": 1.1568342545879338
+    },
+    {
+      "index": 1233,
+      "provider": "electricity production, hydro, reservoir, alpine region, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.5969846086423081,
+      "total_result": 0.6016107454999184
+    },
+    {
+      "index": 12113,
+      "provider": "electricity production, hydro, reservoir, alpine region | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.41431334778677303,
+      "total_result": 0.4176180640659808
+    },
+    {
+      "index": 12174,
+      "provider": "heat and power co-generation, biogas, gas engine | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.04490452349257869,
+      "total_result": 0.2835073820460723
+    },
+    {
+      "index": 2799,
+      "provider": "market for energy and auxilliary inputs, metal working factory | energy and auxilliary inputs, metal working factory | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.368535198151661
+    },
+    {
+      "index": 4375,
+      "provider": "market for energy and auxilliary inputs, metal working factory | energy and auxilliary inputs, metal working factory | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.4883868742290318
+    },
+    {
+      "index": 4300,
+      "provider": "market for copper, anode | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.09900248235735173
+    },
+    {
+      "index": 7369,
+      "provider": "market for biogas | biogas | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.1907653278490054
+    },
+    {
+      "index": 15417,
+      "provider": "energy and auxilliary inputs, metal working factory, with heating from natural gas | energy and auxilliary inputs, metal working factory | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.4267840663365723
+    },
+    {
+      "index": 15415,
+      "provider": "energy and auxilliary inputs, metal working factory, with heating from light fuel oil | energy and auxilliary inputs, metal working factory | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.9203765712484824
+    },
+    {
+      "index": 17226,
+      "provider": "energy and auxilliary inputs, metal working factory, with heating from natural gas | energy and auxilliary inputs, metal working factory | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.35062283474102485
+    },
+    {
+      "index": 17228,
+      "provider": "energy and auxilliary inputs, metal working factory, with heating from light fuel oil | energy and auxilliary inputs, metal working factory | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.1329768662909638
+    },
+    {
+      "index": 4330,
+      "provider": "anaerobic digestion of manure | biogas | Cutoff, U",
+      "direct_result": 1.1725436485941614,
+      "total_result": 1.185875215972796
+    },
+    {
+      "index": 282,
+      "provider": "market for municipal solid waste | municipal solid waste | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.3777510182786386
+    },
+    {
+      "index": 439,
+      "provider": "market group for municipal solid waste | municipal solid waste | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.5239832580555331
+    },
+    {
+      "index": 1147,
+      "provider": "treatment of municipal solid waste, unsanitary landfill, wet infiltration class (500mm) | municipal solid waste | Cutoff, U",
+      "direct_result": 1.1557312610454298,
+      "total_result": 1.1557317414763242
+    },
+    {
+      "index": 1149,
+      "provider": "treatment of municipal solid waste, open dump, wet infiltration class (500mm) | municipal solid waste | Cutoff, U",
+      "direct_result": 0.7018337125641487,
+      "total_result": 0.7018337125641487
+    },
+    {
+      "index": 8048,
+      "provider": "treatment of municipal solid waste, unsanitary landfill, moist infiltration class (300mm) | municipal solid waste | Cutoff, U",
+      "direct_result": 0.36414859769062524,
+      "total_result": 0.3641487616298972
+    },
+    {
+      "index": 7674,
+      "provider": "treatment of municipal solid waste, unsanitary landfill, dry infiltration class (100mm) | municipal solid waste | Cutoff, U",
+      "direct_result": 0.3534832949042732,
+      "total_result": 0.353483454443383
+    },
+    {
+      "index": 8049,
+      "provider": "treatment of municipal solid waste, unsanitary landfill, very wet infiltration class (1000mm) | municipal solid waste | Cutoff, U",
+      "direct_result": 0.2435773090944801,
+      "total_result": 0.2435774198944929
+    },
+    {
+      "index": 7675,
+      "provider": "treatment of municipal solid waste, open dump, dry infiltration class (100mm) | municipal solid waste | Cutoff, U",
+      "direct_result": 0.16224077287552013,
+      "total_result": 0.16224077287552013
+    },
+    {
+      "index": 8053,
+      "provider": "treatment of municipal solid waste, unsanitary landfill, hyperarid infiltration class (-250mm) | municipal solid waste | Cutoff, U",
+      "direct_result": 0.13181141994129794,
+      "total_result": 0.13181148054253658
+    },
+    {
+      "index": 8047,
+      "provider": "treatment of municipal solid waste, open dump, moist infiltration class (300mm) | municipal solid waste | Cutoff, U",
+      "direct_result": 0.13063802582549564,
+      "total_result": 0.1306380258254956
+    },
+    {
+      "index": 8050,
+      "provider": "treatment of municipal solid waste, open dump, very wet infiltration class (1000mm) | municipal solid waste | Cutoff, U",
+      "direct_result": 0.10779400020963692,
+      "total_result": 0.10779400020963692
+    },
+    {
+      "index": 1176,
+      "provider": "market group for municipal solid waste | municipal solid waste | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.5239713446353478
+    },
+    {
+      "index": 1429,
+      "provider": "market for municipal solid waste | municipal solid waste | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.08503315678707059
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 17064,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 17062,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 17063,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 17064,
+      "provider_index": 1375,
+      "upstream_share": 0.9998945698221173
+    },
+    {
+      "node_index": 17064,
+      "provider_index": 245,
+      "upstream_share": 0.9322509566886307
+    },
+    {
+      "node_index": 17062,
+      "provider_index": 1218,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 17063,
+      "provider_index": 5111,
+      "upstream_share": 0.9978605782190442
+    },
+    {
+      "node_index": 1375,
+      "provider_index": 11425,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1375,
+      "provider_index": 1239,
+      "upstream_share": 0.9999752377760439
+    },
+    {
+      "node_index": 245,
+      "provider_index": 6329,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1218,
+      "provider_index": 1228,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 1218,
+      "provider_index": 1233,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 5111,
+      "provider_index": 12113,
+      "upstream_share": 0.999958071463341
+    },
+    {
+      "node_index": 5111,
+      "provider_index": 12174,
+      "upstream_share": 0.8593141805989531
+    },
+    {
+      "node_index": 11425,
+      "provider_index": 2799,
+      "upstream_share": 0.9999936610269126
+    },
+    {
+      "node_index": 1239,
+      "provider_index": 4375,
+      "upstream_share": 0.9999852464705266
+    },
+    {
+      "node_index": 6329,
+      "provider_index": 4300,
+      "upstream_share": 0.9662276745169324
+    },
+    {
+      "node_index": 1228,
+      "provider_index": 7369,
+      "upstream_share": 0.7758218902436269
+    },
+    {
+      "node_index": 12174,
+      "provider_index": 7369,
+      "upstream_share": 0.19567726695199805
+    },
+    {
+      "node_index": 2799,
+      "provider_index": 15417,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 2799,
+      "provider_index": 15415,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 4375,
+      "provider_index": 17226,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 4375,
+      "provider_index": 17228,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 7369,
+      "provider_index": 4330,
+      "upstream_share": 0.9999999999986916
+    },
+    {
+      "node_index": 15417,
+      "provider_index": 282,
+      "upstream_share": 0.714748639334046
+    },
+    {
+      "node_index": 15415,
+      "provider_index": 282,
+      "upstream_share": 0.27106038363671753
+    },
+    {
+      "node_index": 17226,
+      "provider_index": 439,
+      "upstream_share": 0.6542683211062431
+    },
+    {
+      "node_index": 17228,
+      "provider_index": 439,
+      "upstream_share": 0.24812390309081025
+    },
+    {
+      "node_index": 4330,
+      "provider_index": 12174,
+      "upstream_share": 0.14068581940104655
+    },
+    {
+      "node_index": 282,
+      "provider_index": 1147,
+      "upstream_share": 0.9868356851699598
+    },
+    {
+      "node_index": 282,
+      "provider_index": 1149,
+      "upstream_share": 0.9965130942395826
+    },
+    {
+      "node_index": 282,
+      "provider_index": 8048,
+      "upstream_share": 0.9499564276207214
+    },
+    {
+      "node_index": 282,
+      "provider_index": 7674,
+      "upstream_share": 0.885953898107622
+    },
+    {
+      "node_index": 282,
+      "provider_index": 8049,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 282,
+      "provider_index": 7675,
+      "upstream_share": 0.8934650772300977
+    },
+    {
+      "node_index": 282,
+      "provider_index": 8053,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 282,
+      "provider_index": 8047,
+      "upstream_share": 0.9237403547675693
+    },
+    {
+      "node_index": 282,
+      "provider_index": 8050,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 439,
+      "provider_index": 1176,
+      "upstream_share": 0.9982103291883284
+    },
+    {
+      "node_index": 1176,
+      "provider_index": 1429,
+      "upstream_share": 0.9998117251930365
+    }
+  ]
+}

@@ -13,7 +13,9 @@ except Exception:  # pragma: no cover - plotting is optional at import time
 
 
 BASE_DIR = Path(__file__).resolve().parent
-RESULTS_DIR = BASE_DIR
+RESULTS_DIR = BASE_DIR / "Deterministic results"
+if not RESULTS_DIR.exists():
+    RESULTS_DIR = BASE_DIR
 
 # Edit these values to control what gets plotted.
 SYSTEM_NAMES = [

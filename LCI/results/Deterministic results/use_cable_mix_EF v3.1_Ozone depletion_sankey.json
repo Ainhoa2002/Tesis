@@ -1,0 +1,606 @@
+{
+  "impact_category": "Ozone depletion",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "use_cable_mix",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "use_cable_mix",
+      "direct_result": 0.0,
+      "total_result": 1.539700769523036e-06
+    },
+    {
+      "index": 5099,
+      "provider": "market for electricity, high voltage | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.5397007695230337e-06
+    },
+    {
+      "index": 12095,
+      "provider": "electricity, high voltage, natural gas, import from DE | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.181882942223627e-07
+    },
+    {
+      "index": 12165,
+      "provider": "heat and power co-generation, natural gas, 500kW electrical, lean burn | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.9962068142784899e-07
+    },
+    {
+      "index": 12101,
+      "provider": "electricity production, nuclear, boiling water reactor | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.7994280904803768e-07
+    },
+    {
+      "index": 12099,
+      "provider": "electricity production, hydro, reservoir, alpine region | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.1148080953848514e-07
+    },
+    {
+      "index": 12160,
+      "provider": "market for transmission network, electricity, high voltage | transmission network, electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.0463514977711835e-07
+    },
+    {
+      "index": 12164,
+      "provider": "electricity production, nuclear, pressure water reactor | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 9.480241833214418e-08
+    },
+    {
+      "index": 12163,
+      "provider": "heat and power co-generation, wood chips, 6667 kW, state-of-the-art 2014 | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.0846155219566243e-08
+    },
+    {
+      "index": 5258,
+      "provider": "electricity production, natural gas, conventional power plant | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.189564283609325e-07
+    },
+    {
+      "index": 2302,
+      "provider": "market for natural gas, low pressure | natural gas, low pressure | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.0082529942261422e-07
+    },
+    {
+      "index": 3433,
+      "provider": "market for anionic resin | anionic resin | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.3486778928317644e-07
+    },
+    {
+      "index": 80,
+      "provider": "market for chemical, organic, basic precursors and materials | chemical, organic, basic precursors and materials | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.895437156186577e-08
+    },
+    {
+      "index": 3582,
+      "provider": "hydropower plant construction, reservoir, alpine region | hydropower plant, reservoir, alpine region | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.1736602552395926e-07
+    },
+    {
+      "index": 6003,
+      "provider": "transmission network construction, electricity, high voltage | transmission network, electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 7.132467945537698e-08
+    },
+    {
+      "index": 1050,
+      "provider": "market for nuclear fuel element, for pressure water reactor, UO2 4.2% & MOX | nuclear fuel element, for pressure water reactor, UO2 4.2% & MOX | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.112288763129288e-08
+    },
+    {
+      "index": 60,
+      "provider": "market for heat and power co-generation unit, organic Rankine cycle, 1000kW electrical | heat and power co-generation unit, organic Rankine cycle, 1000kW electrical | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.485886619922006e-08
+    },
+    {
+      "index": 877,
+      "provider": "market for natural gas, high pressure | natural gas, high pressure | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.983973057093978e-07
+    },
+    {
+      "index": 16721,
+      "provider": "natural gas pressure reduction, from high to low pressure | natural gas, low pressure | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.0010971159699639e-07
+    },
+    {
+      "index": 16825,
+      "provider": "anionic resin production | anionic resin | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.3486727771383962e-07
+    },
+    {
+      "index": 13333,
+      "provider": "chemical production, organic, basic precursors and materials | chemical, organic, basic precursors and materials | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.895437156186577e-08
+    },
+    {
+      "index": 95,
+      "provider": "market for diesel, burned in building machine | diesel, burned in building machine | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.812701152883853e-08
+    },
+    {
+      "index": 17459,
+      "provider": "nuclear fuel element production, for pressure water reactor, UO2 4.2% & MOX | nuclear fuel element, for pressure water reactor, UO2 4.2% & MOX | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.069088103955094e-08
+    },
+    {
+      "index": 17112,
+      "provider": "heat and power co-generation unit construction, organic Rankine cycle, 1000kW electrical | heat and power co-generation unit, organic Rankine cycle, 1000kW electrical | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.485886619922006e-08
+    },
+    {
+      "index": 9183,
+      "provider": "natural gas, high pressure, import from NO | natural gas, high pressure | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.091042892698917e-07
+    },
+    {
+      "index": 9178,
+      "provider": "natural gas, high pressure, import from BE | natural gas, high pressure | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.4018877498713697e-07
+    },
+    {
+      "index": 9181,
+      "provider": "natural gas, high pressure, import from NL | natural gas, high pressure | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.2429558379454307e-07
+    },
+    {
+      "index": 364,
+      "provider": "market for natural gas, high pressure | natural gas, high pressure | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.0426843689664137e-07
+    },
+    {
+      "index": 2209,
+      "provider": "market for chloroform | chloroform | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.3585886462911234e-07
+    },
+    {
+      "index": 1230,
+      "provider": "market for purified terephthalic acid | purified terephthalic acid | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 7.362516987693538e-08
+    },
+    {
+      "index": 16945,
+      "provider": "diesel, burned in building machine | diesel, burned in building machine | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.812701152883855e-08
+    },
+    {
+      "index": 5286,
+      "provider": "market for uranium, enriched 4.2%, in fuel element for light water reactor | uranium, enriched 4.2%, in fuel element for light water reactor | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.104939597819826e-08
+    },
+    {
+      "index": 1129,
+      "provider": "market for perfluoropentane | perfluoropentane | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.479628444371432e-08
+    },
+    {
+      "index": 3076,
+      "provider": "petroleum and gas production, offshore | natural gas, high pressure | Cutoff, U",
+      "direct_result": 6.380970352775237e-07,
+      "total_result": 6.41983280667869e-07
+    },
+    {
+      "index": 371,
+      "provider": "market for natural gas, high pressure | natural gas, high pressure | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.798464869465097e-07
+    },
+    {
+      "index": 883,
+      "provider": "market for natural gas, high pressure | natural gas, high pressure | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.4609041222185063e-07
+    },
+    {
+      "index": 15845,
+      "provider": "natural gas, high pressure, import from FR | natural gas, high pressure | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.2852209477962738e-07
+    },
+    {
+      "index": 15849,
+      "provider": "natural gas, high pressure, import from DE | natural gas, high pressure | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.608302122092179e-08
+    },
+    {
+      "index": 10243,
+      "provider": "chloroform production | chloroform | Cutoff, U",
+      "direct_result": 1.3584703529886388e-07,
+      "total_result": 1.3585882956539292e-07
+    },
+    {
+      "index": 10733,
+      "provider": "purified terephthalic acid production | purified terephthalic acid | Cutoff, U",
+      "direct_result": 5.9363576025215726e-08,
+      "total_result": 5.956647277831704e-08
+    },
+    {
+      "index": 347,
+      "provider": "market group for diesel | diesel | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 9.842833503069975e-08
+    },
+    {
+      "index": 2951,
+      "provider": "uranium fuel element production, enriched 4.2%, for light water reactor | uranium, enriched 4.2%, in fuel element for light water reactor | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.104766631681221e-08
+    },
+    {
+      "index": 15754,
+      "provider": "perfluoropentane production | perfluoropentane | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.479621554074084e-08
+    },
+    {
+      "index": 14958,
+      "provider": "natural gas, high pressure, import from NO | natural gas, high pressure | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 8.170978957832318e-08
+    },
+    {
+      "index": 363,
+      "provider": "market for natural gas, high pressure | natural gas, high pressure | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.4927414186305955e-07
+    },
+    {
+      "index": 681,
+      "provider": "market for diesel | diesel | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 7.411444830049531e-08
+    },
+    {
+      "index": 3429,
+      "provider": "market for tetrafluoroethane, R134a | tetrafluoroethane, R134a | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.620327204984254e-08
+    },
+    {
+      "index": 13837,
+      "provider": "natural gas, high pressure, import from NO | natural gas, high pressure | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 9.759557349996319e-08
+    },
+    {
+      "index": 5339,
+      "provider": "diesel production, petroleum refinery operation | diesel | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 7.469139532181252e-08
+    },
+    {
+      "index": 2912,
+      "provider": "market for petroleum | petroleum | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.797091139506983e-08
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 5099,
+      "upstream_share": 0.9988161256825373
+    },
+    {
+      "node_index": 5099,
+      "provider_index": 12095,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 5099,
+      "provider_index": 12165,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 5099,
+      "provider_index": 12101,
+      "upstream_share": 0.9999987659552869
+    },
+    {
+      "node_index": 5099,
+      "provider_index": 12099,
+      "upstream_share": 0.9999871522125685
+    },
+    {
+      "node_index": 5099,
+      "provider_index": 12160,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 5099,
+      "provider_index": 12164,
+      "upstream_share": 0.999999051918858
+    },
+    {
+      "node_index": 5099,
+      "provider_index": 12163,
+      "upstream_share": 0.9998540475879792
+    },
+    {
+      "node_index": 12095,
+      "provider_index": 5258,
+      "upstream_share": 0.998697241533655
+    },
+    {
+      "node_index": 12165,
+      "provider_index": 2302,
+      "upstream_share": 0.9908977351639215
+    },
+    {
+      "node_index": 12101,
+      "provider_index": 3433,
+      "upstream_share": 0.864379212926937
+    },
+    {
+      "node_index": 12101,
+      "provider_index": 80,
+      "upstream_share": 0.017371837622519665
+    },
+    {
+      "node_index": 12099,
+      "provider_index": 3582,
+      "upstream_share": 0.9349973231551378
+    },
+    {
+      "node_index": 12160,
+      "provider_index": 6003,
+      "upstream_share": 0.9999393931740329
+    },
+    {
+      "node_index": 12164,
+      "provider_index": 3433,
+      "upstream_share": 0.07393336939927418
+    },
+    {
+      "node_index": 12164,
+      "provider_index": 80,
+      "upstream_share": 0.02726052651550241
+    },
+    {
+      "node_index": 12164,
+      "provider_index": 1050,
+      "upstream_share": 0.9983106440346161
+    },
+    {
+      "node_index": 12163,
+      "provider_index": 80,
+      "upstream_share": 0.011538870658094781
+    },
+    {
+      "node_index": 12163,
+      "provider_index": 60,
+      "upstream_share": 0.6907470129740063
+    },
+    {
+      "node_index": 5258,
+      "provider_index": 877,
+      "upstream_share": 0.8579931883015581
+    },
+    {
+      "node_index": 2302,
+      "provider_index": 16721,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 3433,
+      "provider_index": 16825,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 80,
+      "provider_index": 13333,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 3582,
+      "provider_index": 95,
+      "upstream_share": 0.10913923195899727
+    },
+    {
+      "node_index": 1050,
+      "provider_index": 17459,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 60,
+      "provider_index": 17112,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 877,
+      "provider_index": 9183,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 877,
+      "provider_index": 9178,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 877,
+      "provider_index": 9181,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 16721,
+      "provider_index": 364,
+      "upstream_share": 0.967999220413154
+    },
+    {
+      "node_index": 16825,
+      "provider_index": 2209,
+      "upstream_share": 0.9920468253028633
+    },
+    {
+      "node_index": 13333,
+      "provider_index": 1230,
+      "upstream_share": 0.4523983871692318
+    },
+    {
+      "node_index": 95,
+      "provider_index": 16945,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 17459,
+      "provider_index": 5286,
+      "upstream_share": 0.9915831144403219
+    },
+    {
+      "node_index": 17112,
+      "provider_index": 1129,
+      "upstream_share": 0.9997896832330339
+    },
+    {
+      "node_index": 9183,
+      "provider_index": 3076,
+      "upstream_share": 0.6060142731717838
+    },
+    {
+      "node_index": 9178,
+      "provider_index": 371,
+      "upstream_share": 0.7541788352953022
+    },
+    {
+      "node_index": 9181,
+      "provider_index": 883,
+      "upstream_share": 0.8315507287381942
+    },
+    {
+      "node_index": 364,
+      "provider_index": 15845,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 364,
+      "provider_index": 15849,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 2209,
+      "provider_index": 10243,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1230,
+      "provider_index": 10733,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 16945,
+      "provider_index": 347,
+      "upstream_share": 0.6542604053011933
+    },
+    {
+      "node_index": 5286,
+      "provider_index": 2951,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1129,
+      "provider_index": 15754,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 3076,
+      "provider_index": 80,
+      "upstream_share": 0.03293612598033936
+    },
+    {
+      "node_index": 371,
+      "provider_index": 14958,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 15845,
+      "provider_index": 363,
+      "upstream_share": 0.84788539290842
+    },
+    {
+      "node_index": 15849,
+      "provider_index": 877,
+      "upstream_share": 0.09177183219543124
+    },
+    {
+      "node_index": 10243,
+      "provider_index": 364,
+      "upstream_share": 1.0415938508635504e-07
+    },
+    {
+      "node_index": 10733,
+      "provider_index": 80,
+      "upstream_share": 0.0005553418736476448
+    },
+    {
+      "node_index": 347,
+      "provider_index": 681,
+      "upstream_share": 0.7985620114758197
+    },
+    {
+      "node_index": 15754,
+      "provider_index": 3429,
+      "upstream_share": 0.9787222894474312
+    },
+    {
+      "node_index": 14958,
+      "provider_index": 3076,
+      "upstream_share": 0.11830879913993324
+    },
+    {
+      "node_index": 363,
+      "provider_index": 13837,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 681,
+      "provider_index": 5339,
+      "upstream_share": 0.9848682842869159
+    },
+    {
+      "node_index": 13837,
+      "provider_index": 3076,
+      "upstream_share": 0.12833263176376414
+    },
+    {
+      "node_index": 5339,
+      "provider_index": 364,
+      "upstream_share": 3.637774843499527e-07
+    },
+    {
+      "node_index": 5339,
+      "provider_index": 2912,
+      "upstream_share": 0.5340569474679875
+    }
+  ]
+}

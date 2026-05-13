@@ -1,0 +1,72 @@
+{
+  "impact_category": "Ecotoxicity: freshwater, inorganics",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "magnet_EoL",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "magnet_EoL",
+      "direct_result": 0.0,
+      "total_result": 13.643894775952578
+    },
+    {
+      "index": 10939,
+      "provider": "treatment of waste plastic, industrial electronics, municipal incineration FAE | waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 4.775336981370787,
+      "total_result": 13.6438947759526
+    },
+    {
+      "index": 7491,
+      "provider": "market for residues, MSWI[F], waste plastic, industrial electronics | residues, MSWI[F], waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 7.505610994172429
+    },
+    {
+      "index": 7492,
+      "provider": "market for bottom ash, MSWI[F], waste plastic, industrial electronics | bottom ash, MSWI[F], waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.3173476255676646
+    },
+    {
+      "index": 12994,
+      "provider": "treatment of residues, MSWI[F], waste plastic, industrial electronics, residual material landfill | residues, MSWI[F], waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 7.503533766601941,
+      "total_result": 7.505554451831609
+    },
+    {
+      "index": 3023,
+      "provider": "treatment of bottom ash, MSWI[F], waste plastic, industrial electronics, slag compartment | bottom ash, MSWI[F], waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 1.3165995950662521,
+      "total_result": 1.3170740329492334
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 10939,
+      "upstream_share": 0.9999998400207442
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 7491,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 7492,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 7491,
+      "provider_index": 12994,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 7492,
+      "provider_index": 3023,
+      "upstream_share": 1.0
+    }
+  ]
+}

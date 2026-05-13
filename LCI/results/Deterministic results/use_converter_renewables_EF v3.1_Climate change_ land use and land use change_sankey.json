@@ -1,0 +1,601 @@
+{
+  "impact_category": "Climate change: land use and land use change",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "use_converter_renewables",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "use_converter_renewables",
+      "direct_result": 0.0,
+      "total_result": 0.03587080628442178
+    },
+    {
+      "index": 1218,
+      "provider": "market for electricity, high voltage, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.03587080628442178
+    },
+    {
+      "index": 1235,
+      "provider": "heat and power co-generation, wood chips, 6667 kW, state-of-the-art 2014, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.012606634614213432
+    },
+    {
+      "index": 1224,
+      "provider": "market for transmission network, electricity, high voltage | transmission network, electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.012043458611761522
+    },
+    {
+      "index": 1233,
+      "provider": "electricity production, hydro, reservoir, alpine region, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.005353290735472814
+    },
+    {
+      "index": 2208,
+      "provider": "market for wood chips, green, measured as dry mass | wood chips, green, measured as dry mass | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.01255545568020035
+    },
+    {
+      "index": 6015,
+      "provider": "transmission network construction, electricity, high voltage | transmission network, electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.008173739120485881
+    },
+    {
+      "index": 6014,
+      "provider": "transmission network construction, electricity, high voltage | transmission network, electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.003869978212686509
+    },
+    {
+      "index": 3594,
+      "provider": "hydropower plant construction, reservoir, alpine region | hydropower plant, reservoir, alpine region | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.005549625056282144
+    },
+    {
+      "index": 16629,
+      "provider": "softwood forestry, mixed species, sustainable forest management | wood chips, green, measured as dry mass | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0069595848235177475
+    },
+    {
+      "index": 16630,
+      "provider": "hardwood forestry, mixed species, sustainable forest management | wood chips, green, measured as dry mass | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.004866029463918611
+    },
+    {
+      "index": 673,
+      "provider": "market for aluminium, wrought alloy | aluminium, wrought alloy | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.006406816614189934
+    },
+    {
+      "index": 59,
+      "provider": "market for gravel, crushed | gravel, crushed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0028075304302346677
+    },
+    {
+      "index": 75,
+      "provider": "market for steel, low-alloyed, hot rolled | steel, low-alloyed, hot rolled | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0025682348565278044
+    },
+    {
+      "index": 268,
+      "provider": "market for steel, low-alloyed | steel, low-alloyed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.002772747457221567
+    },
+    {
+      "index": 5376,
+      "provider": "power sawing, without catalytic converter | power sawing, without catalytic converter | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.01262671987519094
+    },
+    {
+      "index": 4323,
+      "provider": "aluminium ingot, primary, to aluminium, wrought alloy market | aluminium, wrought alloy | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0063059339455097145
+    },
+    {
+      "index": 17383,
+      "provider": "gravel production, crushed | gravel, crushed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.002707666828112887
+    },
+    {
+      "index": 5335,
+      "provider": "market for vegetable oil, refined | vegetable oil, refined | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.012879473655653997
+    },
+    {
+      "index": 5547,
+      "provider": "market for aluminium, primary, ingot | aluminium, primary, ingot | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00276916088857025
+    },
+    {
+      "index": 1356,
+      "provider": "market for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0029893617657192856
+    },
+    {
+      "index": 14928,
+      "provider": "soybean oil, refined, to generic market for vegetable oil, refined | vegetable oil, refined | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00822519539026988
+    },
+    {
+      "index": 14929,
+      "provider": "palm oil, refined, to generic market for vegetable oil, refined | vegetable oil, refined | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.004562985738608073
+    },
+    {
+      "index": 11290,
+      "provider": "aluminium production, primary, ingot | aluminium, primary, ingot | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0025556280611261336
+    },
+    {
+      "index": 15177,
+      "provider": "electricity voltage transformation from high to medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0029893296970238833
+    },
+    {
+      "index": 16267,
+      "provider": "market for soybean oil, refined | soybean oil, refined | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00822519539026988
+    },
+    {
+      "index": 9236,
+      "provider": "market for palm oil, refined | palm oil, refined | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.004562985738608073
+    },
+    {
+      "index": 2495,
+      "provider": "market for palm oil, crude | palm oil, crude | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.004823015800576903
+    },
+    {
+      "index": 5009,
+      "provider": "aluminium production, primary, liquid, prebake | aluminium, primary, liquid | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.002729679133604343
+    },
+    {
+      "index": 5007,
+      "provider": "market for electricity, medium voltage, aluminium industry | electricity, medium voltage, aluminium industry | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.002692019655696647
+    },
+    {
+      "index": 1678,
+      "provider": "market for electricity, high voltage | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0032143625131637525
+    },
+    {
+      "index": 15493,
+      "provider": "soybean oil refinery operation | soybean oil, refined | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00791070108954084
+    },
+    {
+      "index": 2073,
+      "provider": "palm oil refinery operation | palm oil, refined | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00456259065065868
+    },
+    {
+      "index": 14994,
+      "provider": "palm oil mill operation | palm oil, crude | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0034372282415982345
+    },
+    {
+      "index": 15666,
+      "provider": "electricity voltage transformation from high to medium voltage, aluminium industry | electricity, medium voltage, aluminium industry | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0026918279792100255
+    },
+    {
+      "index": 6009,
+      "provider": "market for soybean oil, crude | soybean oil, crude | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.008912662670899602
+    },
+    {
+      "index": 11568,
+      "provider": "market for palm fruit bunch | palm fruit bunch | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0034397731530910114
+    },
+    {
+      "index": 8558,
+      "provider": "market for electricity, high voltage, aluminium industry | electricity, high voltage, aluminium industry | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.002691827979210026
+    },
+    {
+      "index": 13177,
+      "provider": "soybean meal and crude oil production | soybean oil, crude | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.008347505835146094
+    },
+    {
+      "index": 5983,
+      "provider": "soybean meal and crude oil production | soybean oil, crude | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.004581269507632653
+    },
+    {
+      "index": 7394,
+      "provider": "palm fruit bunch production | palm fruit bunch | Cutoff, U",
+      "direct_result": 0.0022375038764766452,
+      "total_result": 0.00343976729722617
+    },
+    {
+      "index": 8557,
+      "provider": "electricity production, hydro, aluminium industry | electricity, high voltage, aluminium industry | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0026915705347539637
+    },
+    {
+      "index": 7491,
+      "provider": "market for soybean | soybean | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.008583525820957227
+    },
+    {
+      "index": 7490,
+      "provider": "market for soybean | soybean | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.004652027550827826
+    },
+    {
+      "index": 12878,
+      "provider": "soybean production | soybean | Cutoff, U",
+      "direct_result": 0.005138375008794199,
+      "total_result": 0.005249158348241105
+    },
+    {
+      "index": 12879,
+      "provider": "soybean production | soybean | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.003421631718641813
+    },
+    {
+      "index": 5276,
+      "provider": "market for land use change, annual crop | land use change, annual crop | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.003396803966669743
+    },
+    {
+      "index": 16378,
+      "provider": "land use change, annual crop | land use change, annual crop | Cutoff, U",
+      "direct_result": 0.00022859817295108693,
+      "total_result": 0.003396803966669743
+    },
+    {
+      "index": 7860,
+      "provider": "market for land tenure, arable land, measured as carbon net primary productivity, annual crop | land tenure, arable land, measured as carbon net primary productivity, annual crop | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.003168218667483944
+    },
+    {
+      "index": 4647,
+      "provider": "clear-cutting, secondary forest to arable land, annual crop | land tenure, arable land, measured as carbon net primary productivity, annual crop | Cutoff, U",
+      "direct_result": 0.002906256411273796,
+      "total_result": 0.0029068753196823767
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 1218,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1218,
+      "provider_index": 1235,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1218,
+      "provider_index": 1224,
+      "upstream_share": 0.9995731858793863
+    },
+    {
+      "node_index": 1218,
+      "provider_index": 1233,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 1235,
+      "provider_index": 2208,
+      "upstream_share": 0.9985318801663202
+    },
+    {
+      "node_index": 1224,
+      "provider_index": 6015,
+      "upstream_share": 0.9999422450349077
+    },
+    {
+      "node_index": 1224,
+      "provider_index": 6014,
+      "upstream_share": 0.9999758656544157
+    },
+    {
+      "node_index": 1233,
+      "provider_index": 3594,
+      "upstream_share": 0.9621189380020426
+    },
+    {
+      "node_index": 2208,
+      "provider_index": 16629,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 2208,
+      "provider_index": 16630,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 6015,
+      "provider_index": 673,
+      "upstream_share": 0.4473709203632994
+    },
+    {
+      "node_index": 6015,
+      "provider_index": 59,
+      "upstream_share": 0.9993826626233684
+    },
+    {
+      "node_index": 6015,
+      "provider_index": 75,
+      "upstream_share": 0.2503063226825376
+    },
+    {
+      "node_index": 6014,
+      "provider_index": 673,
+      "upstream_share": 0.4995681388733127
+    },
+    {
+      "node_index": 6014,
+      "provider_index": 268,
+      "upstream_share": 0.005701374404775779
+    },
+    {
+      "node_index": 3594,
+      "provider_index": 75,
+      "upstream_share": 0.2876615054581825
+    },
+    {
+      "node_index": 16629,
+      "provider_index": 5376,
+      "upstream_share": 0.5449156417128064
+    },
+    {
+      "node_index": 16630,
+      "provider_index": 5376,
+      "upstream_share": 0.37350913451346324
+    },
+    {
+      "node_index": 673,
+      "provider_index": 4323,
+      "upstream_share": 0.9999999999999997
+    },
+    {
+      "node_index": 59,
+      "provider_index": 17383,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 5376,
+      "provider_index": 5335,
+      "upstream_share": 0.9799564358456767
+    },
+    {
+      "node_index": 4323,
+      "provider_index": 5547,
+      "upstream_share": 0.9969314038796651
+    },
+    {
+      "node_index": 17383,
+      "provider_index": 1356,
+      "upstream_share": 0.8858837692102326
+    },
+    {
+      "node_index": 17383,
+      "provider_index": 75,
+      "upstream_share": 0.0007148870875473711
+    },
+    {
+      "node_index": 5335,
+      "provider_index": 14928,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 5335,
+      "provider_index": 14929,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 5547,
+      "provider_index": 11290,
+      "upstream_share": 0.966707011336914
+    },
+    {
+      "node_index": 1356,
+      "provider_index": 15177,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 14928,
+      "provider_index": 16267,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 14929,
+      "provider_index": 9236,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 11290,
+      "provider_index": 2495,
+      "upstream_share": 0.0003750662470382311
+    },
+    {
+      "node_index": 11290,
+      "provider_index": 5009,
+      "upstream_share": 0.9320361564307571
+    },
+    {
+      "node_index": 11290,
+      "provider_index": 5007,
+      "upstream_share": 0.002685681386945458
+    },
+    {
+      "node_index": 15177,
+      "provider_index": 1678,
+      "upstream_share": 0.9293510050740063
+    },
+    {
+      "node_index": 16267,
+      "provider_index": 15493,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 9236,
+      "provider_index": 2073,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 2495,
+      "provider_index": 14994,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 5009,
+      "provider_index": 268,
+      "upstream_share": 2.7162783857768643e-05
+    },
+    {
+      "node_index": 5009,
+      "provider_index": 5007,
+      "upstream_share": 0.9955322117071972
+    },
+    {
+      "node_index": 5007,
+      "provider_index": 15666,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1678,
+      "provider_index": 6015,
+      "upstream_share": 4.63189698953034e-05
+    },
+    {
+      "node_index": 15493,
+      "provider_index": 6009,
+      "upstream_share": 0.8875632368692861
+    },
+    {
+      "node_index": 2073,
+      "provider_index": 2495,
+      "upstream_share": 0.9459716912930203
+    },
+    {
+      "node_index": 14994,
+      "provider_index": 11568,
+      "upstream_share": 0.9992507320850781
+    },
+    {
+      "node_index": 15666,
+      "provider_index": 8558,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 6009,
+      "provider_index": 13177,
+      "upstream_share": 0.9633756163806471
+    },
+    {
+      "node_index": 6009,
+      "provider_index": 5983,
+      "upstream_share": 0.16213838964590227
+    },
+    {
+      "node_index": 11568,
+      "provider_index": 7394,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 8558,
+      "provider_index": 6015,
+      "upstream_share": 1.1435995196759201e-05
+    },
+    {
+      "node_index": 8558,
+      "provider_index": 8557,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 13177,
+      "provider_index": 7491,
+      "upstream_share": 0.948567735398058
+    },
+    {
+      "node_index": 5983,
+      "provider_index": 7490,
+      "upstream_share": 0.9788021595168868
+    },
+    {
+      "node_index": 7491,
+      "provider_index": 12878,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 7491,
+      "provider_index": 12879,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 12879,
+      "provider_index": 5276,
+      "upstream_share": 0.9996363376459797
+    },
+    {
+      "node_index": 5276,
+      "provider_index": 16378,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 16378,
+      "provider_index": 7860,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 7860,
+      "provider_index": 4647,
+      "upstream_share": 0.9999999999999999
+    }
+  ]
+}

@@ -1,0 +1,671 @@
+{
+  "impact_category": "Climate change: land use and land use change",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "use_cable_mix",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "use_cable_mix",
+      "direct_result": 0.0,
+      "total_result": 0.0704464050940507
+    },
+    {
+      "index": 5099,
+      "provider": "market for electricity, high voltage | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.07044640509405102
+    },
+    {
+      "index": 12160,
+      "provider": "market for transmission network, electricity, high voltage | transmission network, electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.023970091980333418
+    },
+    {
+      "index": 12164,
+      "provider": "electricity production, nuclear, pressure water reactor | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.011071054998363016
+    },
+    {
+      "index": 12101,
+      "provider": "electricity production, nuclear, boiling water reactor | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.007934109048081445
+    },
+    {
+      "index": 12099,
+      "provider": "electricity production, hydro, reservoir, alpine region | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.007646275463685583
+    },
+    {
+      "index": 12163,
+      "provider": "heat and power co-generation, wood chips, 6667 kW, state-of-the-art 2014 | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.006041147567275475
+    },
+    {
+      "index": 12097,
+      "provider": "electricity, high voltage, wind power, import from DE | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00366100596020292
+    },
+    {
+      "index": 6003,
+      "provider": "transmission network construction, electricity, high voltage | transmission network, electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0162682368614162
+    },
+    {
+      "index": 6002,
+      "provider": "transmission network construction, electricity, high voltage | transmission network, electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.007702388132306324
+    },
+    {
+      "index": 1050,
+      "provider": "market for nuclear fuel element, for pressure water reactor, UO2 4.2% & MOX | nuclear fuel element, for pressure water reactor, UO2 4.2% & MOX | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.009399970379847541
+    },
+    {
+      "index": 75,
+      "provider": "market for steel, low-alloyed, hot rolled | steel, low-alloyed, hot rolled | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.004394612593046402
+    },
+    {
+      "index": 1490,
+      "provider": "market for uranium, enriched 3.8%, in fuel element for light water reactor | uranium, enriched 3.8%, in fuel element for light water reactor | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0067411192576553305
+    },
+    {
+      "index": 3582,
+      "provider": "hydropower plant construction, reservoir, alpine region | hydropower plant, reservoir, alpine region | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.008157726346768862
+    },
+    {
+      "index": 2196,
+      "provider": "market for wood chips, green, measured as dry mass | wood chips, green, measured as dry mass | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0060240930686320865
+    },
+    {
+      "index": 5241,
+      "provider": "electricity production, wind, 1-3MW turbine, onshore | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.003666131817170038
+    },
+    {
+      "index": 673,
+      "provider": "market for aluminium, wrought alloy | aluminium, wrought alloy | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.013115959437008638
+    },
+    {
+      "index": 59,
+      "provider": "market for gravel, crushed | gravel, crushed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.005588272811299731
+    },
+    {
+      "index": 622,
+      "provider": "market for inert waste, for final disposal | inert waste, for final disposal | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.004118912232252813
+    },
+    {
+      "index": 268,
+      "provider": "market for steel, low-alloyed | steel, low-alloyed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.005155212544943366
+    },
+    {
+      "index": 17459,
+      "provider": "nuclear fuel element production, for pressure water reactor, UO2 4.2% & MOX | nuclear fuel element, for pressure water reactor, UO2 4.2% & MOX | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00932059451054336
+    },
+    {
+      "index": 13289,
+      "provider": "uranium fuel element production, enriched 3.8%, for light water reactor | uranium, enriched 3.8%, in fuel element for light water reactor | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0042836625471038845
+    },
+    {
+      "index": 195,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.003691679790714478
+    },
+    {
+      "index": 538,
+      "provider": "market for wind turbine, 2MW, onshore | wind turbine, 2MW, onshore | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0037003874648053998
+    },
+    {
+      "index": 4311,
+      "provider": "aluminium ingot, primary, to aluminium, wrought alloy market | aluminium, wrought alloy | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.012909433627080457
+    },
+    {
+      "index": 17372,
+      "provider": "gravel production, crushed | gravel, crushed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.005389498455529366
+    },
+    {
+      "index": 300,
+      "provider": "market for transport, freight, lorry, unspecified | transport, freight, lorry, diesel, unspecified | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.007248391579184727
+    },
+    {
+      "index": 5286,
+      "provider": "market for uranium, enriched 4.2%, in fuel element for light water reactor | uranium, enriched 4.2%, in fuel element for light water reactor | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.009386255095928045
+    },
+    {
+      "index": 1263,
+      "provider": "market for uranium, enriched 3.8%, per separative work unit | uranium, enriched 3.8%, per separative work unit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.006581001544080637
+    },
+    {
+      "index": 3,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.004044243730633017
+    },
+    {
+      "index": 107,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00536347299921253
+    },
+    {
+      "index": 4477,
+      "provider": "wind turbine construction, 2MW, onshore | wind turbine, 2MW, onshore | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.003700387464805465
+    },
+    {
+      "index": 5535,
+      "provider": "market for aluminium, primary, ingot | aluminium, primary, ingot | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.005674428750079421
+    },
+    {
+      "index": 1344,
+      "provider": "market for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.006192021312774359
+    },
+    {
+      "index": 2951,
+      "provider": "uranium fuel element production, enriched 4.2%, for light water reactor | uranium, enriched 4.2%, in fuel element for light water reactor | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.009385990156925761
+    },
+    {
+      "index": 8617,
+      "provider": "uranium production, centrifuge, enriched 3.8% | uranium, enriched 3.8%, per separative work unit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.004742256658316944
+    },
+    {
+      "index": 52,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0036289595891524314
+    },
+    {
+      "index": 11278,
+      "provider": "aluminium production, primary, ingot | aluminium, primary, ingot | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.005236867111002081
+    },
+    {
+      "index": 15166,
+      "provider": "electricity voltage transformation from high to medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.006191954887208987
+    },
+    {
+      "index": 7677,
+      "provider": "market for uranium, enriched 4.2%, per separative work unit | uranium, enriched 4.2%, per separative work unit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.009221309648614376
+    },
+    {
+      "index": 12131,
+      "provider": "electricity production, hydro, reservoir, non-alpine region | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.011499618635293857,
+      "total_result": 0.011501012224573327
+    },
+    {
+      "index": 4997,
+      "provider": "aluminium production, primary, liquid, prebake | aluminium, primary, liquid | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.005593523137702358
+    },
+    {
+      "index": 4995,
+      "provider": "market for electricity, medium voltage, aluminium industry | electricity, medium voltage, aluminium industry | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.005516353205071842
+    },
+    {
+      "index": 1666,
+      "provider": "market for electricity, high voltage | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0067447608641356405
+    },
+    {
+      "index": 13179,
+      "provider": "uranium production, centrifuge, enriched 4.2% | uranium, enriched 4.2%, per separative work unit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00641706951227513
+    },
+    {
+      "index": 15655,
+      "provider": "electricity voltage transformation from high to medium voltage, aluminium industry | electricity, medium voltage, aluminium industry | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.005515960431118994
+    },
+    {
+      "index": 15180,
+      "provider": "electricity production, hydro, reservoir, non-alpine region | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0049905106447576284,
+      "total_result": 0.0049919579815509915
+    },
+    {
+      "index": 8546,
+      "provider": "market for electricity, high voltage, aluminium industry | electricity, high voltage, aluminium industry | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.005515960431118994
+    },
+    {
+      "index": 8545,
+      "provider": "electricity production, hydro, aluminium industry | electricity, high voltage, aluminium industry | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.005515432888704018
+    },
+    {
+      "index": 5108,
+      "provider": "electricity production, hydro, reservoir, non-alpine region | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.003987337772464291,
+      "total_result": 0.003987813583542923
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 5099,
+      "upstream_share": 0.9988161256825373
+    },
+    {
+      "node_index": 5099,
+      "provider_index": 12160,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 5099,
+      "provider_index": 12164,
+      "upstream_share": 0.999999051918858
+    },
+    {
+      "node_index": 5099,
+      "provider_index": 12101,
+      "upstream_share": 0.9999987659552869
+    },
+    {
+      "node_index": 5099,
+      "provider_index": 12099,
+      "upstream_share": 0.9999871522125685
+    },
+    {
+      "node_index": 5099,
+      "provider_index": 12163,
+      "upstream_share": 0.9998540475879792
+    },
+    {
+      "node_index": 5099,
+      "provider_index": 12097,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 12160,
+      "provider_index": 6003,
+      "upstream_share": 0.9999393931740329
+    },
+    {
+      "node_index": 12160,
+      "provider_index": 6002,
+      "upstream_share": 0.9999795419817514
+    },
+    {
+      "node_index": 12164,
+      "provider_index": 1050,
+      "upstream_share": 0.9983106440346161
+    },
+    {
+      "node_index": 12164,
+      "provider_index": 75,
+      "upstream_share": 0.0005038321890476569
+    },
+    {
+      "node_index": 12101,
+      "provider_index": 1490,
+      "upstream_share": 0.987492949986706
+    },
+    {
+      "node_index": 12101,
+      "provider_index": 75,
+      "upstream_share": 0.0012059480802415945
+    },
+    {
+      "node_index": 12099,
+      "provider_index": 3582,
+      "upstream_share": 0.9349973231551378
+    },
+    {
+      "node_index": 12163,
+      "provider_index": 2196,
+      "upstream_share": 0.9972978057404838
+    },
+    {
+      "node_index": 12097,
+      "provider_index": 5241,
+      "upstream_share": 0.9985492580652521
+    },
+    {
+      "node_index": 6003,
+      "provider_index": 673,
+      "upstream_share": 0.43494034432639384
+    },
+    {
+      "node_index": 6003,
+      "provider_index": 59,
+      "upstream_share": 0.9993057774699767
+    },
+    {
+      "node_index": 6003,
+      "provider_index": 75,
+      "upstream_share": 0.2911425454676164
+    },
+    {
+      "node_index": 6003,
+      "provider_index": 622,
+      "upstream_share": 0.5595629555897805
+    },
+    {
+      "node_index": 6002,
+      "provider_index": 673,
+      "upstream_share": 0.4856840485960771
+    },
+    {
+      "node_index": 6002,
+      "provider_index": 268,
+      "upstream_share": 0.006103236248318023
+    },
+    {
+      "node_index": 1050,
+      "provider_index": 17459,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 1490,
+      "provider_index": 13289,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 3582,
+      "provider_index": 75,
+      "upstream_share": 0.24711629243016459
+    },
+    {
+      "node_index": 3582,
+      "provider_index": 195,
+      "upstream_share": 0.6930766517001686
+    },
+    {
+      "node_index": 5241,
+      "provider_index": 538,
+      "upstream_share": 0.9800373125308003
+    },
+    {
+      "node_index": 673,
+      "provider_index": 4311,
+      "upstream_share": 0.9999999999999997
+    },
+    {
+      "node_index": 59,
+      "provider_index": 17372,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 622,
+      "provider_index": 300,
+      "upstream_share": 0.466598769418831
+    },
+    {
+      "node_index": 17459,
+      "provider_index": 5286,
+      "upstream_share": 0.9915831144403219
+    },
+    {
+      "node_index": 13289,
+      "provider_index": 1263,
+      "upstream_share": 0.6300000000000001
+    },
+    {
+      "node_index": 13289,
+      "provider_index": 622,
+      "upstream_share": 1.0001113444556796e-05
+    },
+    {
+      "node_index": 13289,
+      "provider_index": 3,
+      "upstream_share": 0.011284840791965265
+    },
+    {
+      "node_index": 195,
+      "provider_index": 107,
+      "upstream_share": 0.6877617064643646
+    },
+    {
+      "node_index": 538,
+      "provider_index": 4477,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 4311,
+      "provider_index": 5535,
+      "upstream_share": 0.9959764974426436
+    },
+    {
+      "node_index": 17372,
+      "provider_index": 1344,
+      "upstream_share": 0.851286811616763
+    },
+    {
+      "node_index": 17372,
+      "provider_index": 75,
+      "upstream_share": 0.0008315813108305208
+    },
+    {
+      "node_index": 5286,
+      "provider_index": 2951,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1263,
+      "provider_index": 8617,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 3,
+      "provider_index": 52,
+      "upstream_share": 0.9220897519682697
+    },
+    {
+      "node_index": 4477,
+      "provider_index": 673,
+      "upstream_share": 0.007797950630293257
+    },
+    {
+      "node_index": 4477,
+      "provider_index": 268,
+      "upstream_share": 0.15963040149479235
+    },
+    {
+      "node_index": 5535,
+      "provider_index": 11278,
+      "upstream_share": 0.9667071288036237
+    },
+    {
+      "node_index": 1344,
+      "provider_index": 15166,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 2951,
+      "provider_index": 7677,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 2951,
+      "provider_index": 107,
+      "upstream_share": 0.0015321637055876827
+    },
+    {
+      "node_index": 2951,
+      "provider_index": 622,
+      "upstream_share": 1.8698007248736407e-05
+    },
+    {
+      "node_index": 2951,
+      "provider_index": 3,
+      "upstream_share": 0.01003171448213026
+    },
+    {
+      "node_index": 8617,
+      "provider_index": 673,
+      "upstream_share": 0.0008704149915673149
+    },
+    {
+      "node_index": 8617,
+      "provider_index": 75,
+      "upstream_share": 0.0004377164826001171
+    },
+    {
+      "node_index": 8617,
+      "provider_index": 12131,
+      "upstream_share": 0.3094117847997137
+    },
+    {
+      "node_index": 11278,
+      "provider_index": 4997,
+      "upstream_share": 0.9320362990297583
+    },
+    {
+      "node_index": 11278,
+      "provider_index": 4995,
+      "upstream_share": 0.0026856817967438633
+    },
+    {
+      "node_index": 11278,
+      "provider_index": 622,
+      "upstream_share": 2.2331397190889596e-08
+    },
+    {
+      "node_index": 15166,
+      "provider_index": 1666,
+      "upstream_share": 0.9174069758647294
+    },
+    {
+      "node_index": 7677,
+      "provider_index": 13179,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 4997,
+      "provider_index": 4995,
+      "upstream_share": 0.9955322112981302
+    },
+    {
+      "node_index": 4997,
+      "provider_index": 268,
+      "upstream_share": 2.993724675141803e-05
+    },
+    {
+      "node_index": 4997,
+      "provider_index": 622,
+      "upstream_share": 6.730637517526769e-08
+    },
+    {
+      "node_index": 4995,
+      "provider_index": 15655,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1666,
+      "provider_index": 6003,
+      "upstream_share": 4.883271597141117e-05
+    },
+    {
+      "node_index": 1666,
+      "provider_index": 15180,
+      "upstream_share": 0.6771675083854682
+    },
+    {
+      "node_index": 13179,
+      "provider_index": 673,
+      "upstream_share": 0.0011816008186951066
+    },
+    {
+      "node_index": 13179,
+      "provider_index": 12131,
+      "upstream_share": 0.420030929815369
+    },
+    {
+      "node_index": 13179,
+      "provider_index": 75,
+      "upstream_share": 0.0005942063948891003
+    },
+    {
+      "node_index": 15655,
+      "provider_index": 8546,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 8546,
+      "provider_index": 6003,
+      "upstream_share": 1.1774109996009648e-05
+    },
+    {
+      "node_index": 8546,
+      "provider_index": 8545,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 8545,
+      "provider_index": 15180,
+      "upstream_share": 0.32283249161453187
+    },
+    {
+      "node_index": 8545,
+      "provider_index": 5108,
+      "upstream_share": 0.1395303855087687
+    }
+  ]
+}

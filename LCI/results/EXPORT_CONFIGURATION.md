@@ -19,7 +19,7 @@ Located at the top of the script (lines 105-120):
 # Enable exporting results to external folder
 # Type: Boolean
 # True = save results to EXPORT_RESULT_FOLDER
-# False = save only to current LCI/RESULTS directory
+# False = save only to current LCI/RESULTS/Deterministic results directory
 EXPORT_RESULT = True
 
 # Folder where results will be exported
@@ -33,13 +33,13 @@ EXPORT_RESULT_FOLDER = r"C:\Users\alorzaga\cernbox\WINDOWS\Desktop\TESIS\LCIA_Po
 When `EXPORT_RESULT = True`, the following files are saved to BOTH directories:
 
 **Local Directory** (always):
-- `c:\Users\alorzaga\Git\tesis\LCI\RESULTS\{system}_{method}_impacts.csv`
-- `c:\Users\alorzaga\Git\tesis\LCI\RESULTS\{system}_{method}_impacts_normalized.csv`
-- `c:\Users\alorzaga\Git\tesis\LCI\RESULTS\{system}_{method}_inventory.csv`
-- `c:\Users\alorzaga\Git\tesis\LCI\RESULTS\{system}_{method}_{impact}_upstream.csv` (per impact)
-- `c:\Users\alorzaga\Git\tesis\LCI\RESULTS\{system}_{method}_data_quality.json` (if enabled)
-- `c:\Users\alorzaga\Git\tesis\LCI\RESULTS\{system}_{method}_sankey.json` (if enabled)
-- `c:\Users\alorzaga\Git\tesis\LCI\RESULTS\{system}_{method}_process_tree.json` (if enabled)
+- `c:\Users\alorzaga\Git\tesis\LCI\RESULTS\Deterministic results\{system}_{method}_impacts.csv`
+- `c:\Users\alorzaga\Git\tesis\LCI\RESULTS\Deterministic results\{system}_{method}_impacts_normalized.csv`
+- `c:\Users\alorzaga\Git\tesis\LCI\RESULTS\Deterministic results\{system}_{method}_inventory.csv`
+- `c:\Users\alorzaga\Git\tesis\LCI\RESULTS\Deterministic results\{system}_{method}_{impact}_upstream.csv` (per impact)
+- `c:\Users\alorzaga\Git\tesis\LCI\RESULTS\Deterministic results\{system}_{method}_data_quality.json` (if enabled)
+- `c:\Users\alorzaga\Git\tesis\LCI\RESULTS\Deterministic results\{system}_{method}_sankey.json` (if enabled)
+- `c:\Users\alorzaga\Git\tesis\LCI\RESULTS\Deterministic results\{system}_{method}_process_tree.json` (if enabled)
 
 **Export Directory** (if EXPORT_RESULT = True):
 - `C:\Users\alorzaga\cernbox\WINDOWS\Desktop\TESIS\LCIA_Power systems\{same files}`
