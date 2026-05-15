@@ -74,6 +74,27 @@ def choose_many(options, title):
     return indices
 
 
+def choose_depth():
+    """Ask user for maximum upstream depth to display in Sankey."""
+    print("\n" + "=" * 70)
+    print("SELECT SANKEY DEPTH")
+    print("=" * 70)
+    print("Maximum upstream layers to display:")
+    print("  1 = root + first layer")
+    print("  2 = root + first + second layer (default)")
+    print("  3 = root + first + second + third layer")
+    print("  etc.")
+    
+    raw = input("\nEnter depth (default 2): ").strip()
+    if not raw:
+        return 2
+    
+    depth = int(raw)
+    if depth < 1:
+        raise ValueError("Depth must be at least 1")
+    return depth
+
+
 def main():
     files = sorted(RESULTS_DIR.glob("*_sankey.json"))
     if not files:
@@ -90,6 +111,8 @@ def main():
     impact_indices = choose_many(impacts_for_system, f"SELECT IMPACT(S) FOR: {selected_system}")
     selected_impacts = [impacts_for_system[i] for i in impact_indices]
 
+    max_depth = choose_depth()
+
     created = []
     for selected_impact in selected_impacts:
         candidates = [m for m in metas if m[0] == selected_system and m[1] == selected_impact]
@@ -99,7 +122,7 @@ def main():
 
         _, _, selected_file = candidates[0]
         data = load_sankey_json(selected_file)
-        fig = create_sankey_figure(data, title=f"{selected_system} - {selected_impact}")
+        fig = create_sankey_figure(data, title=f"{selected_system} - {selected_impact}", max_depth=max_depth)
 
         html_name = f"{selected_system}_EI_{selected_impact}_sankey_visualization.html"
         html_name = html_name.replace("/", "_").replace(":", "_")
@@ -113,7 +136,7 @@ def main():
 
     print(f"\n✓ Generated {len(created)} Sankey file(s):")
     for p in created:
-        print(f"  • {p}")
+        print(f'  Start-Process "{p}"')
 
 
 if __name__ == "__main__":

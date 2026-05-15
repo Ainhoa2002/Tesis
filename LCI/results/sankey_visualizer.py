@@ -56,6 +56,10 @@ DEFAULT_EDGE_COLOR = "rgba(149, 165, 166, 0.4)"
 # Use 2 to always show first and second upstream layers.
 DISPLAY_MAX_DEPTH = 2
 
+# Node arrangement behavior in Plotly Sankey.
+# Use "freeform" so users can drag and reposition nodes in the HTML viewer.
+SANKEY_NODE_ARRANGEMENT = "freeform"
+
 
 # ============================================================================
 # HELPER FUNCTIONS
@@ -75,13 +79,14 @@ def load_sankey_json(filepath):
         return json.load(f)
 
 
-def create_sankey_figure(sankey_data, title=None):
+def create_sankey_figure(sankey_data, title=None, max_depth=None):
     """
     Create interactive Plotly Sankey diagram from JSON data.
     
     Parameters:
         sankey_data: Dictionary from load_sankey_json()
         title: Custom title (defaults to impact category name)
+        max_depth: Maximum upstream depth to display (defaults to DISPLAY_MAX_DEPTH)
     
     Returns:
         plotly.graph_objects.Figure
@@ -91,6 +96,10 @@ def create_sankey_figure(sankey_data, title=None):
         >>> fig = create_sankey_figure(data)
         >>> fig.show()
     """
+    
+    # Use provided max_depth or fall back to configuration
+    if max_depth is None:
+        max_depth = DISPLAY_MAX_DEPTH
     
     # Extract components from sankey_data
     nodes = sankey_data.get("nodes", [])
@@ -128,7 +137,7 @@ def create_sankey_figure(sankey_data, title=None):
     while queue:
         current = queue.popleft()
         cur_depth = depth_map[current]
-        if cur_depth >= DISPLAY_MAX_DEPTH:
+        if cur_depth >= max_depth:
             continue
         for upstream in incoming.get(current, []):
             next_depth = cur_depth + 1
@@ -136,7 +145,7 @@ def create_sankey_figure(sankey_data, title=None):
                 depth_map[upstream] = next_depth
                 queue.append(upstream)
 
-    selected_indices = {idx for idx, depth in depth_map.items() if depth <= DISPLAY_MAX_DEPTH}
+    selected_indices = {idx for idx, depth in depth_map.items() if depth <= max_depth}
     filtered_nodes = [n for n in nodes if n["index"] in selected_indices]
     filtered_edges = [
         e for e in edges
@@ -161,7 +170,7 @@ def create_sankey_figure(sankey_data, title=None):
     node_labels = [n["provider"] for n in nodes]
     
     # Color nodes by total_result (magnitude of impact)
-    node_values = [n["total_result"] for n in nodes]
+    node_values = [abs(float(n.get("total_result", 0) or 0.0)) for n in nodes]
     max_value = max(node_values) if node_values else 1
     
     # Normalize values for color intensity (0-1 range)
@@ -180,17 +189,51 @@ def create_sankey_figure(sankey_data, title=None):
     # PREPARE EDGE DATA
     # ========================================================================
     
-    source_nodes = [index_to_position[e["provider_index"]] for e in edges if e["provider_index"] in index_to_position]
-    target_nodes = [index_to_position[e["node_index"]] for e in edges if e["node_index"] in index_to_position]
-    edge_values = []
-    edge_share_labels = []
+    edge_records = []
     for e in edges:
-        target_node = index_to_node.get(e["node_index"])
+        src_idx = e.get("provider_index")
+        tgt_idx = e.get("node_index")
+        if src_idx not in index_to_position or tgt_idx not in index_to_position:
+            continue
+
+        target_node = index_to_node.get(tgt_idx)
+        source_node = index_to_node.get(src_idx)
         if target_node is None:
             continue
-        absolute_value = e["upstream_share"] * target_node.get("total_result", 0)
-        edge_values.append(absolute_value)
-        edge_share_labels.append(e["upstream_share"])
+
+        share = float(e.get("upstream_share", 0.0) or 0.0)
+        target_total = float(target_node.get("total_result", 0.0) or 0.0)
+        source_total = float(source_node.get("total_result", 0.0) or 0.0) if source_node else 0.0
+
+        # Primary rule: scale links from the provider contribution, so first-layer
+        # modules are not forced to equal size when upstream_share is 1.0 for all.
+        # Fallback: if provider total is unavailable, use receiving-node based value.
+        contribution_base = source_total
+        if abs(contribution_base) < 1e-20 and abs(target_total) >= 1e-20:
+            contribution_base = target_total
+
+        signed_contribution = share * contribution_base
+        magnitude = abs(signed_contribution)
+        if magnitude <= 0.0:
+            continue
+
+        edge_records.append(
+            {
+                "source": index_to_position[src_idx],
+                "target": index_to_position[tgt_idx],
+                "value": magnitude,
+                "share": share,
+                "signed": signed_contribution,
+            }
+        )
+
+    source_nodes = [item["source"] for item in edge_records]
+    target_nodes = [item["target"] for item in edge_records]
+    edge_values = [item["value"] for item in edge_records]
+    edge_hover_data = [
+        f"Share: {item['share']:.2%}<br>Signed contribution: {item['signed']:.6g}"
+        for item in edge_records
+    ]
     
     # ========================================================================
     # CREATE FIGURE
@@ -199,10 +242,10 @@ def create_sankey_figure(sankey_data, title=None):
     # Explicit node positioning by depth to keep each layer clearly separated.
     by_depth = defaultdict(list)
     for n in nodes:
-        d = depth_map.get(n["index"], DISPLAY_MAX_DEPTH)
+        d = depth_map.get(n["index"], max_depth)
         by_depth[d].append(n["index"])
 
-    max_depth_in_graph = max(by_depth.keys()) if by_depth else DISPLAY_MAX_DEPTH
+    max_depth_in_graph = max(by_depth.keys()) if by_depth else max_depth
     depth_den = max(max_depth_in_graph, 1)
 
     node_x = [0.5] * len(nodes)
@@ -215,7 +258,7 @@ def create_sankey_figure(sankey_data, title=None):
             node_y[pos] = (k + 1) / (len(idxs_sorted) + 1)
 
     fig = go.Figure(data=[go.Sankey(
-        arrangement="fixed",
+        arrangement=SANKEY_NODE_ARRANGEMENT,
         node=dict(
             pad=15,
             thickness=20,
@@ -224,7 +267,7 @@ def create_sankey_figure(sankey_data, title=None):
             color=node_colors,
             x=node_x,
             y=node_y,
-            customdata=[f"Impact: {v:.4f}" for v in node_values],
+            customdata=[f"Impact magnitude: {v:.6g}" for v in node_values],
             hovertemplate='<b>%{label}</b><br>%{customdata}<extra></extra>'
         ),
         link=dict(
@@ -232,8 +275,8 @@ def create_sankey_figure(sankey_data, title=None):
             target=target_nodes,
             value=edge_values,
             color="rgba(200, 200, 200, 0.4)",
-            customdata=[f"Share: {share:.6f}" for share in edge_share_labels],
-            hovertemplate='%{source.label} → %{target.label}<br>%{customdata}<br>Contribution: %{value:.6f}<extra></extra>'
+            customdata=edge_hover_data,
+            hovertemplate='%{source.label} → %{target.label}<br>%{customdata}<br>Width contribution magnitude: %{value:.6g}<extra></extra>'
         )
     )])
     
