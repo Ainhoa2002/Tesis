@@ -177,7 +177,7 @@ def main() -> None:
     st.subheader("4) Pie chart: Mass distribution by Section or Component")
     pie_mode = st.radio(
         "Pie chart mode",
-        ["Section", "Component (top 20)"]
+        ["Section", "Component (top 20)", "Subsystem"]
     )
     if pie_mode == "Section":
         pie_df = (
@@ -189,6 +189,18 @@ def main() -> None:
             names="Section",
             values="mass_kg",
             title="Mass distribution by Section",
+        )
+        st.plotly_chart(fig_pie, width="stretch")
+    elif pie_mode == "Subsystem":
+        pie_df = (
+            view.groupby("Subsystem", as_index=False)["mass_kg"].sum()
+            .sort_values("mass_kg", ascending=False)
+        )
+        fig_pie = px.pie(
+            pie_df,
+            names="Subsystem",
+            values="mass_kg",
+            title="Mass distribution by Subsystem",
         )
         st.plotly_chart(fig_pie, width="stretch")
     else:
@@ -212,6 +224,26 @@ def main() -> None:
             title=f"Mass distribution by Component (top {top_n} + Others)",
         )
         st.plotly_chart(fig_pie, width="stretch")
+
+    # Subsystem summary table: total mass and percentage of current view
+    subsys_table = (
+        view.groupby("Subsystem", as_index=False)["mass_kg"].sum()
+        .sort_values("mass_kg", ascending=False)
+    )
+    total_mass_view = subsys_table["mass_kg"].sum()
+    if total_mass_view and total_mass_view > 0:
+        subsys_table["Percent"] = subsys_table["mass_kg"] / total_mass_view * 100
+    else:
+        subsys_table["Percent"] = 0.0
+
+    # Display table with formatted numbers
+    display_table = subsys_table.copy()
+    display_table["mass_kg"] = display_table["mass_kg"].map(lambda x: f"{x:.6f}")
+    display_table["Percent"] = display_table["Percent"].map(lambda x: f"{x:.2f}%")
+    st.subheader("Subsystem mass summary")
+    st.dataframe(display_table.reset_index(drop=True), use_container_width=True)
+
+    
 
     st.subheader("Data preview")
     cols = [
