@@ -1,0 +1,228 @@
+{
+  "impact_category": "Human toxicity: non-carcinogenic, inorganics",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "control_backplane_card",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "control_backplane_card",
+      "direct_result": 0.0,
+      "total_result": 4.151674819518595e-07
+    },
+    {
+      "index": 13733,
+      "provider": "electric connector production, wire clamp | electric connector, wire clamp | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.146410068126481e-07
+    },
+    {
+      "index": 245,
+      "provider": "market for copper, cathode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.094706964762864e-07
+    },
+    {
+      "index": 1614,
+      "provider": "market for printed wiring board mounting facility | printed wiring board mounting facility | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.318934878553172e-08
+    },
+    {
+      "index": 6317,
+      "provider": "electrorefining of copper, anode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.900382125177663e-07
+    },
+    {
+      "index": 6308,
+      "provider": "treatment of copper scrap by electrolytic refining | copper, cathode | Cutoff, U",
+      "direct_result": 2.3707184324446017e-09,
+      "total_result": 1.3686031782494914e-08
+    },
+    {
+      "index": 5388,
+      "provider": "printed wiring board mounting facility construction | printed wiring board mounting facility | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.318934878553172e-08
+    },
+    {
+      "index": 4288,
+      "provider": "market for copper, anode | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.030299416168178e-07
+    },
+    {
+      "index": 144,
+      "provider": "market for building, multi-storey | building, multi-storey | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.5584768933029055e-08
+    },
+    {
+      "index": 13459,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 1.6714015560049046e-07,
+      "total_result": 1.6938217021133343e-07
+    },
+    {
+      "index": 13461,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 1.6434691244391092e-07,
+      "total_result": 1.665213022727366e-07
+    },
+    {
+      "index": 13455,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 3.284588732297421e-08,
+      "total_result": 3.331705001012753e-08
+    },
+    {
+      "index": 13457,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 1.9699034276476564e-08,
+      "total_result": 1.9998444804232492e-08
+    },
+    {
+      "index": 13460,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 1.2574685144005642e-08,
+      "total_result": 1.277147046323501e-08
+    },
+    {
+      "index": 10643,
+      "provider": "building construction, multi-storey | building, multi-storey | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.7215961108467884e-08
+    },
+    {
+      "index": 963,
+      "provider": "building construction, multi-storey | building, multi-storey | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 8.964677489869801e-09
+    },
+    {
+      "index": 3929,
+      "provider": "market for copper concentrate, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.47673161088797e-09
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 13733,
+      "upstream_share": 0.9999998499047696
+    },
+    {
+      "node_index": 13733,
+      "provider_index": 245,
+      "upstream_share": 0.935034806639604
+    },
+    {
+      "node_index": 13733,
+      "provider_index": 1614,
+      "upstream_share": 0.9988317018323857
+    },
+    {
+      "node_index": 245,
+      "provider_index": 6317,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 245,
+      "provider_index": 6308,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 1614,
+      "provider_index": 5388,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 6317,
+      "provider_index": 4288,
+      "upstream_share": 0.9662031992170569
+    },
+    {
+      "node_index": 6308,
+      "provider_index": 4288,
+      "upstream_share": 0.02753223904730585
+    },
+    {
+      "node_index": 5388,
+      "provider_index": 144,
+      "upstream_share": 0.8262753852310636
+    },
+    {
+      "node_index": 4288,
+      "provider_index": 13459,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 4288,
+      "provider_index": 13461,
+      "upstream_share": 0.9999999999999994
+    },
+    {
+      "node_index": 4288,
+      "provider_index": 13455,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 4288,
+      "provider_index": 13457,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 4288,
+      "provider_index": 13460,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 144,
+      "provider_index": 10643,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 144,
+      "provider_index": 963,
+      "upstream_share": 0.9460915550663542
+    },
+    {
+      "node_index": 13459,
+      "provider_index": 3929,
+      "upstream_share": 0.3917380510609106
+    },
+    {
+      "node_index": 13461,
+      "provider_index": 3929,
+      "upstream_share": 0.3851913320730859
+    },
+    {
+      "node_index": 13455,
+      "provider_index": 3929,
+      "upstream_share": 0.07698319915426971
+    },
+    {
+      "node_index": 13457,
+      "provider_index": 3929,
+      "upstream_share": 0.04617000186175703
+    },
+    {
+      "node_index": 13460,
+      "provider_index": 3929,
+      "upstream_share": 0.029472167435285676
+    },
+    {
+      "node_index": 10643,
+      "provider_index": 245,
+      "upstream_share": 0.04013096334554551
+    },
+    {
+      "node_index": 963,
+      "provider_index": 245,
+      "upstream_share": 0.02094828871732472
+    }
+  ]
+}

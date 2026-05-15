@@ -263,15 +263,9 @@ def create_or_update_product_system(
 
     existing_ps = client.find(o.ProductSystem, name=process_name)
     if existing_ps:
-        try:
-            client.delete(existing_ps)
-            report.updated = True
-            print(f"Deleted existing product system for '{process_name}'")
-        except Exception as exc:
-            report.skipped = True
-            report.errors.append(f"Failed to delete existing product system '{process_name}': {exc}")
-            print(report.errors[-1])
-            return report
+        report.skipped = True
+        print(f"Skipped existing product system for '{process_name}'")
+        return report
 
     config = o.LinkingConfig(
         prefer_unit_processes=True,

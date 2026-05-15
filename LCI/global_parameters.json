@@ -11,74 +11,203 @@
     // 0 = silent (use parameters only), 1 = interactive (ask user)
     "product_systems_interactive_mode": 0,
     // List of process names to build product systems for. If empty, uses all components from module.
-    "product_systems_prefer_defaults": [
-      "use_cable_renewables",
-      "use_cable_mix",
-      "use_magnet_renewables",
-      "use_magnet_mix",
-      "use_converter_renewables",
-      "use_converter_mix",
-      "connector_system_transport",
-      "magnet_transport",
-      "mexico_transport",
-      "connector_disgregation",
-      "magnet_disgregation",
-      "MEXICO_disgregation"
-    ],
-    // Provider linking mode for each component: only-defaults, prefer-defaults, ignore-defaults
-    "product_systems_module": {
-      "components": [
-        {
-          "name": "use_cable_renewables",
-          "provider_linking": "prefer-defaults"
-        },
-        {
-          "name": "use_cable_mix",
-          "provider_linking": "prefer-defaults"
-        },
-        {
-          "name": "use_magnet_renewables",
-          "provider_linking": "prefer-defaults"
-        },
-        {
-          "name": "use_magnet_mix",
-          "provider_linking": "prefer-defaults"
-        },
-        {
-          "name": "use_converter_renewables",
-          "provider_linking": "prefer-defaults"
-        },
-        {
-          "name": "use_converter_mix",
-          "provider_linking": "prefer-defaults"
-        },
-        {
-          "name": "connector_system_transport",
-          "provider_linking": "prefer-defaults"
-        },
-        {
-          "name": "magnet_transport",
-          "provider_linking": "prefer-defaults"
-        },
-        {
-          "name": "mexico_transport",
-          "provider_linking": "prefer-defaults"
-        },
-        {
-          "name": "connector_disgregation",
-          "provider_linking": "prefer-defaults"
-        },
-        {
-          "name": "magnet_disgregation",
-          "provider_linking": "prefer-defaults"
-        },
-        {
-          "name": "MEXICO_disgregation",
-          "provider_linking": "prefer-defaults"
-        }
-      ]
+"product_systems_prefer_defaults": [
+  "use_cable_renewables",
+  "use_cable_mix",
+  "use_magnet_renewables",
+  "use_magnet_mix",
+  "use_converter_renewables",
+  "use_converter_mix",
+  "connector_system_transport",
+  "magnet_transport",
+  "mexico_transport",
+  "connector_disgregation",
+  "magnet_disgregation",
+  "MEXICO_disgregation",
+  "4Q_output_control_card",
+  "4Q_output_power_card",
+  "4Q_power_card",
+  "analog_control",
+  "cabling",
+  "contactor_card",
+  "control_backplane_card",
+  "digital_control",
+  "fan_supervision_card",
+  "filter_card",
+  "fuse_card",
+  "HF_Power_Transformer_PM624929",
+  "inverter_power_card",
+  "mechanical_components",
+  "power_inductor_PM6249",
+  "SECTION_Assembly_Processes",
+  "SECTION_Cabling",
+  "SECTION_Discrete_Semiconductors",
+  "SECTION_Electromechanical",
+  "SECTION_Hardware",
+  "SECTION_IC",
+  "SECTION_Magnetics",
+  "SECTION_Mechanical_components",
+  "SECTION_Modules",
+  "SECTION_Passives",
+  "SECTION_PCB"
+],
+// Provider linking mode for each component: only-defaults, prefer-defaults, ignore-defaults
+"product_systems_module": {
+  "components": [
+    {
+      "name": "use_cable_renewables",
+      "provider_linking": "prefer-defaults"
     },
-
+    {
+      "name": "use_cable_mix",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "use_magnet_renewables",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "use_magnet_mix",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "use_converter_renewables",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "use_converter_mix",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "connector_system_transport",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "magnet_transport",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "mexico_transport",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "connector_disgregation",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "magnet_disgregation",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "MEXICO_disgregation",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "4Q_output_control_card",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "4Q_output_power_card",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "4Q_power_card",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "analog_control",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "cabling",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "contactor_card",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "control_backplane_card",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "digital_control",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "fan_supervision_card",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "filter_card",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "fuse_card",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "HF_Power_Transformer_PM624929",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "inverter_power_card",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "mechanical_components",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "power_inductor_PM6249",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "SECTION_Assembly_Processes",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "SECTION_Cabling",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "SECTION_Discrete_Semiconductors",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "SECTION_Electromechanical",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "SECTION_Hardware",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "SECTION_IC",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "SECTION_Magnetics",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "SECTION_Mechanical_components",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "SECTION_Modules",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "SECTION_Passives",
+      "provider_linking": "prefer-defaults"
+    },
+    {
+      "name": "SECTION_PCB",
+      "provider_linking": "prefer-defaults"
+    }
+  ]
+},
     // Result extraction
     "result_extraction": {
       // 0 = silent (use parameters only), 1 = interactive (ask user)

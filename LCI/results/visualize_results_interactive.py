@@ -49,7 +49,10 @@ def clean_filename_part(text):
 
 def build_graph_filename(prefix, selected_systems, impact=None):
     """Build an exported filename from the graph type, systems, and optional impact."""
-    system_part = "_".join(clean_filename_part(system) for system in selected_systems)
+    if len(selected_systems) > 6:
+        system_part = "COMBINED"
+    else:
+        system_part = "_".join(clean_filename_part(system) for system in selected_systems)
     filename_parts = [clean_filename_part(prefix), system_part]
     if impact:
         filename_parts.append(clean_filename_part(impact))

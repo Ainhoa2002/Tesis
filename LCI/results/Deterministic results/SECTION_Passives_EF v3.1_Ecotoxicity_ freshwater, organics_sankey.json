@@ -1,0 +1,262 @@
+{
+  "impact_category": "Ecotoxicity: freshwater, organics",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "SECTION_Passives",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "SECTION_Passives",
+      "direct_result": 0.0,
+      "total_result": 201.98480284240142
+    },
+    {
+      "index": 4900,
+      "provider": "capacitor production, film type, for through-hole mounting | capacitor, film type, for through-hole mounting | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 188.6765654479495
+    },
+    {
+      "index": 10274,
+      "provider": "capacitor production, electrolyte type, > 2cm height | capacitor, electrolyte type, > 2cm height | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.023998682267226
+    },
+    {
+      "index": 8642,
+      "provider": "inductor production, ring core choke type | inductor, ring core choke type | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.5706181435639
+    },
+    {
+      "index": 10879,
+      "provider": "electronic component production, passive, unspecified | electronic component, passive, unspecified | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.395608110292189
+    },
+    {
+      "index": 7614,
+      "provider": "market for polyphenylene sulfide | polyphenylene sulfide | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 182.04478589209913
+    },
+    {
+      "index": 5729,
+      "provider": "market for capacitor, auxilliaries and energy use | capacitor, auxilliaries and energy use | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 7.733931221858119
+    },
+    {
+      "index": 2704,
+      "provider": "market for epoxy resin, liquid | epoxy resin, liquid | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.180699959156537
+    },
+    {
+      "index": 3706,
+      "provider": "market for polycarbonate | polycarbonate | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.6080780670313
+    },
+    {
+      "index": 12363,
+      "provider": "polyphenylene sulfide production | polyphenylene sulfide | Cutoff, U",
+      "direct_result": 0.141858292326562,
+      "total_result": 182.0402812374864
+    },
+    {
+      "index": 11942,
+      "provider": "capacitor production, auxilliaries and energy use | capacitor, auxilliaries and energy use | Cutoff, U",
+      "direct_result": 0.9140476370331694,
+      "total_result": 7.7339312218581195
+    },
+    {
+      "index": 17652,
+      "provider": "epoxy resin production, liquid | epoxy resin, liquid | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.1752052657177194
+    },
+    {
+      "index": 5834,
+      "provider": "market for p-dichlorobenzene | p-dichlorobenzene | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 145.49012623595942
+    },
+    {
+      "index": 2393,
+      "provider": "market for p-dichlorobenzene | p-dichlorobenzene | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 36.366523176105375
+    },
+    {
+      "index": 327,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.8103800833656085
+    },
+    {
+      "index": 1742,
+      "provider": "market for bisphenol A, powder | bisphenol A, powder | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.08048904727143
+    },
+    {
+      "index": 13,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.7763763882779045
+    },
+    {
+      "index": 7635,
+      "provider": "chlorobenzenes production, benzene chlorination | p-dichlorobenzene | Cutoff, U",
+      "direct_result": 145.37711158110557,
+      "total_result": 145.4868445761078
+    },
+    {
+      "index": 1553,
+      "provider": "chlorobenzenes production, benzene chlorination | p-dichlorobenzene | Cutoff, U",
+      "direct_result": 36.34427161012362,
+      "total_result": 36.36637611429499
+    },
+    {
+      "index": 10562,
+      "provider": "bisphenol A production, powder | bisphenol A, powder | Cutoff, U",
+      "direct_result": 2.340087601466223,
+      "total_result": 3.7832314845490873
+    },
+    {
+      "index": 698,
+      "provider": "market for phenol | phenol | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.021184550899512
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 4900,
+      "upstream_share": 0.9920490715286326
+    },
+    {
+      "node_index": 0,
+      "provider_index": 10274,
+      "upstream_share": 0.999992887024536
+    },
+    {
+      "node_index": 0,
+      "provider_index": 8642,
+      "upstream_share": 0.9219887022677687
+    },
+    {
+      "node_index": 0,
+      "provider_index": 10879,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 4900,
+      "provider_index": 7614,
+      "upstream_share": 0.9964494544256737
+    },
+    {
+      "node_index": 4900,
+      "provider_index": 5729,
+      "upstream_share": 0.3895602977373934
+    },
+    {
+      "node_index": 4900,
+      "provider_index": 2704,
+      "upstream_share": 0.9568733225039854
+    },
+    {
+      "node_index": 10274,
+      "provider_index": 5729,
+      "upstream_share": 0.5844650326782038
+    },
+    {
+      "node_index": 8642,
+      "provider_index": 3706,
+      "upstream_share": 0.9965758886210266
+    },
+    {
+      "node_index": 8642,
+      "provider_index": 2704,
+      "upstream_share": 0.022659256318813003
+    },
+    {
+      "node_index": 7614,
+      "provider_index": 12363,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 5729,
+      "provider_index": 11942,
+      "upstream_share": 0.9999999999999997
+    },
+    {
+      "node_index": 2704,
+      "provider_index": 17652,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 12363,
+      "provider_index": 5834,
+      "upstream_share": 0.9999889413408825
+    },
+    {
+      "node_index": 12363,
+      "provider_index": 2393,
+      "upstream_share": 0.9999891142727638
+    },
+    {
+      "node_index": 12363,
+      "provider_index": 327,
+      "upstream_share": 0.0006058061833881162
+    },
+    {
+      "node_index": 11942,
+      "provider_index": 327,
+      "upstream_share": 0.8717510634534991
+    },
+    {
+      "node_index": 17652,
+      "provider_index": 1742,
+      "upstream_share": 0.503017022664618
+    },
+    {
+      "node_index": 17652,
+      "provider_index": 13,
+      "upstream_share": 0.0009191786428151439
+    },
+    {
+      "node_index": 5834,
+      "provider_index": 7635,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 2393,
+      "provider_index": 1553,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 327,
+      "provider_index": 13,
+      "upstream_share": 0.941923456936575
+    },
+    {
+      "node_index": 1742,
+      "provider_index": 10562,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 7635,
+      "provider_index": 13,
+      "upstream_share": 9.837670783575174e-05
+    },
+    {
+      "node_index": 10562,
+      "provider_index": 698,
+      "upstream_share": 0.5703080719193412
+    }
+  ]
+}
