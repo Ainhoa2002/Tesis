@@ -243,6 +243,24 @@ def main() -> None:
     st.subheader("Subsystem mass summary")
     st.dataframe(display_table.reset_index(drop=True), use_container_width=True)
 
+    # Section summary table: total mass and percentage of current view
+    section_table = (
+        view.groupby("Section", as_index=False)["mass_kg"].sum()
+        .sort_values("mass_kg", ascending=False)
+    )
+    total_mass_view_sec = section_table["mass_kg"].sum()
+    if total_mass_view_sec and total_mass_view_sec > 0:
+        section_table["Percent"] = section_table["mass_kg"] / total_mass_view_sec * 100
+    else:
+        section_table["Percent"] = 0.0
+
+    # Display table with formatted numbers
+    display_section_table = section_table.copy()
+    display_section_table["mass_kg"] = display_section_table["mass_kg"].map(lambda x: f"{x:.6f}")
+    display_section_table["Percent"] = display_section_table["Percent"].map(lambda x: f"{x:.2f}%")
+    st.subheader("Section mass summary")
+    st.dataframe(display_section_table.reset_index(drop=True), use_container_width=True)
+
     
 
     st.subheader("Data preview")
