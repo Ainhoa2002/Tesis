@@ -1,0 +1,124 @@
+{
+  "impact_category": "Acidification",
+  "mode": 1,
+  "max_nodes": 10,
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "connector_system",
+      "direct_result": 0.0,
+      "total_result": 47.33609819371904
+    },
+    {
+      "index": 4,
+      "provider": "market for copper, cathode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 47.10406127606209
+    },
+    {
+      "index": 83,
+      "provider": "electrorefining of copper, anode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 39.281510611580515
+    },
+    {
+      "index": 94,
+      "provider": "platinum group metal mine operation, ore with high palladium content | copper, cathode | Cutoff, U",
+      "direct_result": 3.793935245325014,
+      "total_result": 3.8103850250223847
+    },
+    {
+      "index": 744,
+      "provider": "market for copper, anode | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 39.98558033521535
+    },
+    {
+      "index": 1029,
+      "provider": "market for blasting | blasting | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.979037055461089
+    },
+    {
+      "index": 2597,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 13.347582730591855,
+      "total_result": 15.264840756675147
+    },
+    {
+      "index": 2593,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 11.941718683684293,
+      "total_result": 13.768377812334975
+    },
+    {
+      "index": 2599,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 4.652009373088876,
+      "total_result": 4.886295651611466
+    },
+    {
+      "index": 6265,
+      "provider": "market for copper concentrate, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.3942238690632225
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 4,
+      "upstream_share": 0.9566236370554455
+    },
+    {
+      "node_index": 4,
+      "provider_index": 83,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 4,
+      "provider_index": 94,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 83,
+      "provider_index": 744,
+      "upstream_share": 0.9662297731850057
+    },
+    {
+      "node_index": 94,
+      "provider_index": 1029,
+      "upstream_share": 3.9439929940490513e-07
+    },
+    {
+      "node_index": 744,
+      "provider_index": 2597,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 744,
+      "provider_index": 2593,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 744,
+      "provider_index": 2599,
+      "upstream_share": 1.0000000000000004
+    },
+    {
+      "node_index": 2597,
+      "provider_index": 6265,
+      "upstream_share": 0.3917648306317298
+    },
+    {
+      "node_index": 2593,
+      "provider_index": 6265,
+      "upstream_share": 0.3852176641042178
+    },
+    {
+      "node_index": 2599,
+      "provider_index": 6265,
+      "upstream_share": 0.04617315808523653
+    }
+  ]
+}

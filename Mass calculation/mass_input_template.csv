@@ -1,0 +1,6 @@
+Designator,Part_number,Vendor,Package,Technology,W_mm,H_mm,L_mm,Mass_datasheet_g,Density_override_g_cm3,Similar_component_used,BibKey,Datasheet_reference,Notes
+C37,C1206X104K5RACAUTO,Vishay,1206,MLCC,3.2,1.6,1.7,,,Murata GRM31 X7R 1206,C37_Vishay1206_X7R,Vishay VJ MLCC table case 1206,Dims in mm from datasheet
+C15,MKY22W21004B00MSSD,WIMA,MKP-Y2 PCM15,FILM_SMALL,5,11,18,,,KEMET R76 similar case,C15_WIMA_MKPY2_001uF,WIMA MKP-Y2 row for part,Use W H L only
+C16,TPSD106K035R0200,AVX,7343-43 Case E,TANTALUM,7.3,4.3,4.1,,,KEMET T491 case E,C16_AVX_TPS_E,AVX TPS case size table,Case E dimensions
+Q3,IKW25N120H3,Infineon,PG-TO247-3,IGBT_TO247,20.5,15.9,4.9,,,Infineon TO-247 similar current,Q3_Infineon_TO247,Infineon IKW25N120H3 package outline,Prefer vendor mass if available
+PSU1,TRV 1M-xxxx,TRACO,SIP module,DCDC_MODULE,,,,4.8,,TRACO TRV 1M family,PSU1_TRACO_TRV1M,TRACO TRV 1M datasheet weight line,Direct datasheet mass

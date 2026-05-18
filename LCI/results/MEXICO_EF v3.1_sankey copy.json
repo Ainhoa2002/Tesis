@@ -1,0 +1,119 @@
+{
+  "impact_category": "Acidification",
+  "mode": 1,
+  "max_nodes": 10,
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "MEXICO",
+      "direct_result": 0.0,
+      "total_result": 3.5842395415839055
+    },
+    {
+      "index": 17933,
+      "provider": "mechanical_components",
+      "direct_result": 0.0,
+      "total_result": 0.6883545042442637
+    },
+    {
+      "index": 17943,
+      "provider": "4Q_power_card",
+      "direct_result": 0.0,
+      "total_result": 0.4498207126964387
+    },
+    {
+      "index": 4,
+      "provider": "market for copper, cathode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.3187917693806703
+    },
+    {
+      "index": 7,
+      "provider": "aluminium alloy production, AlMg3 | aluminium alloy, AlMg3 | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.4621931897865956
+    },
+    {
+      "index": 152,
+      "provider": "electrorefining of copper, anode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.0997806023515502
+    },
+    {
+      "index": 179,
+      "provider": "market for aluminium, cast alloy | aluminium, cast alloy | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.4229789418336761
+    },
+    {
+      "index": 901,
+      "provider": "market for copper, anode | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.124358004294576
+    },
+    {
+      "index": 1414,
+      "provider": "aluminium ingot, primary, to aluminium, cast alloy market | aluminium, cast alloy | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.3914832167583452
+    },
+    {
+      "index": 3171,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 0.3753218374051704,
+      "total_result": 0.4292333822634112
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 17933,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 17943,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 17933,
+      "provider_index": 4,
+      "upstream_share": 0.0016683757814189132
+    },
+    {
+      "node_index": 17933,
+      "provider_index": 7,
+      "upstream_share": 0.9999439952289366
+    },
+    {
+      "node_index": 4,
+      "provider_index": 152,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 7,
+      "provider_index": 4,
+      "upstream_share": 0.004405069375790314
+    },
+    {
+      "node_index": 7,
+      "provider_index": 179,
+      "upstream_share": 0.928917672634885
+    },
+    {
+      "node_index": 152,
+      "provider_index": 901,
+      "upstream_share": 0.9620487462738538
+    },
+    {
+      "node_index": 179,
+      "provider_index": 1414,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 901,
+      "provider_index": 3171,
+      "upstream_share": 0.9999999999999998
+    }
+  ]
+}

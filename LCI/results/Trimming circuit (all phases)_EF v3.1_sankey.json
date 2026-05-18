@@ -1,0 +1,119 @@
+{
+  "impact_category": "Acidification",
+  "mode": 1,
+  "max_nodes": 10,
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "Trimming circuit (all phases)",
+      "direct_result": 0.0,
+      "total_result": 58.51006725603815
+    },
+    {
+      "index": 17982,
+      "provider": "Connecting cable (all phases)",
+      "direct_result": 0.0,
+      "total_result": 48.00676958342608
+    },
+    {
+      "index": 17981,
+      "provider": "Magnet (all phases)",
+      "direct_result": 0.0,
+      "total_result": 6.549253895520665
+    },
+    {
+      "index": 8,
+      "provider": "connecting_cable_man&ext",
+      "direct_result": 0.0,
+      "total_result": 47.43481537551971
+    },
+    {
+      "index": 1,
+      "provider": "magnet_man&ext",
+      "direct_result": 0.0,
+      "total_result": 6.064703913360795
+    },
+    {
+      "index": 16,
+      "provider": "market for copper, cathode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 53.98276816867372
+    },
+    {
+      "index": 85,
+      "provider": "electrorefining of copper, anode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 45.017873686783
+    },
+    {
+      "index": 332,
+      "provider": "market for copper, anode | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 45.829650561981566
+    },
+    {
+      "index": 1807,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 15.298391251593971,
+      "total_result": 17.495865056798838
+    },
+    {
+      "index": 1803,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 13.687053927806692,
+      "total_result": 15.780687404177266
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 17982,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 17981,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 17982,
+      "provider_index": 8,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 17981,
+      "provider_index": 1,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 8,
+      "provider_index": 16,
+      "upstream_share": 0.8347267090341223
+    },
+    {
+      "node_index": 1,
+      "provider_index": 16,
+      "upstream_share": 0.09374385093326974
+    },
+    {
+      "node_index": 16,
+      "provider_index": 85,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 85,
+      "provider_index": 332,
+      "upstream_share": 0.966126669741195
+    },
+    {
+      "node_index": 332,
+      "provider_index": 1807,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 332,
+      "provider_index": 1803,
+      "upstream_share": 0.9999999999999997
+    }
+  ]
+}

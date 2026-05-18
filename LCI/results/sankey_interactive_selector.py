@@ -1,143 +1,232 @@
 #!/usr/bin/env python3
-"""Interactive selector for Sankey JSON files.
-
-Supports selecting one product system and one, many, or all impact categories.
+"""
+Interactive Sankey Diagram Generator
+Allows selection of Environmental Impact (EI) and Product System
 """
 
+import json
+import plotly.graph_objects as go
 from pathlib import Path
-from sankey_visualizer import load_sankey_json, create_sankey_figure
+from collections import defaultdict
+import sys
 
-RESULTS_DIR = Path(__file__).parent / "Deterministic results"
-if not RESULTS_DIR.exists():
-    RESULTS_DIR = Path(__file__).parent
-OUTPUT_DIR = RESULTS_DIR / "sankey_html_exports"
-OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+# ============================================================================
+# CONFIGURATION
+# ============================================================================
 
+RESULTS_DIR = Path(__file__).parent
+EXPORT_DIR = Path("C:/Users/alorzaga/cernbox/WINDOWS/Desktop/TESIS/LCIA_Power systems/Data quality and monte carlo/.sankey_html_exports")
+EXPORT_DIR.mkdir(parents=True, exist_ok=True)
 
-def read_meta(path):
-    data = load_sankey_json(path)
-    impact = data.get("impact_category", "Unknown")
-    system = data.get("system_name")
-    if not system:
-        stem = path.stem.replace("_sankey", "")
-        # Backward-compatible fallback for older files without system_name.
-        # Example old name: converter_transport_EF v3.1_sankey
-        # Keep everything before the LCIA method suffix when possible.
-        method_marker = "_EF v3.1"
-        if method_marker in stem:
-            system = stem.split(method_marker)[0]
-        else:
-            system = stem
-    return system, impact, path
+# ============================================================================
+# PARSE SANKEY FILES
+# ============================================================================
 
-
-def choose(options, title):
-    print("\n" + "=" * 70)
-    print(title)
-    print("=" * 70)
-    for i, txt in enumerate(options, 1):
-        print(f"{i:2d}. {txt}")
-    idx = int(input(f"\nSelect option (1-{len(options)}): ")) - 1
-    if idx < 0 or idx >= len(options):
-        raise ValueError("Invalid selection")
-    return idx
-
-
-def choose_many(options, title):
-    print("\n" + "=" * 70)
-    print(title)
-    print("=" * 70)
-    for i, txt in enumerate(options, 1):
-        print(f"{i:2d}. {txt}")
-    print("\nType one of:")
-    print("  - a            (all impacts)")
-    print("  - 3            (single impact)")
-    print("  - 1,4,7        (multiple impacts)")
-
-    raw = input("\nSelect impact(s): ").strip().lower()
-    if raw == "a":
-        return list(range(len(options)))
-
-    indices = []
-    for token in raw.split(","):
-        token = token.strip()
-        if not token:
-            continue
-        idx = int(token) - 1
-        if idx < 0 or idx >= len(options):
-            raise ValueError(f"Invalid impact selection: {token}")
-        if idx not in indices:
-            indices.append(idx)
-
-    if not indices:
-        raise ValueError("No impact selected")
-    return indices
-
-
-def choose_depth():
-    """Ask user for maximum upstream depth to display in Sankey."""
-    print("\n" + "=" * 70)
-    print("SELECT SANKEY DEPTH")
-    print("=" * 70)
-    print("Maximum upstream layers to display:")
-    print("  1 = root + first layer")
-    print("  2 = root + first + second layer (default)")
-    print("  3 = root + first + second + third layer")
-    print("  etc.")
+def extract_file_info(filename):
+    """Extract Environmental Impact and Product System from filename."""
+    # Format: {Product_System}_{Phase}_EF v3.1_sankey.json
+    # Example: "Converter (all phases)_EF v3.1_sankey.json"
+    # Example: "converter_EoL_EF v3.1_sankey.json"
     
-    raw = input("\nEnter depth (default 2): ").strip()
-    if not raw:
-        return 2
+    name = filename.replace("_sankey.json", "").replace("_EF v3.1", "")
     
-    depth = int(raw)
-    if depth < 1:
-        raise ValueError("Depth must be at least 1")
-    return depth
+    # Split by last underscore to separate phase/description
+    parts = name.rsplit("_", 1)
+    if len(parts) == 2:
+        system, phase = parts
+        return system, phase
+    else:
+        return name, "all phases"
 
+sankey_files = sorted(RESULTS_DIR.glob("*_sankey.json"))
 
-def main():
-    files = sorted(RESULTS_DIR.glob("*_sankey.json"))
-    if not files:
-        print("No *_sankey.json files found.")
-        return
+# Organize files by Product System
+systems_dict = defaultdict(list)
+for f in sankey_files:
+    system, phase = extract_file_info(f.name)
+    systems_dict[system].append((phase, f))
 
-    metas = [read_meta(f) for f in files]
+print("\n" + "="*70)
+print("AVAILABLE PRODUCT SYSTEMS")
+print("="*70)
 
-    systems = sorted({m[0] for m in metas})
-    system_idx = choose(systems, "SELECT PRODUCT SYSTEM")
-    selected_system = systems[system_idx]
+systems_list = sorted(systems_dict.keys())
+for i, system in enumerate(systems_list, 1):
+    phases = [phase for phase, _ in systems_dict[system]]
+    print(f"{i:2d}. {system}")
+    for phase in phases:
+        print(f"    - {phase}")
 
-    impacts_for_system = sorted({m[1] for m in metas if m[0] == selected_system})
-    impact_indices = choose_many(impacts_for_system, f"SELECT IMPACT(S) FOR: {selected_system}")
-    selected_impacts = [impacts_for_system[i] for i in impact_indices]
+# ============================================================================
+# USER INPUT
+# ============================================================================
 
-    max_depth = choose_depth()
+print("\n" + "="*70)
+print("SELECT PRODUCT SYSTEM AND PHASE")
+print("="*70)
 
-    created = []
-    for selected_impact in selected_impacts:
-        candidates = [m for m in metas if m[0] == selected_system and m[1] == selected_impact]
-        if not candidates:
-            print(f"\n⚠ No matching Sankey file found for impact: {selected_impact}")
-            continue
+try:
+    system_idx = int(input(f"Select product system (1-{len(systems_list)}): ")) - 1
+    if not 0 <= system_idx < len(systems_list):
+        print("Invalid selection")
+        sys.exit(1)
+    
+    selected_system = systems_list[system_idx]
+    phases = [phase for phase, _ in systems_dict[selected_system]]
+    
+    print(f"\nAvailable phases for '{selected_system}':")
+    for i, phase in enumerate(phases, 1):
+        print(f"  {i}. {phase}")
+    
+    phase_idx = int(input(f"Select phase (1-{len(phases)}): ")) - 1
+    if not 0 <= phase_idx < len(phases):
+        print("Invalid selection")
+        sys.exit(1)
+    
+    selected_phase = phases[phase_idx]
+    
+    # Get the file
+    sankey_file = None
+    for phase, f in systems_dict[selected_system]:
+        if phase == selected_phase:
+            sankey_file = f
+            break
+    
+    if not sankey_file:
+        print("File not found")
+        sys.exit(1)
+    
+except (ValueError, KeyError, IndexError) as e:
+    print(f"Error: {e}")
+    sys.exit(1)
 
-        _, _, selected_file = candidates[0]
-        data = load_sankey_json(selected_file)
-        fig = create_sankey_figure(data, title=f"{selected_system} - {selected_impact}", max_depth=max_depth)
+# ============================================================================
+# LOAD AND CREATE SANKEY
+# ============================================================================
 
-        html_name = f"{selected_system}_EI_{selected_impact}_sankey_visualization.html"
-        html_name = html_name.replace("/", "_").replace(":", "_")
-        out_path = OUTPUT_DIR / html_name
-        fig.write_html(str(out_path), include_plotlyjs=True, full_html=True)
-        created.append(out_path)
+print(f"\n📊 Loading: {sankey_file.name}")
 
-    if not created:
-        print("\n✗ No Sankey files were generated.")
-        return
+with open(sankey_file, "r", encoding="utf-8") as f:
+    sankey_data = json.load(f)
 
-    print(f"\n✓ Generated {len(created)} Sankey file(s):")
-    for p in created:
-        print(f'  Start-Process "{p}"')
+nodes = sankey_data.get("nodes", [])
+edges = sankey_data.get("edges", [])
+impact_category = sankey_data.get("impact_category", "Unknown")
+mode = sankey_data.get("mode", 1)
 
+if not nodes or not edges:
+    print("No data to visualize")
+    sys.exit(1)
 
-if __name__ == "__main__":
-    main()
+# ========== NODE PARAMETERS ==========
+node_labels = [n["provider"] for n in nodes]
+node_total_results = [n["total_result"] for n in nodes]
+index_to_position = {n["index"]: position for position, n in enumerate(nodes)}
+index_to_node = {n["index"]: n for n in nodes}
+
+# ========== NODE COLORS ==========
+max_total = max(node_total_results) if node_total_results else 1
+normalized_values = [v / max_total for v in node_total_results]
+
+node_colors = []
+for norm_val in normalized_values:
+    r = int(255 * norm_val)
+    g = int(150 * (1 - norm_val))
+    b = int(100 * (1 - norm_val))
+    node_colors.append(f"rgb({r},{g},{b})")
+
+# ========== EDGE PARAMETERS ==========
+edge_sources = []
+edge_targets = []
+edge_values = []
+edge_percentages = []
+
+for edge in edges:
+    source_index = edge["provider_index"]
+    target_index = edge["node_index"]
+    if source_index not in index_to_position or target_index not in index_to_position:
+        continue
+    edge_sources.append(index_to_position[source_index])
+    edge_targets.append(index_to_position[target_index])
+    target_node = index_to_node[target_index]
+    edge_values.append(edge["upstream_share"] * target_node["total_result"])
+    edge_percentages.append(edge["upstream_share"] * 100)
+
+# ========== CREATE SANKEY FIGURE ==========
+fig = go.Figure(data=[go.Sankey(
+    orientation="v",
+    node=dict(
+        pad=15,
+        thickness=20,
+        line=dict(color="black", width=0.5),
+        label=node_labels,
+        color=node_colors,
+        customdata=node_total_results,
+        hovertemplate='<b>%{label}</b><br>Total Impact: %{customdata:.4f}<extra></extra>'
+    ),
+    link=dict(
+        source=edge_targets,
+        target=edge_sources,
+        value=edge_values,
+        color="rgba(200, 200, 200, 0.4)",
+        customdata=edge_percentages,
+        hovertemplate='<b>%{source.label}</b><br>Porcentaje: %{customdata:.1f}%<br>Contribución: %{value:.4f}<extra></extra>'
+    )
+)])
+
+# ========== CUSTOMIZE LAYOUT ==========
+mode_description = {
+    1: "Flow-based (Environmental flows)",
+    2: "Impact-based (Impact contributions)"
+}.get(mode, f"Mode {mode}")
+
+fig.update_layout(
+    title=dict(
+        text=f"<b>LCA Sankey Diagram: {impact_category}</b><br><sub>System: {selected_system} | Phase: {selected_phase} | {mode_description}</sub>",
+        x=0.5,
+        xanchor="center",
+        font=dict(size=14, color="#2c3e50")
+    ),
+    font=dict(
+        size=11,
+        family="Arial, sans-serif",
+        color="#2c3e50"
+    ),
+    height=700,
+    width=1400,
+    plot_bgcolor="white",
+    paper_bgcolor="#f8f9fa",
+    margin=dict(l=20, r=20, t=120, b=20),
+    annotations=[
+        dict(
+            text=f"<i>Nodes: {len(nodes)} | Edges: {len(edge_sources)}</i>",
+            xref="paper", yref="paper",
+            x=0.5, y=-0.05,
+            showarrow=False,
+            font=dict(size=10, color="gray")
+        )
+    ]
+)
+
+# ========== EXPORT TO HTML ==========
+safe_impact = impact_category.replace("/", "_").replace(" ", "_")
+safe_system = selected_system.replace("/", "_").replace(" ", "_").replace("&", "and")
+safe_phase = selected_phase.replace("/", "_").replace(" ", "_")
+html_filename = f"{safe_system}_{safe_phase}_{safe_impact}_sankey.html"
+html_path = EXPORT_DIR / html_filename
+
+fig.write_html(str(html_path), include_plotlyjs=True, full_html=True)
+
+print(f"\n✓ Sankey diagram created successfully!")
+print(f"  • Filename: {html_filename}")
+print(f"  • Nodes: {len(nodes)}")
+print(f"  • Edges: {len(edge_sources)}")
+print(f"  • Impact: {impact_category}")
+print(f"  • Saved to: {html_path}")
+
+# ========== OPEN IN BROWSER (OPTIONAL) ==========
+import webbrowser
+open_browser = input(f"\nOpen in browser? (y/n): ").lower()
+if open_browser == 'y':
+    webbrowser.open(str(html_path))
+    print("Opening in browser...")
