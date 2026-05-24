@@ -405,7 +405,7 @@ def _resolve_density(row):
 
 
 def _resolve_quantity_inputs(row):
-    """Resolve the shared quantity-related inputs used by mass and flow logic."""
+    """Collect the quantity inputs shared by the mass and flow calculations."""
     number_elements = to_float(row.get("number_elements"))
     qty_per_element = to_float(row.get("Quantity_per_element"))
     return {
@@ -428,7 +428,7 @@ def _get_quantity_context_unit(row):
 
 
 def _try_area_quantity_m2(row):
-    """Compute area-based quantity for m2 context using only L and W (mm -> m2)."""
+    """Compute an area quantity for m2 rows using only L and W in millimetres."""
     l_mm = to_float(row.get("L_mm"))
     w_mm = to_float(row.get("W_mm"))
     if l_mm is None or w_mm is None:
@@ -437,7 +437,7 @@ def _try_area_quantity_m2(row):
 
 
 def _build_quantity_data(row, mass_data):
-    """Resolve Quantity_per_element and Total_quantity for reporting and flow amount logic."""
+    """Build Quantity_per_element and Total_quantity for reporting and flow amounts."""
     quantity_inputs = _resolve_quantity_inputs(row)
     number_elements = quantity_inputs["number_elements"]
     unit = quantity_inputs["unit"]
@@ -498,7 +498,6 @@ def _ordered_result_fieldnames(row):
     tail = [name for name in fields if name not in front]
     return front + tail
 
-#CALCULATE THE MASS OF THE COMPONENTS
 def _try_geometry_mass(row, metal_extra_g):
     l_mm = to_float(row.get("L_mm"))
     w_mm = to_float(row.get("W_mm"))
@@ -508,8 +507,8 @@ def _try_geometry_mass(row, metal_extra_g):
     if density_g_cm3 is None:
         return None, None, None, density_source
 
-    # Prefer explicit volume when provided by the user.
-    # If missing, fall back to box volume from L/W/H.
+    # Prefer an explicit volume when the user provided one.
+    # Otherwise fall back to the box volume from L/W/H.
     volume_cm3 = to_float(row.get("Volume_cm3_excel"))
     if volume_cm3 is None and l_mm is not None and w_mm is not None and h_mm is not None:
         volume_cm3 = (l_mm * w_mm * h_mm) / 1000.0
@@ -603,14 +602,13 @@ def _normalize_ecoinvent_fields(row):
     normalized["Ecoinvent_unit"] = str(unit).strip().strip('"')
     return normalized
 
-#THIS IS FUNDAMENTAL FOR THE ENXT STEPS
 def _split_ecoinvent_flow_components(flow, direction):
     """Split compound EcoInvent flows joined by '+' into independent flow entries.
 
     Rule:
-    - N plus signs -> N+1 resulting components.
-    - The first component that starts with 'market ' and original direction is Input is tagged as 'pre-input'.
-    - The second component (if exists) is always tagged as 'pre-process'.
+    - N plus signs produce N+1 component entries.
+    - The first component that starts with 'market ' and the original direction is Input is tagged as 'pre-input'.
+    - The second component, if present, is always tagged as 'pre-process'.
     - All other components keep the base direction unless otherwise specified.
     """
     flow_text = str(flow or "").strip().strip('"')
@@ -1124,7 +1122,7 @@ def run_pipeline(
         else:
             result_row["Total_quantity"] = ""
         
-        # Use multiplied mass_data directly if available; fall back to computed quantity_data
+        # Prefer the directly computed mass data; otherwise derive from quantity data.
         if mass_data is not None and is_mass_unit(unit):
             result_row["Total_mass_kg"] = _round_for_csv(mass_data["Total_mass_kg"])
         else:
