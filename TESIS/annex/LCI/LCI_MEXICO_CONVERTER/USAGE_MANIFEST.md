@@ -31,3 +31,6 @@ Notas y recomendaciones específicas
 
 Siguiente sugerencia inmediata
 - Puedo: 1) extraer un `requirements.txt` aproximado desde los imports usados en esta carpeta; 2) generar versiones pequeñas (samples) de los CSVs grandes (si quieres que cree `samples/` con 1–3 filas representativas). ¿Cuál prefieres primero?
+
+Smoke test
+- `smoke_test.py` valida `Pipeline.run_pipeline` con un CSV mínimo embebido para verificar que la limpieza no rompió el cálculo local.
