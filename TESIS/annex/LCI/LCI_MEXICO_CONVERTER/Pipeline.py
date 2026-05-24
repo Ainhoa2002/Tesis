@@ -404,13 +404,9 @@ def _resolve_density(row):
     return None, "MISSING"
 
 
-def _get_number_elements(row):
-    return to_float(row.get("number_elements"))
-
-
 def _resolve_quantity_inputs(row):
     """Resolve the shared quantity-related inputs used by mass and flow logic."""
-    number_elements = _get_number_elements(row)
+    number_elements = to_float(row.get("number_elements"))
     return {
         "number_elements": 1.0 if number_elements is None else number_elements,
         "unit": _get_quantity_context_unit(row),
