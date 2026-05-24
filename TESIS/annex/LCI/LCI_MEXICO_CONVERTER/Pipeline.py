@@ -514,31 +514,6 @@ def _try_geometry_mass(row, metal_extra_g):
     return volume_cm3, mass_per_element_kg, density_g_cm3, density_source
 
 
-def _try_m2_mass_equivalent(row, quantity_data):
-    """Compute mass equivalent for m2 rows using mass_space_relation_m2/kg."""
-    if quantity_data is None:
-        return None
-
-    relation_m2_per_kg = to_float(row.get("mass_space_relation_m2/kg"))
-    if relation_m2_per_kg is None or relation_m2_per_kg <= 0:
-        return None
-
-    qty_per_element_m2 = quantity_data["Quantity_per_element"]
-    total_qty_m2 = quantity_data["Total_quantity"]
-
-    mass_per_element_kg = qty_per_element_m2 / relation_m2_per_kg
-    total_mass_kg = total_qty_m2 / relation_m2_per_kg
-
-    return {
-        "Method": "M2_EQUIVALENT",
-        "Volume_cm3": None,
-        "Mass_per_element_kg": mass_per_element_kg,
-        "Total_mass_kg": total_mass_kg,
-        "Density_used_g_cm3": None,
-        "Density_source": "M2_RELATION",
-    }
-
-
 def compute_component_mass(row):
     """Try to compute mass. Returns None if data is insufficient (not an error
     unless the ecoinvent unit is kg, which is checked separately)."""
@@ -1113,7 +1088,19 @@ def run_pipeline(
         quantity_data = _build_quantity_data(row, mass_data)
         unit = _get_quantity_context_unit(row)
         if _get_quantity_context_unit(row).lower() == "m2":
-            mass_data = _try_m2_mass_equivalent(row, quantity_data)
+            if quantity_data is not None:
+                relation_m2_per_kg = to_float(row.get("mass_space_relation_m2/kg"))
+                if relation_m2_per_kg is not None and relation_m2_per_kg > 0:
+                    qty_per_element_m2 = quantity_data["Quantity_per_element"]
+                    total_qty_m2 = quantity_data["Total_quantity"]
+                    mass_data = {
+                        "Method": "M2_EQUIVALENT",
+                        "Volume_cm3": None,
+                        "Mass_per_element_kg": qty_per_element_m2 / relation_m2_per_kg,
+                        "Total_mass_kg": total_qty_m2 / relation_m2_per_kg,
+                        "Density_used_g_cm3": None,
+                        "Density_source": "M2_RELATION",
+                    }
 
         if mass_data is not None:
             mass_data = dict(mass_data)
