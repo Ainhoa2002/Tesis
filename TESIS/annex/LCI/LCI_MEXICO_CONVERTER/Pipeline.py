@@ -1458,29 +1458,6 @@ def _auto_refresh_component_libraries(base_dir, warning_scope_subsystems=None):
         print(f"Warning: library refresh failed: {exc}")
 
 
-def _auto_sync_parameters_from_libraries(base_dir):
-    """Sync library values back into all parameter files unless disabled.
-
-    Disabled by default.
-    Set MASS_CALC_AUTO_SYNC_FROM_LIBRARY=1 to enable automatic sync.
-    """
-    enabled = str(os.getenv("MASS_CALC_AUTO_SYNC_FROM_LIBRARY", "0")).strip().lower()
-    if enabled in {"0", "false", "no", "off"}:
-        print("Parameter sync skipped: MASS_CALC_AUTO_SYNC_FROM_LIBRARY is disabled.")
-        return
-
-    try:
-        from build_component_libraries import sync_parameter_files_from_libraries
-
-        files_changed, rows_changed, skipped_ambiguous = sync_parameter_files_from_libraries(base_dir)
-        print(
-            "Parameter sync completed"
-            f": files_changed={files_changed}, rows_changed={rows_changed}, skipped_ambiguous={skipped_ambiguous}"
-        )
-    except Exception as exc:
-        print(f"Warning: parameter sync from libraries failed: {exc}")
-
-
 def _clear_subsystem_outputs(results_csv, component_flows_csv, grouped_flows_csv):
     """Delete stale outputs for a subsystem that failed validation.
 
