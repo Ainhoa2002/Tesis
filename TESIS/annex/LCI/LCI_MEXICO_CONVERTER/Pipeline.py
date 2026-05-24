@@ -426,14 +426,6 @@ def _get_quantity_context_unit(row):
     return primary or fallback
 
 
-def _compute_total_quantity(row):
-    number_elements = _get_number_elements(row)
-    quantity_per_element = to_float(row.get("Quantity_per_element"))
-    if number_elements is None or quantity_per_element is None:
-        return None
-    return number_elements * quantity_per_element
-
-
 def _try_area_quantity_m2(row):
     """Compute area-based quantity for m2 context using only L and W (mm -> m2)."""
     l_mm = to_float(row.get("L_mm"))
