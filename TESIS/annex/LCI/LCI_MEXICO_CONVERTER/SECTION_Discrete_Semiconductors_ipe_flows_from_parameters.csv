@@ -1,0 +1,4 @@
+Flow,UUID,Unit,Amount,Direction,Section,Subsections,Source_subsystems,Component_rows,Total_mass_kg,Missing_process_components,UUID_provider
+"diode production, glass-, for surface-mounting",38dddb73-6677-4128-9a82-5c6668eceb29,kg,0.000529676156,Input,Discrete Semiconductors,Small signal,4Q_output_control_card,4,0.000529676156,0,b3241c19-7b7f-3545-b5ce-fde44dbd66de
+"transistor production, surface-mounted",3422a31d-cb51-4f19-a659-28798bf18e54,kg,0.000681715,Input,Discrete Semiconductors,"Power, Small signal",4Q_output_control_card,4,0.000681715,0,c1b963b5-774d-32ed-93cf-f52a2d1f8e37
+SECTION_Discrete_Semiconductors,,kg,0.001211391156,Output,Discrete Semiconductors,"Power, Small signal",4Q_output_control_card,8,0.001211391156,0,

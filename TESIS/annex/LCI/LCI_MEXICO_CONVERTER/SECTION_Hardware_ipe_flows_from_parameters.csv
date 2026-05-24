@@ -1,0 +1,6 @@
+Flow,UUID,Unit,Amount,Direction,Section,Subsections,Source_subsystems,Component_rows,Total_mass_kg,Missing_process_components,UUID_provider
+"aluminium, primary, cast alloy slab from continuous casting",f6161096-34e3-49c9-911e-060659b0dea1,kg,0.005592,Input,Hardware,Thermal Management,4Q_output_control_card,1,0.005592,0,eeb86a83-f9b4-37ad-a2b7-2a939571460a
+"metal working, average for aluminium product manufacturing",8c3b8032-b310-4dfe-9a9b-93fbd369142d,kg,0.005592,Input,Hardware,Thermal Management,4Q_output_control_card,1,0.005592,0,5421390b-1035-346c-89e1-6fe2f4a01aef
+"metal working, average for steel product manufacturing",79632c4b-f876-4c89-bf27-b864b30566be,kg,0.00379155,Input,Hardware,Mounting hardware,4Q_output_control_card,1,0.00379155,0,0e5e353c-4cbb-32c0-bd88-581facc6c091
+"steel, low-alloyed",817c3650-4fed-4ef2-b9b6-404a198834e6,kg,0.00379155,Input,Hardware,Mounting hardware,4Q_output_control_card,1,0.00379155,0,b784237b-e38b-345f-91ab-4f8f10f4ef10
+SECTION_Hardware,,kg,0.00938355,Output,Hardware,"Mounting hardware, Thermal Management",4Q_output_control_card,2,0.00938355,0,

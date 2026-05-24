@@ -6,12 +6,12 @@ Scripts clave
 - `Pipeline.py` — Pipeline principal para calcular masas paramétricas y generar los `*_component_results.csv` y `*_ipe_flows_from_parameters.csv` por subsystem. Contiene utilidades de sincronización (`MEXICO_ipe_flows_from_parameters.csv`, `subsystem_units.csv`).
 - `update_ipe_with_uuid.py` — Actualiza filas IPE con UUIDs desde `created_flows_uuid_map.csv` / mapeos.
 - `fill_ipe_columns_from_library.py` — CLI / wrapper que alimenta `MEXICO_ipe_flows_from_parameters.csv` desde las librerías locales.
-- `build_component_libraries.py` — Genera/normaliza `component_library_*.csv` a partir de fuentes origen.
-- `add_eliminate_component.py` — Script de utilidad para marcar/eliminar componentes en tablas.
-- `import_component_parameter_or_io.py` — Importa parámetros o filas I/O a partir de hojas/CSV.
-- `find_component.py` — Helpers para localizar componentes por designador/código.
-- `export_to_excel.py` — Exporta tablas consolidadas a Excel para revisión/manual edits.
-- `mass_visuals_app.py` — Aplicación ligera para visualizar distribuciones de masa (genera gráficos locales).
+- `tools/build_component_libraries.py` — Genera/normaliza `component_library_*.csv` a partir de fuentes origen.
+- `tools/add_eliminate_component.py` — Utilidad de mantenimiento para marcar/eliminar componentes.
+- `tools/import_component_parameter_or_io.py` — Importa parámetros o duplica filas CSV.
+- `tools/find_component.py` — Ayuda manual para localizar componentes por designator/código.
+- `tools/export_to_excel.py` — Exporta tablas consolidadas a Excel para revisión/manual edits.
+- `visualization/mass_visuals_app.py` — Aplicación ligera para visualizar distribuciones de masa (genera gráficos locales).
 
 Archivos de datos (CSV) importantes presentes
 - `MEXICO_ipe_flows_from_parameters.csv` — archivo agregador de flujos IPE para el sistema MEXICO.
@@ -24,7 +24,7 @@ Archivos de datos (CSV) importantes presentes
 - `transport_phase_legs_library.csv` / equivalents — (si aplica) mapeos para fases de transporte.
 
 Notas y recomendaciones específicas
-- Mantener en el anexo: `Pipeline.py`, `update_ipe_with_uuid.py`, `fill_ipe_columns_from_library.py`, `build_component_libraries.py`, `component_parameters/io/results` CSVs esenciales para reproducir el flujo.
+- Mantener en el anexo: `Pipeline.py`, `update_ipe_with_uuid.py`, `fill_ipe_columns_from_library.py`, `tools/build_component_libraries.py`, `component_parameters/io/results` CSVs esenciales para reproducir el flujo.
 - Considerar reemplazar por muestras: grandes `*_component_io_flows.csv` o `*_component_results.csv` generados por procesos enteros, y en su lugar incluir versiones reducidas (ej. 1–3 filas) para mostrar formato y permitir pruebas rápidas.
 - Corregir rutas absolutas: algunos scripts dentro de la carpeta referencian rutas locales (buscar `C:\Users\alorzaga` o rutas fuera del subcarpeta). Sustituir por rutas relativas o parámetros.
 - Archivos generados (plots, HTML) deben eliminarse del anexo; incluir instrucciones para regenerarlos si es necesario.
@@ -34,3 +34,4 @@ Siguiente sugerencia inmediata
 
 Smoke test
 - `smoke_test.py` valida `Pipeline.run_pipeline` con un CSV mínimo embebido para verificar que la limpieza no rompió el cálculo local.
+

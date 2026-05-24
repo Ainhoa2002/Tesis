@@ -12,6 +12,7 @@ import os
 import re
 from dataclasses import dataclass
 from pathlib import Path
+import logging
 
 @dataclass
 class CreatedLibrariesUpdateStats:
@@ -193,14 +194,14 @@ def _resolve_missing_providers_from_openlca(flows: list[str]):
         import olca_ipc as ipc
         import olca_schema as o
     except Exception as exc:
-        print(f"Warning: openLCA packages not available for provider auto-sync: {exc}")
+        logging.warning("openLCA packages not available for provider auto-sync: %s", exc)
         return []
 
     try:
         client = ipc.Client(8080)
         descriptors = list(client.get_descriptors(o.Process))
     except Exception as exc:
-        print(f"Warning: could not connect to openLCA IPC for provider auto-sync: {exc}")
+        logging.warning("could not connect to openLCA IPC for provider auto-sync: %s", exc)
         return []
 
     resolved = []
@@ -215,12 +216,12 @@ def _resolve_missing_providers_from_openlca(flows: list[str]):
                 ranked.append((score, name, d.id))
 
         if not ranked:
-            print(f"Warning: no provider candidate found in openLCA for '{flow}'")
+            logging.warning("no provider candidate found in openLCA for '%s'", flow)
             continue
 
         ranked.sort(key=lambda t: (t[0], t[1]))
         _, process_name, process_uuid = ranked[0]
-        print(f"Auto-mapped provider for '{flow}': {process_name} -> {process_uuid}")
+        logging.info("Auto-mapped provider for '%s': %s -> %s", flow, process_name, process_uuid)
         resolved.append(
             {
                 "Ecoinvent_flow_reference": flow,
@@ -292,7 +293,7 @@ def _fill_single_file(
         }
 
     if "Flow" not in fieldnames:
-        print(f"Warning: {path} has no 'Flow' column. Skipping.")
+        logging.warning("%s has no 'Flow' column. Skipping.", path)
         return {
             "file": str(path),
             "updated": False,
@@ -330,7 +331,7 @@ def _fill_single_file(
 
         if mapped_uuid == "" and current_uuid == "":
             missing += 1
-            print(f"Warning: no UUID mapping found for '{row.get('Flow', '')}' in {path.name}")
+            logging.warning("no UUID mapping found for '%s' in %s", row.get("Flow", ""), path.name)
 
         if mapped_uuid and (overwrite_uuid or current_uuid == ""):
             if current_uuid != mapped_uuid:
@@ -346,7 +347,7 @@ def _fill_single_file(
                 touched = True
         elif current_provider == "" and mapped_provider == "":
             missing_provider += 1
-            print(f"Warning: no UUID_provider mapping found for '{row.get('Flow', '')}' in {path.name}")
+            logging.warning("no UUID_provider mapping found for '%s' in %s", row.get("Flow", ""), path.name)
 
     if touched and not dry_run:
         with open(path, "w", newline="", encoding="utf-8") as f:
@@ -388,7 +389,7 @@ def run_fill_ipe_columns_from_library(
     try:
         provider_map = _load_provider_map(provider_library)
     except ValueError as exc:
-        print(f"Warning: provider library could not be loaded cleanly: {exc}")
+        logging.warning("provider library could not be loaded cleanly: %s", exc)
         provider_map = {}
 
     if target_file is not None:
@@ -404,10 +405,10 @@ def run_fill_ipe_columns_from_library(
             discovered = _resolve_missing_providers_from_openlca(missing_flows)
             added = _append_provider_mappings(provider_library, discovered, dry_run=dry_run)
             if added > 0:
-                print(f"Auto-sync: added {added} provider mapping(s) to {provider_library.name}")
+                logging.info("Auto-sync: added %s provider mapping(s) to %s", added, provider_library.name)
                 provider_map = _load_provider_map(provider_library)
             elif discovered:
-                print("Auto-sync: provider candidates found but no new mappings were added.")
+                logging.info("Auto-sync: provider candidates found but no new mappings were added.")
 
     processed = 0
     changed = 0
@@ -418,7 +419,7 @@ def run_fill_ipe_columns_from_library(
 
     for target in targets:
         if not target.exists():
-            print(f"Warning: target file does not exist: {target}")
+            logging.warning("target file does not exist: %s", target)
             continue
         result = _fill_single_file(
             target,
@@ -435,15 +436,24 @@ def run_fill_ipe_columns_from_library(
         total_missing += result["missing"]
         total_missing_provider += result["missing_provider"]
         status = "updated" if result["updated"] else "unchanged"
-        print(
-            f"{status}: {result['file']} | uuid={result['uuid']} | provider={result['provider']} "
-            f"| missing_uuid_map={result['missing']} | missing_provider_map={result['missing_provider']}"
+        logging.info(
+            "%s: %s | uuid=%s | provider=%s | missing_uuid_map=%s | missing_provider_map=%s",
+            status,
+            result["file"],
+            result["uuid"],
+            result["provider"],
+            result["missing"],
+            result["missing_provider"],
         )
 
-    print(
-        f"\nProcessed {processed} file(s). Changed: {changed}. "
-        f"UUID filled: {total_uuid}. UUID_provider filled: {total_provider}. "
-        f"Unmapped input rows: {total_missing}. Unmapped provider rows: {total_missing_provider}."
+    logging.info(
+        "Processed %s file(s). Changed: %s. UUID filled: %s. UUID_provider filled: %s. Unmapped input rows: %s. Unmapped provider rows: %s.",
+        processed,
+        changed,
+        total_uuid,
+        total_provider,
+        total_missing,
+        total_missing_provider,
     )
     return {
         "processed": processed,
@@ -461,21 +471,19 @@ def run_uuid_fill_if_available(base_dir: Path, system_folder: Path, dry_run: boo
     provider_library = base_dir / "component_library_ecoinvent_uuid_provider_map.csv"
 
     if not uuid_library.exists() or not provider_library.exists():
-        print(
-            "  [Warning] Global UUID libraries not found. "
-            "Expected both component_library_ecoinvent_uuid_map.csv and "
-            "component_library_ecoinvent_uuid_provider_map.csv in LCI/."
+        logging.warning(
+            "Global UUID libraries not found. Expected both component_library_ecoinvent_uuid_map.csv and component_library_ecoinvent_uuid_provider_map.csv in LCI/"
         )
         return False
 
-    print(f"  Running UUID fill in {system_folder.name}...")
+    logging.info("Running UUID fill in %s...", system_folder.name)
     run_fill_ipe_columns_from_library(
         library_path=uuid_library,
         provider_library_path=provider_library,
         root_dir=system_folder,
         dry_run=dry_run,
     )
-    print(f"  UUID fill in {system_folder.name} completed.")
+    logging.info("UUID fill in %s completed.", system_folder.name)
     return True
 
 
@@ -485,14 +493,12 @@ def run_created_uuid_fill_if_available(base_dir: Path, system_folder: Path, dry_
     provider_library = base_dir / "created_process_uuid_map.csv"
 
     if not uuid_library.exists() or not provider_library.exists():
-        print(
-            "  [Warning] Created UUID libraries not found. "
-            "Expected both created_flows_uuid_map.csv and "
-            "created_process_uuid_map.csv in LCI/."
+        logging.warning(
+            "Created UUID libraries not found. Expected both created_flows_uuid_map.csv and created_process_uuid_map.csv in LCI/."
         )
         return False
 
-    print(f"  Running second UUID fill in {system_folder.name}...")
+    logging.info("Running second UUID fill in %s...", system_folder.name)
     run_fill_ipe_columns_from_library(
         library_path=uuid_library,
         provider_library_path=provider_library,
@@ -502,7 +508,7 @@ def run_created_uuid_fill_if_available(base_dir: Path, system_folder: Path, dry_
         sync_provider_library=False,
         dry_run=dry_run,
     )
-    print(f"  Second UUID fill in {system_folder.name} completed.")
+    logging.info("Second UUID fill in %s completed.", system_folder.name)
     return True
 
 
@@ -513,16 +519,15 @@ def run_final_system_uuid_fill_if_available(base_dir: Path, system_folder: Path,
     target_file = system_folder / "system_ipe_flows_from_parameters.csv"
 
     if not target_file.exists():
-        print(f"  [Warning] System target file not found: {target_file}")
+        logging.warning("System target file not found: %s", target_file)
         return False
     if not uuid_library.exists() or not provider_library.exists():
-        print(
-            "  [Warning] Created UUID libraries not found for system final fill. "
-            "Expected both created_flows_uuid_map.csv and created_process_uuid_map.csv in LCI/."
+        logging.warning(
+            "Created UUID libraries not found for system final fill. Expected both created_flows_uuid_map.csv and created_process_uuid_map.csv in LCI/."
         )
         return False
 
-    print(f"  Running third UUID fill for system file in {system_folder.name}...")
+    logging.info("Running third UUID fill for system file in %s...", system_folder.name)
     run_fill_ipe_columns_from_library(
         library_path=uuid_library,
         provider_library_path=provider_library,
@@ -532,7 +537,7 @@ def run_final_system_uuid_fill_if_available(base_dir: Path, system_folder: Path,
         sync_provider_library=False,
         dry_run=dry_run,
     )
-    print(f"  Third UUID fill for system file in {system_folder.name} completed.")
+    logging.info("Third UUID fill for system file in %s completed.", system_folder.name)
     return True
 
 
@@ -543,16 +548,15 @@ def run_final_transport_uuid_fill_if_available(base_dir: Path, transport_folder:
     target_file = transport_folder / "transport_ipe_flows_from_parameters.csv"
 
     if not target_file.exists():
-        print(f"  [Warning] Transport target file not found: {target_file}")
+        logging.warning("Transport target file not found: %s", target_file)
         return False
     if not uuid_library.exists() or not provider_library.exists():
-        print(
-            "  [Warning] Created UUID libraries not found for transport final fill. "
-            "Expected both created_flows_uuid_map.csv and created_process_uuid_map.csv in LCI/."
+        logging.warning(
+            "Created UUID libraries not found for transport final fill. Expected both created_flows_uuid_map.csv and created_process_uuid_map.csv in LCI/."
         )
         return False
 
-    print(f"  Running third UUID fill for transport file in {transport_folder.name}...")
+    logging.info("Running third UUID fill for transport file in %s...", transport_folder.name)
     run_fill_ipe_columns_from_library(
         library_path=uuid_library,
         provider_library_path=provider_library,
@@ -562,7 +566,7 @@ def run_final_transport_uuid_fill_if_available(base_dir: Path, transport_folder:
         sync_provider_library=False,
         dry_run=dry_run,
     )
-    print(f"  Third UUID fill for transport file in {transport_folder.name} completed.")
+    logging.info("Third UUID fill for transport file in %s completed.", transport_folder.name)
     return True
 
 

@@ -1,6 +1,6 @@
 ## 6.1. Mass Visualization Treemaps
 
-The Streamlit visualization app (`mass_visuals_app.py`) provides interactive treemaps for exploring the structure and mass distribution of all components:
+The Streamlit visualization app (`visualization/mass_visuals_app.py`) provides interactive treemaps for exploring the structure and mass distribution of all components:
 
 - **Treemap: Subsystem > Section > Subsection > Component**
   - Shows the hierarchy from subsystem down to individual components, sized by total mass.
@@ -80,16 +80,16 @@ This convention enables scalability without duplicating code logic.
   - single selection,
   - multi-selection (for example `1 2`),
   - all-subsystems option (`0`, `all`, `todo`, `todos`, `*`).
-- Add/edit/delete operations in `add_eliminate_component.py`.
+- Add/edit/delete operations in `tools/add_eliminate_component.py`.
 - Prompts with field examples for component parameters (except comments).
-- Excel to CSV import and CSV duplication in `import_component_parameter_or_io.py`.
+- Excel to CSV import and CSV duplication in `tools/import_component_parameter_or_io.py`.
 - Quick CSV selection via numbered list during duplication.
 - Default folder for import/duplication in `Mass calculation`.
 - Robust numeric parsing, including scientific notation (example: `8e-05`).
 - Deduplicated component library generation from all subsystem parameter files.
 - Optional parameter auto-sync from library to parameter CSV files.
 - Optional Excel export.
-- Export mode selection in `export_to_excel.py` (single subsystem or all subsystems).
+- Export mode selection in `tools/export_to_excel.py` (single subsystem or all subsystems).
 - Total BoM workbook export in all-subsystems mode.
 - Automatic short export summary text file (`export_readme_*.txt`).
 
@@ -110,7 +110,7 @@ This convention enables scalability without duplicating code logic.
     - selected subsystem(s): warnings only from those subsystems,
     - `all`: warnings from all subsystems.
 
-- `build_component_libraries.py`
+- `tools/build_component_libraries.py`
   - Scans all `<subsystem>_component_parameters.csv` files.
   - Builds casing library using `Casing + mass-calculation parameter signature`.
   - Builds part-number library using `Manufacturer + Part_Number` and comparison fields.
@@ -248,11 +248,11 @@ Mass result column details:
 
 1. Create or duplicate inputs:
 
-`python "Mass calculation\\import_component_parameter_or_io.py"`
+`python "Mass calculation\\tools\\import_component_parameter_or_io.py"`
 
 2. Edit parameters or I/O:
 
-`python "Mass calculation\\add_eliminate_component.py"`
+`python "Mass calculation\\tools\\add_eliminate_component.py"`
 
   Notes:
   - Parameter edits trigger automatic library refresh.
@@ -279,7 +279,7 @@ Or multiple/all selections:
 
 4. Export results (optional):
 
-`python "Mass calculation\\export_to_excel.py"`
+`python "Mass calculation\\tools\\export_to_excel.py"`
 
 ## 10. Integration with PLCA and openLCA (UPI)
 
@@ -310,12 +310,13 @@ Layer summary:
 - The pipeline may emit validation warnings when mass data is missing or inconsistent in kg context.
 - The warning does not imply total execution failure, but does indicate a row pending completion.
 - To maintain consistency, use the per-subsystem naming convention across all CSVs.
-- If parameter CSVs are edited manually outside scripts, run `build_component_libraries.py` (or `Pipeline.py`) to refresh libraries.
+- If parameter CSVs are edited manually outside scripts, run `tools/build_component_libraries.py` (or `Pipeline.py`) to refresh libraries.
 - Runtime toggles:
   - `MASS_CALC_AUTO_SYNC_FROM_LIBRARY=0` disables library-to-parameter sync at pipeline start.
   - `MASS_CALC_AUTO_REFRESH_LIBRARIES=0` disables automatic library rebuild after pipeline execution.
 
-Mass visualization (`mass_visuals_app.py`):
+Mass visualization (`visualization/mass_visuals_app.py`):
 
 - Uses `Total_mass_kg` as the single authoritative source for all mass charts and totals.
 - Includes components with any EcoInvent unit when `Total_mass_kg` is available.
+

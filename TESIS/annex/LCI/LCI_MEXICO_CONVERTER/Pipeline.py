@@ -9,6 +9,7 @@ import os
 import sys
 from collections import OrderedDict
 from pathlib import Path
+import logging
 
 
 MAX_SELECTION_ATTEMPTS = 3
@@ -53,7 +54,7 @@ def _sync_subsystem_units_file(base_dir, subsystem_names):
                         row.get("Quantity_per_subsystem") or row.get("Units")
                     )
         except Exception as exc:
-            print(f"[Warning] Could not read {path.name}: {exc}. Recreating with defaults.")
+            logging.warning("Could not read %s: %s. Recreating with defaults.", path.name, exc)
 
     units_map = {
         name: existing_units.get(name, 1.0)
@@ -93,7 +94,7 @@ def _sync_mexico_ipe_from_subsystem_units(base_dir, subsystem_units_map):
                 fieldnames = [name for name in list(reader.fieldnames or []) if name]
                 rows = [dict(row) for row in reader]
         except Exception as exc:
-            print(f"[Warning] Could not read {path.name}: {exc}. Recreating with defaults.")
+            logging.warning("Could not read %s: %s. Recreating with defaults.", path.name, exc)
             rows = []
 
     if not fieldnames:
@@ -168,9 +169,12 @@ def _sync_mexico_ipe_from_subsystem_units(base_dir, subsystem_units_map):
         if rows:
             writer.writerows(rows)
 
-    print(
-        f"Synchronized {path.name} from {SUBSYSTEM_UNITS_FILENAME}: "
-        f"added={added}, updated={updated}."
+    logging.info(
+        "Synchronized %s from %s: added=%s, updated=%s.",
+        path.name,
+        SUBSYSTEM_UNITS_FILENAME,
+        added,
+        updated,
     )
 
 
@@ -178,7 +182,7 @@ def _sync_mexico_ipe_output_from_section_total(base_dir, section_mass_total):
     """Align the Mexico aggregate output amount with the total section mass."""
     path = base_dir / MEXICO_IPE_FILENAME
     if not path.exists():
-        print(f"[Warning] Mexico aggregate file not found: {path.name}")
+        logging.warning("Mexico aggregate file not found: %s", path.name)
         return False
 
     try:
@@ -187,7 +191,7 @@ def _sync_mexico_ipe_output_from_section_total(base_dir, section_mass_total):
             fieldnames = [name for name in list(reader.fieldnames or []) if name]
             rows = [dict(row) for row in reader]
     except Exception as exc:
-        print(f"[Warning] Could not read {path.name} for output sync: {exc}")
+        logging.warning("Could not read %s for output sync: %s", path.name, exc)
         return False
 
     if "Amount" not in fieldnames:
@@ -234,7 +238,7 @@ def calculate_subsystem_total_mass(results_csv_path):
                 except Exception:
                     pass
     except Exception as exc:
-        print(f"[Warning] Could not read {results_csv_path} for mass calculation: {exc}")
+        logging.warning("Could not read %s for mass calculation: %s", results_csv_path, exc)
     return total_mass
 
 # Converts the inputs in correct format, float. changes coma for dot, averages ranges, returns none if it is empty.
@@ -707,7 +711,7 @@ def _build_section_ipe_outputs(base_dir):
     """
     result_paths = sorted(base_dir.glob("*_component_results.csv"))
     if not result_paths:
-        print("[Warning] No *_component_results.csv files were found for section aggregation.")
+        logging.warning("No *_component_results.csv files were found for section aggregation.")
         return 0, 0
 
     section_flow_rows = {}
@@ -720,7 +724,7 @@ def _build_section_ipe_outputs(base_dir):
         flows_path = base_dir / f"{subsystem}_component_io_flows.csv"
 
         if not flows_path.exists():
-            print(f"[Warning] Missing component I/O file for subsystem '{subsystem}'. Skipping section aggregation for that module.")
+            logging.warning("Missing component I/O file for subsystem '%s'. Skipping section aggregation for that module.", subsystem)
             continue
 
         with open(results_path, newline="", encoding="utf-8-sig") as f_results, open(
@@ -944,9 +948,11 @@ def _build_section_ipe_outputs(base_dir):
     )
     _write_csv_rows(base_dir / SECTION_MISSING_COMPONENTS_FILENAME, diagnostic_fieldnames, diagnostic_rows)
 
-    print(
-        f"Section-level IPE aggregation completed: sections={section_file_count}, "
-        f"modules_read={processed_subsystems}, missing_component_rows={len(diagnostic_rows)}"
+    logging.info(
+        "Section-level IPE aggregation completed: sections=%s, modules_read=%s, missing_component_rows=%s",
+        section_file_count,
+        processed_subsystems,
+        len(diagnostic_rows),
     )
 
     return section_file_count, len(diagnostic_rows), section_mass_total
@@ -1377,10 +1383,10 @@ def _choose_subsystems(subsystems, requested=None):
     if len(names) == 1:
         return [names[0]]
 
-    print("Available subsystems:")
-    print("  0. ALL")
+    logging.info("Available subsystems:")
+    logging.info("  0. ALL")
     for i, name in enumerate(names, start=1):
-        print(f"  {i}. {name}")
+        logging.info("  %s. %s", i, name)
 
     attempts = 0
     while True:
@@ -1389,7 +1395,7 @@ def _choose_subsystems(subsystems, requested=None):
             return _parse_selection(raw, names, subsystems, names_by_lower)
         except ValueError:
             attempts += 1
-            print("Invalid selection. Try again.")
+            logging.info("Invalid selection. Try again.")
         if attempts >= MAX_SELECTION_ATTEMPTS:
             raise ValueError("Too many invalid attempts. Operation canceled.")
 
@@ -1403,22 +1409,22 @@ def _auto_refresh_component_libraries(base_dir, warning_scope_subsystems=None):
     full_refresh_enabled = enabled not in {"0", "false", "no", "off"}
 
     try:
-        from build_component_libraries import build_full_storage_libraries, build_libraries
+        from tools.build_component_libraries import build_full_storage_libraries, build_libraries
 
         if full_refresh_enabled:
             # Only call for side effects (warnings and file updates)
             build_libraries(base_dir, warning_scope_subsystems)
-            print("Library refresh completed.")
+            logging.info("Library refresh completed.")
             return
 
         parameters_storage_count, results_storage_count = build_full_storage_libraries(base_dir)
-        print(
-            "Library refresh partially skipped: MASS_CALC_AUTO_REFRESH_LIBRARIES is disabled. "
-            f"Storage updated: storage_parameters={parameters_storage_count}, "
-            f"storage_results={results_storage_count}"
+        logging.info(
+            "Library refresh partially skipped: MASS_CALC_AUTO_REFRESH_LIBRARIES is disabled. Storage updated: storage_parameters=%s, storage_results=%s",
+            parameters_storage_count,
+            results_storage_count,
         )
     except Exception as exc:
-        print(f"Warning: library refresh failed: {exc}")
+        logging.warning("Library refresh failed: %s", exc)
 
 
 def _clear_subsystem_outputs(results_csv, component_flows_csv, grouped_flows_csv):
@@ -1429,9 +1435,8 @@ def _clear_subsystem_outputs(results_csv, component_flows_csv, grouped_flows_csv
     """
     enabled = str(os.getenv("MASS_CALC_CLEAR_OUTPUTS_ON_FAILURE", "0")).strip().lower()
     if enabled in {"0", "false", "no", "off"}:
-        print(
-            "Output cleanup skipped: MASS_CALC_CLEAR_OUTPUTS_ON_FAILURE is disabled. "
-            "Previous output files were kept."
+        logging.info(
+            "Output cleanup skipped: MASS_CALC_CLEAR_OUTPUTS_ON_FAILURE is disabled. Previous output files were kept."
         )
         return
 
@@ -1440,7 +1445,7 @@ def _clear_subsystem_outputs(results_csv, component_flows_csv, grouped_flows_csv
             if output_path.exists():
                 output_path.unlink()
         except Exception as exc:
-            print(f"Warning: could not remove stale output '{output_path.name}': {exc}")
+            logging.warning("Could not remove stale output '%s': %s", output_path.name, exc)
 
 
 def _fill_uuid_for_subsystem_ipe(grouped_flows_csv: Path):
@@ -1450,9 +1455,8 @@ def _fill_uuid_for_subsystem_ipe(grouped_flows_csv: Path):
     provider_library = lci_root / "component_library_ecoinvent_uuid_provider_map.csv"
 
     if not uuid_library.exists() or not provider_library.exists():
-        print(
-            "[Warning] Global UUID libraries not found in LCI/. "
-            "Skipping UUID fill for this subsystem output."
+        logging.warning(
+            "Global UUID libraries not found in LCI/. Skipping UUID fill for this subsystem output."
         )
         return
 
@@ -1475,9 +1479,8 @@ def _fill_uuid_for_section_ipe_files(base_dir: Path):
     provider_library = lci_root / "component_library_ecoinvent_uuid_provider_map.csv"
 
     if not uuid_library.exists() or not provider_library.exists():
-        print(
-            "[Warning] Global UUID libraries not found in LCI/. "
-            "Skipping UUID fill for section outputs."
+        logging.warning(
+            "Global UUID libraries not found in LCI/. Skipping UUID fill for section outputs."
         )
         return
 
@@ -1521,7 +1524,7 @@ def main():
         _sync_mexico_ipe_from_subsystem_units(base, subsystem_units_map)
         selected_subsystems = _choose_subsystems(subsystems, requested_selection)
     except ValueError as exc:
-        print(f"Validation error: {exc}")
+        logging.error("Validation error: %s", exc)
         return
 
     for subsystem in selected_subsystems:
@@ -1529,7 +1532,7 @@ def main():
         results_csv = base / f"{subsystem}_component_results.csv"
         component_flows_csv = base / f"{subsystem}_component_io_flows.csv"
         grouped_flows_csv = base / f"{subsystem}_ipe_flows_from_parameters.csv"
-        print(f"\nRunning subsystem: {subsystem}")
+        logging.info("Running subsystem: %s", subsystem)
         try:
             subsystem_units = subsystem_units_map.get(subsystem, 1.0)
             results, component_flows, grouped_flows, errors = run_pipeline(
@@ -1542,7 +1545,7 @@ def main():
             )
         except ValueError as exc:
             failed_subsystems.append((subsystem, str(exc)))
-            print(f"Validation error in subsystem '{subsystem}': {exc}")
+            logging.error("Validation error in subsystem '%s': %s", subsystem, exc)
             _clear_subsystem_outputs(results_csv, component_flows_csv, grouped_flows_csv)
             continue
 
@@ -1551,19 +1554,19 @@ def main():
         io_rows = len(component_flows)
         grouped_flows_count = len(grouped_flows)
 
-        print(f"Processed component rows: {processed_rows}")
-        print(f"Subsystem units multiplier: {format(subsystem_units, '.12g')}")
-        print(f"Component IO rows: {io_rows}")
-        print(f"Exported grouped flows: {grouped_flows_count}")
-        print(f"Results file: {results_csv}")
-        print(f"Component IO file: {component_flows_csv}")
-        print(f"Grouped flows file: {grouped_flows_csv}")
+        logging.info("Processed component rows: %s", processed_rows)
+        logging.info("Subsystem units multiplier: %s", format(subsystem_units, '.12g'))
+        logging.info("Component IO rows: %s", io_rows)
+        logging.info("Exported grouped flows: %s", grouped_flows_count)
+        logging.info("Results file: %s", results_csv)
+        logging.info("Component IO file: %s", component_flows_csv)
+        logging.info("Grouped flows file: %s", grouped_flows_csv)
 
         try:
             _fill_uuid_for_subsystem_ipe(Path(grouped_flows_csv))
-            print("UUID filling completed for subsystem grouped flows file.")
+            logging.info("UUID filling completed for subsystem grouped flows file.")
         except Exception as exc:
-            print(f"[Warning] Error while filling UUIDs for subsystem output: {exc}")
+            logging.warning("Error while filling UUIDs for subsystem output: %s", exc)
 
         total_processed_rows += processed_rows
         total_io_rows += io_rows
@@ -1588,21 +1591,21 @@ def main():
                         pass
                 total_mass += subsystem_mass
         except Exception as exc:
-            print(f"[Warning] Could not read {results_csv} for stats: {exc}")
+            logging.warning("Could not read %s for stats: %s", results_csv, exc)
 
     # Imprimir errores y subsistemas fallidos fuera del bucle principal
     if all_errors:
-        print("\nValidation warnings/errors found:")
+        logging.warning("Validation warnings/errors found:")
         for subsystem, err in all_errors:
-            print(f"- [{subsystem}] Row {err['row']} ({err['component']}): {err['error']}")
+            logging.warning("- [%s] Row %s (%s): %s", subsystem, err['row'], err['component'], err['error'])
 
     if failed_subsystems:
-        print("\nSubsystems with validation errors:")
+        logging.warning("Subsystems with validation errors:")
         for subsystem, message in failed_subsystems:
-            print(f"- {subsystem}: {message}")
+            logging.warning("- %s: %s", subsystem, message)
 
     if not completed_subsystems:
-        print("No subsystem completed successfully.")
+        logging.warning("No subsystem completed successfully.")
 
     try:
         section_file_count, diagnostic_count, section_mass_total = _build_section_ipe_outputs(base)
@@ -1611,36 +1614,37 @@ def main():
             _sync_mexico_ipe_output_from_section_total(base, section_mass_total)
         if completed_subsystems:
             mass_delta = abs(section_mass_total - total_mass)
-            print(
-                "Section total mass check: "
-                f"section_sum={section_mass_total:.6f} kg, "
-                f"pipeline_total={total_mass:.6f} kg, "
-                f"delta={mass_delta:.6f} kg"
+            logging.info(
+                "Section total mass check: section_sum=%s kg, pipeline_total=%s kg, delta=%s kg",
+                f"{section_mass_total:.6f}",
+                f"{total_mass:.6f}",
+                f"{mass_delta:.6f}",
             )
             if mass_delta > 1e-6:
-                print(
-                    f"[Warning] Section total mass does not match pipeline total mass. "
-                    f"sections={section_file_count}, diagnostic_rows={diagnostic_count}"
+                logging.warning(
+                    "Section total mass does not match pipeline total mass. sections=%s, diagnostic_rows=%s",
+                    section_file_count,
+                    diagnostic_count,
                 )
     except Exception as exc:
-        print(f"[Warning] Section-level IPE aggregation failed: {exc}")
+        logging.exception("Section-level IPE aggregation failed: %s", exc)
 
 
     # Prompt user to optionally show overall operation summary
     try:
         show_summary = input("\nDo you want to see the overall operation summary (number of subsystems, sections, subsections, total elements analyzed, warnings, total mass)? (y/n): ").strip().lower()
         if show_summary in {"y", "yes", "s", "si"}:
-            print("\n--- Pipeline Operation Summary ---")
-            print(f"Number of subsystems: {len(all_subsystems)}")
-            print(f"Number of sections: {len(all_sections)}")
-            print(f"Number of subsections: {len(all_subsections)}")
-            print(f"Total elements (component rows) analyzed: {total_processed_rows}")
-            print(f"Total mass (kg): {total_mass:.6f}")
-            print("--- End of Summary ---\n")
+            logging.info("--- Pipeline Operation Summary ---")
+            logging.info("Number of subsystems: %s", len(all_subsystems))
+            logging.info("Number of sections: %s", len(all_sections))
+            logging.info("Number of subsections: %s", len(all_subsections))
+            logging.info("Total elements (component rows) analyzed: %s", total_processed_rows)
+            logging.info("Total mass (kg): %s", f"{total_mass:.6f}")
+            logging.info("--- End of Summary ---")
         else:
-            print("Operation summary skipped.")
+            logging.info("Operation summary skipped.")
     except Exception as exc:
-        print(f"[Warning] Error while trying to show operation summary: {exc}")
+        logging.warning("Error while trying to show operation summary: %s", exc)
 
     # Prompt user to optionally show library merge warnings (casing, part, etc.)
     try:
@@ -1648,9 +1652,9 @@ def main():
         if show_warnings in {"y", "yes", "s", "si"}:
             _auto_refresh_component_libraries(Path(__file__).parent)
         else:
-            print("Library merge warnings skipped.")
+            logging.info("Library merge warnings skipped.")
     except Exception as exc:
-        print(f"[Warning] Error while trying to show library merge warnings: {exc}")
+        logging.warning("Error while trying to show library merge warnings: %s", exc)
 
 if __name__ == "__main__":
     main()

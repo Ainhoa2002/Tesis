@@ -6,6 +6,7 @@ Allows specifying output folder and updates created_flows_uuid_map.csv.
 import os
 import csv
 from pathlib import Path
+import logging
 import olca_schema as o
 
 CREATED_FLOWS_MAP = Path(__file__).resolve().parent / "created_flows_uuid_map.csv"
@@ -14,7 +15,7 @@ def flow_exists(flow_name, client):
     ref = client.find(o.Flow, name=flow_name)
     if ref:
         flow = client.get(o.Flow, uid=ref.id)
-        print(f"Flow '{flow_name}' exists with the UUID: {flow.id}")
+        logging.info("Flow '%s' exists with the UUID: %s", flow_name, flow.id)
         return flow
     return None
 
@@ -46,7 +47,7 @@ def build_flow(client, flow_name, unit, flow_type, **kwargs):
             flow_property = client.get(o.FlowProperty, uid=prop_desc.id)
             break
     if not flow_property:
-        print(f"Warning: No matching FlowProperty found for unit '{unit}'. The unit will not be set.")
+        logging.warning("No matching FlowProperty found for unit '%s'. The unit will not be set.", unit)
         return None
     # Create flow using openLCA API helpers
     if flow_type == "elementary":
@@ -58,7 +59,7 @@ def build_flow(client, flow_name, unit, flow_type, **kwargs):
     with open(f"{flow_name}_summary.txt", "w", encoding="utf-8") as f:
         f.write(f"Flow: {flow_name}\nUUID: {flow.id}\nUnit: {unit}\nType: {flow_type}\n")
     add_flow_to_map(flow_name, flow.id)
-    print(f"Flow '{flow_name}' created with UUID: {flow.id}, unit: {unit}, type: {flow_type}")
+    logging.info("Flow '%s' created with UUID: %s, unit: %s, type: %s", flow_name, flow.id, unit, flow_type)
     return flow
 
 

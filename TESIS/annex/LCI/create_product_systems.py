@@ -1,6 +1,7 @@
 import argparse
 import socket
 from pathlib import Path
+import logging
 
 import olca_ipc as ipc
 import olca_schema as o
@@ -192,14 +193,13 @@ def main():
     args = parser.parse_args()
 
     if not ensure_ipc_server_available(host="localhost", port=8080):
-        print(
-            "openLCA IPC server is not reachable on localhost:8080. "
-            "Start openLCA and enable the IPC server."
+        logging.error(
+            "openLCA IPC server is not reachable on localhost:8080. Start openLCA and enable the IPC server."
         )
         return
 
     client = ipc.Client(8080)
-    print("Connected to openLCA IPC server")
+    logging.info("Connected to openLCA IPC server")
 
     if args.categories.strip():
         allowed_categories = {
@@ -210,7 +210,7 @@ def main():
 
     candidates = collect_candidate_processes(client, allowed_categories)
     if not candidates:
-        print(f"No processes found for categories: {sorted(allowed_categories)}")
+        logging.warning("No processes found for categories: %s", sorted(allowed_categories))
         return
 
     if args.select.strip():
@@ -219,7 +219,7 @@ def main():
         selected = choose_processes_interactive(candidates)
 
     if not selected:
-        print("No processes selected.")
+        logging.info("No processes selected.")
         return
 
     config = o.LinkingConfig(
@@ -236,7 +236,7 @@ def main():
         process = client.get(o.Process, uid=ref.id)
         if not process:
             failed += 1
-            print(f"FAILED loading process: {ref.name} (ID: {ref.id})")
+            logging.error("FAILED loading process: %s (ID: %s)", ref.name, ref.id)
             continue
 
         unlinked_inputs = find_unlinked_input_flow_names(process)
@@ -248,28 +248,28 @@ def main():
                 overwrite = True
             elif args.overwrite_existing == "no":
                 skipped_existing += 1
-                print(f"SKIP existing product system: {ref.name} (ID: {existing.id})")
+                logging.info("SKIP existing product system: %s (ID: %s)", ref.name, existing.id)
                 if unlinked_inputs:
-                    print(f"  Potentially unlinked inputs (no default provider): {', '.join(unlinked_inputs)}")
+                    logging.info("Potentially unlinked inputs (no default provider): %s", ", ".join(unlinked_inputs))
                 continue
             else:
                 overwrite = ask_overwrite(existing)
                 if not overwrite:
                     skipped_existing += 1
-                    print(f"SKIP existing product system: {ref.name} (ID: {existing.id})")
+                    logging.info("SKIP existing product system: %s (ID: %s)", ref.name, existing.id)
                     if unlinked_inputs:
-                        print(f"  Potentially unlinked inputs (no default provider): {', '.join(unlinked_inputs)}")
+                        logging.info("Potentially unlinked inputs (no default provider): %s", ", ".join(unlinked_inputs))
                     continue
 
         if args.dry_run:
             if existing and overwrite:
-                print(f"[DRY-RUN] Would overwrite product system: {ref.name} (old ID: {existing.id})")
+                logging.info("[DRY-RUN] Would overwrite product system: %s (old ID: %s)", ref.name, existing.id)
             elif existing:
-                print(f"[DRY-RUN] Would skip existing product system: {ref.name} (ID: {existing.id})")
+                logging.info("[DRY-RUN] Would skip existing product system: %s (ID: %s)", ref.name, existing.id)
             else:
-                print(f"[DRY-RUN] Would create product system for process: {ref.name}")
+                logging.info("[DRY-RUN] Would create product system for process: %s", ref.name)
             if unlinked_inputs:
-                print(f"  Potentially unlinked inputs (no default provider): {', '.join(unlinked_inputs)}")
+                logging.info("Potentially unlinked inputs (no default provider): %s", ", ".join(unlinked_inputs))
             continue
 
         try:
@@ -277,26 +277,26 @@ def main():
                 existing_entity = client.get(o.ProductSystem, uid=existing.id)
                 if existing_entity:
                     client.delete(existing_entity)
-                    print(f"OVERWRITE deleted existing product system: {existing.name} (ID: {existing.id})")
+                    logging.info("OVERWRITE deleted existing product system: %s (ID: %s)", existing.name, existing.id)
 
             created_ref = client.create_product_system(process, config)
             if created_ref:
                 created += 1
-                print(f"CREATED product system: {created_ref.name} (ID: {created_ref.id})")
+                logging.info("CREATED product system: %s (ID: %s)", created_ref.name, created_ref.id)
                 if unlinked_inputs:
-                    print(f"  Potentially unlinked inputs (no default provider): {', '.join(unlinked_inputs)}")
+                    logging.info("Potentially unlinked inputs (no default provider): %s", ", ".join(unlinked_inputs))
             else:
                 failed += 1
-                print(f"FAILED creating product system for process: {ref.name}")
+                logging.error("FAILED creating product system for process: %s", ref.name)
         except Exception as exc:
             failed += 1
-            print(f"FAILED creating product system for process '{ref.name}': {exc}")
+            logging.exception("FAILED creating product system for process '%s': %s", ref.name, exc)
 
-    print("\nSummary:")
-    print(f"Selected: {len(selected)}")
-    print(f"Created: {created}")
-    print(f"Skipped existing: {skipped_existing}")
-    print(f"Failed: {failed}")
+    logging.info("Summary:")
+    logging.info("Selected: %s", len(selected))
+    logging.info("Created: %s", created)
+    logging.info("Skipped existing: %s", skipped_existing)
+    logging.info("Failed: %s", failed)
 
 
 if __name__ == "__main__":

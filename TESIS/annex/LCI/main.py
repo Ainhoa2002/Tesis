@@ -26,8 +26,14 @@ import subprocess
 import sys
 from dataclasses import dataclass, field
 from pathlib import Path
+import logging
+from typing import Any, Optional
 
-import olca_ipc as ipc
+try:
+    import olca_ipc as ipc
+except Exception as exc:
+    logging.warning("olca_ipc not available: %s", exc)
+    ipc = None
 
 from library_sync import (
     run_created_uuid_fill_if_available,
@@ -41,6 +47,31 @@ from product_system_builder import create_product_systems_for_processes
 from transport_workflow import prepare_transport_unit_processes
 
 BASE_DIR = Path(__file__).resolve().parent
+
+# Logging is configured in `main()` to allow `--debug` control.
+
+
+def run_cmd(cmd: list[str], input_text: str | None = None, text: bool = True, check: bool = True):
+    try:
+        return subprocess.run(cmd, input=input_text, text=text, check=check)
+    except subprocess.CalledProcessError:
+        logging.exception("Subprocess failed: %s", cmd)
+        raise
+
+
+def get_ipc_client(host: str = "localhost", port: int = 8080):
+    """Return an olca IPC client or None if unavailable."""
+    if ipc is None:
+        logging.warning("olca_ipc is not installed in this environment.")
+        return None
+    if not ensure_ipc_server_available(host=host, port=port):
+        logging.warning("olca IPC server not reachable at %s:%s", host, port)
+        return None
+    try:
+        return ipc.Client(port)
+    except Exception:
+        logging.exception("Failed to create olca IPC client")
+        return None
 
 
 @dataclass
@@ -182,7 +213,7 @@ def run_system_pipeline_if_available(system_folder: Path, dry_run: bool = False)
     if dry_run:
         return
 
-    subprocess.run(cmd, **run_kwargs)
+    run_cmd(cmd, input_text=run_kwargs.get("input"), text=run_kwargs.get("text", True), check=run_kwargs.get("check", True))
 
 
 def ensure_ipc_server_available(host: str = "localhost", port: int = 8080, timeout_seconds: float = 2.0) -> bool:
@@ -228,7 +259,7 @@ def _phase_first_fill_and_import(
         try:
             run_system_pipeline_if_available(system_folder, dry_run=dry_run)
         except Exception:
-            pass
+            logging.exception("Error running pipeline for system: %s", system_folder)
 
         csv_files = iter_system_csvs(system_folder, selected_prefixes=selected_ipe_prefixes)
         if not csv_files:
@@ -240,7 +271,7 @@ def _phase_first_fill_and_import(
         try:
             run_uuid_fill_if_available(base_dir, system_folder, dry_run=dry_run)
         except Exception:
-            pass
+            logging.exception("Error during UUID fill for system: %s", system_folder)
 
         for csv_file in csv_files:
             state.total_files += 1
@@ -257,7 +288,7 @@ def _phase_second_fill_and_reimport(base_dir: Path, client, state: ImportWorkflo
         try:
             run_created_uuid_fill_if_available(base_dir, system_folder, dry_run=False)
         except Exception:
-            pass
+            logging.exception("Error during created-UUID fill for system: %s", system_folder)
 
     second_round_reimports = 0
     for system_folder in state.systems_with_csv:
@@ -277,14 +308,14 @@ def _phase_third_fill_and_aggregate_reimport(base_dir: Path, client, state: Impo
     try:
         run_final_system_uuid_fill_if_available(base_dir, system_folder, dry_run=False)
     except Exception:
-        pass
+        logging.exception("Error during final system UUID fill: %s", system_folder)
 
     transport_folder = base_dir / "LCI_TRANSPORT"
     transport_third_fill_ok = False
     try:
         transport_third_fill_ok = run_final_transport_uuid_fill_if_available(base_dir, transport_folder, dry_run=False)
     except Exception:
-        pass
+        logging.exception("Error during final transport UUID fill: %s", transport_folder)
 
     system_target_file = system_folder / "system_ipe_flows_from_parameters.csv"
     if system_target_file.exists():
@@ -292,7 +323,7 @@ def _phase_third_fill_and_aggregate_reimport(base_dir: Path, client, state: Impo
             report = process_csv(client, str(system_target_file), resolve_category_name(system_folder.name))
             _register_report(state, report, collect_library_rows=False)
         except Exception:
-            pass
+            logging.exception("Error importing system target file: %s", system_target_file)
 
     if transport_third_fill_ok:
         transport_target_file = transport_folder / "transport_ipe_flows_from_parameters.csv"
@@ -301,7 +332,7 @@ def _phase_third_fill_and_aggregate_reimport(base_dir: Path, client, state: Impo
                 report = process_csv(client, str(transport_target_file), resolve_category_name(transport_folder.name))
                 _register_report(state, report, collect_library_rows=False)
             except Exception:
-                pass
+                logging.exception("Error importing transport target file: %s", transport_target_file)
 
 
 def _print_report_summary(reports: list[ProcessImportReport]) -> None:
@@ -317,6 +348,11 @@ def main():
         "--dry-run",
         action="store_true",
         help="Only list what would be imported and target categories, without connecting to openLCA.",
+    )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Enable debug logging output.",
     )
     parser.add_argument(
         "--product-systems",
@@ -350,13 +386,17 @@ def main():
     )
     args = parser.parse_args()
 
+    # Configure logging according to CLI flags
+    log_level = logging.DEBUG if args.debug else logging.INFO
+    logging.basicConfig(level=log_level, format="%(levelname)s: %(message)s")
+
     state = ImportWorkflowState()
 
     # Phase 0: transport preprocessing before import.
     try:
         prepare_transport_unit_processes(BASE_DIR, dry_run=args.dry_run)
     except Exception:
-        pass
+        logging.exception("Error preparing transport unit processes")
 
     systems = list(iter_system_folders(BASE_DIR))
     selected_systems = _parse_selection_names(args.systems)
@@ -369,10 +409,9 @@ def main():
 
     client = None
     if not args.dry_run:
-        if not ensure_ipc_server_available(host="localhost", port=8080):
+        client = get_ipc_client(host="localhost", port=8080)
+        if client is None:
             return
-
-        client = ipc.Client(8080)
 
     # Phase 1: first fill + first import
     _phase_first_fill_and_import(

@@ -9,6 +9,7 @@ from __future__ import annotations
 import csv
 import re
 import sys
+import logging
 from pathlib import Path
 
 
@@ -52,7 +53,7 @@ def _create_transport_unit_process_files(base_dir: Path, dry_run: bool = False):
     transport_dir = base_dir / "LCI_TRANSPORT"
     source = transport_dir / "code_transport.csv"
     if not source.exists():
-        print(f"  [Warning] Transport code library not found: {source}")
+        logging.warning("Transport code library not found: %s", source)
         return 0
 
     with open(source, newline="", encoding="utf-8-sig") as handle:
@@ -98,7 +99,7 @@ def _create_transport_unit_process_files(base_dir: Path, dry_run: bool = False):
 
         if dry_run:
             generated += 1
-            print(f"  [DRY-RUN] Would generate transport code unit file: {target.name}")
+            logging.info("[DRY-RUN] Would generate transport code unit file: %s", target.name)
             continue
 
         with open(target, "w", newline="", encoding="utf-8") as out:
@@ -118,7 +119,7 @@ def _create_transport_unit_process_files(base_dir: Path, dry_run: bool = False):
         generated += 1
 
     if generated:
-        print(f"  Transport unit process files generated: {generated}")
+        logging.info("Transport unit process files generated: %s", generated)
     return generated
 
 
@@ -164,7 +165,7 @@ def _fill_transport_parent_amounts(base_dir: Path, dry_run: bool = False):
             calculate_total_mass_by_transport_code_per_subsystem,
         )
     except Exception as exc:
-        print(f"  [Warning] Could not load mass-by-code calculator: {exc}")
+        logging.warning("Could not load mass-by-code calculator: %s", exc)
         return 0
 
     totals_by_code = calculate_total_mass_by_transport_code(str(base_dir))
@@ -253,7 +254,7 @@ def _fill_transport_parent_amounts(base_dir: Path, dry_run: bool = False):
 
         if dry_run:
             updates += 1
-            print(f"  [DRY-RUN] Would fill transport amounts in: {path.name}")
+            logging.info("[DRY-RUN] Would fill transport amounts in: %s", path.name)
             continue
 
         with open(path, "w", newline="", encoding="utf-8") as out:
@@ -263,14 +264,14 @@ def _fill_transport_parent_amounts(base_dir: Path, dry_run: bool = False):
         updates += 1
 
     if updates:
-        print(f"  Transport parent files with Amount updated: {updates}")
+        logging.info("Transport parent files with Amount updated: %s", updates)
     return updates
 
 
 def prepare_transport_unit_processes(base_dir: Path, dry_run: bool = False):
     """Prepare transport unit process CSVs before standard import passes."""
-    print("Preparing transport unit processes from code_transport.csv...")
+    logging.info("Preparing transport unit processes from code_transport.csv...")
     generated = _create_transport_unit_process_files(base_dir, dry_run=dry_run)
     updated = _fill_transport_parent_amounts(base_dir, dry_run=dry_run)
     if generated == 0 and updated == 0:
-        print("  No transport unit process updates were needed.")
+        logging.info("No transport unit process updates were needed.")

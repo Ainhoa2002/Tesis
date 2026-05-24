@@ -1,0 +1,4 @@
+Flow,UUID,Unit,Amount,Direction,Section,Subsections,Source_subsystems,Component_rows,Total_mass_kg,Missing_process_components,UUID_provider
+"electric connector production, wire clamp",6716b460-7ba0-4cea-baa4-32ae24bfb88c,kg,0.06227294528,Input,Electromechanical,Connectors,4Q_output_control_card,4,0.06227294528,0,e7dad296-81c0-3161-940f-7e089569896d
+"electronic component, passive, unspecified",4e252b55-fb08-4447-8391-d09e8bbb0238,kg,0.00222,Input,Electromechanical,Fuse holder,4Q_output_control_card,2,0.00222,0,0e5d7b83-f812-32ac-a5e1-ac1d95910183
+SECTION_Electromechanical,,kg,0.06449294528,Output,Electromechanical,"Connectors, Fuse holder",4Q_output_control_card,6,0.06449294528,0,

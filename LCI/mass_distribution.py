@@ -36,8 +36,15 @@ plt.close()  # Ensure the bar chart window is closed before showing the pie char
 
 # Pie chart
 plt.figure(figsize=(6, 6))
-plt.pie(masses, labels=labels, autopct='%1.1f%%', colors=['#4F81BD', '#C0504D', '#9BBB59'])
-plt.title('Mass distribution over subsystems and sections')
+plt.pie(
+	masses,
+	labels=labels,
+	autopct='%1.1f%%',
+	labeldistance=0.55,
+	pctdistance=0.78,
+	colors=['#4F81BD', '#C0504D', '#9BBB59']
+)
+plt.title(f'Mass distribution over subsystems and sections\nTotal mass: {m_tot:.2f} kg')
 plt.tight_layout()
 plt.savefig('mass_distribution_pie.png')
 plt.show()  # Show the pie chart after saving

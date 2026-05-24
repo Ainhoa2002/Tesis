@@ -2,6 +2,7 @@
 import json
 import re
 from pathlib import Path
+import logging
 
 import json5
 import pandas as pd
@@ -45,7 +46,8 @@ try:
                             # Non-literal expressions (computed at runtime) are skipped
                             continue
                         OVERRIDE_VARS[target.id] = value
-except Exception:
+except Exception as exc:
+    logging.debug("Could not parse overrides from explained script: %s", exc)
     OVERRIDE_VARS = {}
 
 
@@ -101,7 +103,7 @@ os.makedirs(output_dir, exist_ok=True)
 method_ref = client.find(o.ImpactMethod, name=LCIA_METHOD)
 if not method_ref:
     raise ValueError(f"Impact method '{LCIA_METHOD}' not found")
-print(f"Using impact method: {method_ref.name} (ID: {method_ref.id})")
+logging.info("Using impact method: %s (ID: %s)", method_ref.name, method_ref.id)
 
 
 def safe_filename(value):
@@ -114,15 +116,15 @@ def safe_filename(value):
 
 
 def process_system(system_name):
-    print(f"\n{'=' * 60}")
-    print(f"Processing: {system_name} | Method: {method_ref.name}")
-    print("=" * 60)
+    logging.info("%s", "\n" + ("=" * 60))
+    logging.info("Processing: %s | Method: %s", system_name, method_ref.name)
+    logging.info("%s", "=" * 60)
 
     ps = find_entity(client, o.ProductSystem, system_name)
     setup = o.CalculationSetup(target=ps, impact_method=method_ref)
     result = client.calculate(setup)
     result.wait_until_ready()
-    print("Calculation completed.")
+    logging.info("Calculation completed.")
 
     all_impacts = result.get_total_impacts()
     # Optionally request normalized impacts (if the calculation/setup supports it)
@@ -130,9 +132,9 @@ def process_system(system_name):
     if NORMALIZATION_ENABLED:
         try:
             all_normalized_impacts = result.get_normalized_impacts()
-            print("Normalized impacts retrieved.")
+            logging.info("Normalized impacts retrieved.")
         except Exception as e:
-            print(f"  ⚠ Could not get normalized impacts: {e}")
+            logging.warning("Could not get normalized impacts: %s", e)
 
     if all_impacts:
         impacts = filter_impacts_by_names(all_impacts, IMPACT_CATEGORIES)
@@ -158,9 +160,9 @@ def process_system(system_name):
         safe_method = safe_filename(method_ref.name)
         imp_path = os.path.join(output_dir, f"{safe_system}_{safe_method}_impacts.csv")
         df_impacts.to_csv(imp_path, index=False)
-        print(f"Saved impacts: {len(df_impacts)} categories -> {imp_path}")
+        logging.info("Saved impacts: %s categories -> %s", len(df_impacts), imp_path)
     else:
-        print("No impacts found.")
+        logging.info("No impacts found.")
         impacts = []
 
     flows = result.get_total_flows()
@@ -194,18 +196,18 @@ def process_system(system_name):
         safe_method = safe_filename(method_ref.name)
         flo_path = os.path.join(output_dir, f"{safe_system}_{safe_method}_inventory.csv")
         df_flows.to_csv(flo_path, index=False)
-        print(f"Saved inventory: {len(df_flows)} flows -> {flo_path}")
+        logging.info("Saved inventory: %s flows -> %s", len(df_flows), flo_path)
     else:
-        print("No inventory flows found.")
+        logging.info("No inventory flows found.")
 
     if impacts:
         for impact in impacts:
             cat = impact.impact_category
-            print(f"  Analysing contributions for category: {cat.name}")
+            logging.info("Analysing contributions for category: %s", cat.name)
             contributions = result.get_impact_contributions_of(impact_category=cat)
             non_zero_contributions = [c for c in contributions if c.amount != 0.0]
             if not non_zero_contributions:
-                print(f"    No non-zero contributions found for {cat.name}.")
+                logging.info("No non-zero contributions found for %s.", cat.name)
                 continue
 
             df_contrib = pd.DataFrame(
@@ -228,15 +230,15 @@ def process_system(system_name):
                 output_dir, f"{safe_system}_{safe_method}_{safe_category}_upstream.csv"
             )
             df_contrib.to_csv(contrib_path, index=False)
-            print(f"    Saved top {TOP_N_CONTRIBUTORS} contributions -> {contrib_path}")
+            logging.info("Saved top %s contributions -> %s", TOP_N_CONTRIBUTORS, contrib_path)
 
     if SANKEY_MODE != 0 and impacts:
         cat = impacts[0].impact_category
-        print(f"  Creating Sankey diagram for category: {cat.name}")
+        logging.info("Creating Sankey diagram for category: %s", cat.name)
         max_nodes = SANKEY_TOP_FLOWS if SANKEY_MODE == 1 else SANKEY_TOP_IMPACTS
 
         if SANKEY_MAX_DEPTH is not None:
-            print("  Note: sankey_max_depth is configured but not supported by current olca_schema; ignoring it.")
+            logging.info("Note: sankey_max_depth is configured but not supported by current olca_schema; ignoring it.")
 
         sankey_req = o.SankeyRequest(
             impact_category=cat,
@@ -272,12 +274,15 @@ def process_system(system_name):
         sankey_path = os.path.join(output_dir, f"{safe_system}_{safe_method}_sankey.json")
         with open(sankey_path, "w", encoding="utf-8") as f:
             json.dump(sankey_data, f, indent=2)
-        print(
-            f"    Saved Sankey data ({len(sankey_graph.nodes)} nodes, {len(sankey_graph.edges)} edges) -> {sankey_path}"
+        logging.info(
+            "Saved Sankey data (%s nodes, %s edges) -> %s",
+            len(sankey_graph.nodes),
+            len(sankey_graph.edges),
+            sankey_path,
         )
 
     result.dispose()
-    print(f"Finished {system_name}\n")
+    logging.info("Finished %s\n", system_name)
 
 
 
@@ -285,9 +290,9 @@ def main():
     for sys_name in PRODUCT_SYSTEMS:
         try:
             process_system(sys_name)
-        except Exception as e:
-            print(f"Error processing {sys_name}: {e}")
-    print("\nAll extractions completed.")
+        except Exception:
+            logging.exception("Error processing %s", sys_name)
+    logging.info("All extractions completed.")
 
 
 if __name__ == "__main__":

@@ -2,6 +2,7 @@ import argparse
 import csv
 from collections import defaultdict
 from pathlib import Path
+import logging
 
 
 def _normalize_text(value):
@@ -77,17 +78,19 @@ def _load_pcb_mass_from_results(csv_path):
     results_path = Path(csv_path).with_name(f"{module}_component_results.csv")
     if not results_path.exists():
         return 0.0
-
     pcb_mass_kg = 0.0
-    with open(results_path, newline="", encoding="utf-8-sig") as handle:
-        reader = csv.DictReader(handle)
-        for row in reader:
-            designator = _normalize_text(row.get("Designators")).upper()
-            if designator not in {"PCB", "OCB"}:
-                continue
-            mass_kg = _to_float(row.get("Total_mass_kg"))
-            if mass_kg is not None:
-                pcb_mass_kg += mass_kg
+    try:
+        with open(results_path, newline="", encoding="utf-8-sig") as handle:
+            reader = csv.DictReader(handle)
+            for row in reader:
+                designator = _normalize_text(row.get("Designators")).upper()
+                if designator not in {"PCB", "OCB"}:
+                    continue
+                mass_kg = _to_float(row.get("Total_mass_kg"))
+                if mass_kg is not None:
+                    pcb_mass_kg += mass_kg
+    except Exception as exc:
+        logging.exception("Failed to read PCB mass from results file %s: %s", results_path, exc)
 
     return pcb_mass_kg
 
@@ -95,17 +98,21 @@ def _load_pcb_mass_from_results(csv_path):
 def _collect_pcb_codes_from_ipe(csv_path):
     """Collect transport codes present on PCB rows in one *_ipe file."""
     codes = set()
-    with open(csv_path, newline="", encoding="utf-8-sig") as handle:
-        reader = csv.DictReader(handle)
-        if not reader.fieldnames or "Transport_phase_codes" not in reader.fieldnames:
-            return codes
-        for row in reader:
-            if _normalize_text(row.get("Direction")).lower() == "output":
-                continue
-            if not _is_pcb_flow(row.get("Flow")):
-                continue
-            for code in _parse_codes(row.get("Transport_phase_codes", "")):
-                codes.add(code)
+    try:
+        with open(csv_path, newline="", encoding="utf-8-sig") as handle:
+            reader = csv.DictReader(handle)
+            if not reader.fieldnames or "Transport_phase_codes" not in reader.fieldnames:
+                return codes
+            for row in reader:
+                if _normalize_text(row.get("Direction")).lower() == "output":
+                    continue
+                if not _is_pcb_flow(row.get("Flow")):
+                    continue
+                for code in _parse_codes(row.get("Transport_phase_codes", "")):
+                    codes.add(code)
+    except Exception as exc:
+        logging.exception("Failed to collect PCB codes from %s: %s", csv_path, exc)
+        return codes
     return codes
 
 
@@ -116,15 +123,17 @@ def _load_mexico_subsystem_units(root_dir):
 
     if not units_path.exists():
         return units_map
-
-    with open(units_path, newline="", encoding="utf-8-sig") as handle:
-        reader = csv.DictReader(handle)
-        for row in reader:
-            subsystem = _normalize_text(row.get("Subsystem"))
-            qty = _to_float(row.get("Quantity_per_subsystem"))
-            if subsystem == "":
-                continue
-            units_map[subsystem] = qty if (qty is not None and qty > 0) else 1.0
+    try:
+        with open(units_path, newline="", encoding="utf-8-sig") as handle:
+            reader = csv.DictReader(handle)
+            for row in reader:
+                subsystem = _normalize_text(row.get("Subsystem"))
+                qty = _to_float(row.get("Quantity_per_subsystem"))
+                if subsystem == "":
+                    continue
+                units_map[subsystem] = qty if (qty is not None and qty > 0) else 1.0
+    except Exception as exc:
+        logging.exception("Failed to read Mexico subsystem units from %s: %s", units_path, exc)
 
     return units_map
 
@@ -136,23 +145,25 @@ def _load_system_units(root_dir):
 
     if not system_path.exists():
         return units_map
+    try:
+        with open(system_path, newline="", encoding="utf-8-sig") as handle:
+            reader = csv.DictReader(handle)
+            for row in reader:
+                flow = _normalize_text(row.get("Flow"))
+                unit = _normalize_text(row.get("Unit")).lower()
+                direction = _normalize_text(row.get("Direction")).lower()
+                amount = _to_float(row.get("Amount"))
 
-    with open(system_path, newline="", encoding="utf-8-sig") as handle:
-        reader = csv.DictReader(handle)
-        for row in reader:
-            flow = _normalize_text(row.get("Flow"))
-            unit = _normalize_text(row.get("Unit")).lower()
-            direction = _normalize_text(row.get("Direction")).lower()
-            amount = _to_float(row.get("Amount"))
+                if flow == "" or amount is None:
+                    continue
+                if unit != "lu":
+                    continue
+                if direction not in {"", "input"}:
+                    continue
 
-            if flow == "" or amount is None:
-                continue
-            if unit != "lu":
-                continue
-            if direction not in {"", "input"}:
-                continue
-
-            units_map[flow.lower()] = amount if amount > 0 else 1.0
+                units_map[flow.lower()] = amount if amount > 0 else 1.0
+    except Exception as exc:
+        logging.exception("Failed to read system units from %s: %s", system_path, exc)
 
     return units_map
 
@@ -249,32 +260,39 @@ def calculate_total_mass_by_transport_code(root_dir, include_pcb_mass_from_resul
 
     for csv_path in _iter_ipe_files(root_dir):
         system_multiplier = _get_system_multiplier_for_file(root_dir, csv_path, system_units_map)
-        with open(csv_path, newline="", encoding="utf-8-sig") as handle:
-            reader = csv.DictReader(handle)
-            if not reader.fieldnames:
-                continue
-            if "Transport_phase_codes" not in reader.fieldnames:
-                continue
-
-            for row in reader:
-                codes = _parse_codes(row.get("Transport_phase_codes", ""))
-                if not codes:
+        try:
+            with open(csv_path, newline="", encoding="utf-8-sig") as handle:
+                reader = csv.DictReader(handle)
+                if not reader.fieldnames:
+                    continue
+                if "Transport_phase_codes" not in reader.fieldnames:
                     continue
 
-                amount = _to_float(row.get("Amount"))
-                mass_kg = _unit_to_kg(amount, row.get("Unit"))
-                if mass_kg is None:
-                    continue
+                for row in reader:
+                    codes = _parse_codes(row.get("Transport_phase_codes", ""))
+                    if not codes:
+                        continue
 
-                # Apply system-level multiplier
-                mass_kg_scaled = mass_kg * system_multiplier
+                    amount = _to_float(row.get("Amount"))
+                    mass_kg = _unit_to_kg(amount, row.get("Unit"))
+                    if mass_kg is None:
+                        continue
 
-                for code in codes:
-                    totals_kg[code] += mass_kg_scaled
+                    # Apply system-level multiplier
+                    mass_kg_scaled = mass_kg * system_multiplier
+
+                    for code in codes:
+                        totals_kg[code] += mass_kg_scaled
+        except Exception as exc:
+            logging.exception("Failed to read IPE file %s: %s", csv_path, exc)
 
     if include_pcb_mass_from_results:
         for csv_path in _iter_ipe_files(root_dir):
-            pcb_mass_kg = _load_pcb_mass_from_results(csv_path)
+                try:
+                    pcb_mass_kg = _load_pcb_mass_from_results(csv_path)
+                except Exception:
+                    logging.exception("Error loading PCB mass for %s", csv_path)
+                    pcb_mass_kg = 0.0
             if pcb_mass_kg <= 0:
                 continue
             pcb_codes = _collect_pcb_codes_from_ipe(csv_path)
@@ -301,35 +319,41 @@ def calculate_total_mass_by_transport_code_per_subsystem(root_dir, include_pcb_m
     for csv_path in _iter_ipe_files(root_dir):
         subsystem = _subsystem_name_from_path(root_dir, csv_path)
         system_multiplier = _get_system_multiplier_for_file(root_dir, csv_path, system_units_map)
-
-        with open(csv_path, newline="", encoding="utf-8-sig") as handle:
-            reader = csv.DictReader(handle)
-            if not reader.fieldnames:
-                continue
-            if "Transport_phase_codes" not in reader.fieldnames:
-                continue
-
-            for row in reader:
-                codes = _parse_codes(row.get("Transport_phase_codes", ""))
-                if not codes:
+        try:
+            with open(csv_path, newline="", encoding="utf-8-sig") as handle:
+                reader = csv.DictReader(handle)
+                if not reader.fieldnames:
+                    continue
+                if "Transport_phase_codes" not in reader.fieldnames:
                     continue
 
-                amount = _to_float(row.get("Amount"))
-                mass_kg = _unit_to_kg(amount, row.get("Unit"))
-                if mass_kg is None:
-                    continue
+                for row in reader:
+                    codes = _parse_codes(row.get("Transport_phase_codes", ""))
+                    if not codes:
+                        continue
 
-                # Apply system-level multiplier
-                mass_kg_scaled = mass_kg * system_multiplier
+                    amount = _to_float(row.get("Amount"))
+                    mass_kg = _unit_to_kg(amount, row.get("Unit"))
+                    if mass_kg is None:
+                        continue
 
-                subsystem_total_coded_mass_kg[subsystem] += mass_kg_scaled
+                    # Apply system-level multiplier
+                    mass_kg_scaled = mass_kg * system_multiplier
 
-                for code in codes:
-                    subsystem_totals[subsystem][code] += mass_kg_scaled
+                    subsystem_total_coded_mass_kg[subsystem] += mass_kg_scaled
+
+                    for code in codes:
+                        subsystem_totals[subsystem][code] += mass_kg_scaled
+        except Exception as exc:
+            logging.exception("Failed to read IPE file %s: %s", csv_path, exc)
 
     if include_pcb_mass_from_results:
         for csv_path in _iter_ipe_files(root_dir):
-            pcb_mass_kg = _load_pcb_mass_from_results(csv_path)
+                try:
+                    pcb_mass_kg = _load_pcb_mass_from_results(csv_path)
+                except Exception:
+                    logging.exception("Error loading PCB mass for %s", csv_path)
+                    pcb_mass_kg = 0.0
             if pcb_mass_kg <= 0:
                 continue
 
@@ -375,30 +399,32 @@ def calculate_mass_breakdown_by_subsystem(root_dir):
         system_multiplier = _get_system_multiplier_for_file(root_dir, csv_path, system_units_map)
         multiplier = subsystem_multiplier * system_multiplier
         subsystem = _subsystem_name_from_path(root_dir, csv_path)
-
-        with open(csv_path, newline="", encoding="utf-8-sig") as handle:
-            reader = csv.DictReader(handle)
-            if not reader.fieldnames:
-                continue
-            if "Amount" not in reader.fieldnames:
-                continue
-
-            for row in reader:
-                amount = _to_float(row.get("Amount"))
-                mass_kg = _unit_to_kg(amount, row.get("Unit"))
-                if mass_kg is None:
+        try:
+            with open(csv_path, newline="", encoding="utf-8-sig") as handle:
+                reader = csv.DictReader(handle)
+                if not reader.fieldnames:
+                    continue
+                if "Amount" not in reader.fieldnames:
                     continue
 
-                mass_kg = mass_kg * multiplier
-                all_totals[subsystem] += mass_kg
+                for row in reader:
+                    amount = _to_float(row.get("Amount"))
+                    mass_kg = _unit_to_kg(amount, row.get("Unit"))
+                    if mass_kg is None:
+                        continue
 
-                codes = _parse_codes(row.get("Transport_phase_codes", ""))
-                if codes:
-                    coded_totals[subsystem] += mass_kg
-                    row_counts[subsystem]["coded_rows"] += 1
-                else:
-                    uncoded_totals[subsystem] += mass_kg
-                    row_counts[subsystem]["uncoded_rows"] += 1
+                    mass_kg = mass_kg * multiplier
+                    all_totals[subsystem] += mass_kg
+
+                    codes = _parse_codes(row.get("Transport_phase_codes", ""))
+                    if codes:
+                        coded_totals[subsystem] += mass_kg
+                        row_counts[subsystem]["coded_rows"] += 1
+                    else:
+                        uncoded_totals[subsystem] += mass_kg
+                        row_counts[subsystem]["uncoded_rows"] += 1
+        except Exception as exc:
+            logging.exception("Failed to read IPE file %s: %s", csv_path, exc)
 
     ordered = {}
     for subsystem in sorted(all_totals.keys()):

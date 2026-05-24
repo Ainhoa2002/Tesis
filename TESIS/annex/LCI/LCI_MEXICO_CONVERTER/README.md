@@ -1,4 +1,4 @@
-﻿# LCI_MEXICO_CONVERTER Workflow
+# LCI_MEXICO_CONVERTER Workflow
 
 This folder turns component-level parameters into subsystem mass outputs, grouped ipe files, and the converter-level import files consumed by [LCI/main.py](LCI/main.py).
 
@@ -64,8 +64,8 @@ Run specific subsystems:
 
 Optional tools:
 
-- add or remove components with [LCI/LCI_MEXICO_CONVERTER/add_eliminate_component.py](LCI/LCI_MEXICO_CONVERTER/add_eliminate_component.py)
-- export to Excel with [LCI/LCI_MEXICO_CONVERTER/export_to_excel.py](LCI/LCI_MEXICO_CONVERTER/export_to_excel.py)
+- add or remove components with [LCI/LCI_MEXICO_CONVERTER/tools/add_eliminate_component.py](LCI/LCI_MEXICO_CONVERTER/tools/add_eliminate_component.py)
+- export to Excel with [LCI/LCI_MEXICO_CONVERTER/tools/export_to_excel.py](LCI/LCI_MEXICO_CONVERTER/tools/export_to_excel.py)
 
 ## Execution Dynamics
 
@@ -180,7 +180,8 @@ Optional environment flags:
 
 ## Related Utilities
 
-- [LCI/LCI_MEXICO_CONVERTER/build_component_libraries.py](LCI/LCI_MEXICO_CONVERTER/build_component_libraries.py)
-- [LCI/LCI_MEXICO_CONVERTER/find_component.py](LCI/LCI_MEXICO_CONVERTER/find_component.py)
-- [LCI/LCI_MEXICO_CONVERTER/mass_visuals_app.py](LCI/LCI_MEXICO_CONVERTER/mass_visuals_app.py)
+- [LCI/LCI_MEXICO_CONVERTER/tools/build_component_libraries.py](LCI/LCI_MEXICO_CONVERTER/tools/build_component_libraries.py)
+- [LCI/LCI_MEXICO_CONVERTER/tools/find_component.py](LCI/LCI_MEXICO_CONVERTER/tools/find_component.py)
+- [LCI/LCI_MEXICO_CONVERTER/visualization/mass_visuals_app.py](LCI/LCI_MEXICO_CONVERTER/visualization/mass_visuals_app.py)
+
 

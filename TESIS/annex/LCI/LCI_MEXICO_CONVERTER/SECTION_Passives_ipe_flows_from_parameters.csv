@@ -1,0 +1,7 @@
+Flow,UUID,Unit,Amount,Direction,Section,Subsections,Source_subsystems,Component_rows,Total_mass_kg,Missing_process_components,UUID_provider
+"capacitor production, electrolyte type, < 2cm height",5036886d-4b0a-4c87-956d-50d85d9abaab,kg,0.002831378,Input,Passives,Capacitors,4Q_output_control_card,1,0.002831378,0,62e0e6af-6aed-35f7-b9d3-e431d9f2cdd9
+"capacitor production, for surface-mounting",c924ae77-ba85-4856-bc7a-2f249809872b,kg,0.002319616,Input,Passives,Capacitors,4Q_output_control_card,5,0.002319616,0,4e9c0a3b-9b1e-3533-82c3-7f81c02a0dea
+"electronic component, passive, unspecified",4e252b55-fb08-4447-8391-d09e8bbb0238,kg,0.005500037417,Input,Passives,"Protection, Test PIN",4Q_output_control_card,4,0.005500037417,0,0e5d7b83-f812-32ac-a5e1-ac1d95910183
+"resistor production, metal film type, through-hole mounting",92d9032c-7554-43a7-87b7-59ced4c2516a,kg,0.0028,Input,Passives,Resistors,4Q_output_control_card,1,0.0028,0,287c9baf-8ec5-3321-bcfc-8b10e95550eb
+"resistor production, surface-mounted",b826a1ab-8be4-41bf-80ad-a6665ec8f9b8,kg,0.002751184,Input,Passives,Resistors,4Q_output_control_card,6,0.002751184,0,aed09801-e9a1-390e-86f5-2bf4b0ffbdd6
+SECTION_Passives,,kg,0.016202215417,Output,Passives,"Capacitors, Protection, Resistors, Test PIN",4Q_output_control_card,17,0.016202215417,0,

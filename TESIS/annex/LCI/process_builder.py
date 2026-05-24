@@ -12,6 +12,7 @@ import os
 from dataclasses import dataclass, field
 
 import olca_schema as o
+import logging
 
 from csv_reader import read_input_rows, read_output_rows
 
@@ -48,12 +49,12 @@ class ProductSystemCreationReport:
 
 def _warn(report: ProcessImportReport, message: str) -> None:
     report.warnings.append(message)
-    print(message)
+    logging.warning(message)
 
 
 def _error(report: ProcessImportReport, message: str) -> None:
     report.errors.append(message)
-    print(message)
+    logging.error(message)
 
 
 def _normalize_category_path(value):
@@ -227,7 +228,7 @@ def _sync_output_flow_definition(client, flow, flow_name, amount_per_lu, output_
     if unit_norm == "tkm" and transport_prop:
         secondary_prop = transport_prop
     elif unit_norm == "tkm" and not transport_prop:
-        print("  Warning: Flow property for 'tkm' not found. Falling back to 'Mass'.")
+        logging.warning("Flow property for 'tkm' not found. Falling back to 'Mass'.")
 
     if not secondary_prop:
         raise ValueError("Required flow property not found for output flow")
@@ -241,9 +242,9 @@ def _sync_output_flow_definition(client, flow, flow_name, amount_per_lu, output_
 
     try:
         client.put(flow)
-        print(f"  INFO: Flow '{flow_name}' synchronized (type/category/properties).")
+        logging.info("Flow '%s' synchronized (type/category/properties).", flow_name)
     except Exception as exc:
-        print(f"  Warning: Could not update flow '{flow_name}': {exc}. Reusing as-is.")
+        logging.warning("Could not update flow '%s': %s. Reusing as-is.", flow_name, exc)
 
 
 ################ Find or create an output ############################
@@ -266,7 +267,7 @@ def _find_or_create_output_flow(client, flow_name, amount_per_lu, output_unit, c
     if unit_norm == "tkm" and transport_prop:
         secondary_prop = transport_prop
     elif unit_norm == "tkm" and not transport_prop:
-        print("  Warning: Flow property for 'tkm' not found. Falling back to 'Mass'.")
+        logging.warning("Flow property for 'tkm' not found. Falling back to 'Mass'.")
 
     if not secondary_prop:
         raise ValueError("Required flow property not found for output flow")
@@ -338,9 +339,9 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
     process = o.Process()
     if existing_process:
         process.id = existing_process.id
-        print(f"  Rebuilding existing process '{process_name}' (ID: {process.id}).")
+        logging.info("Rebuilding existing process '%s' (ID: %s).", process_name, process.id)
     else:
-        print(f"  Creating new process '{process_name}'.")
+        logging.info("Creating new process '%s'.", process_name)
 
     process.name = process_name
     process.process_type = o.ProcessType.UNIT_PROCESS
@@ -368,10 +369,10 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
             )
             continue
 
-        print(f"[DEBUG] Processing output: name='{output_name}', uuid='{uuid}', unit='{output_unit}', amount='{output_amount}'")
+        logging.debug("Processing output: name='%s', uuid='%s', unit='%s', amount='%s'", output_name, uuid, output_unit, output_amount)
 
         if not output_name or output_amount <= 0:
-            print(f"[DEBUG] Skipping output '{output_name}' due to missing name or non-positive amount.")
+            logging.debug("Skipping output '%s' due to missing name or non-positive amount.", output_name)
             continue
 
         if uuid:
@@ -398,13 +399,13 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
             out_ex.is_input = False
             process.exchanges.append(out_ex)
             output_created = True
-            print(f"  Existing output flow '{output_name}' added with amount {output_amount}.")
+            logging.info("Existing output flow '%s' added with amount %s.", output_name, output_amount)
 
             output_flow_key = output_name.lower()
             if output_flow_key not in seen_output_flow_library_keys:
                 seen_output_flow_library_keys.add(output_flow_key)
                 output_flows_for_library.append({"Flow": output_name, "UUID": flow.id})
-                print(f"[DEBUG] Added output flow to mapping: {output_name} -> {flow.id}")
+                logging.debug("Added output flow to mapping: %s -> %s", output_name, flow.id)
 
             output_key = output_name.lower()
             if output_key not in seen_output_refs:
@@ -429,16 +430,16 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
             process.exchanges.append(out_ex)
             output_created = True
             unit_label = output_unit if output_unit else "kg"
-            print(f"  Output flow '{output_name}' ready: 1 LU = {output_amount} {unit_label}")
+            logging.info("Output flow '%s' ready: 1 LU = %s %s", output_name, output_amount, unit_label)
             if flow_was_created:
                 created_output_flows.append({"Flow": output_name, "UUID": output_flow.id})
-                print(f"[DEBUG] Created new output flow: {output_name} -> {output_flow.id}")
+                logging.debug("Created new output flow: %s -> %s", output_name, output_flow.id)
 
             output_flow_key = output_name.lower()
             if output_flow_key not in seen_output_flow_library_keys:
                 seen_output_flow_library_keys.add(output_flow_key)
                 output_flows_for_library.append({"Flow": output_name, "UUID": output_flow.id})
-                print(f"[DEBUG] Added output flow to mapping: {output_name} -> {output_flow.id}")
+                logging.debug("Added output flow to mapping: %s -> %s", output_name, output_flow.id)
 
             output_key = output_name.lower()
             if output_key not in seen_output_refs:
@@ -446,34 +447,34 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
                 output_flow_references.append(output_name)
         except Exception as e:
             _error(report, f"  Failed to build output flow '{output_name}': {e}")
-            print(f"[DEBUG] Exception while creating output flow '{output_name}': {e}")
+            logging.debug("Exception while creating output flow '%s': %s", output_name, e)
 
     input_count = 0
     for row in inputs:
         uuid = row.get("UUID", "").strip()
         provider_uuid = row.get("UUID_provider", "").strip()
         flow_name = str(row.get("Flow", "")).strip()
-        print(f"[DEBUG] Processing input: flow='{flow_name}', uuid='{uuid}', provider_uuid='{provider_uuid}', amount='{row.get('Amount', 0)}'")
+        logging.debug("Processing input: flow='%s', uuid='%s', provider_uuid='%s', amount='%s'", flow_name, uuid, provider_uuid, row.get('Amount', 0))
 
         if not uuid:
             if flow_name:
                 _warn(report, f"  Missing UUID for input '{flow_name}', skipping to avoid creating a new flow.")
-                print(f"[DEBUG] Skipping input '{flow_name}' due to missing UUID.")
+                logging.debug("Skipping input '%s' due to missing UUID.", flow_name)
             else:
-                print(f"[DEBUG] Skipping input with empty flow name and missing UUID.")
+                logging.debug("Skipping input with empty flow name and missing UUID.")
             continue
 
         flow = client.get(o.Flow, uid=uuid)
         if not flow:
             _warn(report, f"  Flow with UUID {uuid} not found, skipping.")
-            print(f"[DEBUG] Input flow UUID '{uuid}' not found for '{flow_name}'.")
+            logging.debug("Input flow UUID '%s' not found for '%s'.", uuid, flow_name)
             continue
 
         try:
             amount = float(row.get("Amount", 0))
         except (ValueError, TypeError):
             _warn(report, f"  Invalid amount '{row.get('Amount')}' for UUID {uuid}, skipping.")
-            print(f"[DEBUG] Invalid amount for input '{flow_name}' with UUID '{uuid}'.")
+            logging.debug("Invalid amount for input '%s' with UUID '%s'.", flow_name, uuid)
             continue
 
         in_ex = o.Exchange()
@@ -481,7 +482,7 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
         in_ex.amount = amount
         in_ex.is_input = True
         process.exchanges.append(in_ex)
-        print(f"[DEBUG] Added input exchange for flow '{flow_name}' with UUID '{uuid}' and amount {amount}.")
+        logging.debug("Added input exchange for flow '%s' with UUID '%s' and amount %s.", flow_name, uuid, amount)
 
         if provider_uuid and provider_uuid != "NO_PROVIDER":
             provider = client.get(o.Process, uid=provider_uuid)
@@ -491,10 +492,10 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
                 provider_ref.name = provider.name
                 provider_ref.ref_type = o.RefType.Process
                 in_ex.default_provider = provider_ref
-                print(f"[DEBUG] Set default provider for input '{flow_name}' to process '{provider.name}' ({provider.id})")
+                logging.debug("Set default provider for input '%s' to process '%s' (%s)", flow_name, provider.name, provider.id)
             else:
                 _warn(report, f"    Warning: Provider UUID {provider_uuid} not found")
-                print(f"[DEBUG] Provider UUID '{provider_uuid}' not found for input '{flow_name}'.")
+                logging.debug("Provider UUID '%s' not found for input '%s'.", provider_uuid, flow_name)
         else:
             in_ex.default_provider = None
 
@@ -508,13 +509,13 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
         return report
 
     if process.id:
-        print("  Existing process will be overwritten in openLCA.")
+        logging.info("Existing process will be overwritten in openLCA.")
     else:
-        print("  New process will be created in openLCA.")
+        logging.info("New process will be created in openLCA.")
 
     try:
         client.put(process)
-        print(f"  Process '{process_name}' saved with {input_count} inputs.")
+        logging.info("Process '%s' saved with %s inputs.", process_name, input_count)
     except Exception as e:
         report.skipped = True
         _error(report, f"  Failed to save process: {e}")
@@ -523,7 +524,7 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
     fetched = client.get(o.Process, name=process_name)
     if fetched:
         report.process_uuid = str(getattr(fetched, "id", "") or "")
-        print(f"  Verified: process '{fetched.name}' (ID: {fetched.id})")
+        logging.info("Verified: process '%s' (ID: %s)", fetched.name, fetched.id)
     else:
         report.process_uuid = str(getattr(process, "id", "") or "")
         _warn(report, f"  Warning: process '{process_name}' not found after saving.")
@@ -557,5 +558,5 @@ def process_csv(client, csv_path, category_name):
         _warn(report, f"No inputs or outputs found in {csv_path}, skipping.")
         return report
 
-    print(f"\nProcessing {base} -> process '{process_name}' in category '{category_name}'")
+    logging.info("Processing %s -> process '%s' in category '%s'", base, process_name, category_name)
     return build_process_from_inputs(client, process_name, inputs, category_name, report, output_rows)
