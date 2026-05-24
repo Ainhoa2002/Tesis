@@ -407,12 +407,12 @@ def _resolve_density(row):
 def _resolve_quantity_inputs(row):
     """Resolve the shared quantity-related inputs used by mass and flow logic."""
     number_elements = to_float(row.get("number_elements"))
+    qty_per_element = to_float(row.get("Quantity_per_element"))
     return {
         "number_elements": 1.0 if number_elements is None else number_elements,
         "unit": _get_quantity_context_unit(row),
         "has_datasheet_info": to_yes_no(row.get("Has_datasheet_info")),
-        "input_qty_per_element": to_float(row.get("Quantity_per_element")),
-        "qty_per_element": to_float(row.get("Quantity_per_element")),
+        "qty_per_element": qty_per_element,
     }
 
 
@@ -442,14 +442,14 @@ def _build_quantity_data(row, mass_data):
     number_elements = quantity_inputs["number_elements"]
     unit = quantity_inputs["unit"]
     has_datasheet_info = quantity_inputs["has_datasheet_info"]
-    input_qty_per_element = quantity_inputs["input_qty_per_element"]
+    qty_per_element = quantity_inputs["qty_per_element"]
 
     if unit == "m2" and has_datasheet_info:
         area_per_element_m2 = _try_area_quantity_m2(row)
         if area_per_element_m2 is None:
-            if input_qty_per_element is None:
+            if qty_per_element is None:
                 return None
-            area_per_element_m2 = input_qty_per_element
+            area_per_element_m2 = qty_per_element
             method = "AREA_FROM_INPUT"
         else:
             method = "AREA_LW_MM_TO_M2"
@@ -470,10 +470,10 @@ def _build_quantity_data(row, mass_data):
             "Method": "MASS_DERIVED",
         }
 
-    if input_qty_per_element is not None:
+    if qty_per_element is not None:
         return {
-            "Quantity_per_element": input_qty_per_element,
-            "Total_quantity": input_qty_per_element * number_elements,
+            "Quantity_per_element": qty_per_element,
+            "Total_quantity": qty_per_element * number_elements,
             "Method": "INPUT_QTY",
         }
 
