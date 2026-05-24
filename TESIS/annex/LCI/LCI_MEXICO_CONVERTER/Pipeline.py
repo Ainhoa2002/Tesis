@@ -1,6 +1,4 @@
-﻿import csv
-from pathlib import Path
-#!/usr/bin/env python3
+﻿#!/usr/bin/env python3
 """
 Run parametric mass + ecoinvent pipeline for one or more selected subsystems.
 Subsystem names are resolved from files named <subsystem>_component_parameters.csv.
@@ -8,7 +6,6 @@ Subsystem names are resolved from files named <subsystem>_component_parameters.c
 
 import csv
 import os
-import subprocess
 import sys
 from collections import OrderedDict
 from pathlib import Path
