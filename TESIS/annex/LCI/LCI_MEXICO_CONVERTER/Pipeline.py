@@ -1598,14 +1598,17 @@ def main():
         try:
             with open(results_csv, newline='', encoding='utf-8') as f:
                 reader = csv.DictReader(f)
+                subsystem_mass = 0.0
                 for row in reader:
                     all_rows.append(row)
                     all_subsystems.add(subsystem)
                     all_sections.add(row.get('Section', '').strip())
                     all_subsections.add(row.get('Subsection', '').strip())
-            # Use extracted function to calculate subsystem total mass
-            subsystem_mass = calculate_subsystem_total_mass(str(results_csv))
-            total_mass += subsystem_mass
+                    try:
+                        subsystem_mass += float(row.get('Total_mass_kg', '') or 0)
+                    except Exception:
+                        pass
+                total_mass += subsystem_mass
         except Exception as exc:
             print(f"[Warning] Could not read {results_csv} for stats: {exc}")
 
