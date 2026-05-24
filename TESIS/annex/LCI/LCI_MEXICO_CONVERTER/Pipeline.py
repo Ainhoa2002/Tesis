@@ -411,13 +411,9 @@ def _get_number_elements(row):
     return to_float(row.get("number_elements"))
 
 
-def _get_unit(row):
-    return str(row.get("unit") or "").strip()
-
-
 def _get_quantity_context_unit(row):
     primary = str(row.get("Ecoinvent_unit") or "").strip().lower()
-    fallback = _get_unit(row).strip().lower()
+    fallback = str(row.get("unit") or "").strip().lower()
 
     if primary == "m2" or is_mass_unit(primary):
         return primary
