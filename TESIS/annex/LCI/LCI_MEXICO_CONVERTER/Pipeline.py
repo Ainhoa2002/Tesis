@@ -408,6 +408,18 @@ def _get_number_elements(row):
     return to_float(row.get("number_elements"))
 
 
+def _resolve_quantity_inputs(row):
+    """Resolve the shared quantity-related inputs used by mass and flow logic."""
+    number_elements = _get_number_elements(row)
+    return {
+        "number_elements": 1.0 if number_elements is None else number_elements,
+        "unit": _get_quantity_context_unit(row),
+        "has_datasheet_info": to_yes_no(row.get("Has_datasheet_info")),
+        "input_qty_per_element": to_float(row.get("Quantity_per_element")),
+        "qty_per_element": to_float(row.get("Quantity_per_element")),
+    }
+
+
 def _get_quantity_context_unit(row):
     primary = str(row.get("Ecoinvent_unit") or "").strip().lower()
     fallback = str(row.get("unit") or "").strip().lower()
@@ -430,12 +442,11 @@ def _try_area_quantity_m2(row):
 
 def _build_quantity_data(row, mass_data):
     """Resolve Quantity_per_element and Total_quantity for reporting and flow amount logic."""
-    number_elements = _get_number_elements(row)
-    number_elements = 1.0 if number_elements is None else number_elements
-
-    unit = _get_quantity_context_unit(row)
-    has_datasheet_info = to_yes_no(row.get("Has_datasheet_info"))
-    input_qty_per_element = to_float(row.get("Quantity_per_element"))
+    quantity_inputs = _resolve_quantity_inputs(row)
+    number_elements = quantity_inputs["number_elements"]
+    unit = quantity_inputs["unit"]
+    has_datasheet_info = quantity_inputs["has_datasheet_info"]
+    input_qty_per_element = quantity_inputs["input_qty_per_element"]
 
     if unit == "m2" and has_datasheet_info:
         area_per_element_m2 = _try_area_quantity_m2(row)
@@ -517,12 +528,11 @@ def _try_geometry_mass(row, metal_extra_g):
 def compute_component_mass(row):
     """Try to compute mass. Returns None if data is insufficient (not an error
     unless the ecoinvent unit is kg, which is checked separately)."""
-    quantity = _get_number_elements(row)
-    quantity = 1.0 if quantity is None else quantity
-
-    has_datasheet_info = to_yes_no(row.get("Has_datasheet_info"))
-    qty_per_element = to_float(row.get("Quantity_per_element"))
-    unit_context = _get_quantity_context_unit(row)
+    quantity_inputs = _resolve_quantity_inputs(row)
+    quantity = quantity_inputs["number_elements"]
+    has_datasheet_info = quantity_inputs["has_datasheet_info"]
+    qty_per_element = quantity_inputs["qty_per_element"]
+    unit_context = quantity_inputs["unit"]
     is_mass_context = is_mass_unit(unit_context)
 
     metal_extra_g = to_float(row.get("Metal_extra_g")) or 0.0
