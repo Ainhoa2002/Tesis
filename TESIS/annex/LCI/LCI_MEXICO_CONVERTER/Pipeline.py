@@ -1416,14 +1416,6 @@ def _choose_subsystems(subsystems, requested=None):
             raise ValueError("Too many invalid attempts. Operation canceled.")
 
 
-def _build_subsystem_paths(base_dir, subsystem):
-    input_csv = base_dir / f"{subsystem}_component_parameters.csv"
-    results_csv = base_dir / f"{subsystem}_component_results.csv"
-    component_flows_csv = base_dir / f"{subsystem}_component_io_flows.csv"
-    grouped_flows_csv = base_dir / f"{subsystem}_ipe_flows_from_parameters.csv"
-    return input_csv, results_csv, component_flows_csv, grouped_flows_csv
-
-
 def _auto_refresh_component_libraries(base_dir, warning_scope_subsystems=None):
     """Refresh deduplicated libraries unless explicitly disabled.
 
@@ -1555,10 +1547,10 @@ def main():
         return
 
     for subsystem in selected_subsystems:
-        input_csv, results_csv, component_flows_csv, grouped_flows_csv = _build_subsystem_paths(
-            base,
-            subsystem
-        )
+        input_csv = base / f"{subsystem}_component_parameters.csv"
+        results_csv = base / f"{subsystem}_component_results.csv"
+        component_flows_csv = base / f"{subsystem}_component_io_flows.csv"
+        grouped_flows_csv = base / f"{subsystem}_ipe_flows_from_parameters.csv"
         print(f"\nRunning subsystem: {subsystem}")
         try:
             subsystem_units = subsystem_units_map.get(subsystem, 1.0)
