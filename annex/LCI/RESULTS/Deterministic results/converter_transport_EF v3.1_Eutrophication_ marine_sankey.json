@@ -1,0 +1,94 @@
+{
+  "impact_category": "Eutrophication: marine",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "converter_transport",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "converter_transport",
+      "direct_result": 0.0,
+      "total_result": 0.05706200146076483
+    },
+    {
+      "index": 15165,
+      "provider": "transport_code_P1",
+      "direct_result": 0.0,
+      "total_result": 0.05514439241339054
+    },
+    {
+      "index": 15164,
+      "provider": "transport_code_P2",
+      "direct_result": 0.0,
+      "total_result": 0.0013669051833487714
+    },
+    {
+      "index": 9729,
+      "provider": "transport, freight, sea, ferry, heavy fuel oil | transport, freight, sea, ferry, heavy fuel oil | Cutoff, U",
+      "direct_result": 0.05332196558133264,
+      "total_result": 0.05464634754711571
+    },
+    {
+      "index": 1523,
+      "provider": "transport, freight, lorry, >32 metric ton, diesel, EURO 4 | transport, freight, lorry, >32 metric ton, diesel, EURO 4 | Cutoff, U",
+      "direct_result": 0.0005318923793758241,
+      "total_result": 0.0008167944837976221
+    },
+    {
+      "index": 15198,
+      "provider": "transport, freight, inland waterways, barge, diesel | transport, freight, inland waterways, barge, diesel | Cutoff, U",
+      "direct_result": 0.0006243193897798314,
+      "total_result": 0.0006907543692453086
+    },
+    {
+      "index": 613,
+      "provider": "market for heavy fuel oil | heavy fuel oil | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0007578839504347286
+    },
+    {
+      "index": 4382,
+      "provider": "heavy fuel oil production, petroleum refinery operation | heavy fuel oil | Cutoff, U",
+      "direct_result": 5.353452759439116e-05,
+      "total_result": 0.0006395672555827585
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 15165,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 15164,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 15165,
+      "provider_index": 9729,
+      "upstream_share": 0.9999999514738263
+    },
+    {
+      "node_index": 15164,
+      "provider_index": 1523,
+      "upstream_share": 0.32398158399821214
+    },
+    {
+      "node_index": 15164,
+      "provider_index": 15198,
+      "upstream_share": 0.9968391504126256
+    },
+    {
+      "node_index": 9729,
+      "provider_index": 613,
+      "upstream_share": 0.9868944924981624
+    },
+    {
+      "node_index": 613,
+      "provider_index": 4382,
+      "upstream_share": 0.9934290046503724
+    }
+  ]
+}

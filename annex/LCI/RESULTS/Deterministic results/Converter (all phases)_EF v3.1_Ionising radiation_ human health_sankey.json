@@ -1,0 +1,781 @@
+{
+  "impact_category": "Ionising radiation: human health",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "Converter (all phases)",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "Converter (all phases)",
+      "direct_result": 0.0,
+      "total_result": 390.97946654308174
+    },
+    {
+      "index": 2,
+      "provider": "use_converter_mix",
+      "direct_result": 0.0,
+      "total_result": 359.7094565477874
+    },
+    {
+      "index": 4,
+      "provider": "converter_man&ext_modules",
+      "direct_result": 0.0,
+      "total_result": 30.50993107175794
+    },
+    {
+      "index": 7,
+      "provider": "market for electricity, high voltage | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 360.20939672327484
+    },
+    {
+      "index": 15,
+      "provider": "mechanical_components",
+      "direct_result": 0.0,
+      "total_result": 6.665720682271993
+    },
+    {
+      "index": 25,
+      "provider": "4Q_power_card",
+      "direct_result": 0.0,
+      "total_result": 4.938937899816385
+    },
+    {
+      "index": 53,
+      "provider": "electricity production, nuclear, boiling water reactor | electricity, high voltage | Cutoff, U",
+      "direct_result": 77.25057518900928,
+      "total_result": 192.68352146540633
+    },
+    {
+      "index": 43,
+      "provider": "electricity production, nuclear, pressure water reactor | electricity, high voltage | Cutoff, U",
+      "direct_result": 18.002054674111996,
+      "total_result": 165.9918770927874
+    },
+    {
+      "index": 184,
+      "provider": "market for uranium, enriched 3.8%, in fuel element for light water reactor | uranium, enriched 3.8%, in fuel element for light water reactor | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 105.42540867200594
+    },
+    {
+      "index": 157,
+      "provider": "market for spent nuclear fuel | spent nuclear fuel | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 38.27354106578822
+    },
+    {
+      "index": 167,
+      "provider": "market for low level radioactive waste | low level radioactive waste | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 20.76330144851832
+    },
+    {
+      "index": 164,
+      "provider": "market for nuclear fuel element, for pressure water reactor, UO2 4.2% & MOX | nuclear fuel element, for pressure water reactor, UO2 4.2% & MOX | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 140.22527494753726
+    },
+    {
+      "index": 719,
+      "provider": "uranium fuel element production, enriched 3.8%, for light water reactor | uranium, enriched 3.8%, in fuel element for light water reactor | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 66.42446174142295
+    },
+    {
+      "index": 720,
+      "provider": "uranium fuel element production, enriched 3.8%, for light water reactor | uranium, enriched 3.8%, in fuel element for light water reactor | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 29.52516913735994
+    },
+    {
+      "index": 718,
+      "provider": "uranium fuel element production, enriched 3.8%, for light water reactor | uranium, enriched 3.8%, in fuel element for light water reactor | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.327472186016574
+    },
+    {
+      "index": 672,
+      "provider": "treatment of spent nuclear fuel, reprocessing | spent nuclear fuel | Cutoff, U",
+      "direct_result": 36.81592258305904,
+      "total_result": 38.26612123720114
+    },
+    {
+      "index": 692,
+      "provider": "treatment of low level radioactive waste, plasma torch incineration | low level radioactive waste | Cutoff, U",
+      "direct_result": 20.609318005483917,
+      "total_result": 20.739424101389133
+    },
+    {
+      "index": 687,
+      "provider": "nuclear fuel element production, for pressure water reactor, UO2 4.2% & MOX | nuclear fuel element, for pressure water reactor, UO2 4.2% & MOX | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 139.04543454299187
+    },
+    {
+      "index": 3046,
+      "provider": "market for uranium, enriched 3.8%, per separative work unit | uranium, enriched 3.8%, per separative work unit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 105.18463769633297
+    },
+    {
+      "index": 284,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.894691877380744
+    },
+    {
+      "index": 3006,
+      "provider": "market for uranium, enriched 4.2%, in fuel element for light water reactor | uranium, enriched 4.2%, in fuel element for light water reactor | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 140.2003470849217
+    },
+    {
+      "index": 7326,
+      "provider": "uranium production, centrifuge, enriched 3.8% | uranium, enriched 3.8%, per separative work unit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 47.70750289555738
+    },
+    {
+      "index": 7324,
+      "provider": "uranium production, centrifuge, enriched 3.8% | uranium, enriched 3.8%, per separative work unit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 21.880606224966606
+    },
+    {
+      "index": 7322,
+      "provider": "uranium production, centrifuge, enriched 3.8% | uranium, enriched 3.8%, per separative work unit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 10.595531348926773
+    },
+    {
+      "index": 7323,
+      "provider": "uranium production, centrifuge, enriched 3.8% | uranium, enriched 3.8%, per separative work unit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 9.615823025877335
+    },
+    {
+      "index": 7325,
+      "provider": "uranium production, centrifuge, enriched 3.8% | uranium, enriched 3.8%, per separative work unit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 8.044756421411321
+    },
+    {
+      "index": 7321,
+      "provider": "uranium production, centrifuge, enriched 3.8% | uranium, enriched 3.8%, per separative work unit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 7.358639627515743
+    },
+    {
+      "index": 7263,
+      "provider": "uranium fuel element production, enriched 4.2%, for light water reactor | uranium, enriched 4.2%, in fuel element for light water reactor | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 140.20034672770132
+    },
+    {
+      "index": 10031,
+      "provider": "market for uranium hexafluoride | uranium hexafluoride | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 191.69296840727458
+    },
+    {
+      "index": 10307,
+      "provider": "market for uranium hexafluoride | uranium hexafluoride | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 41.31412804622404
+    },
+    {
+      "index": 532,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 7.02241028416983
+    },
+    {
+      "index": 11185,
+      "provider": "market for uranium hexafluoride | uranium hexafluoride | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 8.355804537203968
+    },
+    {
+      "index": 11132,
+      "provider": "market for uranium, enriched 4.2%, per separative work unit | uranium, enriched 4.2%, per separative work unit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 139.91400234078273
+    },
+    {
+      "index": 1411,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 9.63980642488761
+    },
+    {
+      "index": 281,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.024752843449167
+    },
+    {
+      "index": 12838,
+      "provider": "uranium hexafluoride production | uranium hexafluoride | Cutoff, U",
+      "direct_result": 0.017311882190444945,
+      "total_result": 191.69296840727458
+    },
+    {
+      "index": 13047,
+      "provider": "uranium hexafluoride production | uranium hexafluoride | Cutoff, U",
+      "direct_result": 0.003730500178928113,
+      "total_result": 41.31412804622404
+    },
+    {
+      "index": 13513,
+      "provider": "uranium hexafluoride production | uranium hexafluoride | Cutoff, U",
+      "direct_result": 0.0007545071167344735,
+      "total_result": 8.355804537203968
+    },
+    {
+      "index": 13491,
+      "provider": "uranium production, centrifuge, enriched 4.2% | uranium, enriched 4.2%, per separative work unit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 63.46293281470068
+    },
+    {
+      "index": 13490,
+      "provider": "uranium production, centrifuge, enriched 4.2% | uranium, enriched 4.2%, per separative work unit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 38.893702266606134
+    },
+    {
+      "index": 13489,
+      "provider": "uranium production, centrifuge, enriched 4.2% | uranium, enriched 4.2%, per separative work unit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 14.094897627979963
+    },
+    {
+      "index": 13488,
+      "provider": "uranium production, centrifuge, enriched 4.2% | uranium, enriched 4.2%, per separative work unit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 12.791829642304425
+    },
+    {
+      "index": 13492,
+      "provider": "uranium production, centrifuge, enriched 4.2% | uranium, enriched 4.2%, per separative work unit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 10.701730892244996
+    },
+    {
+      "index": 14394,
+      "provider": "market for uranium, in yellowcake | uranium, in yellowcake | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 233.2669410903335
+    },
+    {
+      "index": 316,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 9.581373623860461
+    },
+    {
+      "index": 15371,
+      "provider": "uranium production, in yellowcake | uranium, in yellowcake | Cutoff, U",
+      "direct_result": 0.7482026745248465,
+      "total_result": 162.38826423957377
+    },
+    {
+      "index": 15370,
+      "provider": "uranium production, in yellowcake | uranium, in yellowcake | Cutoff, U",
+      "direct_result": 0.3262248133762286,
+      "total_result": 70.80370401714907
+    },
+    {
+      "index": 16197,
+      "provider": "market for tailing, from uranium milling | tailing, from uranium milling | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 226.6732903550197
+    },
+    {
+      "index": 16195,
+      "provider": "market for uranium ore, as U | uranium ore, as U | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.438413654289183
+    },
+    {
+      "index": 16661,
+      "provider": "treatment of tailing, from uranium milling | tailing, from uranium milling | Cutoff, U",
+      "direct_result": 226.67323347072278,
+      "total_result": 226.67323347072278
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 2,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 4,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 2,
+      "provider_index": 7,
+      "upstream_share": 0.9974298533817704
+    },
+    {
+      "node_index": 4,
+      "provider_index": 15,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 4,
+      "provider_index": 25,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 7,
+      "provider_index": 53,
+      "upstream_share": 0.999996256643766
+    },
+    {
+      "node_index": 7,
+      "provider_index": 43,
+      "upstream_share": 0.999997124085149
+    },
+    {
+      "node_index": 53,
+      "provider_index": 184,
+      "upstream_share": 0.918627433787061
+    },
+    {
+      "node_index": 53,
+      "provider_index": 157,
+      "upstream_share": 0.3782521142099748
+    },
+    {
+      "node_index": 53,
+      "provider_index": 167,
+      "upstream_share": 0.19641576474972886
+    },
+    {
+      "node_index": 43,
+      "provider_index": 164,
+      "upstream_share": 0.9164199733506746
+    },
+    {
+      "node_index": 43,
+      "provider_index": 157,
+      "upstream_share": 0.49036345710344803
+    },
+    {
+      "node_index": 43,
+      "provider_index": 167,
+      "upstream_share": 0.03014261868830546
+    },
+    {
+      "node_index": 184,
+      "provider_index": 719,
+      "upstream_share": 0.9999999999999966
+    },
+    {
+      "node_index": 184,
+      "provider_index": 720,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 184,
+      "provider_index": 718,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 157,
+      "provider_index": 672,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 167,
+      "provider_index": 692,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 164,
+      "provider_index": 687,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 719,
+      "provider_index": 3046,
+      "upstream_share": 0.6300000000000011
+    },
+    {
+      "node_index": 719,
+      "provider_index": 167,
+      "upstream_share": 0.007255818697005088
+    },
+    {
+      "node_index": 720,
+      "provider_index": 3046,
+      "upstream_share": 0.2799999999999991
+    },
+    {
+      "node_index": 720,
+      "provider_index": 167,
+      "upstream_share": 0.003224808309780023
+    },
+    {
+      "node_index": 720,
+      "provider_index": 284,
+      "upstream_share": 0.000121167090634374
+    },
+    {
+      "node_index": 718,
+      "provider_index": 3046,
+      "upstream_share": 0.05999999999999979
+    },
+    {
+      "node_index": 718,
+      "provider_index": 167,
+      "upstream_share": 0.0006910303520957191
+    },
+    {
+      "node_index": 672,
+      "provider_index": 167,
+      "upstream_share": 0.0695968242067878
+    },
+    {
+      "node_index": 687,
+      "provider_index": 3006,
+      "upstream_share": 0.9915831144403218
+    },
+    {
+      "node_index": 3046,
+      "provider_index": 7326,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 3046,
+      "provider_index": 7324,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 3046,
+      "provider_index": 7322,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 3046,
+      "provider_index": 7323,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 3046,
+      "provider_index": 7325,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 3046,
+      "provider_index": 7321,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 3006,
+      "provider_index": 7263,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 7326,
+      "provider_index": 10031,
+      "upstream_share": 0.24299058891479405
+    },
+    {
+      "node_index": 7326,
+      "provider_index": 167,
+      "upstream_share": 0.052453949505325635
+    },
+    {
+      "node_index": 7324,
+      "provider_index": 10307,
+      "upstream_share": 0.0988516866248844
+    },
+    {
+      "node_index": 7324,
+      "provider_index": 10031,
+      "upstream_share": 0.09019434486046789
+    },
+    {
+      "node_index": 7324,
+      "provider_index": 7,
+      "upstream_share": 5.382253390292408e-08
+    },
+    {
+      "node_index": 7324,
+      "provider_index": 167,
+      "upstream_share": 0.02406837600758774
+    },
+    {
+      "node_index": 7324,
+      "provider_index": 532,
+      "upstream_share": 0.00011881816534284517
+    },
+    {
+      "node_index": 7322,
+      "provider_index": 167,
+      "upstream_share": 0.011656433223405645
+    },
+    {
+      "node_index": 7322,
+      "provider_index": 10031,
+      "upstream_share": 0.05399790864773178
+    },
+    {
+      "node_index": 7323,
+      "provider_index": 167,
+      "upstream_share": 0.01057713385086813
+    },
+    {
+      "node_index": 7323,
+      "provider_index": 10031,
+      "upstream_share": 0.048998102291460524
+    },
+    {
+      "node_index": 7325,
+      "provider_index": 167,
+      "upstream_share": 0.008850254854808021
+    },
+    {
+      "node_index": 7325,
+      "provider_index": 10031,
+      "upstream_share": 0.040998412121426124
+    },
+    {
+      "node_index": 7321,
+      "provider_index": 167,
+      "upstream_share": 0.008094745294031735
+    },
+    {
+      "node_index": 7321,
+      "provider_index": 11185,
+      "upstream_share": 0.8603900814358114
+    },
+    {
+      "node_index": 7263,
+      "provider_index": 11132,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 7263,
+      "provider_index": 167,
+      "upstream_share": 0.01374705603255371
+    },
+    {
+      "node_index": 7263,
+      "provider_index": 1411,
+      "upstream_share": 4.679750775018076e-05
+    },
+    {
+      "node_index": 7263,
+      "provider_index": 532,
+      "upstream_share": 9.29665094568072e-05
+    },
+    {
+      "node_index": 7263,
+      "provider_index": 281,
+      "upstream_share": 8.98921431638382e-05
+    },
+    {
+      "node_index": 10031,
+      "provider_index": 12838,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 10307,
+      "provider_index": 13047,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 532,
+      "provider_index": 284,
+      "upstream_share": 0.8742256507549787
+    },
+    {
+      "node_index": 11185,
+      "provider_index": 13513,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 11132,
+      "provider_index": 13491,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 11132,
+      "provider_index": 13490,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 11132,
+      "provider_index": 13489,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 11132,
+      "provider_index": 13488,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 11132,
+      "provider_index": 13492,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 12838,
+      "provider_index": 14394,
+      "upstream_share": 0.7942363611779951
+    },
+    {
+      "node_index": 12838,
+      "provider_index": 167,
+      "upstream_share": 0.3093426069676408
+    },
+    {
+      "node_index": 12838,
+      "provider_index": 316,
+      "upstream_share": 0.00034167353684334026
+    },
+    {
+      "node_index": 13047,
+      "provider_index": 14394,
+      "upstream_share": 0.17114828156126521
+    },
+    {
+      "node_index": 13047,
+      "provider_index": 167,
+      "upstream_share": 0.06665957161375607
+    },
+    {
+      "node_index": 13047,
+      "provider_index": 284,
+      "upstream_share": 0.00039119420854059726
+    },
+    {
+      "node_index": 13513,
+      "provider_index": 167,
+      "upstream_share": 0.013482138793383353
+    },
+    {
+      "node_index": 13513,
+      "provider_index": 14394,
+      "upstream_share": 0.034615357260739714
+    },
+    {
+      "node_index": 13491,
+      "provider_index": 10031,
+      "upstream_share": 0.32298660139401025
+    },
+    {
+      "node_index": 13491,
+      "provider_index": 167,
+      "upstream_share": 0.07216039882291653
+    },
+    {
+      "node_index": 13490,
+      "provider_index": 7,
+      "upstream_share": 6.742785792391328e-08
+    },
+    {
+      "node_index": 13490,
+      "provider_index": 10307,
+      "upstream_share": 0.8931996897481747
+    },
+    {
+      "node_index": 13490,
+      "provider_index": 167,
+      "upstream_share": 0.0442464996897719
+    },
+    {
+      "node_index": 13490,
+      "provider_index": 11185,
+      "upstream_share": 0.12783841479433863
+    },
+    {
+      "node_index": 13490,
+      "provider_index": 532,
+      "upstream_share": 7.879968840698317e-05
+    },
+    {
+      "node_index": 13490,
+      "provider_index": 281,
+      "upstream_share": 7.619381337359338e-05
+    },
+    {
+      "node_index": 13489,
+      "provider_index": 167,
+      "upstream_share": 0.01603564418287027
+    },
+    {
+      "node_index": 13489,
+      "provider_index": 10031,
+      "upstream_share": 0.07177480030977974
+    },
+    {
+      "node_index": 13488,
+      "provider_index": 167,
+      "upstream_share": 0.014550862314086043
+    },
+    {
+      "node_index": 13488,
+      "provider_index": 10031,
+      "upstream_share": 0.06512898546628189
+    },
+    {
+      "node_index": 13492,
+      "provider_index": 167,
+      "upstream_share": 0.012175211324031175
+    },
+    {
+      "node_index": 13492,
+      "provider_index": 10031,
+      "upstream_share": 0.05449568171668482
+    },
+    {
+      "node_index": 14394,
+      "provider_index": 15371,
+      "upstream_share": 1.0000000000000004
+    },
+    {
+      "node_index": 14394,
+      "provider_index": 15370,
+      "upstream_share": 1.0000000000000007
+    },
+    {
+      "node_index": 316,
+      "provider_index": 1411,
+      "upstream_share": 0.9738721877654362
+    },
+    {
+      "node_index": 15371,
+      "provider_index": 16197,
+      "upstream_share": 0.6963733550660379
+    },
+    {
+      "node_index": 15371,
+      "provider_index": 16195,
+      "upstream_share": 0.6963733550660378
+    },
+    {
+      "node_index": 15370,
+      "provider_index": 16197,
+      "upstream_share": 0.3036266449339621
+    },
+    {
+      "node_index": 15370,
+      "provider_index": 16195,
+      "upstream_share": 0.303626644933962
+    },
+    {
+      "node_index": 16197,
+      "provider_index": 16661,
+      "upstream_share": 1.0
+    }
+  ]
+}

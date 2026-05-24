@@ -1,0 +1,696 @@
+{
+  "impact_category": "Human toxicity: non-carcinogenic",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "converter_man&ext_sections",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "converter_man&ext_sections",
+      "direct_result": 0.0,
+      "total_result": 1.806035296940236e-05
+    },
+    {
+      "index": 17935,
+      "provider": "SECTION_Magnetics",
+      "direct_result": 0.0,
+      "total_result": 3.914465973177515e-06
+    },
+    {
+      "index": 17940,
+      "provider": "SECTION_Cabling",
+      "direct_result": 0.0,
+      "total_result": 2.5326173425826356e-06
+    },
+    {
+      "index": 17939,
+      "provider": "SECTION_Passives",
+      "direct_result": 0.0,
+      "total_result": 2.2074940023798554e-06
+    },
+    {
+      "index": 17930,
+      "provider": "SECTION_Electromechanical",
+      "direct_result": 0.0,
+      "total_result": 1.9239570840843127e-06
+    },
+    {
+      "index": 17936,
+      "provider": "SECTION_IC",
+      "direct_result": 0.0,
+      "total_result": 1.5985773225925789e-06
+    },
+    {
+      "index": 17938,
+      "provider": "SECTION_Discrete_Semiconductors",
+      "direct_result": 0.0,
+      "total_result": 1.5064752131778948e-06
+    },
+    {
+      "index": 17933,
+      "provider": "SECTION_Modules",
+      "direct_result": 0.0,
+      "total_result": 1.4187858807056688e-06
+    },
+    {
+      "index": 17932,
+      "provider": "SECTION_PCB",
+      "direct_result": 0.0,
+      "total_result": 1.336439620279481e-06
+    },
+    {
+      "index": 17934,
+      "provider": "SECTION_Mechanical_components",
+      "direct_result": 0.0,
+      "total_result": 1.13572203198988e-06
+    },
+    {
+      "index": 2,
+      "provider": "market for copper, cathode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.4067997853976859e-05
+    },
+    {
+      "index": 38,
+      "provider": "cable production, unspecified | cable, unspecified | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.571463839325208e-06
+    },
+    {
+      "index": 36,
+      "provider": "capacitor production, film type, for through-hole mounting | capacitor, film type, for through-hole mounting | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.524537358438263e-06
+    },
+    {
+      "index": 37,
+      "provider": "capacitor production, electrolyte type, > 2cm height | capacitor, electrolyte type, > 2cm height | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.75410510172311e-07
+    },
+    {
+      "index": 20,
+      "provider": "electronic component production, passive, unspecified | electronic component, passive, unspecified | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.6500313745512176e-07
+    },
+    {
+      "index": 191,
+      "provider": "electric connector production, wire clamp | electric connector, wire clamp | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.0720648122117111e-06
+    },
+    {
+      "index": 354,
+      "provider": "electric connector production, peripheral type buss | electric connector, peripheral type buss | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.4806460323236324e-07
+    },
+    {
+      "index": 11,
+      "provider": "integrated circuit production, logic type | integrated circuit, logic type | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.8571792783063167e-06
+    },
+    {
+      "index": 23,
+      "provider": "transistor production, wired, big size, through-hole mounting | transistor, wired, big size, through-hole mounting | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.378701484882803e-06
+    },
+    {
+      "index": 17942,
+      "provider": "caen_els",
+      "direct_result": 0.0,
+      "total_result": 1.082539888723952e-06
+    },
+    {
+      "index": 173,
+      "provider": "printed wiring board production, for through-hole mounting, Pb free surface | printed wiring board, for through-hole mounting, Pb free surface | Cutoff, U",
+      "direct_result": 6.183466915431823e-09,
+      "total_result": 1.3926791188317426e-06
+    },
+    {
+      "index": 3,
+      "provider": "aluminium alloy production, AlMg3 | aluminium alloy, AlMg3 | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 7.477146284024787e-07
+    },
+    {
+      "index": 1,
+      "provider": "market for metal working, average for aluminium product manufacturing | metal working, average for aluminium product manufacturing | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.59555303000434e-07
+    },
+    {
+      "index": 63,
+      "provider": "electrorefining of copper, anode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.3410045493609077e-05
+    },
+    {
+      "index": 82,
+      "provider": "treatment of copper scrap by electrolytic refining | copper, cathode | Cutoff, U",
+      "direct_result": 7.643544048623114e-08,
+      "total_result": 4.653486224512234e-07
+    },
+    {
+      "index": 327,
+      "provider": "market for capacitor, auxilliaries and energy use | capacitor, auxilliaries and energy use | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.785678933181598e-07
+    },
+    {
+      "index": 54,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 7.365650803240069e-07
+    },
+    {
+      "index": 267,
+      "provider": "market for gold | gold | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.3848203082265523e-06
+    },
+    {
+      "index": 264,
+      "provider": "market for wafer, fabricated, for integrated circuit | wafer, fabricated, for integrated circuit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.248787962775531e-07
+    },
+    {
+      "index": 181,
+      "provider": "market for aluminium, cast alloy | aluminium, cast alloy | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.281687086417358e-07
+    },
+    {
+      "index": 385,
+      "provider": "market for copper, anode | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.3916565494373745e-05
+    },
+    {
+      "index": 1928,
+      "provider": "capacitor production, auxilliaries and energy use | capacitor, auxilliaries and energy use | Cutoff, U",
+      "direct_result": 8.190987079176087e-09,
+      "total_result": 3.785678933181598e-07
+    },
+    {
+      "index": 255,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.621196103889054e-07
+    },
+    {
+      "index": 1604,
+      "provider": "gold production | gold | Cutoff, U",
+      "direct_result": 7.377152396126614e-07,
+      "total_result": 7.455690838981627e-07
+    },
+    {
+      "index": 1598,
+      "provider": "gold refinery operation | gold | Cutoff, U",
+      "direct_result": 1.743275325852417e-11,
+      "total_result": 3.28543313624819e-07
+    },
+    {
+      "index": 1581,
+      "provider": "wafer production, fabricated, for integrated circuit | wafer, fabricated, for integrated circuit | Cutoff, U",
+      "direct_result": 8.666304931500254e-10,
+      "total_result": 5.248787802445314e-07
+    },
+    {
+      "index": 1130,
+      "provider": "aluminium ingot, primary, to aluminium, cast alloy market | aluminium, cast alloy | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.2157991958046264e-07
+    },
+    {
+      "index": 2058,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 5.411833862327233e-06,
+      "total_result": 5.824900471040466e-06
+    },
+    {
+      "index": 2054,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 5.3213913959661e-06,
+      "total_result": 5.726572821457386e-06
+    },
+    {
+      "index": 2056,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 1.063517528830965e-06,
+      "total_result": 1.145766062942864e-06
+    },
+    {
+      "index": 2060,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 6.378353566177238e-07,
+      "total_result": 6.877241618169497e-07
+    },
+    {
+      "index": 2057,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 4.07155938236025e-07,
+      "total_result": 4.391866611941572e-07
+    },
+    {
+      "index": 848,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.3497965534851855e-07
+    },
+    {
+      "index": 4772,
+      "provider": "market for gold, unrefined | gold, unrefined | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.7152074630611044e-07
+    },
+    {
+      "index": 4756,
+      "provider": "market for wastewater from wafer fabrication | wastewater from wafer fabrication | Cutoff, U",
+      "direct_result": 7.469132011180184e-08,
+      "total_result": 4.018624966021786e-07
+    },
+    {
+      "index": 429,
+      "provider": "market for aluminium, primary, ingot | aluminium, primary, ingot | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.5595269546784884e-07
+    },
+    {
+      "index": 3975,
+      "provider": "market for copper concentrate, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.013216831134394e-06
+    },
+    {
+      "index": 3662,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.7853414350716117e-07
+    },
+    {
+      "index": 2148,
+      "provider": "aluminium production, primary, ingot | aluminium, primary, ingot | Cutoff, U",
+      "direct_result": 6.059559810673803e-13,
+      "total_result": 3.553348476034422e-07
+    },
+    {
+      "index": 5414,
+      "provider": "aluminium production, primary, liquid, prebake | aluminium, primary, liquid | Cutoff, U",
+      "direct_result": 2.114530730817591e-09,
+      "total_result": 3.955113776510989e-07
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 17935,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 17940,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 17939,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 17930,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 17936,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 17938,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 17933,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 17932,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 17934,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 17935,
+      "provider_index": 2,
+      "upstream_share": 0.24911421528251235
+    },
+    {
+      "node_index": 17940,
+      "provider_index": 38,
+      "upstream_share": 0.9848927421799936
+    },
+    {
+      "node_index": 17939,
+      "provider_index": 36,
+      "upstream_share": 0.9739312070406644
+    },
+    {
+      "node_index": 17939,
+      "provider_index": 37,
+      "upstream_share": 0.9999423391006472
+    },
+    {
+      "node_index": 17939,
+      "provider_index": 20,
+      "upstream_share": 0.30050946419896646
+    },
+    {
+      "node_index": 17930,
+      "provider_index": 2,
+      "upstream_share": 0.004443594723331923
+    },
+    {
+      "node_index": 17930,
+      "provider_index": 191,
+      "upstream_share": 0.9882338822712339
+    },
+    {
+      "node_index": 17930,
+      "provider_index": 20,
+      "upstream_share": 0.5604066669259031
+    },
+    {
+      "node_index": 17930,
+      "provider_index": 354,
+      "upstream_share": 0.9645845478064111
+    },
+    {
+      "node_index": 17936,
+      "provider_index": 11,
+      "upstream_share": 0.8499257138312817
+    },
+    {
+      "node_index": 17938,
+      "provider_index": 23,
+      "upstream_share": 0.9985529003614899
+    },
+    {
+      "node_index": 17933,
+      "provider_index": 17942,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 17932,
+      "provider_index": 173,
+      "upstream_share": 0.9595771949326762
+    },
+    {
+      "node_index": 17934,
+      "provider_index": 2,
+      "upstream_share": 0.001645775823456268
+    },
+    {
+      "node_index": 17934,
+      "provider_index": 3,
+      "upstream_share": 0.9999439139636387
+    },
+    {
+      "node_index": 17934,
+      "provider_index": 1,
+      "upstream_share": 0.9991885668572875
+    },
+    {
+      "node_index": 2,
+      "provider_index": 63,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 2,
+      "provider_index": 82,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 38,
+      "provider_index": 2,
+      "upstream_share": 0.17354526894989059
+    },
+    {
+      "node_index": 36,
+      "provider_index": 2,
+      "upstream_share": 0.09071111594041939
+    },
+    {
+      "node_index": 36,
+      "provider_index": 327,
+      "upstream_share": 0.38695640547962795
+    },
+    {
+      "node_index": 37,
+      "provider_index": 327,
+      "upstream_share": 0.5699843936037875
+    },
+    {
+      "node_index": 37,
+      "provider_index": 2,
+      "upstream_share": 0.004994997361693978
+    },
+    {
+      "node_index": 191,
+      "provider_index": 2,
+      "upstream_share": 0.07039020881345819
+    },
+    {
+      "node_index": 191,
+      "provider_index": 54,
+      "upstream_share": 0.009128213022007295
+    },
+    {
+      "node_index": 354,
+      "provider_index": 54,
+      "upstream_share": 0.01544903855145002
+    },
+    {
+      "node_index": 354,
+      "provider_index": 2,
+      "upstream_share": 0.015546630766214674
+    },
+    {
+      "node_index": 11,
+      "provider_index": 2,
+      "upstream_share": 0.0011456425752420678
+    },
+    {
+      "node_index": 11,
+      "provider_index": 267,
+      "upstream_share": 0.8662277188233226
+    },
+    {
+      "node_index": 11,
+      "provider_index": 54,
+      "upstream_share": 0.12405423560705227
+    },
+    {
+      "node_index": 11,
+      "provider_index": 264,
+      "upstream_share": 0.9713463777713808
+    },
+    {
+      "node_index": 23,
+      "provider_index": 2,
+      "upstream_share": 0.08714663984410763
+    },
+    {
+      "node_index": 17942,
+      "provider_index": 173,
+      "upstream_share": 0.030858859668306413
+    },
+    {
+      "node_index": 17942,
+      "provider_index": 11,
+      "upstream_share": 0.03533919403132317
+    },
+    {
+      "node_index": 17942,
+      "provider_index": 2,
+      "upstream_share": 0.06418525711479445
+    },
+    {
+      "node_index": 17942,
+      "provider_index": 191,
+      "upstream_share": 0.011690433087767179
+    },
+    {
+      "node_index": 173,
+      "provider_index": 2,
+      "upstream_share": 0.06501049394910335
+    },
+    {
+      "node_index": 173,
+      "provider_index": 54,
+      "upstream_share": 0.1085426430269387
+    },
+    {
+      "node_index": 3,
+      "provider_index": 2,
+      "upstream_share": 0.004345398290512363
+    },
+    {
+      "node_index": 3,
+      "provider_index": 181,
+      "upstream_share": 0.9289126498722521
+    },
+    {
+      "node_index": 63,
+      "provider_index": 385,
+      "upstream_share": 0.9620986898572128
+    },
+    {
+      "node_index": 82,
+      "provider_index": 385,
+      "upstream_share": 0.027415279868368433
+    },
+    {
+      "node_index": 327,
+      "provider_index": 1928,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 54,
+      "provider_index": 255,
+      "upstream_share": 0.7946410814640527
+    },
+    {
+      "node_index": 267,
+      "provider_index": 1604,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 267,
+      "provider_index": 1598,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 264,
+      "provider_index": 1581,
+      "upstream_share": 1.000000000000002
+    },
+    {
+      "node_index": 181,
+      "provider_index": 1130,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 385,
+      "provider_index": 2058,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 385,
+      "provider_index": 2054,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 385,
+      "provider_index": 2056,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 385,
+      "provider_index": 2060,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 385,
+      "provider_index": 2057,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1928,
+      "provider_index": 54,
+      "upstream_share": 0.41625086956417956
+    },
+    {
+      "node_index": 255,
+      "provider_index": 848,
+      "upstream_share": 0.908337611745365
+    },
+    {
+      "node_index": 1598,
+      "provider_index": 255,
+      "upstream_share": 4.6545107431664695e-05
+    },
+    {
+      "node_index": 1598,
+      "provider_index": 4772,
+      "upstream_share": 0.884152538975977
+    },
+    {
+      "node_index": 1581,
+      "provider_index": 54,
+      "upstream_share": 0.09489562520918196
+    },
+    {
+      "node_index": 1581,
+      "provider_index": 4756,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1130,
+      "provider_index": 429,
+      "upstream_share": 0.6540839216278881
+    },
+    {
+      "node_index": 2058,
+      "provider_index": 3975,
+      "upstream_share": 0.39096194237945037
+    },
+    {
+      "node_index": 2054,
+      "provider_index": 3975,
+      "upstream_share": 0.3844281937054047
+    },
+    {
+      "node_index": 2056,
+      "provider_index": 3975,
+      "upstream_share": 0.07683068057960381
+    },
+    {
+      "node_index": 2060,
+      "provider_index": 3975,
+      "upstream_share": 0.04607853017762805
+    },
+    {
+      "node_index": 2057,
+      "provider_index": 3975,
+      "upstream_share": 0.029413777383703946
+    },
+    {
+      "node_index": 848,
+      "provider_index": 3662,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 429,
+      "provider_index": 2148,
+      "upstream_share": 0.9892847944626515
+    },
+    {
+      "node_index": 2148,
+      "provider_index": 5414,
+      "upstream_share": 0.8885605792272603
+    }
+  ]
+}

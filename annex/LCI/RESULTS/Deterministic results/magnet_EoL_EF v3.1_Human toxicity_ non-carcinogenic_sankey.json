@@ -1,0 +1,50 @@
+{
+  "impact_category": "Human toxicity: non-carcinogenic",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "magnet_EoL",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "magnet_EoL",
+      "direct_result": 0.0,
+      "total_result": 2.435533782792359e-08
+    },
+    {
+      "index": 10939,
+      "provider": "treatment of waste plastic, industrial electronics, municipal incineration FAE | waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 2.4953573150386687e-09,
+      "total_result": 2.4355337827923596e-08
+    },
+    {
+      "index": 7491,
+      "provider": "market for residues, MSWI[F], waste plastic, industrial electronics | residues, MSWI[F], waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.167416171659019e-08
+    },
+    {
+      "index": 12994,
+      "provider": "treatment of residues, MSWI[F], waste plastic, industrial electronics, residual material landfill | residues, MSWI[F], waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 2.1662425094953388e-08,
+      "total_result": 2.16738911561371e-08
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 10939,
+      "upstream_share": 0.9999998400207442
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 7491,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 7491,
+      "provider_index": 12994,
+      "upstream_share": 1.0
+    }
+  ]
+}

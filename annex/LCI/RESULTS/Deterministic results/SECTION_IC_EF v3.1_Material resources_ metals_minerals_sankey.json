@@ -1,0 +1,176 @@
+{
+  "impact_category": "Material resources: metals/minerals",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "SECTION_IC",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "SECTION_IC",
+      "direct_result": 0.0,
+      "total_result": 0.020699578238235632
+    },
+    {
+      "index": 10914,
+      "provider": "integrated circuit production, logic type | integrated circuit, logic type | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.020686952007144366
+    },
+    {
+      "index": 10915,
+      "provider": "electronic component production, active, unspecified | electronic component, active, unspecified | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00020790432818684572
+    },
+    {
+      "index": 1101,
+      "provider": "market for gold | gold | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.020400447913596492
+    },
+    {
+      "index": 8906,
+      "provider": "gold refinery operation | gold | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.007871977374265716
+    },
+    {
+      "index": 8901,
+      "provider": "silver-gold mine operation with refinery | gold | Cutoff, U",
+      "direct_result": 0.004330301477507775,
+      "total_result": 0.004338535408388099
+    },
+    {
+      "index": 8905,
+      "provider": "gold refinery operation | gold | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.001972089585204857
+    },
+    {
+      "index": 8904,
+      "provider": "gold production | gold | Cutoff, U",
+      "direct_result": 0.0016024276609549846,
+      "total_result": 0.0016038273765489885
+    },
+    {
+      "index": 8909,
+      "provider": "gold-silver mine operation with refinery | gold | Cutoff, U",
+      "direct_result": 0.001578482576122648,
+      "total_result": 0.0015798843423650317
+    },
+    {
+      "index": 8903,
+      "provider": "gold production | gold | Cutoff, U",
+      "direct_result": 0.0012824341980390579,
+      "total_result": 0.0012834862624141984
+    },
+    {
+      "index": 8908,
+      "provider": "gold production | gold | Cutoff, U",
+      "direct_result": 0.0009869979453814679,
+      "total_result": 0.0009878264676839682
+    },
+    {
+      "index": 8902,
+      "provider": "gold production | gold | Cutoff, U",
+      "direct_result": 0.00024928801353098017,
+      "total_result": 0.0002495121698443148
+    },
+    {
+      "index": 6983,
+      "provider": "market for gold, unrefined | gold, unrefined | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.008903366158171519
+    },
+    {
+      "index": 6984,
+      "provider": "gold mine operation and gold production, unrefined | gold, unrefined | Cutoff, U",
+      "direct_result": 0.0009383740125422873,
+      "total_result": 0.0009402491545884761
+    },
+    {
+      "index": 14369,
+      "provider": "gold mine operation and gold production, unrefined | gold, unrefined | Cutoff, U",
+      "direct_result": 0.0088815078391744,
+      "total_result": 0.008899392625498931
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 10914,
+      "upstream_share": 0.9903068763094216
+    },
+    {
+      "node_index": 0,
+      "provider_index": 10915,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 10914,
+      "provider_index": 1101,
+      "upstream_share": 0.9995020621344602
+    },
+    {
+      "node_index": 1101,
+      "provider_index": 8906,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 1101,
+      "provider_index": 8901,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 1101,
+      "provider_index": 8905,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1101,
+      "provider_index": 8904,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1101,
+      "provider_index": 8909,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1101,
+      "provider_index": 8903,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1101,
+      "provider_index": 8908,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1101,
+      "provider_index": 8902,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 8906,
+      "provider_index": 6983,
+      "upstream_share": 0.8841525389759773
+    },
+    {
+      "node_index": 8905,
+      "provider_index": 6983,
+      "upstream_share": 0.11584746102402292
+    },
+    {
+      "node_index": 8905,
+      "provider_index": 6984,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 6983,
+      "provider_index": 14369,
+      "upstream_share": 0.9999999999999998
+    }
+  ]
+}

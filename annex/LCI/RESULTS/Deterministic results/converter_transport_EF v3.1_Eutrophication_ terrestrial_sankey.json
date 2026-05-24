@@ -1,0 +1,94 @@
+{
+  "impact_category": "Eutrophication: terrestrial",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "converter_transport",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "converter_transport",
+      "direct_result": 0.0,
+      "total_result": 0.6306235315095222
+    },
+    {
+      "index": 15165,
+      "provider": "transport_code_P1",
+      "direct_result": 0.0,
+      "total_result": 0.6097861856133835
+    },
+    {
+      "index": 15164,
+      "provider": "transport_code_P2",
+      "direct_result": 0.0,
+      "total_result": 0.014845302431549958
+    },
+    {
+      "index": 9729,
+      "provider": "transport, freight, sea, ferry, heavy fuel oil | transport, freight, sea, ferry, heavy fuel oil | Cutoff, U",
+      "direct_result": 0.5908993386968556,
+      "total_result": 0.6043841039476613
+    },
+    {
+      "index": 1523,
+      "provider": "transport, freight, lorry, >32 metric ton, diesel, EURO 4 | transport, freight, lorry, >32 metric ton, diesel, EURO 4 | Cutoff, U",
+      "direct_result": 0.005836684460255721,
+      "total_result": 0.008887295637942086
+    },
+    {
+      "index": 15198,
+      "provider": "transport, freight, inland waterways, barge, diesel | transport, freight, inland waterways, barge, diesel | Cutoff, U",
+      "direct_result": 0.006857739400442507,
+      "total_result": 0.007548078208205743
+    },
+    {
+      "index": 613,
+      "provider": "market for heavy fuel oil | heavy fuel oil | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.007714091741404248
+    },
+    {
+      "index": 4382,
+      "provider": "heavy fuel oil production, petroleum refinery operation | heavy fuel oil | Cutoff, U",
+      "direct_result": 0.0005830168501882316,
+      "total_result": 0.006402856883903443
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 15165,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 15164,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 15165,
+      "provider_index": 9729,
+      "upstream_share": 0.9999999514738263
+    },
+    {
+      "node_index": 15164,
+      "provider_index": 1523,
+      "upstream_share": 0.32398158399821214
+    },
+    {
+      "node_index": 15164,
+      "provider_index": 15198,
+      "upstream_share": 0.9968391504126256
+    },
+    {
+      "node_index": 9729,
+      "provider_index": 613,
+      "upstream_share": 0.9868944924981624
+    },
+    {
+      "node_index": 613,
+      "provider_index": 4382,
+      "upstream_share": 0.9934290046503724
+    }
+  ]
+}

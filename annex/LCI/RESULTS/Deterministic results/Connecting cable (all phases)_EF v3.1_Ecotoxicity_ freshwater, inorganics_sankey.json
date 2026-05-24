@@ -1,0 +1,741 @@
+{
+  "impact_category": "Ecotoxicity: freshwater, inorganics",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "Connecting cable (all phases)",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "Connecting cable (all phases)",
+      "direct_result": 0.0,
+      "total_result": 55015.90516339964
+    },
+    {
+      "index": 17922,
+      "provider": "connecting_cable_man&ext",
+      "direct_result": 0.0,
+      "total_result": 52656.08999407637
+    },
+    {
+      "index": 17918,
+      "provider": "connecting_cable_EoL",
+      "direct_result": 0.0,
+      "total_result": 1929.8876467166433
+    },
+    {
+      "index": 57,
+      "provider": "market for copper, cathode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 52473.589359192934
+    },
+    {
+      "index": 4932,
+      "provider": "wire drawing, copper | wire drawing, copper | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1762.2601868904917
+    },
+    {
+      "index": 8326,
+      "provider": "treatment of waste wire plastic, municipal incineration FAE | waste wire plastic | Cutoff, U",
+      "direct_result": 1769.546179381269,
+      "total_result": 1929.531785616549
+    },
+    {
+      "index": 94,
+      "provider": "electrorefining of copper, anode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 30249.328023201353
+    },
+    {
+      "index": 103,
+      "provider": "copper production, cathode, solvent extraction and electrowinning process | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 21126.809169339314
+    },
+    {
+      "index": 112,
+      "provider": "treatment of copper scrap by electrolytic refining | copper, cathode | Cutoff, U",
+      "direct_result": 12.834178647814422,
+      "total_result": 932.770893514733
+    },
+    {
+      "index": 772,
+      "provider": "market for copper, anode | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 30986.99273103273
+    },
+    {
+      "index": 1044,
+      "provider": "market for sulfidic tailings, from copper mine operation | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 8870.20312023686
+    },
+    {
+      "index": 1036,
+      "provider": "market for sulfidic tailings, from copper mine operation | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5698.256950382469
+    },
+    {
+      "index": 1039,
+      "provider": "market for sulfidic tailings, from copper mine operation | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5300.724294189012
+    },
+    {
+      "index": 1043,
+      "provider": "market for sulfidic tailings, from copper mine operation | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4035.3726048072394
+    },
+    {
+      "index": 1046,
+      "provider": "market for sulfidic tailings, from copper mine operation | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3644.715537475207
+    },
+    {
+      "index": 1049,
+      "provider": "market for blasting | blasting | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3637.3397587249865
+    },
+    {
+      "index": 1042,
+      "provider": "market for sulfidic tailings, from copper mine operation | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3339.660691459854
+    },
+    {
+      "index": 1045,
+      "provider": "market for sulfidic tailings, from copper mine operation | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3040.6954931720798
+    },
+    {
+      "index": 1037,
+      "provider": "market for sulfidic tailings, from copper mine operation | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2548.6906242865266
+    },
+    {
+      "index": 1040,
+      "provider": "market for sulfidic tailings, from copper mine operation | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1669.0359303385235
+    },
+    {
+      "index": 1038,
+      "provider": "market for sulfidic tailings, from copper mine operation | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1544.557771109635
+    },
+    {
+      "index": 2709,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 2029.327688984852,
+      "total_result": 12279.176377155383
+    },
+    {
+      "index": 2705,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 1995.4136025742616,
+      "total_result": 12033.00886067727
+    },
+    {
+      "index": 2707,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 398.79745459320674,
+      "total_result": 2405.1399909830916
+    },
+    {
+      "index": 2710,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 7.836443610728565,
+      "total_result": 1835.9512348858184
+    },
+    {
+      "index": 2711,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 239.1752930939491,
+      "total_result": 1447.8318773638705
+    },
+    {
+      "index": 2708,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 152.67520035096965,
+      "total_result": 925.8059406419436
+    },
+    {
+      "index": 3555,
+      "provider": "treatment of sulfidic tailings, from copper mine operation, tailings impoundment | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 8870.203120236862,
+      "total_result": 8870.20312023686
+    },
+    {
+      "index": 3547,
+      "provider": "treatment of sulfidic tailings, from copper mine operation, tailings impoundment | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 5698.256950382466,
+      "total_result": 5698.256950382469
+    },
+    {
+      "index": 3550,
+      "provider": "treatment of sulfidic tailings, from copper mine operation, tailings impoundment | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 5300.724294189012,
+      "total_result": 5300.724294189012
+    },
+    {
+      "index": 3554,
+      "provider": "treatment of sulfidic tailings, from copper mine operation, tailings impoundment | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 4035.3726048072385,
+      "total_result": 4035.3726048072394
+    },
+    {
+      "index": 3557,
+      "provider": "treatment of sulfidic tailings, from copper mine operation, tailings impoundment | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 3644.715537475207,
+      "total_result": 3644.715537475207
+    },
+    {
+      "index": 3559,
+      "provider": "blasting | blasting | Cutoff, U",
+      "direct_result": 2331.4833665765373,
+      "total_result": 2435.6941420217036
+    },
+    {
+      "index": 1075,
+      "provider": "blasting | blasting | Cutoff, U",
+      "direct_result": 1171.5713930251923,
+      "total_result": 1224.3576358611797
+    },
+    {
+      "index": 3553,
+      "provider": "treatment of sulfidic tailings, from copper mine operation, tailings impoundment | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 3339.6606914598547,
+      "total_result": 3339.660691459854
+    },
+    {
+      "index": 3556,
+      "provider": "treatment of sulfidic tailings, from copper mine operation, tailings impoundment | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 3040.6954931720793,
+      "total_result": 3040.6954931720798
+    },
+    {
+      "index": 3548,
+      "provider": "treatment of sulfidic tailings, from copper mine operation, tailings impoundment | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 2548.690624286527,
+      "total_result": 2548.6906242865266
+    },
+    {
+      "index": 3551,
+      "provider": "treatment of sulfidic tailings, from copper mine operation, tailings impoundment | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 1669.035930338524,
+      "total_result": 1669.0359303385235
+    },
+    {
+      "index": 3549,
+      "provider": "treatment of sulfidic tailings, from copper mine operation, tailings impoundment | sulfidic tailings, from copper mine operation | Cutoff, U",
+      "direct_result": 1544.5577711096357,
+      "total_result": 1544.557771109635
+    },
+    {
+      "index": 6524,
+      "provider": "market for copper concentrate, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 25814.657194508403
+    },
+    {
+      "index": 10719,
+      "provider": "copper mine operation and beneficiation, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 37.64748973979379,
+      "total_result": 7034.616930541905
+    },
+    {
+      "index": 10723,
+      "provider": "molybdenite mine operation | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 56.01860101718408,
+      "total_result": 3801.2653554422573
+    },
+    {
+      "index": 10721,
+      "provider": "copper mine operation and beneficiation, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 11.288681902187298,
+      "total_result": 3385.3292526428236
+    },
+    {
+      "index": 10731,
+      "provider": "copper mine operation and beneficiation, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 35.79963885199166,
+      "total_result": 2364.419741597537
+    },
+    {
+      "index": 10728,
+      "provider": "copper mine operation and beneficiation, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 4.355684916956129,
+      "total_result": 1802.306323173231
+    },
+    {
+      "index": 10722,
+      "provider": "zinc mine operation | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 17.758844708802005,
+      "total_result": 1584.1865190803787
+    },
+    {
+      "index": 10727,
+      "provider": "copper mine operation and beneficiation, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 9.678708036891281,
+      "total_result": 1539.6456525138803
+    },
+    {
+      "index": 10733,
+      "provider": "copper mine operation and beneficiation, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 7.6321074368764705,
+      "total_result": 1337.739929642642
+    },
+    {
+      "index": 10729,
+      "provider": "copper mine operation and beneficiation, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 2.7181738994349223,
+      "total_result": 1041.6282290021343
+    },
+    {
+      "index": 10725,
+      "provider": "copper mine operation and beneficiation, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 7.530511876388402,
+      "total_result": 926.0369713105789
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 17922,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 0,
+      "provider_index": 17918,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 17922,
+      "provider_index": 57,
+      "upstream_share": 0.9548400854488255
+    },
+    {
+      "node_index": 17922,
+      "provider_index": 4932,
+      "upstream_share": 0.9996075387848582
+    },
+    {
+      "node_index": 17918,
+      "provider_index": 8326,
+      "upstream_share": 0.9999882650049957
+    },
+    {
+      "node_index": 57,
+      "provider_index": 94,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 57,
+      "provider_index": 103,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 57,
+      "provider_index": 112,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 4932,
+      "provider_index": 57,
+      "upstream_share": 0.03233795548860337
+    },
+    {
+      "node_index": 94,
+      "provider_index": 772,
+      "upstream_share": 0.9662294480291663
+    },
+    {
+      "node_index": 103,
+      "provider_index": 1044,
+      "upstream_share": 0.4937407805700452
+    },
+    {
+      "node_index": 103,
+      "provider_index": 1036,
+      "upstream_share": 0.4937407805700453
+    },
+    {
+      "node_index": 103,
+      "provider_index": 1039,
+      "upstream_share": 0.33699917789828865
+    },
+    {
+      "node_index": 103,
+      "provider_index": 1043,
+      "upstream_share": 0.4972812112930705
+    },
+    {
+      "node_index": 103,
+      "provider_index": 1046,
+      "upstream_share": 0.5964572109067795
+    },
+    {
+      "node_index": 103,
+      "provider_index": 1049,
+      "upstream_share": 0.35415736243435153
+    },
+    {
+      "node_index": 103,
+      "provider_index": 1042,
+      "upstream_share": 0.46187202749386363
+    },
+    {
+      "node_index": 103,
+      "provider_index": 1045,
+      "upstream_share": 0.5833954183968996
+    },
+    {
+      "node_index": 103,
+      "provider_index": 1037,
+      "upstream_share": 0.39515370298297403
+    },
+    {
+      "node_index": 103,
+      "provider_index": 1040,
+      "upstream_share": 0.48374953617171546
+    },
+    {
+      "node_index": 103,
+      "provider_index": 1038,
+      "upstream_share": 0.5154316943680852
+    },
+    {
+      "node_index": 112,
+      "provider_index": 772,
+      "upstream_share": 0.02753298701478338
+    },
+    {
+      "node_index": 772,
+      "provider_index": 2709,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 772,
+      "provider_index": 2705,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 772,
+      "provider_index": 2707,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 772,
+      "provider_index": 2710,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 772,
+      "provider_index": 2711,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 772,
+      "provider_index": 2708,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1044,
+      "provider_index": 3555,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1036,
+      "provider_index": 3547,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1039,
+      "provider_index": 3550,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1043,
+      "provider_index": 3554,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1046,
+      "provider_index": 3557,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1049,
+      "provider_index": 3559,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 1049,
+      "provider_index": 1075,
+      "upstream_share": 0.9828012369788013
+    },
+    {
+      "node_index": 1042,
+      "provider_index": 3553,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1045,
+      "provider_index": 3556,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1037,
+      "provider_index": 3548,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1040,
+      "provider_index": 3551,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1038,
+      "provider_index": 3549,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 2709,
+      "provider_index": 6524,
+      "upstream_share": 0.3917490278546887
+    },
+    {
+      "node_index": 2705,
+      "provider_index": 6524,
+      "upstream_share": 0.3852021254228913
+    },
+    {
+      "node_index": 2707,
+      "provider_index": 6524,
+      "upstream_share": 0.07698535628120494
+    },
+    {
+      "node_index": 2710,
+      "provider_index": 6524,
+      "upstream_share": 0.06995033914901966
+    },
+    {
+      "node_index": 2711,
+      "provider_index": 6524,
+      "upstream_share": 0.046171295579811214
+    },
+    {
+      "node_index": 2708,
+      "provider_index": 6524,
+      "upstream_share": 0.029472993267505073
+    },
+    {
+      "node_index": 6524,
+      "provider_index": 10719,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 6524,
+      "provider_index": 10723,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 6524,
+      "provider_index": 10721,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 6524,
+      "provider_index": 10731,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 6524,
+      "provider_index": 10728,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 6524,
+      "provider_index": 10722,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 6524,
+      "provider_index": 10727,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 6524,
+      "provider_index": 10733,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 6524,
+      "provider_index": 10729,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 6524,
+      "provider_index": 10725,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 10719,
+      "provider_index": 1044,
+      "upstream_share": 0.4163163517540907
+    },
+    {
+      "node_index": 10719,
+      "provider_index": 1036,
+      "upstream_share": 0.4163163517540907
+    },
+    {
+      "node_index": 10719,
+      "provider_index": 1049,
+      "upstream_share": 0.18199231125229326
+    },
+    {
+      "node_index": 10723,
+      "provider_index": 1044,
+      "upstream_share": 0.08971910597608863
+    },
+    {
+      "node_index": 10723,
+      "provider_index": 1043,
+      "upstream_share": 0.09036244817454621
+    },
+    {
+      "node_index": 10723,
+      "provider_index": 1039,
+      "upstream_share": 0.06123712309281678
+    },
+    {
+      "node_index": 10723,
+      "provider_index": 1036,
+      "upstream_share": 0.08971910597608863
+    },
+    {
+      "node_index": 10723,
+      "provider_index": 1046,
+      "upstream_share": 0.1083840140848074
+    },
+    {
+      "node_index": 10723,
+      "provider_index": 1049,
+      "upstream_share": 0.047586901414147134
+    },
+    {
+      "node_index": 10723,
+      "provider_index": 1042,
+      "upstream_share": 0.08392814005411917
+    },
+    {
+      "node_index": 10723,
+      "provider_index": 1045,
+      "upstream_share": 0.10601051691271118
+    },
+    {
+      "node_index": 10723,
+      "provider_index": 1037,
+      "upstream_share": 0.07180455483916368
+    },
+    {
+      "node_index": 10723,
+      "provider_index": 1040,
+      "upstream_share": 0.0879035672353514
+    },
+    {
+      "node_index": 10723,
+      "provider_index": 1038,
+      "upstream_share": 0.09366062644664346
+    },
+    {
+      "node_index": 10721,
+      "provider_index": 1039,
+      "upstream_share": 0.6016163742346229
+    },
+    {
+      "node_index": 10721,
+      "provider_index": 1049,
+      "upstream_share": 0.0327286993731375
+    },
+    {
+      "node_index": 10731,
+      "provider_index": 1042,
+      "upstream_share": 0.4539737423184046
+    },
+    {
+      "node_index": 10731,
+      "provider_index": 1049,
+      "upstream_share": 0.15869653413955628
+    },
+    {
+      "node_index": 10728,
+      "provider_index": 1049,
+      "upstream_share": 0.023118419146598818
+    },
+    {
+      "node_index": 10728,
+      "provider_index": 1043,
+      "upstream_share": 0.4121644416851798
+    },
+    {
+      "node_index": 10722,
+      "provider_index": 1049,
+      "upstream_share": 0.0005056872470900502
+    },
+    {
+      "node_index": 10722,
+      "provider_index": 57,
+      "upstream_share": 3.142591005376886e-06
+    },
+    {
+      "node_index": 10727,
+      "provider_index": 1049,
+      "upstream_share": 0.029995633076046375
+    },
+    {
+      "node_index": 10727,
+      "provider_index": 1037,
+      "upstream_share": 0.5326354942332471
+    },
+    {
+      "node_index": 10733,
+      "provider_index": 1046,
+      "upstream_share": 0.29473821850788345
+    },
+    {
+      "node_index": 10733,
+      "provider_index": 1049,
+      "upstream_share": 0.049640960614114354
+    },
+    {
+      "node_index": 10729,
+      "provider_index": 1045,
+      "upstream_share": 0.3103689347121963
+    },
+    {
+      "node_index": 10729,
+      "provider_index": 1049,
+      "upstream_share": 0.020973299979119626
+    },
+    {
+      "node_index": 10725,
+      "provider_index": 1040,
+      "upstream_share": 0.42816021956549194
+    },
+    {
+      "node_index": 10725,
+      "provider_index": 1049,
+      "upstream_share": 0.03795415265016873
+    }
+  ]
+}

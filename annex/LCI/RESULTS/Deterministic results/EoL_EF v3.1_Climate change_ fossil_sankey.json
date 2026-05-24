@@ -1,0 +1,137 @@
+{
+  "impact_category": "Climate change: fossil",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "EoL",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "EoL",
+      "direct_result": 0.0,
+      "total_result": 56.12391443171216
+    },
+    {
+      "index": 14439,
+      "provider": "connecting_cable_EoL",
+      "direct_result": 0.0,
+      "total_result": 54.135460083313504
+    },
+    {
+      "index": 14438,
+      "provider": "magnet_EoL",
+      "direct_result": 0.0,
+      "total_result": 1.833292403231926
+    },
+    {
+      "index": 9939,
+      "provider": "treatment of waste wire plastic, municipal incineration FAE | waste wire plastic | Cutoff, U",
+      "direct_result": 47.3355588228981,
+      "total_result": 54.05692552084464
+    },
+    {
+      "index": 10939,
+      "provider": "treatment of waste plastic, industrial electronics, municipal incineration FAE | waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 1.811984965414614,
+      "total_result": 1.833414808387335
+    },
+    {
+      "index": 237,
+      "provider": "market for quicklime, milled, packed | quicklime, milled, packed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.593374629722106
+    },
+    {
+      "index": 244,
+      "provider": "market for sodium hydroxide, without water, in 50% solution state | sodium hydroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.7953597074964618
+    },
+    {
+      "index": 15194,
+      "provider": "quicklime production, milled, packed | quicklime, milled, packed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.547375940703822
+    },
+    {
+      "index": 14709,
+      "provider": "chlor-alkali electrolysis, average production | sodium hydroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 0.0006244767938452036,
+      "total_result": 0.7885989305066728
+    },
+    {
+      "index": 8839,
+      "provider": "quicklime production, milled, loose | quicklime, milled, loose | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.533424155053284
+    },
+    {
+      "index": 2510,
+      "provider": "quicklime production, in pieces, loose | quicklime, in pieces, loose | Cutoff, U",
+      "direct_result": 4.19520892451686,
+      "total_result": 4.531891586989118
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 14439,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 14438,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 14439,
+      "provider_index": 9939,
+      "upstream_share": 0.9999999277104185
+    },
+    {
+      "node_index": 14438,
+      "provider_index": 10939,
+      "upstream_share": 0.999933076550051
+    },
+    {
+      "node_index": 9939,
+      "provider_index": 237,
+      "upstream_share": 0.999386079619199
+    },
+    {
+      "node_index": 9939,
+      "provider_index": 244,
+      "upstream_share": 0.9961186224856242
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 237,
+      "upstream_share": 0.0005484686789185078
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 244,
+      "upstream_share": 0.000836001284487012
+    },
+    {
+      "node_index": 237,
+      "provider_index": 15194,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 244,
+      "provider_index": 14709,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 15194,
+      "provider_index": 8839,
+      "upstream_share": 0.9993384318288211
+    },
+    {
+      "node_index": 8839,
+      "provider_index": 2510,
+      "upstream_share": 0.9996183726711694
+    }
+  ]
+}

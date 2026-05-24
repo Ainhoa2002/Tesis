@@ -1,0 +1,591 @@
+{
+  "impact_category": "Human toxicity: carcinogenic, organics",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "SECTION_Magnetics",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "SECTION_Magnetics",
+      "direct_result": 0.0,
+      "total_result": 3.290711272019273e-09
+    },
+    {
+      "index": 10894,
+      "provider": "market for polytetrafluoroethylene | polytetrafluoroethylene | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.0110133751142519e-09
+    },
+    {
+      "index": 245,
+      "provider": "market for copper, cathode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 9.62164277607917e-10
+    },
+    {
+      "index": 618,
+      "provider": "market for ferrite | ferrite | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.856094429003635e-10
+    },
+    {
+      "index": 2770,
+      "provider": "market for polyester resin, unsaturated | polyester resin, unsaturated | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.1262136558828346e-10
+    },
+    {
+      "index": 10893,
+      "provider": "transformer production, low voltage use | transformer, low voltage use | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.2894761760734e-10
+    },
+    {
+      "index": 9254,
+      "provider": "polytetrafluoroethylene production, emulsion polymerization | polytetrafluoroethylene | Cutoff, U",
+      "direct_result": 1.575452354667573e-11,
+      "total_result": 1.0109853741952972e-09
+    },
+    {
+      "index": 6317,
+      "provider": "electrorefining of copper, anode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.895518442055613e-10
+    },
+    {
+      "index": 6308,
+      "provider": "treatment of copper scrap by electrolytic refining | copper, cathode | Cutoff, U",
+      "direct_result": 1.736795926191313e-10,
+      "total_result": 2.0481754156654078e-10
+    },
+    {
+      "index": 6320,
+      "provider": "copper production, cathode, solvent extraction and electrowinning process | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.047965726800277e-10
+    },
+    {
+      "index": 15523,
+      "provider": "ferrite production | ferrite | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.687765014187904e-10
+    },
+    {
+      "index": 15398,
+      "provider": "polyester resin production, unsaturated | polyester resin, unsaturated | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.8592681336028313e-10
+    },
+    {
+      "index": 15396,
+      "provider": "soy-based resin production | polyester resin, unsaturated | Cutoff, S",
+      "direct_result": 1.6808958618337567e-10,
+      "total_result": 1.6808958618337562e-10
+    },
+    {
+      "index": 13306,
+      "provider": "market for grain oriented electrical steel, 0.23 mm coil | grain oriented electrical steel, 0.23 mm coil | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.9175754901619877e-10
+    },
+    {
+      "index": 1606,
+      "provider": "market for tetrafluoroethylene | tetrafluoroethylene | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 9.94278907079539e-10
+    },
+    {
+      "index": 4288,
+      "provider": "market for copper, anode | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.550912777152256e-10
+    },
+    {
+      "index": 1524,
+      "provider": "market for mine infrastructure, open cast, non-ferrous metal | mine infrastructure, open cast, non-ferrous metal | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.6976968822245678e-10
+    },
+    {
+      "index": 2493,
+      "provider": "market for manganese | manganese | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.2314753380424457e-10
+    },
+    {
+      "index": 1615,
+      "provider": "market for propylene glycol, liquid | propylene glycol, liquid | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.5172372309125498e-10
+    },
+    {
+      "index": 11105,
+      "provider": "grain oriented electrical steel production, 0.23 mm coil | grain oriented electrical steel, 0.23 mm coil | Cutoff, S",
+      "direct_result": 1.9338261582159603e-10,
+      "total_result": 1.9338261582159606e-10
+    },
+    {
+      "index": 13922,
+      "provider": "tetrafluoroethylene production | tetrafluoroethylene | Cutoff, U",
+      "direct_result": 1.122433421936268e-14,
+      "total_result": 6.802001449598746e-10
+    },
+    {
+      "index": 13923,
+      "provider": "tetrafluoroethylene production | tetrafluoroethylene | Cutoff, U",
+      "direct_result": 5.18046194739817e-15,
+      "total_result": 3.1405075311667717e-10
+    },
+    {
+      "index": 13463,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 1.0268894114419568e-11,
+      "total_result": 1.6784617810550544e-10
+    },
+    {
+      "index": 13461,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 1.0443424428279484e-11,
+      "total_result": 1.6699659530626685e-10
+    },
+    {
+      "index": 17479,
+      "provider": "mine construction, open cast, non-ferrous metal | mine infrastructure, open cast, non-ferrous metal | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.697696882224568e-10
+    },
+    {
+      "index": 6990,
+      "provider": "manganese production | manganese | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.1063134584358736e-10
+    },
+    {
+      "index": 8433,
+      "provider": "propylene glycol production, liquid | propylene glycol, liquid | Cutoff, U",
+      "direct_result": 2.9659823544435085e-11,
+      "total_result": 1.516072826379951e-10
+    },
+    {
+      "index": 4078,
+      "provider": "market for chlorodifluoromethane | chlorodifluoromethane | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.800281795520242e-10
+    },
+    {
+      "index": 5949,
+      "provider": "market for chlorodifluoromethane | chlorodifluoromethane | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.139426781750889e-10
+    },
+    {
+      "index": 653,
+      "provider": "market for anode, for metal electrolysis | anode, for metal electrolysis | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.9932559558444443e-10
+    },
+    {
+      "index": 3929,
+      "provider": "market for copper concentrate, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.520248923753644e-10
+    },
+    {
+      "index": 144,
+      "provider": "market for building, multi-storey | building, multi-storey | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.8947804219312175e-10
+    },
+    {
+      "index": 2714,
+      "provider": "market for ferromanganese, high-coal, 74.5% Mn | ferromanganese, high-coal, 74.5% Mn | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.5683612484876356e-10
+    },
+    {
+      "index": 1923,
+      "provider": "market for propylene oxide, liquid | propylene oxide, liquid | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.2276971087424764e-10
+    },
+    {
+      "index": 7686,
+      "provider": "chlorodifluoromethane production | chlorodifluoromethane | Cutoff, U",
+      "direct_result": 2.66245858609402e-13,
+      "total_result": 6.800089810942653e-10
+    },
+    {
+      "index": 13969,
+      "provider": "chlorodifluoromethane production | chlorodifluoromethane | Cutoff, U",
+      "direct_result": 1.2288272589128755e-13,
+      "total_result": 3.1393686989021635e-10
+    },
+    {
+      "index": 7465,
+      "provider": "anode production, for metal electrolysis | anode, for metal electrolysis | Cutoff, U",
+      "direct_result": 1.9031445148074448e-10,
+      "total_result": 1.9135418967354368e-10
+    },
+    {
+      "index": 10644,
+      "provider": "building construction, multi-storey | building, multi-storey | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.4795903928659422e-10
+    },
+    {
+      "index": 5120,
+      "provider": "ferromanganese production, high-coal, 74.5% Mn | ferromanganese, high-coal, 74.5% Mn | Cutoff, U",
+      "direct_result": 2.001384348355832e-11,
+      "total_result": 2.4195768463868026e-10
+    },
+    {
+      "index": 5121,
+      "provider": "ferromanganese production, high-coal, 74.5% Mn | ferromanganese, high-coal, 74.5% Mn | Cutoff, U",
+      "direct_result": 9.883997589172088e-12,
+      "total_result": 1.1490342138367486e-10
+    },
+    {
+      "index": 2210,
+      "provider": "market for chloroform | chloroform | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.742688160981215e-10
+    },
+    {
+      "index": 728,
+      "provider": "market for sodium hydroxide, without water, in 50% solution state | sodium hydroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.649232025456256e-10
+    },
+    {
+      "index": 2209,
+      "provider": "market for chloroform | chloroform | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.1131749706356207e-10
+    },
+    {
+      "index": 6927,
+      "provider": "chloroform production | chloroform | Cutoff, U",
+      "direct_result": 6.119411063476422e-10,
+      "total_result": 6.742380980398262e-10
+    },
+    {
+      "index": 348,
+      "provider": "chlor-alkali electrolysis, membrane cell | sodium hydroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 1.615214818605223e-10,
+      "total_result": 1.642566844874971e-10
+    },
+    {
+      "index": 10244,
+      "provider": "chloroform production | chloroform | Cutoff, U",
+      "direct_result": 2.8245527058876043e-10,
+      "total_result": 3.113082031414963e-10
+    },
+    {
+      "index": 393,
+      "provider": "market for chlorine, liquid | chlorine, liquid | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.346908077884117e-10
+    },
+    {
+      "index": 7494,
+      "provider": "chlorine production, liquid | chlorine, liquid | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.3461086994957214e-10
+    },
+    {
+      "index": 1855,
+      "provider": "market for chlorine, gaseous | chlorine, gaseous | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.4448678637337982e-10
+    },
+    {
+      "index": 7455,
+      "provider": "chlor-alkali electrolysis, membrane cell | chlorine, gaseous | Cutoff, U",
+      "direct_result": 1.4217465475100348e-10,
+      "total_result": 1.4416426951791368e-10
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 10894,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 245,
+      "upstream_share": 0.9054951109317453
+    },
+    {
+      "node_index": 0,
+      "provider_index": 618,
+      "upstream_share": 0.9999992913416684
+    },
+    {
+      "node_index": 0,
+      "provider_index": 2770,
+      "upstream_share": 0.9999479671712334
+    },
+    {
+      "node_index": 0,
+      "provider_index": 10893,
+      "upstream_share": 0.9999891802642649
+    },
+    {
+      "node_index": 10894,
+      "provider_index": 9254,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 245,
+      "provider_index": 6317,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 245,
+      "provider_index": 6308,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 245,
+      "provider_index": 6320,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 618,
+      "provider_index": 15523,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 2770,
+      "provider_index": 15398,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 2770,
+      "provider_index": 15396,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 10893,
+      "provider_index": 245,
+      "upstream_share": 0.044109747332980384
+    },
+    {
+      "node_index": 10893,
+      "provider_index": 13306,
+      "upstream_share": 0.9999727780900716
+    },
+    {
+      "node_index": 9254,
+      "provider_index": 1606,
+      "upstream_share": 0.9999897078135347
+    },
+    {
+      "node_index": 6317,
+      "provider_index": 4288,
+      "upstream_share": 0.9662290079128161
+    },
+    {
+      "node_index": 6308,
+      "provider_index": 4288,
+      "upstream_share": 0.027532974473540948
+    },
+    {
+      "node_index": 6320,
+      "provider_index": 1524,
+      "upstream_share": 0.6939623072297734
+    },
+    {
+      "node_index": 15523,
+      "provider_index": 2493,
+      "upstream_share": 0.9999972384372345
+    },
+    {
+      "node_index": 15398,
+      "provider_index": 1615,
+      "upstream_share": 0.9980914859525415
+    },
+    {
+      "node_index": 13306,
+      "provider_index": 11105,
+      "upstream_share": 0.9886289335173352
+    },
+    {
+      "node_index": 1606,
+      "provider_index": 13922,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 1606,
+      "provider_index": 13923,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 4288,
+      "provider_index": 13463,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 4288,
+      "provider_index": 13461,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1524,
+      "provider_index": 17479,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 2493,
+      "provider_index": 6990,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1615,
+      "provider_index": 8433,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 13922,
+      "provider_index": 4078,
+      "upstream_share": 0.9999881667319848
+    },
+    {
+      "node_index": 13923,
+      "provider_index": 5949,
+      "upstream_share": 0.9999879883712133
+    },
+    {
+      "node_index": 13463,
+      "provider_index": 653,
+      "upstream_share": 0.009715364786958136
+    },
+    {
+      "node_index": 13463,
+      "provider_index": 3929,
+      "upstream_share": 0.38515989224824626
+    },
+    {
+      "node_index": 13461,
+      "provider_index": 653,
+      "upstream_share": 0.009880487306154274
+    },
+    {
+      "node_index": 13461,
+      "provider_index": 3929,
+      "upstream_share": 0.3917060768842281
+    },
+    {
+      "node_index": 17479,
+      "provider_index": 144,
+      "upstream_share": 0.7735521682681393
+    },
+    {
+      "node_index": 6990,
+      "provider_index": 2714,
+      "upstream_share": 0.7442517242494929
+    },
+    {
+      "node_index": 8433,
+      "provider_index": 1923,
+      "upstream_share": 0.9565279894575562
+    },
+    {
+      "node_index": 4078,
+      "provider_index": 7686,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 5949,
+      "provider_index": 13969,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 653,
+      "provider_index": 7465,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 144,
+      "provider_index": 10644,
+      "upstream_share": 0.9999999999999996
+    },
+    {
+      "node_index": 2714,
+      "provider_index": 5120,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 2714,
+      "provider_index": 5121,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 7686,
+      "provider_index": 2210,
+      "upstream_share": 0.9999618866923072
+    },
+    {
+      "node_index": 7686,
+      "provider_index": 728,
+      "upstream_share": 0.02160579704118531
+    },
+    {
+      "node_index": 13969,
+      "provider_index": 2209,
+      "upstream_share": 0.9998880249375164
+    },
+    {
+      "node_index": 10644,
+      "provider_index": 245,
+      "upstream_share": 0.0067115751946408364
+    },
+    {
+      "node_index": 5120,
+      "provider_index": 653,
+      "upstream_share": 0.6286429058249606
+    },
+    {
+      "node_index": 5121,
+      "provider_index": 653,
+      "upstream_share": 0.3104603556397619
+    },
+    {
+      "node_index": 2210,
+      "provider_index": 6927,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 728,
+      "provider_index": 348,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 2209,
+      "provider_index": 10244,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 6927,
+      "provider_index": 393,
+      "upstream_share": 0.4182729653500406
+    },
+    {
+      "node_index": 393,
+      "provider_index": 7494,
+      "upstream_share": 0.9999999999999996
+    },
+    {
+      "node_index": 7494,
+      "provider_index": 1855,
+      "upstream_share": 0.9312175451808078
+    },
+    {
+      "node_index": 1855,
+      "provider_index": 7455,
+      "upstream_share": 0.9995106121505153
+    }
+  ]
+}

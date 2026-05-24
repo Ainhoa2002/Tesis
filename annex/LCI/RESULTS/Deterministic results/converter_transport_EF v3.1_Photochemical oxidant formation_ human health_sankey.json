@@ -1,0 +1,182 @@
+{
+  "impact_category": "Photochemical oxidant formation: human health",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "converter_transport",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "converter_transport",
+      "direct_result": 0.0,
+      "total_result": 0.16858377701814878
+    },
+    {
+      "index": 15165,
+      "provider": "transport_code_P1",
+      "direct_result": 0.0,
+      "total_result": 0.16178063497539083
+    },
+    {
+      "index": 15164,
+      "provider": "transport_code_P2",
+      "direct_result": 0.0,
+      "total_result": 0.004518771026070363
+    },
+    {
+      "index": 9729,
+      "provider": "transport, freight, sea, ferry, heavy fuel oil | transport, freight, sea, ferry, heavy fuel oil | Cutoff, U",
+      "direct_result": 0.14438103733177196,
+      "total_result": 0.1598012605511722
+    },
+    {
+      "index": 9522,
+      "provider": "transport, freight, lorry, >32 metric ton, diesel, EURO 4 | transport, freight, lorry, >32 metric ton, diesel, EURO 4 | Cutoff, U",
+      "direct_result": 0.0008401860949090799,
+      "total_result": 0.0020301983235214227
+    },
+    {
+      "index": 1523,
+      "provider": "transport, freight, lorry, >32 metric ton, diesel, EURO 4 | transport, freight, lorry, >32 metric ton, diesel, EURO 4 | Cutoff, U",
+      "direct_result": 0.0013979050190540113,
+      "total_result": 0.0033881397376415044
+    },
+    {
+      "index": 15198,
+      "provider": "transport, freight, inland waterways, barge, diesel | transport, freight, inland waterways, barge, diesel | Cutoff, U",
+      "direct_result": 0.0016426219603735929,
+      "total_result": 0.0021202189883913376
+    },
+    {
+      "index": 613,
+      "provider": "market for heavy fuel oil | heavy fuel oil | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.009424887210398001
+    },
+    {
+      "index": 612,
+      "provider": "market group for heavy fuel oil | heavy fuel oil | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0021576188076951565
+    },
+    {
+      "index": 4382,
+      "provider": "heavy fuel oil production, petroleum refinery operation | heavy fuel oil | Cutoff, U",
+      "direct_result": 0.0005023759609702912,
+      "total_result": 0.00909137906908014
+    },
+    {
+      "index": 1181,
+      "provider": "market for heavy fuel oil | heavy fuel oil | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0021272662785061396
+    },
+    {
+      "index": 2912,
+      "provider": "market for petroleum | petroleum | Cutoff, U",
+      "direct_result": 0.0001222949268217109,
+      "total_result": 0.004498903478121536
+    },
+    {
+      "index": 2909,
+      "provider": "market for petroleum | petroleum | Cutoff, U",
+      "direct_result": 9.845483547828149e-05,
+      "total_result": 0.00238692906405543
+    },
+    {
+      "index": 2911,
+      "provider": "market for petroleum | petroleum | Cutoff, U",
+      "direct_result": 6.453688972655226e-05,
+      "total_result": 0.002146100329108771
+    },
+    {
+      "index": 3587,
+      "provider": "heavy fuel oil production, petroleum refinery operation | heavy fuel oil | Cutoff, U",
+      "direct_result": 0.00010233643042241288,
+      "total_result": 0.002056287248934919
+    },
+    {
+      "index": 264,
+      "provider": "market for petroleum | petroleum | Cutoff, U",
+      "direct_result": 9.107845168012399e-05,
+      "total_result": 0.0032030777100728286
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 15165,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 15164,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 15165,
+      "provider_index": 9729,
+      "upstream_share": 0.9999999514738263
+    },
+    {
+      "node_index": 15165,
+      "provider_index": 9522,
+      "upstream_share": 0.9705133964793472
+    },
+    {
+      "node_index": 15164,
+      "provider_index": 1523,
+      "upstream_share": 0.32398158399821214
+    },
+    {
+      "node_index": 15164,
+      "provider_index": 15198,
+      "upstream_share": 0.9968391504126256
+    },
+    {
+      "node_index": 9729,
+      "provider_index": 613,
+      "upstream_share": 0.9868944924981624
+    },
+    {
+      "node_index": 9729,
+      "provider_index": 612,
+      "upstream_share": 0.9912057342225633
+    },
+    {
+      "node_index": 613,
+      "provider_index": 4382,
+      "upstream_share": 0.9934290046503724
+    },
+    {
+      "node_index": 612,
+      "provider_index": 1181,
+      "upstream_share": 0.995893424870355
+    },
+    {
+      "node_index": 4382,
+      "provider_index": 2912,
+      "upstream_share": 0.9167090472861791
+    },
+    {
+      "node_index": 4382,
+      "provider_index": 2909,
+      "upstream_share": 0.9167234445486826
+    },
+    {
+      "node_index": 4382,
+      "provider_index": 2911,
+      "upstream_share": 0.9166209141414912
+    },
+    {
+      "node_index": 1181,
+      "provider_index": 3587,
+      "upstream_share": 0.9993461872656147
+    },
+    {
+      "node_index": 3587,
+      "provider_index": 264,
+      "upstream_share": 0.6081397590534736
+    }
+  ]
+}

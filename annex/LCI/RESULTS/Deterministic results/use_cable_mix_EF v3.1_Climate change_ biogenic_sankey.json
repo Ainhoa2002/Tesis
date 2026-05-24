@@ -1,0 +1,115 @@
+{
+  "impact_category": "Climate change: biogenic",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "use_cable_mix",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "use_cable_mix",
+      "direct_result": 0.0,
+      "total_result": 1.428381008415067
+    },
+    {
+      "index": 5099,
+      "provider": "market for electricity, high voltage | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.4283810084150665
+    },
+    {
+      "index": 12099,
+      "provider": "electricity production, hydro, reservoir, alpine region | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.818583725638576,
+      "total_result": 0.8251130517596466
+    },
+    {
+      "index": 12161,
+      "provider": "heat and power co-generation, biogas, gas engine | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.07846448153305922,
+      "total_result": 0.4953901748164958
+    },
+    {
+      "index": 12100,
+      "provider": "electricity, high voltage, hydro, reservoir, import from FR | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.05693157322553116
+    },
+    {
+      "index": 7357,
+      "provider": "market for biogas | biogas | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.41909171454197214
+    },
+    {
+      "index": 11326,
+      "provider": "electricity production, hydro, reservoir, alpine region | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.056489838483749145,
+      "total_result": 0.05694282313036913
+    },
+    {
+      "index": 4318,
+      "provider": "anaerobic digestion of manure | biogas | Cutoff, U",
+      "direct_result": 0.4126785661051111,
+      "total_result": 0.41737063203915536
+    },
+    {
+      "index": 16097,
+      "provider": "heat and power co-generation, biogas, gas engine | heat, central or small-scale, other than natural gas | Cutoff, U",
+      "direct_result": 0.0023020022243336207,
+      "total_result": 0.014519386499105402
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 5099,
+      "upstream_share": 0.9988161256825373
+    },
+    {
+      "node_index": 5099,
+      "provider_index": 12099,
+      "upstream_share": 0.9999871522125685
+    },
+    {
+      "node_index": 5099,
+      "provider_index": 12161,
+      "upstream_share": 0.9716632393733198
+    },
+    {
+      "node_index": 5099,
+      "provider_index": 12100,
+      "upstream_share": 0.9999999999999996
+    },
+    {
+      "node_index": 12161,
+      "provider_index": 7357,
+      "upstream_share": 0.9714948367586989
+    },
+    {
+      "node_index": 12100,
+      "provider_index": 11326,
+      "upstream_share": 0.9997973328604091
+    },
+    {
+      "node_index": 7357,
+      "provider_index": 4318,
+      "upstream_share": 0.9999999999991325
+    },
+    {
+      "node_index": 4318,
+      "provider_index": 12161,
+      "upstream_share": 0.028336760626680228
+    },
+    {
+      "node_index": 4318,
+      "provider_index": 16097,
+      "upstream_share": 0.9997967576890546
+    },
+    {
+      "node_index": 16097,
+      "provider_index": 7357,
+      "upstream_share": 0.02850185499798279
+    }
+  ]
+}

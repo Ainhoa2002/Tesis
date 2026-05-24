@@ -1,0 +1,61 @@
+{
+  "impact_category": "Water use",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "use_converter_renewables",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "use_converter_renewables",
+      "direct_result": 0.0,
+      "total_result": 2057.81663136396
+    },
+    {
+      "index": 1218,
+      "provider": "market for electricity, high voltage, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2057.81663136396
+    },
+    {
+      "index": 1233,
+      "provider": "electricity production, hydro, reservoir, alpine region, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 1971.1184378940027,
+      "total_result": 1976.0907216975243
+    },
+    {
+      "index": 1220,
+      "provider": "electricity, high voltage, hydro, reservoir, import from FR, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 73.83487032015714
+    },
+    {
+      "index": 11338,
+      "provider": "electricity production, hydro, reservoir, alpine region | electricity, high voltage | Cutoff, U",
+      "direct_result": 73.7011687429079,
+      "total_result": 73.89316189199356
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 1218,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1218,
+      "provider_index": 1233,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 1218,
+      "provider_index": 1220,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1220,
+      "provider_index": 11338,
+      "upstream_share": 0.9992028942637632
+    }
+  ]
+}

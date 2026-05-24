@@ -1,0 +1,731 @@
+{
+  "impact_category": "Human toxicity: carcinogenic, organics",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "fuse_card",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "fuse_card",
+      "direct_result": 0.0,
+      "total_result": 3.4328078788787512e-09
+    },
+    {
+      "index": 4900,
+      "provider": "capacitor production, film type, for through-hole mounting | capacitor, film type, for through-hole mounting | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.684326076657879e-09
+    },
+    {
+      "index": 13546,
+      "provider": "printed wiring board production, for through-hole mounting, Pb free surface | printed wiring board, for through-hole mounting, Pb free surface | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 8.738544844316813e-10
+    },
+    {
+      "index": 14891,
+      "provider": "electronic component production, passive, unspecified | electronic component, passive, unspecified | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 8.060900869497378e-10
+    },
+    {
+      "index": 3205,
+      "provider": "electric connector production, peripheral type buss | electric connector, peripheral type buss | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.8195813415334295e-10
+    },
+    {
+      "index": 7614,
+      "provider": "market for polyphenylene sulfide | polyphenylene sulfide | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.2079958690663037e-09
+    },
+    {
+      "index": 5729,
+      "provider": "market for capacitor, auxilliaries and energy use | capacitor, auxilliaries and energy use | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.5501703796847374e-10
+    },
+    {
+      "index": 952,
+      "provider": "market for pig iron | pig iron | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.9368649430643364e-10
+    },
+    {
+      "index": 2703,
+      "provider": "market for epoxy resin, liquid | epoxy resin, liquid | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.7487069094482757e-10
+    },
+    {
+      "index": 673,
+      "provider": "market for aluminium, wrought alloy | aluminium, wrought alloy | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.2992870215150932e-10
+    },
+    {
+      "index": 1885,
+      "provider": "market for potassium carbonate | potassium carbonate | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.805201746527942e-10
+    },
+    {
+      "index": 728,
+      "provider": "market for sodium hydroxide, without water, in 50% solution state | sodium hydroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.180603644911402e-10
+    },
+    {
+      "index": 327,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.8048018057413348e-10
+    },
+    {
+      "index": 3718,
+      "provider": "market for electric connector, peripheral component interconnect buss | electric connector, peripheral component interconnect buss | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.833852080690608e-10
+    },
+    {
+      "index": 3720,
+      "provider": "market for inductor, ring core choke type | inductor, ring core choke type | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.8144115131563475e-10
+    },
+    {
+      "index": 2783,
+      "provider": "market for capacitor, film type, for through-hole mounting | capacitor, film type, for through-hole mounting | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.6485626463922414e-10
+    },
+    {
+      "index": 3714,
+      "provider": "market for capacitor, electrolyte type, < 2cm height | capacitor, electrolyte type, < 2cm height | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.2013904992124167e-10
+    },
+    {
+      "index": 1614,
+      "provider": "market for printed wiring board mounting facility | printed wiring board mounting facility | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.197689632611829e-10
+    },
+    {
+      "index": 75,
+      "provider": "market for steel, low-alloyed, hot rolled | steel, low-alloyed, hot rolled | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.1430032627332657e-10
+    },
+    {
+      "index": 12359,
+      "provider": "polyphenylene sulfide production | polyphenylene sulfide | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.2077176964098053e-09
+    },
+    {
+      "index": 11938,
+      "provider": "capacitor production, auxilliaries and energy use | capacitor, auxilliaries and energy use | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.5501703796847374e-10
+    },
+    {
+      "index": 15071,
+      "provider": "pig iron production | pig iron | Cutoff, U",
+      "direct_result": 7.760844304417892e-15,
+      "total_result": 1.7638619073275589e-10
+    },
+    {
+      "index": 17651,
+      "provider": "epoxy resin production, liquid | epoxy resin, liquid | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.7452605073049126e-10
+    },
+    {
+      "index": 4311,
+      "provider": "aluminium ingot, primary, to aluminium, wrought alloy market | aluminium, wrought alloy | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.2896920669592415e-10
+    },
+    {
+      "index": 13610,
+      "provider": "potassium carbonate production, from potassium hydroxide | potassium carbonate | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.802103039487686e-10
+    },
+    {
+      "index": 348,
+      "provider": "chlor-alkali electrolysis, membrane cell | sodium hydroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 4.094374141266031e-10,
+      "total_result": 4.1637082185541483e-10
+    },
+    {
+      "index": 13,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.5938744529196903e-10
+    },
+    {
+      "index": 13545,
+      "provider": "electric connector production, peripheral component interconnect buss | electric connector, peripheral component interconnect buss | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.833767818404413e-10
+    },
+    {
+      "index": 8642,
+      "provider": "inductor production, ring core choke type | inductor, ring core choke type | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.8142558293298038e-10
+    },
+    {
+      "index": 7852,
+      "provider": "capacitor production, electrolyte type, < 2cm height | capacitor, electrolyte type, < 2cm height | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.2013261411181827e-10
+    },
+    {
+      "index": 5389,
+      "provider": "printed wiring board mounting facility construction | printed wiring board mounting facility | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.1976896326118292e-10
+    },
+    {
+      "index": 5834,
+      "provider": "market for p-dichlorobenzene | p-dichlorobenzene | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 8.610662635370013e-10
+    },
+    {
+      "index": 2393,
+      "provider": "market for p-dichlorobenzene | p-dichlorobenzene | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.0924577777094e-10
+    },
+    {
+      "index": 385,
+      "provider": "market for coke | coke | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.3291960938020914e-10
+    },
+    {
+      "index": 386,
+      "provider": "market for coke | coke | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.2703806027869855e-10
+    },
+    {
+      "index": 1063,
+      "provider": "market for epichlorohydrin | epichlorohydrin | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.3058840343674472e-10
+    },
+    {
+      "index": 2311,
+      "provider": "market for potassium hydroxide | potassium hydroxide | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.767781357949821e-10
+    },
+    {
+      "index": 1101,
+      "provider": "market for gold | gold | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.6160261945212936e-10
+    },
+    {
+      "index": 144,
+      "provider": "market for building, multi-storey | building, multi-storey | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.6163590478485883e-10
+    },
+    {
+      "index": 7635,
+      "provider": "chlorobenzenes production, benzene chlorination | p-dichlorobenzene | Cutoff, U",
+      "direct_result": 6.783630687079046e-10,
+      "total_result": 8.608605133407409e-10
+    },
+    {
+      "index": 1553,
+      "provider": "chlorobenzenes production, benzene chlorination | p-dichlorobenzene | Cutoff, U",
+      "direct_result": 1.695907356529691e-10,
+      "total_result": 2.0921345949484962e-10
+    },
+    {
+      "index": 15416,
+      "provider": "coke production | coke | Cutoff, U",
+      "direct_result": 9.278899687426773e-11,
+      "total_result": 1.0042979056687064e-10
+    },
+    {
+      "index": 5058,
+      "provider": "coke production, wet quenching | coke | Cutoff, U",
+      "direct_result": 9.228465022624598e-11,
+      "total_result": 1.0020590156383178e-10
+    },
+    {
+      "index": 7662,
+      "provider": "epichlorohydrin production from allyl chloride | epichlorohydrin | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 9.8150948816369e-11
+    },
+    {
+      "index": 2205,
+      "provider": "chlor-alkali electrolysis, membrane cell | potassium hydroxide | Cutoff, U",
+      "direct_result": 4.8038656334338e-10,
+      "total_result": 4.888705049137189e-10
+    },
+    {
+      "index": 10644,
+      "provider": "building construction, multi-storey | building, multi-storey | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.2621775541575272e-10
+    },
+    {
+      "index": 393,
+      "provider": "market for chlorine, liquid | chlorine, liquid | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.8419620024896026e-10
+    },
+    {
+      "index": 7495,
+      "provider": "chlorine production, liquid | chlorine, liquid | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.8402753224238025e-10
+    },
+    {
+      "index": 1855,
+      "provider": "market for chlorine, gaseous | chlorine, gaseous | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.9138963325394316e-10
+    },
+    {
+      "index": 7456,
+      "provider": "chlor-alkali electrolysis, membrane cell | chlorine, gaseous | Cutoff, U",
+      "direct_result": 2.9388562843215595e-10,
+      "total_result": 2.9799831073221384e-10
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 4900,
+      "upstream_share": 0.902126195888361
+    },
+    {
+      "node_index": 0,
+      "provider_index": 13546,
+      "upstream_share": 0.9997150978322008
+    },
+    {
+      "node_index": 0,
+      "provider_index": 14891,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 3205,
+      "upstream_share": 0.8808601811011512
+    },
+    {
+      "node_index": 4900,
+      "provider_index": 7614,
+      "upstream_share": 0.9882246486435088
+    },
+    {
+      "node_index": 4900,
+      "provider_index": 5729,
+      "upstream_share": 0.8314068646888947
+    },
+    {
+      "node_index": 4900,
+      "provider_index": 952,
+      "upstream_share": 0.09008595833748313
+    },
+    {
+      "node_index": 4900,
+      "provider_index": 2703,
+      "upstream_share": 0.8703599721274003
+    },
+    {
+      "node_index": 4900,
+      "provider_index": 673,
+      "upstream_share": 0.17269737617667322
+    },
+    {
+      "node_index": 13546,
+      "provider_index": 1885,
+      "upstream_share": 0.9995579145903783
+    },
+    {
+      "node_index": 13546,
+      "provider_index": 728,
+      "upstream_share": 0.06566876709181202
+    },
+    {
+      "node_index": 13546,
+      "provider_index": 327,
+      "upstream_share": 0.13032792934015106
+    },
+    {
+      "node_index": 14891,
+      "provider_index": 3718,
+      "upstream_share": 0.9998918300591579
+    },
+    {
+      "node_index": 14891,
+      "provider_index": 3720,
+      "upstream_share": 0.999009094955447
+    },
+    {
+      "node_index": 14891,
+      "provider_index": 2783,
+      "upstream_share": 0.9992640891423714
+    },
+    {
+      "node_index": 14891,
+      "provider_index": 3714,
+      "upstream_share": 0.9998407277179873
+    },
+    {
+      "node_index": 3205,
+      "provider_index": 327,
+      "upstream_share": 0.053540492787703224
+    },
+    {
+      "node_index": 3205,
+      "provider_index": 1614,
+      "upstream_share": 0.6845692733887877
+    },
+    {
+      "node_index": 3205,
+      "provider_index": 75,
+      "upstream_share": 0.6946864761466713
+    },
+    {
+      "node_index": 7614,
+      "provider_index": 12359,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 5729,
+      "provider_index": 11938,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 952,
+      "provider_index": 15071,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 2703,
+      "provider_index": 17651,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 673,
+      "provider_index": 4311,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 1885,
+      "provider_index": 13610,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 728,
+      "provider_index": 348,
+      "upstream_share": 1.0000000000000016
+    },
+    {
+      "node_index": 327,
+      "provider_index": 13,
+      "upstream_share": 0.7626857720101131
+    },
+    {
+      "node_index": 3718,
+      "provider_index": 13545,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 3720,
+      "provider_index": 8642,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 2783,
+      "provider_index": 4900,
+      "upstream_share": 0.09787380411163905
+    },
+    {
+      "node_index": 3714,
+      "provider_index": 7852,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1614,
+      "provider_index": 5389,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 12359,
+      "provider_index": 5834,
+      "upstream_share": 0.9999881132840062
+    },
+    {
+      "node_index": 12359,
+      "provider_index": 728,
+      "upstream_share": 0.2731626877983903
+    },
+    {
+      "node_index": 12359,
+      "provider_index": 2393,
+      "upstream_share": 0.9999882991646336
+    },
+    {
+      "node_index": 12359,
+      "provider_index": 327,
+      "upstream_share": 0.0008946609843912488
+    },
+    {
+      "node_index": 11938,
+      "provider_index": 327,
+      "upstream_share": 0.5982445816184311
+    },
+    {
+      "node_index": 15071,
+      "provider_index": 385,
+      "upstream_share": 0.412961904400299
+    },
+    {
+      "node_index": 15071,
+      "provider_index": 386,
+      "upstream_share": 0.7386285356922064
+    },
+    {
+      "node_index": 17651,
+      "provider_index": 728,
+      "upstream_share": 0.09466831823002064
+    },
+    {
+      "node_index": 17651,
+      "provider_index": 13,
+      "upstream_share": 0.0011984245559672655
+    },
+    {
+      "node_index": 17651,
+      "provider_index": 1063,
+      "upstream_share": 0.825938811380142
+    },
+    {
+      "node_index": 13610,
+      "provider_index": 2311,
+      "upstream_share": 0.9998870943936701
+    },
+    {
+      "node_index": 13610,
+      "provider_index": 327,
+      "upstream_share": 0.002080568011354728
+    },
+    {
+      "node_index": 348,
+      "provider_index": 1885,
+      "upstream_share": 1.9611141330070147e-05
+    },
+    {
+      "node_index": 348,
+      "provider_index": 13,
+      "upstream_share": 0.009297236048385489
+    },
+    {
+      "node_index": 13545,
+      "provider_index": 327,
+      "upstream_share": 0.011272499512616534
+    },
+    {
+      "node_index": 13545,
+      "provider_index": 1101,
+      "upstream_share": 0.9943647113759534
+    },
+    {
+      "node_index": 13545,
+      "provider_index": 1614,
+      "upstream_share": 0.14413029090385404
+    },
+    {
+      "node_index": 8642,
+      "provider_index": 952,
+      "upstream_share": 0.0024649401995169135
+    },
+    {
+      "node_index": 8642,
+      "provider_index": 2703,
+      "upstream_share": 0.01978085893906026
+    },
+    {
+      "node_index": 7852,
+      "provider_index": 673,
+      "upstream_share": 0.336154954461546
+    },
+    {
+      "node_index": 7852,
+      "provider_index": 2703,
+      "upstream_share": 0.02806083411379543
+    },
+    {
+      "node_index": 7852,
+      "provider_index": 952,
+      "upstream_share": 0.008416786170435172
+    },
+    {
+      "node_index": 7852,
+      "provider_index": 7614,
+      "upstream_share": 0.011729464139393287
+    },
+    {
+      "node_index": 7852,
+      "provider_index": 5729,
+      "upstream_share": 0.10766016292505119
+    },
+    {
+      "node_index": 5389,
+      "provider_index": 144,
+      "upstream_share": 0.5380666720885643
+    },
+    {
+      "node_index": 5834,
+      "provider_index": 7635,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 2393,
+      "provider_index": 1553,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 385,
+      "provider_index": 15416,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 386,
+      "provider_index": 5058,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1063,
+      "provider_index": 7662,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 2311,
+      "provider_index": 2205,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 144,
+      "provider_index": 10644,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 7635,
+      "provider_index": 728,
+      "upstream_share": 0.06176125726211396
+    },
+    {
+      "node_index": 7635,
+      "provider_index": 393,
+      "upstream_share": 0.41309227907143603
+    },
+    {
+      "node_index": 7635,
+      "provider_index": 13,
+      "upstream_share": 0.00011763795695212804
+    },
+    {
+      "node_index": 15416,
+      "provider_index": 728,
+      "upstream_share": 0.0008012287616740496
+    },
+    {
+      "node_index": 15416,
+      "provider_index": 1885,
+      "upstream_share": 5.031250424559665e-07
+    },
+    {
+      "node_index": 15416,
+      "provider_index": 13,
+      "upstream_share": 6.743055288719986e-05
+    },
+    {
+      "node_index": 5058,
+      "provider_index": 728,
+      "upstream_share": 0.0008479028523883679
+    },
+    {
+      "node_index": 5058,
+      "provider_index": 1885,
+      "upstream_share": 5.481226947781366e-07
+    },
+    {
+      "node_index": 7662,
+      "provider_index": 393,
+      "upstream_share": 0.15404987336250348
+    },
+    {
+      "node_index": 7662,
+      "provider_index": 13,
+      "upstream_share": 0.00011148603391312714
+    },
+    {
+      "node_index": 2205,
+      "provider_index": 1885,
+      "upstream_share": 2.3009447748907123e-05
+    },
+    {
+      "node_index": 2205,
+      "provider_index": 13,
+      "upstream_share": 0.010908302758318679
+    },
+    {
+      "node_index": 10644,
+      "provider_index": 673,
+      "upstream_share": 0.19184862503426603
+    },
+    {
+      "node_index": 10644,
+      "provider_index": 13,
+      "upstream_share": 1.676286275545307e-05
+    },
+    {
+      "node_index": 393,
+      "provider_index": 7495,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 7495,
+      "provider_index": 1855,
+      "upstream_share": 0.9742838292484541
+    },
+    {
+      "node_index": 7495,
+      "provider_index": 13,
+      "upstream_share": 0.0005250507304148974
+    },
+    {
+      "node_index": 1855,
+      "provider_index": 7456,
+      "upstream_share": 0.9751629852303177
+    },
+    {
+      "node_index": 7456,
+      "provider_index": 1885,
+      "upstream_share": 1.4076467843941024e-05
+    },
+    {
+      "node_index": 7456,
+      "provider_index": 13,
+      "upstream_share": 0.006673361946148371
+    }
+  ]
+}

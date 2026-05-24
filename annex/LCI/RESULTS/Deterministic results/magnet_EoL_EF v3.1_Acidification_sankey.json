@@ -1,0 +1,165 @@
+{
+  "impact_category": "Acidification",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "magnet_EoL",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "magnet_EoL",
+      "direct_result": 0.0,
+      "total_result": 0.0004492103474110858
+    },
+    {
+      "index": 10939,
+      "provider": "treatment of waste plastic, industrial electronics, municipal incineration FAE | waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 0.0003985969759536084,
+      "total_result": 0.00044921034741108695
+    },
+    {
+      "index": 1022,
+      "provider": "market for heat, district or industrial, natural gas | heat, district or industrial, natural gas | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.1427547231863711e-05
+    },
+    {
+      "index": 1014,
+      "provider": "market for titanium dioxide | titanium dioxide | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.0400478768982012e-05
+    },
+    {
+      "index": 1849,
+      "provider": "municipal waste incineration facility construction | municipal waste incineration facility | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 7.3246935418264455e-06
+    },
+    {
+      "index": 78,
+      "provider": "market for ammonia, anhydrous, liquid | ammonia, anhydrous, liquid | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.158621938620851e-06
+    },
+    {
+      "index": 14932,
+      "provider": "heat and power co-generation, natural gas, 200kW electrical, lean burn | heat, district or industrial, natural gas | Cutoff, U",
+      "direct_result": 2.3283278050620208e-06,
+      "total_result": 4.9267942915078985e-06
+    },
+    {
+      "index": 6158,
+      "provider": "titanium dioxide production, sulfate process | titanium dioxide | Cutoff, U",
+      "direct_result": 3.8950667292600336e-07,
+      "total_result": 9.690670100314883e-06
+    },
+    {
+      "index": 191,
+      "provider": "market for reinforcing steel | reinforcing steel | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.679094344052426e-06
+    },
+    {
+      "index": 2302,
+      "provider": "market for natural gas, low pressure | natural gas, low pressure | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.673942209348116e-06
+    },
+    {
+      "index": 246,
+      "provider": "market for waste gypsum | waste gypsum | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.934433481416464e-06
+    },
+    {
+      "index": 16721,
+      "provider": "natural gas pressure reduction, from high to low pressure | natural gas, low pressure | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.443059265901124e-06
+    },
+    {
+      "index": 1569,
+      "provider": "treatment of waste gypsum, sanitary landfill | waste gypsum | Cutoff, U",
+      "direct_result": 5.857880605189097e-06,
+      "total_result": 5.917412127315857e-06
+    },
+    {
+      "index": 364,
+      "provider": "market for natural gas, high pressure | natural gas, high pressure | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.496900339581275e-06
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 10939,
+      "upstream_share": 0.9999998400207442
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 1022,
+      "upstream_share": 0.9983743848515736
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 1014,
+      "upstream_share": 0.9797578912241343
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 1849,
+      "upstream_share": 0.9997427253978399
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 78,
+      "upstream_share": 0.9929964972107768
+    },
+    {
+      "node_index": 1022,
+      "provider_index": 14932,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1014,
+      "provider_index": 6158,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 1849,
+      "provider_index": 191,
+      "upstream_share": 0.84540578619999
+    },
+    {
+      "node_index": 14932,
+      "provider_index": 2302,
+      "upstream_share": 0.42925424354241615
+    },
+    {
+      "node_index": 6158,
+      "provider_index": 246,
+      "upstream_share": 0.9684234517547079
+    },
+    {
+      "node_index": 2302,
+      "provider_index": 16721,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 246,
+      "provider_index": 1569,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 16721,
+      "provider_index": 364,
+      "upstream_share": 0.9784379905530437
+    },
+    {
+      "node_index": 1569,
+      "provider_index": 191,
+      "upstream_share": 2.297925085355623e-06
+    }
+  ]
+}

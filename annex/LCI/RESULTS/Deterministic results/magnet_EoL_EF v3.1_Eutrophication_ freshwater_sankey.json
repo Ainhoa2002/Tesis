@@ -1,0 +1,616 @@
+{
+  "impact_category": "Eutrophication: freshwater",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "magnet_EoL",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "magnet_EoL",
+      "direct_result": 0.0,
+      "total_result": 1.0845184239713997e-05
+    },
+    {
+      "index": 10939,
+      "provider": "treatment of waste plastic, industrial electronics, municipal incineration FAE | waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 1.0674087602192593e-07,
+      "total_result": 1.0845184239714143e-05
+    },
+    {
+      "index": 7491,
+      "provider": "market for residues, MSWI[F], waste plastic, industrial electronics | residues, MSWI[F], waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.325144066820515e-06
+    },
+    {
+      "index": 7492,
+      "provider": "market for bottom ash, MSWI[F], waste plastic, industrial electronics | bottom ash, MSWI[F], waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.9381887502316853e-06
+    },
+    {
+      "index": 1849,
+      "provider": "municipal waste incineration facility construction | municipal waste incineration facility | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 7.207518511636885e-07
+    },
+    {
+      "index": 244,
+      "provider": "market for sodium hydroxide, without water, in 50% solution state | sodium hydroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.740292686020092e-07
+    },
+    {
+      "index": 78,
+      "provider": "market for ammonia, anhydrous, liquid | ammonia, anhydrous, liquid | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.207449540810778e-07
+    },
+    {
+      "index": 999,
+      "provider": "market for water, decarbonised | water, decarbonised | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.0236025285290742e-07
+    },
+    {
+      "index": 1022,
+      "provider": "market for heat, district or industrial, natural gas | heat, district or industrial, natural gas | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.9095471528616855e-07
+    },
+    {
+      "index": 588,
+      "provider": "market for hydrogen peroxide, without water, in 50% solution state | hydrogen peroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.8050806559079438e-07
+    },
+    {
+      "index": 12994,
+      "provider": "treatment of residues, MSWI[F], waste plastic, industrial electronics, residual material landfill | residues, MSWI[F], waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 4.272149867405878e-06,
+      "total_result": 5.3230720405783635e-06
+    },
+    {
+      "index": 3023,
+      "provider": "treatment of bottom ash, MSWI[F], waste plastic, industrial electronics, slag compartment | bottom ash, MSWI[F], waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 2.9102260276823534e-06,
+      "total_result": 2.9281628215194966e-06
+    },
+    {
+      "index": 191,
+      "provider": "market for reinforcing steel | reinforcing steel | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.666381438194741e-07
+    },
+    {
+      "index": 547,
+      "provider": "market for cement, unspecified | cement, unspecified | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.887487213293971e-07
+    },
+    {
+      "index": 14706,
+      "provider": "chlor-alkali electrolysis, average production | sodium hydroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 1.4132139740115285e-10,
+      "total_result": 5.734944071182397e-07
+    },
+    {
+      "index": 16886,
+      "provider": "water production, decarbonised | water, decarbonised | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.023602528529074e-07
+    },
+    {
+      "index": 9303,
+      "provider": "hydrogen peroxide production, product in 50% solution state | hydrogen peroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 1.955744571157802e-09,
+      "total_result": 1.792367909579428e-07
+    },
+    {
+      "index": 637,
+      "provider": "treatment of waste cement, hydrated, residual material landfill | waste cement, hydrated | Cutoff, U",
+      "direct_result": 8.174557570235815e-07,
+      "total_result": 8.206706379816684e-07
+    },
+    {
+      "index": 6110,
+      "provider": "reinforcing steel production | reinforcing steel | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.512868266952185e-07
+    },
+    {
+      "index": 6109,
+      "provider": "reinforcing steel production | reinforcing steel | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.1299359545520874e-07
+    },
+    {
+      "index": 8464,
+      "provider": "cement, all types to generic market for cement, unspecified | cement, unspecified | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.445131604499512e-07
+    },
+    {
+      "index": 520,
+      "provider": "market for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.419602969898069e-07
+    },
+    {
+      "index": 5034,
+      "provider": "market for decarbonising waste | decarbonising waste | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.9919786348291563e-07
+    },
+    {
+      "index": 195,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.445504738528728e-07
+    },
+    {
+      "index": 268,
+      "provider": "market for steel, low-alloyed | steel, low-alloyed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.326795501464977e-07
+    },
+    {
+      "index": 270,
+      "provider": "market for steel, unalloyed | steel, unalloyed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.2255603403743844e-07
+    },
+    {
+      "index": 16210,
+      "provider": "electricity voltage transformation from high to medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.400481256393481e-07
+    },
+    {
+      "index": 6936,
+      "provider": "treatment of decarbonising waste, residual material landfill | decarbonising waste | Cutoff, U",
+      "direct_result": 1.9843612440484518e-07,
+      "total_result": 1.9889924788624693e-07
+    },
+    {
+      "index": 107,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.7161399257754254e-07
+    },
+    {
+      "index": 8330,
+      "provider": "steel production, converter, low-alloyed | steel, low-alloyed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.1699027561037872e-07
+    },
+    {
+      "index": 16874,
+      "provider": "steel production, converter, unalloyed | steel, unalloyed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.9085585906218155e-07
+    },
+    {
+      "index": 506,
+      "provider": "market for electricity, high voltage | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.754060316344415e-07
+    },
+    {
+      "index": 952,
+      "provider": "market for pig iron | pig iron | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.568759422406058e-07
+    },
+    {
+      "index": 3495,
+      "provider": "market for ferronickel | ferronickel | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.97792514442042e-07
+    },
+    {
+      "index": 245,
+      "provider": "market for copper, cathode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.964596968242645e-07
+    },
+    {
+      "index": 5250,
+      "provider": "electricity production, lignite | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.847484857524988e-07
+    },
+    {
+      "index": 15067,
+      "provider": "pig iron production | pig iron | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.2792460071381844e-07
+    },
+    {
+      "index": 8521,
+      "provider": "ferronickel production | ferronickel | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.9585045513323395e-07
+    },
+    {
+      "index": 4173,
+      "provider": "market for lignite | lignite | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 7.714260842453505e-07
+    },
+    {
+      "index": 619,
+      "provider": "market for hard coal | hard coal | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.0107348590969817e-07
+    },
+    {
+      "index": 432,
+      "provider": "market for hard coal | hard coal | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.9229332976158677e-07
+    },
+    {
+      "index": 989,
+      "provider": "market for sulfidic tailings, generic | sulfidic tailings, generic | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.78637017093647e-07
+    },
+    {
+      "index": 14299,
+      "provider": "lignite mine operation | lignite | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 7.712993456072916e-07
+    },
+    {
+      "index": 16954,
+      "provider": "hard coal mine operation and hard coal preparation | hard coal | Cutoff, U",
+      "direct_result": 3.724192941776743e-11,
+      "total_result": 1.7712827043580456e-07
+    },
+    {
+      "index": 17472,
+      "provider": "hard coal mine operation and hard coal preparation | hard coal | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.9169043053042155e-07
+    },
+    {
+      "index": 16726,
+      "provider": "treatment of sulfidic tailings, generic, tailings impoundment | sulfidic tailings, generic | Cutoff, U",
+      "direct_result": 1.78637017093647e-07,
+      "total_result": 1.78637017093647e-07
+    },
+    {
+      "index": 7092,
+      "provider": "market for spoil from lignite mining | spoil from lignite mining | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.140477011246359e-06
+    },
+    {
+      "index": 441,
+      "provider": "market for spoil from hard coal mining | spoil from hard coal mining | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 7.380387192471226e-07
+    },
+    {
+      "index": 6228,
+      "provider": "treatment of spoil from lignite mining, in surface landfill | spoil from lignite mining | Cutoff, U",
+      "direct_result": 1.140477011246359e-06,
+      "total_result": 1.140477011246359e-06
+    },
+    {
+      "index": 5321,
+      "provider": "treatment of spoil from hard coal mining, in surface landfill | spoil from hard coal mining | Cutoff, U",
+      "direct_result": 7.380387192471227e-07,
+      "total_result": 7.380387192471226e-07
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 10939,
+      "upstream_share": 0.9999998400207442
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 7491,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 7492,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 1849,
+      "upstream_share": 0.9997427253978399
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 244,
+      "upstream_share": 0.9758188948010921
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 78,
+      "upstream_share": 0.9929964972107768
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 999,
+      "upstream_share": 0.9994624654257154
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 1022,
+      "upstream_share": 0.9983743848515736
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 588,
+      "upstream_share": 0.9976033212860537
+    },
+    {
+      "node_index": 7491,
+      "provider_index": 12994,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 7492,
+      "provider_index": 3023,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1849,
+      "provider_index": 191,
+      "upstream_share": 0.84540578619999
+    },
+    {
+      "node_index": 1849,
+      "provider_index": 547,
+      "upstream_share": 0.21216765439473131
+    },
+    {
+      "node_index": 244,
+      "provider_index": 14706,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 999,
+      "provider_index": 16886,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 588,
+      "provider_index": 9303,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 12994,
+      "provider_index": 637,
+      "upstream_share": 0.9994369940820113
+    },
+    {
+      "node_index": 12994,
+      "provider_index": 547,
+      "upstream_share": 0.7871691293753977
+    },
+    {
+      "node_index": 191,
+      "provider_index": 6110,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 191,
+      "provider_index": 6109,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 547,
+      "provider_index": 8464,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 14706,
+      "provider_index": 520,
+      "upstream_share": 0.6129329445273887
+    },
+    {
+      "node_index": 14706,
+      "provider_index": 78,
+      "upstream_share": 4.572611013373297e-08
+    },
+    {
+      "node_index": 14706,
+      "provider_index": 588,
+      "upstream_share": 0.00026847579170617036
+    },
+    {
+      "node_index": 16886,
+      "provider_index": 5034,
+      "upstream_share": 0.9948885657151297
+    },
+    {
+      "node_index": 9303,
+      "provider_index": 244,
+      "upstream_share": 0.0004377117431173475
+    },
+    {
+      "node_index": 9303,
+      "provider_index": 195,
+      "upstream_share": 0.3592987779824654
+    },
+    {
+      "node_index": 637,
+      "provider_index": 191,
+      "upstream_share": 0.00029885346382137824
+    },
+    {
+      "node_index": 6110,
+      "provider_index": 268,
+      "upstream_share": 0.625091676357062
+    },
+    {
+      "node_index": 6110,
+      "provider_index": 270,
+      "upstream_share": 0.6227350464051022
+    },
+    {
+      "node_index": 6109,
+      "provider_index": 270,
+      "upstream_share": 0.29291512569607947
+    },
+    {
+      "node_index": 6109,
+      "provider_index": 268,
+      "upstream_share": 0.2940236108577583
+    },
+    {
+      "node_index": 520,
+      "provider_index": 16210,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 5034,
+      "provider_index": 6936,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 195,
+      "provider_index": 107,
+      "upstream_share": 0.898899218547795
+    },
+    {
+      "node_index": 268,
+      "provider_index": 8330,
+      "upstream_share": 0.9999999999999997
+    },
+    {
+      "node_index": 270,
+      "provider_index": 16874,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 16210,
+      "provider_index": 506,
+      "upstream_share": 0.9143783462607037
+    },
+    {
+      "node_index": 6936,
+      "provider_index": 191,
+      "upstream_share": 4.3049696477012064e-05
+    },
+    {
+      "node_index": 107,
+      "provider_index": 520,
+      "upstream_share": 0.16848480287139395
+    },
+    {
+      "node_index": 8330,
+      "provider_index": 952,
+      "upstream_share": 0.2668615588924671
+    },
+    {
+      "node_index": 8330,
+      "provider_index": 3495,
+      "upstream_share": 0.4945159608097066
+    },
+    {
+      "node_index": 8330,
+      "provider_index": 245,
+      "upstream_share": 2.9602153973820245e-05
+    },
+    {
+      "node_index": 16874,
+      "provider_index": 952,
+      "upstream_share": 0.7130835376974727
+    },
+    {
+      "node_index": 506,
+      "provider_index": 5250,
+      "upstream_share": 0.9847381215373967
+    },
+    {
+      "node_index": 952,
+      "provider_index": 15067,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 3495,
+      "provider_index": 8521,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 5250,
+      "provider_index": 4173,
+      "upstream_share": 0.6256352826863899
+    },
+    {
+      "node_index": 15067,
+      "provider_index": 619,
+      "upstream_share": 0.10235393594409967
+    },
+    {
+      "node_index": 15067,
+      "provider_index": 432,
+      "upstream_share": 0.01441139035244407
+    },
+    {
+      "node_index": 8521,
+      "provider_index": 989,
+      "upstream_share": 0.8883242992359904
+    },
+    {
+      "node_index": 4173,
+      "provider_index": 14299,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 619,
+      "provider_index": 16954,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 432,
+      "provider_index": 17472,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 989,
+      "provider_index": 16726,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 14299,
+      "provider_index": 7092,
+      "upstream_share": 0.6757477655004459
+    },
+    {
+      "node_index": 16954,
+      "provider_index": 441,
+      "upstream_share": 0.23259093894434663
+    },
+    {
+      "node_index": 16954,
+      "provider_index": 191,
+      "upstream_share": 0.0007908780680809885
+    },
+    {
+      "node_index": 17472,
+      "provider_index": 441,
+      "upstream_share": 0.2572619174582974
+    },
+    {
+      "node_index": 7092,
+      "provider_index": 6228,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 441,
+      "provider_index": 5321,
+      "upstream_share": 1.0
+    }
+  ]
+}

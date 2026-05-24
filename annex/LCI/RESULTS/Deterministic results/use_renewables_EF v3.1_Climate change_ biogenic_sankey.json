@@ -1,0 +1,126 @@
+{
+  "impact_category": "Climate change: biogenic",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "use_renewables",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "use_renewables",
+      "direct_result": 0.0,
+      "total_result": 8.945796273288689
+    },
+    {
+      "index": 1218,
+      "provider": "market for electricity, high voltage, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 8.945796273288682
+    },
+    {
+      "index": 1228,
+      "provider": "heat and power co-generation, biogas, gas engine, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.8852273404575082,
+      "total_result": 5.751938196876445
+    },
+    {
+      "index": 1233,
+      "provider": "electricity production, hydro, reservoir, alpine region, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 2.9682891561852642,
+      "total_result": 2.9912909416093534
+    },
+    {
+      "index": 1220,
+      "provider": "electricity, high voltage, hydro, reservoir, import from FR, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.11178764008482071
+    },
+    {
+      "index": 7369,
+      "provider": "market for biogas | biogas | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.8664530504887065
+    },
+    {
+      "index": 11338,
+      "provider": "electricity production, hydro, reservoir, alpine region | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.11098591326226438,
+      "total_result": 0.11187589482440613
+    },
+    {
+      "index": 4330,
+      "provider": "anaerobic digestion of manure | biogas | Cutoff, U",
+      "direct_result": 4.791984182000009,
+      "total_result": 4.846468004479694
+    },
+    {
+      "index": 16108,
+      "provider": "heat and power co-generation, biogas, gas engine | heat, central or small-scale, other than natural gas | Cutoff, U",
+      "direct_result": 0.02672769239625222,
+      "total_result": 0.1685792011963516
+    },
+    {
+      "index": 12173,
+      "provider": "heat and power co-generation, biogas, gas engine | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.02589999672636604,
+      "total_result": 0.16352117104877906
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 1218,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 1218,
+      "provider_index": 1228,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1218,
+      "provider_index": 1233,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 1218,
+      "provider_index": 1220,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1228,
+      "provider_index": 7369,
+      "upstream_share": 0.9438842583029924
+    },
+    {
+      "node_index": 1220,
+      "provider_index": 11338,
+      "upstream_share": 0.9992028942637632
+    },
+    {
+      "node_index": 7369,
+      "provider_index": 4330,
+      "upstream_share": 0.999999999999695
+    },
+    {
+      "node_index": 4330,
+      "provider_index": 16108,
+      "upstream_share": 0.9999066608699843
+    },
+    {
+      "node_index": 4330,
+      "provider_index": 12173,
+      "upstream_share": 0.9968436912440665
+    },
+    {
+      "node_index": 16108,
+      "provider_index": 7369,
+      "upstream_share": 0.02849872226103314
+    },
+    {
+      "node_index": 12173,
+      "provider_index": 7369,
+      "upstream_share": 0.027616181835805356
+    }
+  ]
+}

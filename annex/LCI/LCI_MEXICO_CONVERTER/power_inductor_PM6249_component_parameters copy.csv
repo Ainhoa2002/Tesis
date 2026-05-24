@@ -1,0 +1,6 @@
+﻿"Designators","Casing","Section","Subsection","Category","Manufacturer","Part_Number","Description","number_elements","unit","Quantity_per_element","Has_datasheet_info","L_mm","W_mm","H_mm","Volume_cm3_excel","Density_min_g_cm3","Density_max_g_cm3","Metal_extra_g","mass_space_relation_m2/kg","Database","Ecoinvent_flow","Ecoinvent_unit","Direction","Comments"
+Bobbin,,Magnetics,Inductors,,CERN,,"Copper used in the inductor",1,kg,0.166077,YES,,,,,,,,,EcoInvent,"copper, cathode",kg,Input,"Materials for the inductor."
+Ferrite core,,Magnetics,Inductors,,TDK ,,Pot core with Airgap,1,kg,0.65664,YES,,,,,,,,,EcoInvent,"grain oriented electrical steel, 0.23 mm coil",kg,Input,Materials for the inductor.
+Copper Processing,,Magnetics,Inductors,,,,Processing of copper,1,kg,0.166077,YES,,,,,,,,,EcoInvent,"wire drawing, copper",kg,Input,Materials for the inductor.
+Cable_tape,,Magnetics,Inductors,,,,White nylon cable tie 100 x 2.5,1,kg,0.0012,YES,,,,,,,,,EcoInvent,nylon 6,kg,Input,Materials for the inductor.
+Electrical Tape 92,,Magnetics,Inductors,,,,Kapton ideally or yellow tape,,kg,0.0016,YES,,,,,,,,,EcoInvent,polytetrafluoroethylene,kg,Input,Materials for the inductor.

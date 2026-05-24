@@ -1,0 +1,72 @@
+{
+  "impact_category": "Ecotoxicity: freshwater",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "connecting_cable_EoL",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "connecting_cable_EoL",
+      "direct_result": 0.0,
+      "total_result": 1930.5575296983066
+    },
+    {
+      "index": 9939,
+      "provider": "treatment of waste wire plastic, municipal incineration FAE | waste wire plastic | Cutoff, U",
+      "direct_result": 1769.5257810965786,
+      "total_result": 1930.1691508168892
+    },
+    {
+      "index": 7296,
+      "provider": "market for residues, MSWI[F], waste wire plastic | residues, MSWI[F], waste wire plastic | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 114.64984065921904
+    },
+    {
+      "index": 7295,
+      "provider": "market for bottom ash, MSWI[F], waste wire plastic | bottom ash, MSWI[F], waste wire plastic | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 31.167452375916966
+    },
+    {
+      "index": 15659,
+      "provider": "treatment of residues, MSWI[F], waste wire plastic, residual material landfill | residues, MSWI[F], waste wire plastic | Cutoff, U",
+      "direct_result": 114.04155482980389,
+      "total_result": 114.63281461532397
+    },
+    {
+      "index": 3162,
+      "provider": "treatment of bottom ash, MSWI[F], waste wire plastic, slag compartment | bottom ash, MSWI[F], waste wire plastic | Cutoff, U",
+      "direct_result": 31.128772885294243,
+      "total_result": 31.153727960000115
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 9939,
+      "upstream_share": 0.9999999291871676
+    },
+    {
+      "node_index": 9939,
+      "provider_index": 7296,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 9939,
+      "provider_index": 7295,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 7296,
+      "provider_index": 15659,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 7295,
+      "provider_index": 3162,
+      "upstream_share": 1.0
+    }
+  ]
+}

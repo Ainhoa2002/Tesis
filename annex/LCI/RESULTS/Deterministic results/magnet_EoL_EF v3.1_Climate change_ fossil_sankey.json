@@ -1,0 +1,28 @@
+{
+  "impact_category": "Climate change: fossil",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "magnet_EoL",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "magnet_EoL",
+      "direct_result": 0.0,
+      "total_result": 1.8332924032319267
+    },
+    {
+      "index": 10939,
+      "provider": "treatment of waste plastic, industrial electronics, municipal incineration FAE | waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 1.811863990990126,
+      "total_result": 1.8332924032319247
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 10939,
+      "upstream_share": 0.9999998400207442
+    }
+  ]
+}
