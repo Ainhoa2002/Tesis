@@ -10,8 +10,11 @@ from __future__ import annotations
 
 import csv
 import math
+import sys
 import tempfile
 from pathlib import Path
+
+sys.dont_write_bytecode = True
 
 from Pipeline import run_pipeline
 
