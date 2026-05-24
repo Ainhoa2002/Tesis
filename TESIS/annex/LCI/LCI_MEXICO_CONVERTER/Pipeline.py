@@ -473,25 +473,6 @@ def _build_quantity_data(row, mass_data):
     return None
 
 
-def _compute_total_mass_kg_from_quantity(row, unit, quantity_data):
-    """Derive Total_mass_kg for mass_results from Total_quantity context."""
-    if quantity_data is None:
-        return ""
-
-    total_quantity = quantity_data["Total_quantity"]
-
-    if is_mass_unit(unit):
-        return _round_for_csv(total_quantity)
-
-    if unit == "m2":
-        relation = to_float(row.get("mass_space_relation_m2/kg"))
-        if relation is None:
-            return ""
-        return _round_for_csv(total_quantity * relation)
-
-    return ""
-
-
 def _ordered_result_fieldnames(row):
     """Return result CSV field order with key visualization columns first."""
     preferred_front = [
@@ -1154,11 +1135,17 @@ def run_pipeline(
         if mass_data is not None and is_mass_unit(unit):
             result_row["Total_mass_kg"] = _round_for_csv(mass_data["Total_mass_kg"])
         else:
-            result_row["Total_mass_kg"] = _compute_total_mass_kg_from_quantity(
-                row,
-                unit,
-                quantity_data,
-            )
+            if quantity_data is None:
+                result_row["Total_mass_kg"] = ""
+            else:
+                total_quantity = quantity_data["Total_quantity"]
+                if is_mass_unit(unit):
+                    result_row["Total_mass_kg"] = _round_for_csv(total_quantity)
+                elif unit == "m2":
+                    relation = to_float(row.get("mass_space_relation_m2/kg"))
+                    result_row["Total_mass_kg"] = "" if relation is None else _round_for_csv(total_quantity * relation)
+                else:
+                    result_row["Total_mass_kg"] = ""
 
         needs_mass = is_mass_unit(unit)
         needs_area = unit.lower() == "m2"
