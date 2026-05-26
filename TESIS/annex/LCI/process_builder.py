@@ -15,6 +15,7 @@ import olca_schema as o
 import logging
 
 from csv_reader import read_input_rows, read_output_rows
+from _utils import clean_text, to_float
 
 
 @dataclass
@@ -109,7 +110,8 @@ def _get_transport_work_flow_property(client):
     # This covers database variants with localized/custom names.
     try:
         descriptors = list(client.get_descriptors(o.FlowProperty))
-    except Exception:
+    except Exception as exc:
+        logging.exception("Failed to list FlowProperty descriptors: %s", exc)
         descriptors = []
 
     for descriptor in descriptors:
@@ -134,12 +136,12 @@ def _get_existing_process_by_name(client, process_name):
 def _same_ref(ref_a, ref_b):
     if not ref_a or not ref_b:
         return False
-    id_a = str(getattr(ref_a, "id", "") or "").strip().lower()
-    id_b = str(getattr(ref_b, "id", "") or "").strip().lower()
+    id_a = clean_text(getattr(ref_a, "id", "")).lower()
+    id_b = clean_text(getattr(ref_b, "id", "")).lower()
     if id_a and id_b:
         return id_a == id_b
-    name_a = str(getattr(ref_a, "name", "") or "").strip().lower()
-    name_b = str(getattr(ref_b, "name", "") or "").strip().lower()
+    name_a = clean_text(getattr(ref_a, "name", "")).lower()
+    name_b = clean_text(getattr(ref_b, "name", "")).lower()
     return bool(name_a and name_b and name_a == name_b)
 
 
@@ -223,7 +225,7 @@ def _sync_output_flow_definition(client, flow, flow_name, amount_per_lu, output_
     if not number_prop:
         raise ValueError("Flow property 'Number' (or equivalent) not found")
 
-    unit_norm = str(output_unit or "").strip().lower()
+    unit_norm = clean_text(output_unit).lower()
     secondary_prop = mass_prop
     if unit_norm == "tkm" and transport_prop:
         secondary_prop = transport_prop
@@ -357,12 +359,11 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
     flow_category_path = _normalize_category_path(category_name)
 
     for output_row in (output_rows or []):
-        output_name = str(output_row.get("Flow", "")).strip()
-        uuid = str(output_row.get("UUID", "")).strip()
-        output_unit = str(output_row.get("Unit", "") or "").strip().lower()
-        try:
-            output_amount = float(output_row.get("Amount", 0))
-        except (ValueError, TypeError):
+        output_name = clean_text(output_row.get("Flow", ""))
+        uuid = clean_text(output_row.get("UUID", ""))
+        output_unit = clean_text(output_row.get("Unit", "")).lower()
+        output_amount = to_float(output_row.get("Amount"))
+        if output_amount is None:
             _warn(
                 report,
                 f"  Invalid output amount '{output_row.get('Amount')}' for '{output_name}', skipping output.",
@@ -451,9 +452,9 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
 
     input_count = 0
     for row in inputs:
-        uuid = row.get("UUID", "").strip()
-        provider_uuid = row.get("UUID_provider", "").strip()
-        flow_name = str(row.get("Flow", "")).strip()
+        uuid = clean_text(row.get("UUID", ""))
+        provider_uuid = clean_text(row.get("UUID_provider", ""))
+        flow_name = clean_text(row.get("Flow", ""))
         logging.debug("Processing input: flow='%s', uuid='%s', provider_uuid='%s', amount='%s'", flow_name, uuid, provider_uuid, row.get('Amount', 0))
 
         if not uuid:
@@ -470,9 +471,8 @@ def build_process_from_inputs(client, process_name, inputs, category_name, repor
             logging.debug("Input flow UUID '%s' not found for '%s'.", uuid, flow_name)
             continue
 
-        try:
-            amount = float(row.get("Amount", 0))
-        except (ValueError, TypeError):
+        amount = to_float(row.get("Amount"))
+        if amount is None:
             _warn(report, f"  Invalid amount '{row.get('Amount')}' for UUID {uuid}, skipping.")
             logging.debug("Invalid amount for input '%s' with UUID '%s'.", flow_name, uuid)
             continue

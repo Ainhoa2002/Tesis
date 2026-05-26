@@ -25,6 +25,17 @@ from typing import Dict, List, Optional, Set, Tuple
 BASE_DIR = Path(__file__).parent
 STORAGE_LIBRARY_NAME = "component_library_parameters_all.csv"
 
+import logging
+import sys
+
+# interactive-safe output helper
+_IS_TTY = sys.stdout.isatty()
+def _out(msg: str, level: str = "info") -> None:
+    if _IS_TTY:
+        print(msg)
+    else:
+        getattr(logging, level)(msg)
+
 
 def _clean(value: object) -> str:
     return str(value or "").strip()
@@ -41,7 +52,7 @@ def _prompt_int_choice(prompt: str, option_count: int, *, allow_cancel: bool = F
             idx = -1
         if 1 <= idx <= option_count:
             return idx
-        print("Invalid selection.")
+        _out("Invalid selection.", level="warning")
 
 
 def _discover_subsystem_files() -> Dict[str, Path]:
@@ -154,7 +165,8 @@ def _find_part_in_storage_library(
                 results.append((subsystem, source_fieldnames, projected_row))
 
             return results
-    except Exception:
+    except Exception as exc:
+        # If any error occurs reading the storage library, treat it as unavailable.
         return None
 
 
@@ -193,20 +205,20 @@ def _collect_display_fieldnames(results: List[Tuple[str, List[str], Dict[str, st
 
 
 def _display_results(results: List[Tuple[str, List[str], Dict[str, str]]], mode: str) -> None:
-    print(f"\nFound {len(results)} row(s) using {mode} search.\n")
+    _out(f"\nFound {len(results)} row(s) using {mode} search.\n")
     display_fieldnames = _collect_display_fieldnames(results)
     last_subsystem = None
     for subsystem, _, row in results:
         if subsystem != last_subsystem:
-            print(f"--- {subsystem} ---")
+            _out(f"--- {subsystem} ---")
             buf = io.StringIO()
             writer = csv.DictWriter(buf, fieldnames=display_fieldnames, lineterminator="")
             writer.writeheader()
-            print(buf.getvalue())
+            _out(buf.getvalue())
             last_subsystem = subsystem
         display_row = dict(row)
         display_row["Subsystem"] = subsystem
-        print(_row_to_csv_line(display_fieldnames, display_row))
+        _out(_row_to_csv_line(display_fieldnames, display_row))
 
 
 def _rows_match_by_fieldnames(
@@ -235,7 +247,7 @@ def _update_csv_row(
     """Update a specific field in a subsystem component-parameter CSV file."""
     csv_path = BASE_DIR / f"{subsystem}_component_parameters.csv"
     if not csv_path.exists():
-        print(f"Could not find source file: {csv_path.name}")
+        _out(f"Could not find source file: {csv_path.name}", level="warning")
         return False
 
     rows_to_write: List[Dict[str, str]] = []
@@ -246,7 +258,7 @@ def _update_csv_row(
         source_fieldnames = [field for field in list(reader.fieldnames or fieldnames) if field]
 
         if field_name not in source_fieldnames:
-            print(f"Field {field_name} not found in {csv_path.name}.")
+            _out(f"Field {field_name} not found in {csv_path.name}.", level="warning")
             return False
 
         for row in reader:
@@ -257,7 +269,7 @@ def _update_csv_row(
             rows_to_write.append(_sanitize_row_for_write(row_dict, source_fieldnames))
 
     if not found:
-        print("Could not find the exact row to update.")
+        _out("Could not find the exact row to update.", level="warning")
         return False
 
     with open(csv_path, "w", newline="", encoding="utf-8-sig") as f:
@@ -265,7 +277,7 @@ def _update_csv_row(
         writer.writeheader()
         writer.writerows(rows_to_write)
 
-    print(f"Updated {field_name} to '{new_value}' in {csv_path.name}")
+    _out(f"Updated {field_name} to '{new_value}' in {csv_path.name}")
     return True
 
 
@@ -315,15 +327,16 @@ def _update_storage_library_row(
             writer.writerows(rows_to_write)
 
         return updated_count
-    except Exception:
+    except Exception as exc:
+        logging.exception("Bulk update failed: %s", exc)
         return 0
 
 
 def _bulk_update_all_rows(results: List[Tuple[str, List[str], Dict[str, str]]]) -> None:
     """Update one or more fields in all found rows."""
-    print("\n" + "=" * 80)
-    print("BULK UPDATE (ALL ROWS)")
-    print("=" * 80)
+    _out("\n" + "=" * 80)
+    _out("BULK UPDATE (ALL ROWS)")
+    _out("=" * 80)
 
     all_fields: List[str] = []
     for _, fieldnames, _ in results:
@@ -332,22 +345,22 @@ def _bulk_update_all_rows(results: List[Tuple[str, List[str], Dict[str, str]]]) 
                 all_fields.append(field)
 
     for idx, field in enumerate(all_fields, 1):
-        print(f"[{idx}] {field}")
+        _out(f"[{idx}] {field}")
 
     selection = input("Choose field number(s) to update in all rows (for example 3 or 3,4,10): ").strip()
     if not selection:
-        print("No fields selected.")
+        _out("No fields selected.", level="warning")
         return
 
     selected_fields: List[str] = []
     for token in selection.split(","):
         value = token.strip()
         if not value.isdigit():
-            print("Invalid selection.")
+            _out("Invalid selection.", level="warning")
             return
         field_idx = int(value)
         if not 1 <= field_idx <= len(all_fields):
-            print("Invalid selection.")
+            _out("Invalid selection.", level="warning")
             return
         field_name = all_fields[field_idx - 1]
         if field_name not in selected_fields:
@@ -380,7 +393,7 @@ def _bulk_update_all_rows(results: List[Tuple[str, List[str], Dict[str, str]]]) 
         if row_updated:
             updated_rows += 1
 
-    print(f"\nApplied {total_field_updates} field update(s) across {updated_rows} row(s).")
+    _out(f"\nApplied {total_field_updates} field update(s) across {updated_rows} row(s).")
 
     if updated_rows > 0:
         sync_response = input("\nUpdate master library for all changed rows? (yes/y): ").strip().lower()
@@ -393,9 +406,9 @@ def _bulk_update_all_rows(results: List[Tuple[str, List[str], Dict[str, str]]]) 
                     field_name,
                     new_value,
                 )
-            print(f"✓ Master library synchronized: {storage_updates} field(s) updated.")
+            _out(f"✓ Master library synchronized: {storage_updates} field(s) updated.")
         else:
-            print("Master library not updated. Source files only.")
+            _out("Master library not updated. Source files only.")
 
 
 def _interactive_edit(results: List[Tuple[str, List[str], Dict[str, str]]]) -> None:
@@ -405,15 +418,15 @@ def _interactive_edit(results: List[Tuple[str, List[str], Dict[str, str]]]) -> N
     while True:
         change_response = input("\nDo you want to change something? (yes/y): ").strip().lower()
         if change_response not in {"yes", "y"}:
-            print("No changes made. Exiting.")
+            _out("No changes made. Exiting.")
             return
 
-        print("\n" + "=" * 80)
-        print("SELECT WHICH ROW TO MODIFY")
-        print("=" * 80)
+        _out("\n" + "=" * 80)
+        _out("SELECT WHICH ROW TO MODIFY")
+        _out("=" * 80)
         for idx, (subsystem, _, row) in enumerate(results, 1):
-            print(f"\n[{idx}] {subsystem}:")
-            print(_row_to_csv_line(display_fieldnames, row))
+            _out(f"\n[{idx}] {subsystem}:")
+            _out(_row_to_csv_line(display_fieldnames, row))
 
         row_choice = input(f"\nEnter row number to modify (1-{len(results)}) or 'all': ").strip()
 
@@ -421,7 +434,7 @@ def _interactive_edit(results: List[Tuple[str, List[str], Dict[str, str]]]) -> N
             _bulk_update_all_rows(results)
             another = input("\nMake another change? (yes/y): ").strip().lower()
             if another not in {"yes", "y"}:
-                print("Done. Exiting.")
+                _out("Done. Exiting.")
                 break
             continue
 
@@ -430,40 +443,40 @@ def _interactive_edit(results: List[Tuple[str, List[str], Dict[str, str]]]) -> N
             continue
         row_idx -= 1
         if not 0 <= row_idx < len(results):
-            print("Invalid selection.")
+            _out("Invalid selection.", level="warning")
             continue
 
         subsystem, fieldnames, row = results[row_idx]
 
-        print("\n" + "=" * 80)
-        print("AVAILABLE FIELDS TO CHANGE")
-        print("=" * 80)
+        _out("\n" + "=" * 80)
+        _out("AVAILABLE FIELDS TO CHANGE")
+        _out("=" * 80)
         for col_idx, field in enumerate(fieldnames, 1):
             current_value = _clean(row.get(field, ""))
-            print(f"[{col_idx}] {field}: '{current_value}'")
+            _out(f"[{col_idx}] {field}: '{current_value}'")
 
         field_idx = _prompt_int_choice(f"\nEnter field number to modify (1-{len(fieldnames)}): ", len(fieldnames))
         if field_idx is None:
             continue
         field_idx -= 1
         if not 0 <= field_idx < len(fieldnames):
-            print("Invalid selection.")
+            _out("Invalid selection.", level="warning")
             continue
 
         field_name = fieldnames[field_idx]
         current_value = _clean(row.get(field_name, ""))
 
-        print(f"\nCurrent value: '{current_value}'")
+        _out(f"\nCurrent value: '{current_value}'")
         new_value = input(f"Enter new value for {field_name}: ").strip()
 
         if new_value == current_value:
-            print("Value is the same. No changes made.")
+            _out("Value is the same. No changes made.")
             continue
 
         reference_row = dict(row)
         if _update_csv_row(subsystem, fieldnames, row, field_name, new_value):
             row[field_name] = new_value
-            print("\nChange saved successfully in source file.")
+            _out("\nChange saved successfully in source file.")
             
             # Ask if user wants to sync to master library
             sync_response = input("Update master library as well? (yes/y): ").strip().lower()
@@ -476,13 +489,13 @@ def _interactive_edit(results: List[Tuple[str, List[str], Dict[str, str]]]) -> N
                     new_value,
                 )
                 if synced > 0:
-                    print(f"✓ Master library synchronized for {subsystem} ({synced} row(s)).")
+                    _out(f"✓ Master library synchronized for {subsystem} ({synced} row(s)).")
                 else:
-                    print("⚠ Master library not updated (may not exist or component not found).")
+                    _out("⚠ Master library not updated (may not exist or component not found).", level="warning")
 
         another = input("\nMake another change? (yes/y): ").strip().lower()
         if another not in {"yes", "y"}:
-            print("Done. Exiting.")
+            _out("Done. Exiting.")
             break
 
 
@@ -495,17 +508,17 @@ def main() -> None:
         scope_raw = ""
 
     if not part_number:
-        print("No part number provided.")
+        _out("No part number provided.")
         return
 
     try:
         results, mode = find_part(part_number, scope_raw)
     except ValueError as exc:
-        print(f"Invalid scope: {exc}")
+        _out(f"Invalid scope: {exc}", level="warning")
         return
 
     if not results:
-        print(f"No rows found for Part_Number '{part_number}'.")
+        _out(f"No rows found for Part_Number '{part_number}'.")
         return
 
     _display_results(results, mode)

@@ -16,6 +16,15 @@ from pathlib import Path
 
 sys.dont_write_bytecode = True
 
+# interactive-safe output helper
+import logging
+_IS_TTY = sys.stdout.isatty()
+def _out(msg: str, level: str = "info") -> None:
+    if _IS_TTY:
+        print(msg)
+    else:
+        getattr(logging, level)(msg)
+
 from Pipeline import run_pipeline
 
 
@@ -105,7 +114,7 @@ def run_smoke_test() -> None:
         assert math.isclose(float(grouped_by_flow["market for copper, cathode"]["Amount"]), 5.0, rel_tol=1e-9)
         assert math.isclose(float(grouped_by_flow["smoke"]["Amount"]), 5.0, rel_tol=1e-9)
 
-        print("Smoke test passed.")
+        _out("Smoke test passed.")
 
 
 if __name__ == "__main__":

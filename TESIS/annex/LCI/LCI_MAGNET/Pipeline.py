@@ -2,6 +2,16 @@ import argparse
 import csv
 import sys
 from pathlib import Path
+import sys
+import logging
+
+# interactive-safe output helper
+_IS_TTY = sys.stdout.isatty()
+def _out(msg: str, level: str = "info") -> None:
+    if _IS_TTY:
+        print(msg)
+    else:
+        getattr(logging, level)(msg)
 
 IPE_FIELDS = ["Flow", "UUID", "Unit", "Amount", "Direction", "UUID_provider", "Transport_phase_codes"]
 
@@ -16,7 +26,9 @@ def to_float(value, default=0.0):
         if text == "":
             return default
         return float(text)
-    except Exception:
+    except Exception as exc:
+        import logging
+        logging.debug("to_float failed parsing %r: %s", value, exc)
         return default
 
 
@@ -177,27 +189,27 @@ def main():
         ipe_rows.extend(preserved_output_rows)
 
     if args.dry_run:
-        print(f"[DRY-RUN] parameter rows read: {len(parameter_rows)}")
-        print(f"[DRY-RUN] parameter rows skipped: {skipped}")
-        print(f"[DRY-RUN] component rows with EcoInvent flows: {component_count}")
-        print(f"[DRY-RUN] total mass (no double count): {total_mass_kg}")
-        print(f"[DRY-RUN] preserved existing output rows: {len(preserved_output_rows)}")
-        print(f"[DRY-RUN] ipe rows to write: {len(ipe_rows)}")
+        _out(f"[DRY-RUN] parameter rows read: {len(parameter_rows)}")
+        _out(f"[DRY-RUN] parameter rows skipped: {skipped}")
+        _out(f"[DRY-RUN] component rows with EcoInvent flows: {component_count}")
+        _out(f"[DRY-RUN] total mass (no double count): {total_mass_kg}")
+        _out(f"[DRY-RUN] preserved existing output rows: {len(preserved_output_rows)}")
+        _out(f"[DRY-RUN] ipe rows to write: {len(ipe_rows)}")
         return
 
     write_csv(ipe_path, IPE_FIELDS, ipe_rows)
-    print(f"Written: {ipe_path.name} ({len(ipe_rows)} rows)")
-    print(f"Component rows with EcoInvent flows: {component_count}")
-    print(f"Total mass (kg): {total_mass_kg}")
-    print(f"Preserved existing output rows: {len(preserved_output_rows)}")
-    print(f"EcoInvent flow lines written: {len(ipe_rows) - len(preserved_output_rows)}")
+    _out(f"Written: {ipe_path.name} ({len(ipe_rows)} rows)")
+    _out(f"Component rows with EcoInvent flows: {component_count}")
+    _out(f"Total mass (kg): {total_mass_kg}")
+    _out(f"Preserved existing output rows: {len(preserved_output_rows)}")
+    _out(f"EcoInvent flow lines written: {len(ipe_rows) - len(preserved_output_rows)}")
 
     if not args.skip_fill:
         try:
             run_fill(ipe_path)
-            print("UUID/provider fill completed for magnet IPE.")
+            _out("UUID/provider fill completed for magnet IPE.")
         except Exception as exc:
-            print(f"[Warning] UUID/provider fill failed: {exc}")
+            logging.warning("UUID/provider fill failed: %s", exc)
 
 
 if __name__ == "__main__":

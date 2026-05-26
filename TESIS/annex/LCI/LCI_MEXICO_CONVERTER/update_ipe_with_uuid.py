@@ -1,5 +1,16 @@
 import csv
 from pathlib import Path
+import sys
+import logging
+
+# interactive-safe output helper
+_IS_TTY = sys.stdout.isatty()
+def _out(msg: str, level: str = "info") -> None:
+    if _IS_TTY:
+        print(msg)
+    else:
+        getattr(logging, level)(msg)
+
 
 def load_uuid_map(map_path):
     uuid_map = {}
@@ -8,9 +19,10 @@ def load_uuid_map(map_path):
         for row in reader:
             flow = row['Ecoinvent_flow'].strip().strip('"')
             uuid = row['UUID'].strip()
-            flow_process = row['flow/process'].strip()
+            flow_process = row.get('flow/process', '').strip()
             uuid_map[flow] = (uuid, flow_process)
     return uuid_map
+
 
 def update_ipe_files(base_dir, uuid_map):
     for path in Path(base_dir).glob('*_ipe_flows_from_parameters.csv'):
@@ -42,24 +54,26 @@ def update_ipe_files(base_dir, uuid_map):
                     if uuid:
                         row['UUID'] = uuid
                     else:
-                        print(f"WARNING: No UUID found for flow '{flow}' in file {path.name}")
+                        _out(f"WARNING: No UUID found for flow '{flow}' in file {path.name}", level="warning")
                     if flow_process:
                         row['flow/process'] = flow_process
                     updated = True
                 else:
-                    print(f"WARNING: No UUID found for flow '{flow}' in file {path.name}")
+                    _out(f"WARNING: No UUID found for flow '{flow}' in file {path.name}", level="warning")
             if updated:
                 with open(path, 'w', newline='', encoding='utf-8') as f:
                     writer = csv.DictWriter(f, fieldnames=fieldnames)
                     writer.writeheader()
                     writer.writerows(reader)
-                print(f"Updated: {path.name}")
+                _out(f"Updated: {path.name}")
+
 
 def main():
     base_dir = Path(__file__).parent
     map_path = Path(__file__).parent.parent / 'component_library_ecoinvent_uuid_map.csv'
     uuid_map = load_uuid_map(map_path)
     update_ipe_files(base_dir, uuid_map)
+
 
 if __name__ == '__main__':
     main()

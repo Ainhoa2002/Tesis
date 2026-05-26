@@ -14,6 +14,16 @@ import os
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Tuple
+import sys
+import logging
+
+# interactive-safe output helper
+_IS_TTY = sys.stdout.isatty()
+def _out(msg: str, level: str = "info") -> None:
+    if _IS_TTY:
+        print(msg)
+    else:
+        getattr(logging, level)(msg)
 
 
 BASE_DIR = Path(__file__).parent
@@ -30,7 +40,7 @@ class SaveVerificationError(RuntimeError):
 
 
 def fail_or_abort_selection(attempts: int) -> None:
-    print("Invalid selection. Try again.")
+    _out("Invalid selection. Try again.", level="warning")
     if attempts >= MAX_SELECTION_ATTEMPTS:
         raise SelectionAborted("Too many invalid attempts. Operation canceled.")
 
@@ -42,7 +52,7 @@ def _prompt_menu_choice(prompt: str, choices: Dict[str, str], invalid_message: s
         if raw in choices:
             return choices[raw]
         attempts += 1
-        print(invalid_message)
+        _out(invalid_message, level="warning")
         if attempts >= MAX_SELECTION_ATTEMPTS:
             raise SelectionAborted("Too many invalid attempts. Operation canceled.")
 
@@ -145,9 +155,9 @@ def prompt_label_with_example(header: str) -> str:
 
 
 def choose_mode() -> str:
-    print("\nWhat do you want to edit?")
-    print("  1. Component parameters")
-    print("  2. I/O flows")
+    _out("\nWhat do you want to edit?")
+    _out("  1. Component parameters")
+    _out("  2. I/O flows")
     return _prompt_menu_choice(
         "Mode [1/2]: ",
         {
@@ -190,9 +200,9 @@ def choose_from_mapping(mapping: Dict[str, Path], label: str, empty_error: str) 
 
     names_by_lower = {name.lower(): name for name in names}
 
-    print(f"Available {label}:")
+    _out(f"Available {label}:")
     for i, name in enumerate(names, start=1):
-        print(f"  {i}. {name}")
+        _out(f"  {i}. {name}")
 
     attempts = 0
     while True:
@@ -258,13 +268,13 @@ def prompt_yes_no(message: str, default: bool = False) -> bool:
             return True
         if raw in {"n", "no", "false", "f"}:
             return False
-        print("Please answer y or n.")
+        _out("Please answer y or n.", level="warning")
 
 
 def choose_action() -> str:
-    print("\nChoose action:")
-    print("  1. Add or update component")
-    print("  2. Eliminate component")
+    _out("\nChoose action:")
+    _out("  1. Add or update component")
+    _out("  2. Eliminate component")
     return _prompt_menu_choice(
         "Action [1/2]: ",
         {
@@ -308,10 +318,10 @@ def print_component_preview(row: Dict[str, str], headers: List[str]) -> None:
         "Ecoinvent_unit",
         "Ecoinvent_flow",
     ]
-    print("\nCurrent component preview:")
+    _out("\nCurrent component preview:")
     for field in preview_order:
         if field in headers:
-            print(f"  {field}: {row.get(field, '')}")
+            _out(f"  {field}: {row.get(field, '')}")
 
 
 def component_label(row: Dict[str, str]) -> str:
@@ -340,9 +350,9 @@ def choose_search_field(headers: List[str]) -> str | None:
     if not searchable_fields:
         return None
 
-    print("\nChoose section/field to search:")
+    _out("\nChoose section/field to search:")
     for i, field in enumerate(searchable_fields, start=1):
-        print(f"  {i}. {field}")
+        _out(f"  {i}. {field}")
 
     idx = _prompt_index_choice("Field number: ", len(searchable_fields))
     return searchable_fields[idx - 1] if idx is not None else None
@@ -362,9 +372,9 @@ def choose_component_from_candidates(rows: List[Dict[str, str]], candidate_indic
     if not candidate_indices:
         return None
 
-    print(f"\n{title}")
+    _out(f"\n{title}")
     for i, row_idx in enumerate(candidate_indices, start=1):
-        print(f"  {i}. {component_label(rows[row_idx])}")
+        _out(f"  {i}. {component_label(rows[row_idx])}")
 
     idx = _prompt_index_choice("Choose component number (Enter to cancel): ", len(candidate_indices), allow_cancel=True)
     if idx is None:
@@ -379,7 +389,7 @@ def find_component_for_delete(headers: List[str], rows: List[Dict[str, str]]) ->
             idx = find_row_index_by_designators(rows, reference)
             if idx >= 0:
                 return idx
-            print("Component not found by Designators.")
+            _out("Component not found by Designators.", level="warning")
 
         preview_indices = list(range(len(rows)))
         selected = choose_component_from_candidates(
@@ -395,17 +405,17 @@ def find_component_for_delete(headers: List[str], rows: List[Dict[str, str]]) ->
 
         field = choose_search_field(headers)
         if not field:
-            print("No searchable fields available.")
+            _out("No searchable fields available.", level="warning")
             return -1
 
         keyword = input(f"Keyword for {field}: ").strip()
         if not keyword:
-            print("Keyword cannot be empty.")
+            _out("Keyword cannot be empty.", level="warning")
             continue
 
         matches = search_component_indices(rows, field, keyword)
         if not matches:
-            print("Not found relevant info.")
+            _out("Not found relevant info.", level="warning")
             continue
 
         top_matches = matches[:5]
@@ -504,14 +514,14 @@ def find_io_row_for_delete(headers: List[str], rows: List[Dict[str, str]]) -> in
             matches = list(range(len(rows)))
 
         if not matches:
-            print("No matching flows found.")
+            _out("No matching flows found.", level="warning")
             if not prompt_yes_no("Try again?", default=True):
                 return -1
             continue
 
-        print(f"\nFound {len(matches)} flow(s):")
+        _out(f"\nFound {len(matches)} flow(s):")
         for i, row_idx in enumerate(matches, start=1):
-            print(f"  {i}. {io_row_label(rows[row_idx])}")
+            _out(f"  {i}. {io_row_label(rows[row_idx])}")
 
         idx = _prompt_index_choice("Choose number to delete (Enter to cancel): ", len(matches), allow_cancel=True)
         if idx is None:
@@ -568,7 +578,7 @@ def _auto_refresh_component_libraries(
     """
     enabled = str(os.getenv("MASS_CALC_AUTO_REFRESH_LIBRARIES", "1")).strip().lower()
     if enabled in {"0", "false", "no", "off"}:
-        print("Library refresh skipped: MASS_CALC_AUTO_REFRESH_LIBRARIES is disabled.")
+        _out("Library refresh skipped: MASS_CALC_AUTO_REFRESH_LIBRARIES is disabled.", level="info")
         return
 
     try:
@@ -585,16 +595,17 @@ def _auto_refresh_component_libraries(
             parameters_storage_count,
             results_storage_count,
         ) = build_libraries(base_dir, warning_scope_subsystems)
-        print(
+        _out(
             "Library refresh completed"
             f" ({reason}): casing={casing_count}, part_number={part_count}, "
             f"systems_subsystems={system_subsystem_count}, "
             f"storage_parameters={parameters_storage_count}, "
             f"storage_results={results_storage_count}, "
-            f"conflicts={conflict_count}"
+            f"conflicts={conflict_count}",
+            level="info",
         )
     except Exception as exc:
-        print(f"Warning: library refresh failed ({reason}): {exc}")
+        _out(f"Warning: library refresh failed ({reason}): {exc}", level="warning")
 
 
 def _run_parameters_workflow() -> None:
@@ -603,11 +614,11 @@ def _run_parameters_workflow() -> None:
 
     headers, rows = load_csv(csv_path)
 
-    print("\nSelection summary")
-    print(f"Subsystem: {subsystem_name}")
-    print(f"File: {csv_path.name}")
-    print(f"Columns: {len(headers)}")
-    print(f"Rows: {len(rows)}")
+    _out("\nSelection summary")
+    _out(f"Subsystem: {subsystem_name}")
+    _out(f"File: {csv_path.name}")
+    _out(f"Columns: {len(headers)}")
+    _out(f"Rows: {len(rows)}")
 
     action_mode = choose_action()
     verification_key = ""
@@ -616,14 +627,14 @@ def _run_parameters_workflow() -> None:
     if action_mode == "delete":
         row_index = find_component_for_delete(headers, rows)
         if row_index < 0:
-            print("No changes made.")
+            _out("No changes made.", level="info")
             return
 
         existing_row = rows[row_index]
         verification_key = str(existing_row.get("Designators", "")).strip()
         print_component_preview(existing_row, headers)
         if not prompt_yes_no("Confirm eliminate component?", default=False):
-            print("No changes made.")
+            _out("No changes made.", level="info")
             return
 
         del rows[row_index]
@@ -634,7 +645,7 @@ def _run_parameters_workflow() -> None:
             designators = input("Enter Designators to add or update: ").strip()
             if designators:
                 break
-            print("Designators cannot be empty.")
+            _out("Designators cannot be empty.", level="warning")
 
         row_index = find_row_index(rows, "Designators", designators)
 
@@ -642,7 +653,7 @@ def _run_parameters_workflow() -> None:
             existing_row = rows[row_index]
             print_component_preview(existing_row, headers)
             if not prompt_yes_no("Component exists. Update this row?", default=True):
-                print("No changes made.")
+                _out("No changes made.", level="info")
                 return
 
             rows[row_index] = prompt_component_row(
@@ -653,7 +664,7 @@ def _run_parameters_workflow() -> None:
             verification_key = str(rows[row_index].get("Designators", designators)).strip() or designators
             action = "updated"
         else:
-            print("Component not found. Creating a new row.")
+            _out("Component not found. Creating a new row.", level="info")
             new_row = prompt_component_row(
                 headers=headers,
                 designators=designators,
@@ -666,7 +677,7 @@ def _run_parameters_workflow() -> None:
 
     save_csv(csv_path, headers, rows)
     exists_after_save, persisted_count = verify_saved_row(csv_path, "Designators", verification_key)
-    if verification_key:
+        if verification_key:
         state_ok = exists_after_save == should_exist_after_save
         status = "OK" if state_ok else "FAIL"
         expected = "present" if should_exist_after_save else "absent"
@@ -686,14 +697,14 @@ def _run_parameters_workflow() -> None:
                 f"Save verification FAILED for Designators='{verification_key}'. "
                 f"Expected {expected}, found {found}. File: {csv_path.resolve()}"
             )
-        print(
+        _out(
             f"Save verification [OK]: Designators='{verification_key}' "
-            f"expected {expected}, found {found}. Rows now: {persisted_count}"
+            f"expected {expected}, found {found}. Rows now: {persisted_count}",
+            level="info",
         )
-
-    print(f"\nComponent {action} successfully.")
-    print(f"Updated file: {csv_path.resolve()}")
-    print(f"Audit log: {AUDIT_LOG.resolve()}")
+    _out(f"\nComponent {action} successfully.")
+    _out(f"Updated file: {csv_path.resolve()}")
+    _out(f"Audit log: {AUDIT_LOG.resolve()}")
     _auto_refresh_component_libraries(
         BASE_DIR,
         "add_eliminate_component parameters",
@@ -707,23 +718,23 @@ def _run_io_workflow() -> None:
 
     headers, rows = load_csv(csv_path)
 
-    print("\nSelection summary")
-    print(f"I/O file: {io_name}")
-    print(f"File: {csv_path.name}")
-    print(f"Columns: {len(headers)}")
-    print(f"Rows: {len(rows)}")
+    _out("\nSelection summary")
+    _out(f"I/O file: {io_name}")
+    _out(f"File: {csv_path.name}")
+    _out(f"Columns: {len(headers)}")
+    _out(f"Rows: {len(rows)}")
 
     action_mode = choose_action()
 
     if action_mode == "delete":
         row_index = find_io_row_for_delete(headers, rows)
         if row_index < 0:
-            print("No changes made.")
+            _out("No changes made.", level="info")
             return
 
-        print(f"\nAbout to delete: {io_row_label(rows[row_index])}")
+        _out(f"\nAbout to delete: {io_row_label(rows[row_index])}")
         if not prompt_yes_no("Confirm eliminate flow?", default=False):
-            print("No changes made.")
+            _out("No changes made.", level="info")
             return
 
         del rows[row_index]
@@ -737,20 +748,20 @@ def _run_io_workflow() -> None:
             row_index = -1
 
         if row_index >= 0:
-            print(f"\nCurrent: {io_row_label(rows[row_index])}")
+            _out(f"\nCurrent: {io_row_label(rows[row_index])}")
             if not prompt_yes_no("Flow exists. Update this row?", default=True):
-                print("No changes made.")
+                _out("No changes made.", level="info")
                 return
             rows[row_index] = prompt_io_row(headers, existing_row=rows[row_index])
             action = "updated"
         else:
-            print("Flow not found. Creating a new row.")
+            _out("Flow not found. Creating a new row.", level="info")
             rows.append(prompt_io_row(headers, existing_row=None))
             action = "added"
 
     save_csv(csv_path, headers, rows)
-    print(f"\nI/O flow {action} successfully.")
-    print(f"Updated file: {csv_path.resolve()}")
+    _out(f"\nI/O flow {action} successfully.")
+    _out(f"Updated file: {csv_path.resolve()}")
 
 
 def main() -> None:
@@ -761,11 +772,11 @@ def main() -> None:
         else:
             _run_io_workflow()
     except SelectionAborted as exc:
-        print(str(exc))
-        print("No changes made.")
+        _out(str(exc), level="error")
+        _out("No changes made.", level="info")
     except SaveVerificationError as exc:
-        print(f"ERROR: {exc}")
-        print("No library refresh executed because save verification failed.")
+        _out(f"ERROR: {exc}", level="error")
+        _out("No library refresh executed because save verification failed.", level="warning")
 
 
 if __name__ == "__main__":

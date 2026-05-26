@@ -22,6 +22,16 @@ import csv
 import sys
 from pathlib import Path
 from typing import Dict, List, Set, Tuple
+import sys
+import logging
+
+# interactive-safe output helper
+_IS_TTY = sys.stdout.isatty()
+def _out(msg: str, level: str = "info") -> None:
+    if _IS_TTY:
+        print(msg)
+    else:
+        getattr(logging, level)(msg)
 
 
 BASE_DIR = Path(__file__).parent
@@ -499,7 +509,7 @@ def _print_conflict_summary(
     ):
         return
 
-    print("Library merge warnings:")
+    _out("Library merge warnings:")
     for kind, reference, folder in sorted(casing_conflicts):
         entry = casing_conflicts[(kind, reference, folder)]
         raw_fields = sorted(entry["fields"])
@@ -513,10 +523,11 @@ def _print_conflict_summary(
             for source_file in source_files
         )
         subsystems_text = ", ".join(subsystems)
-        print(
+        _out(
             f"- {kind} '{reference}' has different values across components. "
             f"Differing fields: {fields}. Source files: {source_files_text}. "
-            f"Subsystems: {subsystems_text}. Folder: {folder}"
+            f"Subsystems: {subsystems_text}. Folder: {folder}",
+            level="warning",
         )
     for casing in sorted(casing_variant_conflicts):
         casing_label, subsystems, diff_fields = casing_variant_conflicts[casing]
@@ -527,9 +538,10 @@ def _print_conflict_summary(
         else:
             subs_text = " and ".join(f"{s} subsystem" for s in sorted_subsystems)
             scope_text = f"Between {subs_text}."
-        print(
+        _out(
             f"- Casing '{casing_label}' appears with multiple variants across components. "
-            f"Differing fields: {fields}. {scope_text}"
+            f"Differing fields: {fields}. {scope_text}",
+            level="warning",
         )
     for base_key in sorted(part_conflicts):
         reference, subsystems, diff_fields = part_conflicts[base_key]
@@ -540,19 +552,22 @@ def _print_conflict_summary(
         else:
             subs_text = " and ".join(f"{s} subsystem" for s in sorted_subsystems)
             scope_text = f"Between {subs_text}."
-        print(
+        _out(
             f"- Part '{reference}' has different values across components. "
-            f"Differing fields: {fields}. {scope_text}"
+            f"Differing fields: {fields}. {scope_text}",
+            level="warning",
         )
     for subsystem, designators, part_number in sorted(missing_section_warnings):
-        print(
+        _out(
             f"- Missing required Section. Subsystem: {subsystem}. "
-            f"Element: {designators}. Part_Number: {part_number}."
+            f"Element: {designators}. Part_Number: {part_number}.",
+            level="warning",
         )
     for subsystem, designators, part_number, reason in sorted(missing_mass_data_warnings):
-        print(
+        _out(
             f"- Missing mass inputs. Subsystem: {subsystem}. "
-            f"Element: {designators}. Part_Number: {part_number}. Reason: {reason}."
+            f"Element: {designators}. Part_Number: {part_number}. Reason: {reason}.",
+            level="warning",
         )
 
 
@@ -686,7 +701,7 @@ def build_ecoinvent_totals_library(base_dir: Path) -> int:
         )
     _write_csv(base_dir / ECOINVENT_TOTALS_LIBRARY_NAME, ECOINVENT_TOTALS_FIELDS, rows)
     for warning in uuid_warnings:
-        print(warning)
+        _out(warning, level="warning")
     return len(rows)
 
 
@@ -1109,9 +1124,9 @@ def _format_float(value: float) -> str:
 def main() -> None:
     if len(sys.argv) > 1 and sys.argv[1].strip().lower() in {"--sync-parameters", "sync"}:
         files_changed, rows_changed, skipped_ambiguous = sync_parameter_files_from_libraries(BASE_DIR)
-        print(
+        _out(
             "Parameter sync completed"
-            f": files_changed={files_changed}, rows_changed={rows_changed}, skipped_ambiguous={skipped_ambiguous}"
+            f": files_changed={files_changed}, rows_changed={rows_changed}, skipped_ambiguous={skipped_ambiguous}",
         )
         return
 
@@ -1123,12 +1138,12 @@ def main() -> None:
         parameters_storage_count,
         results_storage_count,
     ) = build_libraries(BASE_DIR)
-    print(f"Created {CASING_LIBRARY_NAME}: {casing_count} unique casing rows")
-    print(f"Created {PART_LIBRARY_NAME}: {part_count} unique part-number rows")
-    print(f"Created {SYSTEM_SUBSYSTEM_LIBRARY_NAME}: {system_subsystem_count} system/subsystem rows")
-    print(f"Created {PARAMETERS_STORAGE_LIBRARY_NAME}: {parameters_storage_count} total parameter rows")
-    print(f"Created {RESULTS_STORAGE_LIBRARY_NAME}: {results_storage_count} total mass-result rows")
-    print(f"Conflicts detected: {conflict_count}")
+    _out(f"Created {CASING_LIBRARY_NAME}: {casing_count} unique casing rows")
+    _out(f"Created {PART_LIBRARY_NAME}: {part_count} unique part-number rows")
+    _out(f"Created {SYSTEM_SUBSYSTEM_LIBRARY_NAME}: {system_subsystem_count} system/subsystem rows")
+    _out(f"Created {PARAMETERS_STORAGE_LIBRARY_NAME}: {parameters_storage_count} total parameter rows")
+    _out(f"Created {RESULTS_STORAGE_LIBRARY_NAME}: {results_storage_count} total mass-result rows")
+    _out(f"Conflicts detected: {conflict_count}")
 
 
 if __name__ == "__main__":

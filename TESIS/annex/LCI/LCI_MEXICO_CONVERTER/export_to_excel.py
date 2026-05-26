@@ -7,34 +7,27 @@ This script reuses subsystem selection from add_eliminate_component.py.
 from __future__ import annotations
 
 import csv
-import logging
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Tuple
 import sys
+import logging
 
-try:
-    from .add_eliminate_component import (
-        MAX_SELECTION_ATTEMPTS,
-        SelectionAborted,
-        choose_subsystem,
-        discover_subsystem_files,
-    )
-except ImportError:
-    from add_eliminate_component import (
-        MAX_SELECTION_ATTEMPTS,
-        SelectionAborted,
-        choose_subsystem,
-        discover_subsystem_files,
-    )
-
-# interactive-safe output helper
+# Helper to preserve interactive prints when running in a TTY,
+# but emit structured logging when running non-interactively.
 _IS_TTY = sys.stdout.isatty()
 def _out(msg: str, level: str = "info") -> None:
     if _IS_TTY:
         print(msg)
     else:
         getattr(logging, level)(msg)
+
+from tools.add_eliminate_component import (
+    MAX_SELECTION_ATTEMPTS,
+    SelectionAborted,
+    choose_subsystem,
+    discover_subsystem_files,
+)
 
 BASE_DIR = Path(__file__).parent
 DEFAULT_EXPORT_DIR = BASE_DIR.parent
@@ -81,6 +74,7 @@ def discover_section_files(base_dir: Path) -> Dict[str, Path]:
     """Discover all SECTION_*_ipe_flows_from_parameters.csv files."""
     sections: Dict[str, Path] = {}
     for csv_path in sorted(base_dir.glob("SECTION_*_ipe_flows_from_parameters.csv")):
+        # Extract section name from filename: SECTION_<name>_ipe_flows_from_parameters.csv
         section_name = csv_path.name[len("SECTION_"): -len("_ipe_flows_from_parameters.csv")]
         sections[section_name] = csv_path
     return sections
@@ -95,24 +89,35 @@ def write_sheet(ws, headers: List[str], rows: List[Dict[str, str]]) -> None:
 
 def prompt_output_directory(default_dir: Path) -> Path:
     while True:
-        folder_input = input(f"\nOutput folder (Enter for default: {default_dir}): ").strip()
+        folder_input = input(
+            f"\nOutput folder (Enter for default: {default_dir}): "
+        ).strip()
+
         if not folder_input:
             return default_dir
+
         chosen_dir = Path(folder_input).expanduser()
         if not chosen_dir.is_absolute():
             chosen_dir = (Path.cwd() / chosen_dir).resolve()
+
         if chosen_dir.exists() and chosen_dir.is_dir():
             return chosen_dir
+
         _out(f"Folder not found: {chosen_dir}", level="warning")
 
 
 def prompt_output_filename(default_name: str) -> str:
     while True:
-        file_input = input(f"Output filename (Enter for default: {default_name}): ").strip()
+        file_input = input(
+            f"Output filename (Enter for default: {default_name}): "
+        ).strip()
+
         if not file_input:
             return default_name
+
         if not file_input.lower().endswith(".xlsx"):
             file_input = file_input + ".xlsx"
+
         return file_input
 
 
@@ -257,6 +262,7 @@ def export_sections_to_excel(
     output_dir: Path,
     output_filename: str,
 ) -> Path | None:
+    """Export all sections to a single Excel workbook, one section per sheet."""
     try:
         from openpyxl import Workbook
     except ImportError:
@@ -265,6 +271,7 @@ def export_sections_to_excel(
         return None
 
     sections = discover_section_files(base_dir)
+    
     if not sections:
         _out("No section files found to export.", level="warning")
         return None
@@ -276,8 +283,11 @@ def export_sections_to_excel(
     for section_name in sorted(sections.keys()):
         csv_path = sections[section_name]
         headers, rows = load_csv_optional(csv_path)
+        
         if not headers:
             continue
+        
+        # Truncate sheet name to 31 chars (Excel limit)
         sheet_name = section_name[:31]
         ws = workbook.create_sheet(sheet_name)
         write_sheet(ws, headers, rows)
@@ -330,6 +340,7 @@ def main() -> None:
                 export_filename,
             )
             if output is not None:
+                _out(f"\nExport completed: {output}")
                 readme_path = write_export_readme(
                     export_dir,
                     [
@@ -354,6 +365,7 @@ def main() -> None:
                 export_filename,
             )
             if output is not None:
+                _out(f"\nSections export completed: {output}")
                 readme_path = write_export_readme(
                     export_dir,
                     [

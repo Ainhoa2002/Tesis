@@ -6,33 +6,26 @@ and amount fields. It does not create openLCA entities directly.
 
 from __future__ import annotations
 
-import csv
 import re
 import sys
 import logging
 from pathlib import Path
 
-
-def _normalize_text(value: str) -> str:
-    return str(value or "").strip()
-
-
-def _to_float(value):
-    text = _normalize_text(value).replace(",", ".")
-    if text == "":
-        return None
-    try:
-        return float(text)
-    except ValueError:
-        return None
+from _utils import (
+    read_csv_rows,
+    write_csv_rows,
+    clean_text,
+    to_float,
+    sanitize_filename_part,
+)
 
 
 def _distance_to_km(distance, unit):
-    distance_value = _to_float(distance)
+    distance_value = to_float(distance)
     if distance_value is None:
         return None
 
-    unit_norm = _normalize_text(unit).lower()
+    unit_norm = clean_text(unit).lower()
     if unit_norm in {"", "km", "kilometer", "kilometers", "kilometre", "kilometres"}:
         return distance_value
     if unit_norm in {"m", "meter", "meters", "metre", "metres"}:
@@ -43,9 +36,7 @@ def _distance_to_km(distance, unit):
 
 
 def _safe_code_name(code: str) -> str:
-    cleaned = re.sub(r"[^A-Za-z0-9]+", "_", _normalize_text(code))
-    cleaned = cleaned.strip("_")
-    return cleaned if cleaned else "unknown"
+    return sanitize_filename_part(code).lower()
 
 
 def _create_transport_unit_process_files(base_dir: Path, dry_run: bool = False):
@@ -56,16 +47,14 @@ def _create_transport_unit_process_files(base_dir: Path, dry_run: bool = False):
         logging.warning("Transport code library not found: %s", source)
         return 0
 
-    with open(source, newline="", encoding="utf-8-sig") as handle:
-        reader = csv.DictReader(handle)
-        rows = list(reader)
+    _, rows = read_csv_rows(source)
 
     grouped = {}
     for row in rows:
-        code = _normalize_text(row.get("Transport_phase_codes"))
-        flow = _normalize_text(row.get("Ecoinvent_flow"))
-        flow_uuid = _normalize_text(row.get("UUID"))
-        provider_uuid = _normalize_text(row.get("UUID provider") or row.get("UUID_provider"))
+        code = clean_text(row.get("Transport_phase_codes"))
+        flow = clean_text(row.get("Ecoinvent_flow"))
+        flow_uuid = clean_text(row.get("UUID"))
+        provider_uuid = clean_text(row.get("UUID provider") or row.get("UUID_provider"))
 
         if code == "" or flow == "" or flow_uuid == "":
             continue
@@ -102,20 +91,18 @@ def _create_transport_unit_process_files(base_dir: Path, dry_run: bool = False):
             logging.info("[DRY-RUN] Would generate transport code unit file: %s", target.name)
             continue
 
-        with open(target, "w", newline="", encoding="utf-8") as out:
-            writer = csv.DictWriter(out, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerows(sorted(input_rows, key=lambda r: r["Flow"].lower()))
-            writer.writerow(
-                {
-                    "Flow": code,
-                    "UUID": "",
-                    "Unit": "tkm",
-                    "Amount": "1",
-                    "Direction": "Output",
-                    "UUID_provider": "",
-                }
-            )
+        rows_out = sorted(input_rows, key=lambda r: r["Flow"].lower())
+        rows_out.append(
+            {
+                "Flow": code,
+                "UUID": "",
+                "Unit": "tkm",
+                "Amount": "1",
+                "Direction": "Output",
+                "UUID_provider": "",
+            }
+        )
+        write_csv_rows(target, fieldnames, rows_out)
         generated += 1
 
     if generated:
@@ -130,25 +117,24 @@ def _load_tkm_per_kg_by_code(base_dir: Path):
     if not source.exists():
         return {}
 
+    _, rows = read_csv_rows(source)
     per_code = {}
-    with open(source, newline="", encoding="utf-8-sig") as handle:
-        reader = csv.DictReader(handle)
-        for row in reader:
-            code = _normalize_text(row.get("Transport_phase_codes"))
-            if code == "":
-                continue
+    for row in rows:
+        code = clean_text(row.get("Transport_phase_codes"))
+        if code == "":
+            continue
 
-            distance_km = _distance_to_km(row.get("Distance"), row.get("Unit"))
-            if distance_km is None or distance_km <= 0:
-                continue
+        distance_km = _distance_to_km(row.get("Distance"), row.get("Unit"))
+        if distance_km is None or distance_km <= 0:
+            continue
 
-            share = _to_float(row.get("tkm_share"))
-            if share is None:
-                share = 1.0
-            if share <= 0:
-                continue
+        share = to_float(row.get("tkm_share"))
+        if share is None:
+            share = 1.0
+        if share <= 0:
+            continue
 
-            per_code[code] = per_code.get(code, 0.0) + (distance_km / 1000.0) * share
+        per_code[code] = per_code.get(code, 0.0) + (distance_km / 1000.0) * share
 
     return per_code
 
@@ -190,12 +176,9 @@ def _fill_transport_parent_amounts(base_dir: Path, dry_run: bool = False):
 
         code_mass = subsystem_codes.get(subsystem_key, {})
 
-        with open(path, newline="", encoding="utf-8-sig") as handle:
-            reader = csv.DictReader(handle)
-            if not reader.fieldnames:
-                continue
-            rows = list(reader)
-            fieldnames = list(reader.fieldnames)
+        fieldnames, rows = read_csv_rows(path)
+        if not fieldnames:
+            continue
 
         if "Amount" not in fieldnames:
             fieldnames.append("Amount")
@@ -205,13 +188,13 @@ def _fill_transport_parent_amounts(base_dir: Path, dry_run: bool = False):
         has_output_tkm_row = False
 
         for row in rows:
-            direction = _normalize_text(row.get("Direction")).lower()
-            flow_name = _normalize_text(row.get("Flow"))
+            direction = clean_text(row.get("Direction")).lower()
+            flow_name = clean_text(row.get("Flow"))
             if flow_name == "":
                 continue
 
             if direction in {"output"}:
-                unit = _normalize_text(row.get("Unit")).lower()
+                unit = clean_text(row.get("Unit")).lower()
                 if unit == "tkm":
                     has_output_tkm_row = True
                 continue
@@ -242,8 +225,8 @@ def _fill_transport_parent_amounts(base_dir: Path, dry_run: bool = False):
 
         if has_output_tkm_row and total_output_tkm > 0:
             for row in rows:
-                direction = _normalize_text(row.get("Direction")).lower()
-                unit = _normalize_text(row.get("Unit")).lower()
+                direction = clean_text(row.get("Direction")).lower()
+                unit = clean_text(row.get("Unit")).lower()
                 if direction == "output" and unit == "tkm":
                     row["Amount"] = f"{total_output_tkm:.12g}"
                     changed = True
@@ -257,10 +240,7 @@ def _fill_transport_parent_amounts(base_dir: Path, dry_run: bool = False):
             logging.info("[DRY-RUN] Would fill transport amounts in: %s", path.name)
             continue
 
-        with open(path, "w", newline="", encoding="utf-8") as out:
-            writer = csv.DictWriter(out, fieldnames=fieldnames)
-            writer.writeheader()
-            writer.writerows(rows)
+        write_csv_rows(path, fieldnames, rows)
         updates += 1
 
     if updates:

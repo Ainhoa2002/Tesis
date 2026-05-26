@@ -41,16 +41,19 @@ def main():
     target_file = Path(args.target_file).resolve() if args.target_file else None
     root_dir = None if target_file is not None else Path(args.root).resolve()
 
-    run_fill_ipe_columns_from_library(
-        library_path=Path(args.library).resolve(),
-        provider_library_path=Path(args.provider_library).resolve(),
-        root_dir=root_dir,
-        target_file=target_file,
-        overwrite_uuid=args.overwrite_uuid,
-        overwrite_provider=args.overwrite_provider,
-        sync_provider_library=not args.no_sync_provider_library,
-        dry_run=args.dry_run,
-    )
+    try:
+        run_fill_ipe_columns_from_library(
+            library_path=Path(args.library).resolve(),
+            provider_library_path=Path(args.provider_library).resolve(),
+            root_dir=root_dir,
+            target_file=target_file,
+            overwrite_uuid=args.overwrite_uuid,
+            overwrite_provider=args.overwrite_provider,
+            sync_provider_library=not args.no_sync_provider_library,
+            dry_run=args.dry_run,
+        )
+    except Exception as exc:
+        logging.exception("Error running library sync CLI: %s", exc)
 
 
 if __name__ == "__main__":

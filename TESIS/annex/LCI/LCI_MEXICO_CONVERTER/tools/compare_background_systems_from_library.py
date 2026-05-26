@@ -2,6 +2,16 @@ from __future__ import annotations
 
 import csv
 from collections import defaultdict
+import sys
+import logging
+
+# interactive-safe output helper
+_IS_TTY = sys.stdout.isatty()
+def _out(msg: str, level: str = "info") -> None:
+    if _IS_TTY:
+        print(msg)
+    else:
+        getattr(logging, level)(msg)
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -120,9 +130,9 @@ def main() -> None:
         )
 
     OUTPUT_MD.write_text("\n".join(lines), encoding="utf-8")
-    print(OUTPUT_MD)
-    print(OUTPUT_CSV)
-    print(f"TOTAL_KEYS={len(rows)} SAME_NONZERO={same_nonzero} ONLY_MODULES={only_modules} ONLY_SECTIONS={only_sections} DIFFERENT={different}")
+    _out(OUTPUT_MD)
+    _out(OUTPUT_CSV)
+    _out(f"TOTAL_KEYS={len(rows)} SAME_NONZERO={same_nonzero} ONLY_MODULES={only_modules} ONLY_SECTIONS={only_sections} DIFFERENT={different}")
 
 
 if __name__ == "__main__":

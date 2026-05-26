@@ -11,6 +11,21 @@ from collections import OrderedDict
 from pathlib import Path
 import logging
 
+CURRENT_DIR = Path(__file__).resolve().parent
+PARENT_DIR = CURRENT_DIR.parent
+if str(PARENT_DIR) not in sys.path:
+    sys.path.insert(0, str(PARENT_DIR))
+
+from _utils import (
+    clean_text as _clean_text,
+    normalize_direction as _normalize_direction,
+    round_for_csv as _round_for_csv,
+    sanitize_filename_part as _sanitize_filename_part,
+    to_float,
+    to_yes_no,
+    write_csv_rows as _write_csv_rows,
+)
+
 
 MAX_SELECTION_ATTEMPTS = 3
 SUBSYSTEM_UNITS_FILENAME = "subsystem_units.csv"
@@ -235,59 +250,13 @@ def calculate_subsystem_total_mass(results_csv_path):
                 try:
                     m = float(row.get('Total_mass_kg', '') or 0)
                     total_mass += m
-                except Exception:
-                    pass
+                except Exception as exc:
+                    logging.debug("Failed to parse Total_mass_kg row: %s", exc)
     except Exception as exc:
         logging.warning("Could not read %s for mass calculation: %s", results_csv_path, exc)
     return total_mass
 
 # Converts the inputs in correct format, float. changes coma for dot, averages ranges, returns none if it is empty.
-def to_float(value):
-    if value is None:
-        return None
-    if isinstance(value, (int, float)):
-        return float(value)
-
-    text = str(value).strip().replace(",", ".")
-    if text == "":
-        return None
-
-    try:
-        return float(text)
-    except ValueError:
-        pass
-
-    # Support ranges like 0.35-0.4 after normal float parsing.
-    # This avoids misreading scientific notation (e.g. 8e-05) as a range.
-    if "-" in text and not text.startswith("-"):
-        parts = text.split("-")
-        if len(parts) == 2:
-            try:
-                return (float(parts[0].strip()) + float(parts[1].strip())) / 2.0
-            except ValueError:
-                return None
-
-    return None
-
-
-def _round_for_csv(value, digits=12):
-    """Round for readability, but preserve tiny non-zero values."""
-    if value is None:
-        return None
-    rounded = round(value, digits)
-    if rounded == 0.0 and value != 0.0:
-        return value
-    return rounded
-
-#Yes or no when input is in different formats
-def to_yes_no(value):
-    text = str(value or "").strip().upper()
-    if text in {"YES", "SI", "S", "Y", "M", "TRUE", "1", "T"}:
-        return True
-    if text in {"NO", "N", "FALSE", "0", "F"}:
-        return False
-    return False
-
 #Reorders the colums
 def _sort_key(row):
     category_order = to_float(row.get("Category_order"))
@@ -303,10 +272,6 @@ def _sort_key(row):
         order_idx = 10**9
 
     return (category_order, group_order, order_idx)
-
-
-def _clean_text(value):
-    return str(value or "").strip()
 
 
 def _build_row_metadata(rows):
@@ -569,18 +534,12 @@ def is_mass_unit(unit):
     return str(unit or "").strip().lower() in {"kg"}
 
 
-def _normalize_direction(direction, database=None):
-    value = str(direction or "").strip()
-    lowered = value.casefold()
-    if lowered in {"input", "in"}:
-        return "Input"
-    if lowered in {"output", "out"}:
-        return "Output"
-
-    if value == "" and str(database or "").strip().casefold() == "ecoinvent":
-        return "Input"
-
-    return value
+def _grouped_flow_key(flow, unit, direction):
+    return (
+        str(flow or "").strip(),
+        str(unit or "").strip(),
+        _normalize_direction(direction),
+    )
 
 
 def _normalize_ecoinvent_fields(row):
@@ -605,6 +564,7 @@ def _normalize_ecoinvent_fields(row):
     normalized["Ecoinvent_flow"] = str(flow).strip().strip('"')
     normalized["Ecoinvent_unit"] = str(unit).strip().strip('"')
     return normalized
+
 
 def _split_ecoinvent_flow_components(flow, direction):
     """Split compound EcoInvent flows joined by '+' into independent flow entries.
@@ -631,14 +591,6 @@ def _split_ecoinvent_flow_components(flow, direction):
     return components
 
 
-def _grouped_flow_key(flow, unit, direction):
-    return (
-        str(flow or "").strip(),
-        str(unit or "").strip(),
-        _normalize_direction(direction),
-    )
-
-
 def _load_existing_grouped_flow_rows(grouped_flows_csv):
     """Load existing grouped flow rows keyed by (Flow, Unit, Direction).
 
@@ -658,45 +610,18 @@ def _load_existing_grouped_flow_rows(grouped_flows_csv):
 
             existing_rows = {}
             for row in reader:
-                key = _grouped_flow_key(
-                    row.get("Flow", ""),
-                    row.get("Unit", ""),
-                    row.get("Direction", ""),
+                key = (
+                    str(row.get("Flow", "") or "").strip(),
+                    str(row.get("Unit", "") or "").strip(),
+                    _normalize_direction(row.get("Direction")),
                 )
                 existing_rows[key] = dict(row)
 
             return fieldnames, existing_rows
-    except Exception:
+    except Exception as exc:
         # If legacy/corrupted data cannot be read, continue with fresh output.
+        logging.debug("Failed to load existing grouped flows: %s", exc)
         return ["Flow", "UUID", "Unit", "Amount", "Direction"], {}
-
-
-def _sanitize_filename_part(value):
-    text = _clean_text(value)
-    if text == "":
-        return "UNKNOWN"
-
-    cleaned = []
-    previous_was_separator = False
-    for char in text:
-        if char.isalnum() or char in {"-", "_"}:
-            cleaned.append(char)
-            previous_was_separator = False
-        else:
-            if not previous_was_separator:
-                cleaned.append("_")
-                previous_was_separator = True
-
-    result = "".join(cleaned).strip("_")
-    return result or "UNKNOWN"
-
-
-def _write_csv_rows(path, fieldnames, rows):
-    with open(path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames, extrasaction="ignore")
-        writer.writeheader()
-        if rows:
-            writer.writerows(rows)
 
 
 def _build_section_ipe_outputs(base_dir):
@@ -1587,8 +1512,8 @@ def main():
                     all_subsections.add(row.get('Subsection', '').strip())
                     try:
                         subsystem_mass += float(row.get('Total_mass_kg', '') or 0)
-                    except Exception:
-                        pass
+                    except Exception as exc:
+                        logging.debug("Failed to parse Total_mass_kg in results row: %s", exc)
                 total_mass += subsystem_mass
         except Exception as exc:
             logging.warning("Could not read %s for stats: %s", results_csv, exc)

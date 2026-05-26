@@ -1,7 +1,12 @@
 import csv
 import re
 import logging
-from .parameter_library import list_params
+try:
+    from .parameter_library import list_params
+except Exception as exc:
+    logging.warning("parameter_library.list_params not available: %s", exc)
+    def list_params():
+        return {}
 
 def eval_expr(expr, params):
     expr = re.sub(r'\$\{(\w+)\}', lambda m: str(params.get(m.group(1), m.group(0))), expr)

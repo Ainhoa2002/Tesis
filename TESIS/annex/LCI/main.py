@@ -69,8 +69,8 @@ def get_ipc_client(host: str = "localhost", port: int = 8080):
         return None
     try:
         return ipc.Client(port)
-    except Exception:
-        logging.exception("Failed to create olca IPC client")
+    except Exception as exc:
+        logging.exception("Failed to create olca IPC client: %s", exc)
         return None
 
 
@@ -258,7 +258,7 @@ def _phase_first_fill_and_import(
 
         try:
             run_system_pipeline_if_available(system_folder, dry_run=dry_run)
-        except Exception:
+        except Exception as exc:
             logging.exception("Error running pipeline for system: %s", system_folder)
 
         csv_files = iter_system_csvs(system_folder, selected_prefixes=selected_ipe_prefixes)
@@ -270,7 +270,7 @@ def _phase_first_fill_and_import(
 
         try:
             run_uuid_fill_if_available(base_dir, system_folder, dry_run=dry_run)
-        except Exception:
+        except Exception as exc:
             logging.exception("Error during UUID fill for system: %s", system_folder)
 
         for csv_file in csv_files:
@@ -287,7 +287,7 @@ def _phase_second_fill_and_reimport(base_dir: Path, client, state: ImportWorkflo
     for system_folder in state.systems_with_csv:
         try:
             run_created_uuid_fill_if_available(base_dir, system_folder, dry_run=False)
-        except Exception:
+        except Exception as exc:
             logging.exception("Error during created-UUID fill for system: %s", system_folder)
 
     second_round_reimports = 0
@@ -307,14 +307,14 @@ def _phase_third_fill_and_aggregate_reimport(base_dir: Path, client, state: Impo
     system_folder = base_dir / "LCI_SYSTEM"
     try:
         run_final_system_uuid_fill_if_available(base_dir, system_folder, dry_run=False)
-    except Exception:
+    except Exception as exc:
         logging.exception("Error during final system UUID fill: %s", system_folder)
 
     transport_folder = base_dir / "LCI_TRANSPORT"
     transport_third_fill_ok = False
     try:
         transport_third_fill_ok = run_final_transport_uuid_fill_if_available(base_dir, transport_folder, dry_run=False)
-    except Exception:
+    except Exception as exc:
         logging.exception("Error during final transport UUID fill: %s", transport_folder)
 
     system_target_file = system_folder / "system_ipe_flows_from_parameters.csv"
@@ -322,7 +322,7 @@ def _phase_third_fill_and_aggregate_reimport(base_dir: Path, client, state: Impo
         try:
             report = process_csv(client, str(system_target_file), resolve_category_name(system_folder.name))
             _register_report(state, report, collect_library_rows=False)
-        except Exception:
+        except Exception as exc:
             logging.exception("Error importing system target file: %s", system_target_file)
 
     if transport_third_fill_ok:
@@ -331,7 +331,7 @@ def _phase_third_fill_and_aggregate_reimport(base_dir: Path, client, state: Impo
             try:
                 report = process_csv(client, str(transport_target_file), resolve_category_name(transport_folder.name))
                 _register_report(state, report, collect_library_rows=False)
-            except Exception:
+            except Exception as exc:
                 logging.exception("Error importing transport target file: %s", transport_target_file)
 
 
@@ -395,8 +395,8 @@ def main():
     # Phase 0: transport preprocessing before import.
     try:
         prepare_transport_unit_processes(BASE_DIR, dry_run=args.dry_run)
-    except Exception:
-        logging.exception("Error preparing transport unit processes")
+    except Exception as exc:
+        logging.exception("Error preparing transport unit processes: %s", exc)
 
     systems = list(iter_system_folders(BASE_DIR))
     selected_systems = _parse_selection_names(args.systems)

@@ -14,6 +14,8 @@ from dataclasses import dataclass
 from pathlib import Path
 import logging
 
+from _utils import read_csv_rows, write_csv_rows, normalize_key, normalize_fill_key
+
 @dataclass
 class CreatedLibrariesUpdateStats:
     flow_added: int
@@ -24,28 +26,11 @@ class CreatedLibrariesUpdateStats:
     process_skipped_existing: int
 
 
-def _normalize_key(value: str) -> str:
-    return "".join(str(value or "").lower().split())
-
-
-def _normalize_fill_key(value: str) -> str:
-    text = str(value or "").replace('"', "").replace("'", "")
-    return "".join(text.split()).lower()
-
-
 def _iter_target_files(root_dir: Path, suffix: str = "_ipe_flows_from_parameters.csv"):
     for dirpath, _, filenames in os.walk(root_dir):
         for name in filenames:
             if name.endswith(suffix):
                 yield Path(dirpath) / name
-
-
-def _read_csv_rows(path: Path):
-    with open(path, newline="", encoding="utf-8-sig") as f:
-        reader = csv.DictReader(f)
-        fieldnames = [name for name in list(reader.fieldnames or []) if name]
-        rows = list(reader)
-    return fieldnames, rows
 
 
 def _build_mapping(rows: list[dict[str, str]], key_candidates: list[str], value_col: str, mapping_name: str):
@@ -70,7 +55,7 @@ def _build_mapping(rows: list[dict[str, str]], key_candidates: list[str], value_
     mapping = {}
     conflicts = []
     for idx, row in enumerate(rows, start=2):
-        key = _normalize_fill_key(row.get(key_col, ""))
+        key = normalize_fill_key(row.get(key_col, ""))
         value = str(row.get(value_col, "") or "").strip()
         if key == "" or value == "":
             continue
@@ -94,7 +79,7 @@ def _build_mapping(rows: list[dict[str, str]], key_candidates: list[str], value_
 
 
 def _load_uuid_map(path: Path):
-    _, rows = _read_csv_rows(path)
+    _, rows = read_csv_rows(path)
     if not rows:
         return {}
     return _build_mapping(
@@ -106,7 +91,7 @@ def _load_uuid_map(path: Path):
 
 
 def _load_provider_map(path: Path):
-    _, rows = _read_csv_rows(path)
+    _, rows = read_csv_rows(path)
     if not rows:
         return {}
 
@@ -134,7 +119,7 @@ def _load_provider_map(path: Path):
 
     mapping = {}
     for row in rows:
-        key = _normalize_fill_key(row.get(key_col, ""))
+        key = normalize_fill_key(row.get(key_col, ""))
         value = str(row.get("UUID_provider", "") or "").strip()
         if key == "" or value == "" or not uuid_pattern.match(value):
             continue
@@ -149,7 +134,7 @@ def _collect_missing_provider_flows(targets: list[Path], provider_map: dict[str,
     for target in targets:
         if not target.exists():
             continue
-        fieldnames, rows = _read_csv_rows(target)
+        fieldnames, rows = read_csv_rows(target)
         if "Flow" not in fieldnames:
             continue
 
@@ -162,7 +147,7 @@ def _collect_missing_provider_flows(targets: list[Path], provider_map: dict[str,
             if flow == "":
                 continue
 
-            key = _normalize_fill_key(flow)
+            key = normalize_fill_key(flow)
             if provider_map.get(key, "") != "":
                 continue
 
@@ -237,7 +222,7 @@ def _append_provider_mappings(provider_library_path: Path, new_rows: list[dict[s
     if not new_rows:
         return 0
 
-    fieldnames, existing_rows = _read_csv_rows(provider_library_path)
+    fieldnames, existing_rows = read_csv_rows(provider_library_path)
     if not fieldnames:
         fieldnames = ["Ecoinvent_flow_reference", "Ecoinvent_process", "UUID_provider"]
 
@@ -249,14 +234,14 @@ def _append_provider_mappings(provider_library_path: Path, new_rows: list[dict[s
         fieldnames.append("UUID_provider")
 
     existing_keys = {
-        _normalize_fill_key(r.get("Ecoinvent_flow_reference", ""))
+        normalize_fill_key(r.get("Ecoinvent_flow_reference", ""))
         for r in existing_rows
         if str(r.get("UUID_provider", "") or "").strip() != ""
     }
 
     appended = 0
     for row in new_rows:
-        key = _normalize_fill_key(row.get("Ecoinvent_flow_reference", ""))
+        key = normalize_fill_key(row.get("Ecoinvent_flow_reference", ""))
         if key == "" or key in existing_keys:
             continue
         existing_rows.append(row)
@@ -280,7 +265,7 @@ def _fill_single_file(
     overwrite_provider: bool = False,
     dry_run: bool = False,
 ):
-    fieldnames, rows = _read_csv_rows(path)
+    fieldnames, rows = read_csv_rows(path)
     if not fieldnames:
         return {
             "file": str(path),
@@ -321,7 +306,7 @@ def _fill_single_file(
         if direction == "output":
             continue
 
-        key = _normalize_fill_key(row.get("Flow", ""))
+        key = normalize_fill_key(row.get("Flow", ""))
         if key == "":
             continue
 
@@ -584,7 +569,7 @@ def upsert_created_flows_library(path: Path, rows: list[dict[str, str]]):
 
     index = {}
     for i, row in enumerate(existing_rows):
-        key = _normalize_key(row.get("Ecoinvent_flow", ""))
+        key = normalize_key(row.get("Ecoinvent_flow", ""))
         if key:
             index[key] = i
 
@@ -597,7 +582,7 @@ def upsert_created_flows_library(path: Path, rows: list[dict[str, str]]):
         if not flow or not uid:
             continue
 
-        key = _normalize_key(flow)
+        key = normalize_key(flow)
         mapped = {"Ecoinvent_flow": flow, "UUID": uid}
         if key in index:
             i = index[key]
@@ -605,8 +590,15 @@ def upsert_created_flows_library(path: Path, rows: list[dict[str, str]]):
             existing_uid = str(existing.get("UUID", "") or "").strip()
             existing_flow = str(existing.get("Ecoinvent_flow", "") or "").strip()
             if existing_uid != uid or existing_flow != flow:
-                existing_rows[i] = mapped
-                updated += 1
+                # Preserve existing mapping: do not overwrite user-provided entries.
+                # Log the conflict for manual review instead of silently updating.
+                logging.warning(
+                    "Created flows library conflict for '%s': existing UUID '%s' vs new UUID '%s' — keeping existing mapping.",
+                    flow,
+                    existing_uid,
+                    uid,
+                )
+                skipped_existing += 1
             else:
                 skipped_existing += 1
         else:
@@ -636,7 +628,7 @@ def upsert_created_process_library(path: Path, rows: list[dict[str, str]]):
 
     index = {}
     for i, row in enumerate(existing_rows):
-        key = _normalize_key(row.get("Ecoinvent_flow_reference", ""))
+        key = normalize_key(row.get("Ecoinvent_flow_reference", ""))
         if key:
             index[key] = i
 
@@ -650,7 +642,7 @@ def upsert_created_process_library(path: Path, rows: list[dict[str, str]]):
         if not flow_ref or not proc_uuid:
             continue
 
-        key = _normalize_key(flow_ref)
+        key = normalize_key(flow_ref)
         mapped = {
             "Ecoinvent_flow_reference": flow_ref,
             "Ecoinvent_process": proc_name,
@@ -662,8 +654,16 @@ def upsert_created_process_library(path: Path, rows: list[dict[str, str]]):
             existing_name = str(existing.get("Ecoinvent_process", "") or "").strip()
             existing_uuid = str(existing.get("UUID_provider", "") or "").strip()
             if existing_name != proc_name or existing_uuid != proc_uuid:
-                existing_rows[i] = mapped
-                updated += 1
+                # Preserve existing mapping: do not overwrite user-provided entries.
+                logging.warning(
+                    "Created process library conflict for '%s': existing '%s' (%s) vs new '%s' (%s) — keeping existing mapping.",
+                    flow_ref,
+                    existing_name,
+                    existing_uuid,
+                    proc_name,
+                    proc_uuid,
+                )
+                skipped_existing += 1
             else:
                 skipped_existing += 1
         else:

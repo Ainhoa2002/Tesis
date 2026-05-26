@@ -2,6 +2,16 @@ import argparse
 import json
 import json5
 from pathlib import Path
+import sys
+import logging
+
+# interactive-safe output helper
+_IS_TTY = sys.stdout.isatty()
+def _out(msg: str, level: str = "info") -> None:
+    if _IS_TTY:
+        print(msg)
+    else:
+        getattr(logging, level)(msg)
 from threading import RLock
 from typing import Any, Dict
 
@@ -151,28 +161,28 @@ def _run_cli() -> int:
 
     if args.command == "set":
         set_param(args.name, _parse_value(args.value))
-        print(f"Set {args.name}")
+        _out(f"Set {args.name}")
         return 0
 
     if args.command == "get":
-        print(get_param(args.name, default=args.default))
+        _out(get_param(args.name, default=args.default))
         return 0
 
     if args.command == "list":
-        print(json.dumps(list_params(), indent=2, ensure_ascii=True))
+        _out(json.dumps(list_params(), indent=2, ensure_ascii=True))
         return 0
 
     if args.command == "delete":
-        print("Deleted" if delete_param(args.name) else "Not found")
+        _out("Deleted" if delete_param(args.name) else "Not found")
         return 0
 
     if args.command == "scope":
         set_execution_scope(args.run_scope, args.target_system)
-        print("Scope updated")
+        _out("Scope updated")
         return 0
 
     if args.command == "show-scope":
-        print(json.dumps(get_execution_scope(), indent=2, ensure_ascii=True))
+        _out(json.dumps(get_execution_scope(), indent=2, ensure_ascii=True))
         return 0
 
     return 1

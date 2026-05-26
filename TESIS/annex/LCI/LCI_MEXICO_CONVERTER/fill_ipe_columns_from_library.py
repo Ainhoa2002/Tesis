@@ -3,6 +3,15 @@ import os
 import argparse
 import sys
 import re
+import logging
+
+# interactive-safe output helper
+_IS_TTY = sys.stdout.isatty()
+def _out(msg: str, level: str = "info") -> None:
+    if _IS_TTY:
+        print(msg)
+    else:
+        getattr(logging, level)(msg)
 
 
 def normalize_key(val):
@@ -30,15 +39,17 @@ def fill_columns_from_library(target_file, lib_df, key_col_lib='Ecoinvent_flow',
     try:
         df = pd.read_csv(target_file, dtype=str, keep_default_na=False)
     except Exception as e:
-        print(f"Error reading {target_file}: {e}")
+        logging.exception("Error reading %s", target_file)
+        _out(f"Error reading {target_file}: {e}", level="error")
         return
 
     if key_col_target not in df.columns:
-        print(f"Warning: {target_file} has no column '{key_col_target}'. Skipping.")
+        _out(f"Warning: {target_file} has no column '{key_col_target}'. Skipping.", level="warning")
         return
 
     if key_col_lib not in lib_df.columns:
-        print(f"Library missing key column '{key_col_lib}'. Aborting.")
+        _out(f"Library missing key column '{key_col_lib}'. Aborting.", level="error")
+        logging.error("Library missing key column '%s'", key_col_lib)
         sys.exit(1)
 
     # Normalize keys for robust matching
@@ -91,14 +102,15 @@ def fill_columns_from_library(target_file, lib_df, key_col_lib='Ecoinvent_flow',
     df.drop(columns=['_norm_key'], inplace=True)
     try:
         df.to_csv(target_file, index=False, encoding='utf-8')
-        print(f"Updated: {target_file}")
+        _out(f"Updated: {target_file}")
     except Exception as e:
-        print(f"Error writing {target_file}: {e}")
+        logging.exception("Error writing %s", target_file)
+        _out(f"Error writing {target_file}: {e}", level="error")
 
     if missing_rows:
-        print(f"WARNING: The following rows in {target_file} could not be filled:")
+        _out(f"WARNING: The following rows in {target_file} could not be filled:", level="warning")
         for val in missing_rows:
-            print(f"  - {val}")
+            _out(f"  - {val}", level="warning")
 
 
 def fill_uuid_provider_from_library(target_file, provider_df, key_col_target='Flow'):
@@ -116,7 +128,8 @@ def fill_uuid_provider_from_library(target_file, provider_df, key_col_target='Fl
     try:
         df = pd.read_csv(target_file, dtype=str, keep_default_na=False)
     except Exception as e:
-        print(f"Error reading {target_file}: {e}")
+        logging.exception("Error reading %s", target_file)
+        _out(f"Error reading {target_file}: {e}", level="error")
         return 0
 
     if key_col_target not in df.columns:
@@ -125,10 +138,12 @@ def fill_uuid_provider_from_library(target_file, provider_df, key_col_target='Fl
     provider_key_col = 'Ecoinvent_flow_reference'
     provider_uuid_col = 'UUID_provider'
     if provider_key_col not in provider_df.columns or provider_uuid_col not in provider_df.columns:
-        print(
+        _out(
             "Provider library missing required columns: "
-            "Ecoinvent_flow_reference, UUID_provider"
+            "Ecoinvent_flow_reference, UUID_provider",
+            level="error",
         )
+        logging.error("Provider library missing required columns: %s", provider_df.columns)
         sys.exit(1)
 
     if 'UUID_provider' not in df.columns:
@@ -163,7 +178,8 @@ def fill_uuid_provider_from_library(target_file, provider_df, key_col_target='Fl
     try:
         df.to_csv(target_file, index=False, encoding='utf-8')
     except Exception as e:
-        print(f"Error writing {target_file}: {e}")
+        logging.exception("Error writing %s", target_file)
+        _out(f"Error writing {target_file}: {e}", level="error")
         return 0
 
     return filled_count
@@ -180,16 +196,18 @@ def main():
 
     try:
         lib_df = pd.read_csv(args.library, dtype=str, keep_default_na=False)
-        print(f"Loaded library from {args.library}")
+        _out(f"Loaded library from {args.library}")
     except Exception as e:
-        print(f"Error loading library {args.library}: {e}")
+        logging.exception("Error loading library %s", args.library)
+        _out(f"Error loading library {args.library}: {e}", level="error")
         sys.exit(1)
 
     try:
         provider_df = pd.read_csv(args.provider_library, dtype=str, keep_default_na=False)
-        print(f"Loaded provider library from {args.provider_library}")
+        _out(f"Loaded provider library from {args.provider_library}")
     except Exception as e:
-        print(f"Error loading provider library {args.provider_library}: {e}")
+        logging.exception("Error loading provider library %s", args.provider_library)
+        _out(f"Error loading provider library {args.provider_library}: {e}", level="error")
         sys.exit(1)
 
     # Use the correct key column for the library
@@ -197,7 +215,8 @@ def main():
     fill_cols = ['Flow', 'UUID', 'Unit', 'Amount', 'Direction', 'uuid']
     available_fill = [col for col in fill_cols if col in lib_df.columns]
     if not available_fill:
-        print("Library does not contain any of the required columns: Flow, UUID, Unit, Amount, Direction, uuid")
+        _out("Library does not contain any of the required columns: Flow, UUID, Unit, Amount, Direction, uuid", level="error")
+        logging.error("Library columns available: %s", lib_df.columns)
         sys.exit(1)
 
     target_key_col = 'Flow'
@@ -208,8 +227,8 @@ def main():
         provider_filled_total += fill_uuid_provider_from_library(target_file, provider_df, key_col_target=target_key_col)
         count += 1
 
-    print(f"\nProcessed {count} file(s).")
-    print(f"number of flows that have provider: {provider_filled_total}")
+    _out(f"\nProcessed {count} file(s).")
+    _out(f"number of flows that have provider: {provider_filled_total}")
 
 if __name__ == '__main__':
     main()

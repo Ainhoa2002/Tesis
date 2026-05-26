@@ -2,9 +2,23 @@ import argparse
 import socket
 from pathlib import Path
 import logging
+import sys
 
-import olca_ipc as ipc
-import olca_schema as o
+# interactive-safe output helper
+_IS_TTY = sys.stdout.isatty()
+def _out(msg: str, level: str = "info") -> None:
+    if _IS_TTY:
+        print(msg)
+    else:
+        getattr(logging, level)(msg)
+
+try:
+    import olca_ipc as ipc
+    import olca_schema as o
+except Exception as exc:
+    logging.warning("olca_ipc/olca_schema not available: %s", exc)
+    ipc = None
+    o = None
 
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -99,11 +113,11 @@ def choose_processes_interactive(candidates: list[o.Ref]) -> list[o.Ref]:
     if not candidates:
         return []
 
-    print("Available processes:")
-    print("  0. ALL")
+    _out("Available processes:")
+    _out("  0. ALL")
     for i, ref in enumerate(candidates, start=1):
         category = str(getattr(ref, "category", "") or "")
-        print(f"  {i}. {ref.name} [{category}]")
+        _out(f"  {i}. {ref.name} [{category}]")
 
     attempts = 0
     while attempts < MAX_SELECTION_ATTEMPTS:
@@ -112,7 +126,7 @@ def choose_processes_interactive(candidates: list[o.Ref]) -> list[o.Ref]:
             return _parse_selection(raw, candidates)
         except ValueError as exc:
             attempts += 1
-            print(f"Invalid selection: {exc}")
+            _out(f"Invalid selection: {exc}", level="warning")
 
     raise ValueError("Too many invalid attempts. Operation canceled.")
 
@@ -192,13 +206,21 @@ def main():
     )
     args = parser.parse_args()
 
+    if ipc is None or o is None:
+        logging.error("olca_ipc/olca_schema not available. This script requires openLCA IPC.")
+        return
+
     if not ensure_ipc_server_available(host="localhost", port=8080):
         logging.error(
             "openLCA IPC server is not reachable on localhost:8080. Start openLCA and enable the IPC server."
         )
         return
 
-    client = ipc.Client(8080)
+    try:
+        client = ipc.Client(8080)
+    except Exception as exc:
+        logging.exception("Failed to connect to openLCA IPC: %s", exc)
+        return
     logging.info("Connected to openLCA IPC server")
 
     if args.categories.strip():

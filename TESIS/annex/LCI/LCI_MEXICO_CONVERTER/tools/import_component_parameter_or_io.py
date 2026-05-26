@@ -12,6 +12,16 @@ import shutil
 from pathlib import Path
 
 import openpyxl
+import sys
+import logging
+
+# interactive-safe output helper
+_IS_TTY = sys.stdout.isatty()
+def _out(msg: str, level: str = "info") -> None:
+    if _IS_TTY:
+        print(msg)
+    else:
+        getattr(logging, level)(msg)
 
 
 def _ensure_csv_suffix(name: str) -> str:
@@ -25,9 +35,9 @@ def _is_yes_answer(answer):
 
 
 def _prompt_import_mode():
-    print("\nImport options:")
-    print("1. Excel (BoM parameters)")
-    print("2. Duplicate .csv")
+    _out("\nImport options:")
+    _out("1. Excel (BoM parameters)")
+    _out("2. Duplicate .csv")
 
     while True:
         option = input("Choose option [1/2]: ").strip().lower()
@@ -35,7 +45,7 @@ def _prompt_import_mode():
             return "excel"
         if option in {"2", "csv", "duplicate", "dup"}:
             return "csv"
-        print("Invalid option. Enter 1 or 2.")
+        _out("Invalid option. Enter 1 or 2.", level="warning")
 
 
 def _prompt_directory(prompt_text, default_dir):
@@ -44,7 +54,7 @@ def _prompt_directory(prompt_text, default_dir):
         chosen_dir = Path(dir_input) if dir_input else default_dir
         if chosen_dir.exists() and chosen_dir.is_dir():
             return chosen_dir
-        print(f"Folder not found: {chosen_dir}")
+        _out(f"Folder not found: {chosen_dir}", level="warning")
 
 
 def _prompt_output_csv_path(default_dir, default_name, disallow_path=None):
@@ -55,14 +65,14 @@ def _prompt_output_csv_path(default_dir, default_name, disallow_path=None):
             csv_name = default_name
 
         if not csv_name:
-            print("Filename cannot be empty")
+            _out("Filename cannot be empty", level="warning")
             continue
 
         csv_name = _ensure_csv_suffix(csv_name)
 
         output_csv = default_dir / csv_name
         if disallow_path is not None and output_csv.resolve() == disallow_path.resolve():
-            print("Output CSV must be different from source CSV.")
+            _out("Output CSV must be different from source CSV.", level="warning")
             continue
 
         if output_csv.exists():
@@ -70,7 +80,7 @@ def _prompt_output_csv_path(default_dir, default_name, disallow_path=None):
                 f"File already exists: {output_csv}. Overwrite? [y/N]: "
             )
             if not _is_yes_answer(overwrite_answer):
-                print("Choose a different filename.")
+                _out("Choose a different filename.", level="info")
                 continue
         return output_csv
 
@@ -97,9 +107,9 @@ def _choose_csv_from_directory(source_dir):
     if not csv_files:
         return None
 
-    print("\nCSV files in folder:")
+    _out("\nCSV files in folder:")
     for i, path in enumerate(csv_files, start=1):
-        print(f"  {i}. {path.name}")
+        _out(f"  {i}. {path.name}")
 
     while True:
         raw = input("Choose CSV number (Enter to type filename manually): ").strip()
@@ -108,13 +118,13 @@ def _choose_csv_from_directory(source_dir):
         try:
             idx = int(raw)
         except ValueError:
-            print("Invalid number. Enter one of the listed options.")
+            _out("Invalid number. Enter one of the listed options.", level="warning")
             continue
 
         if 1 <= idx <= len(csv_files):
             return csv_files[idx - 1]
 
-        print("Invalid number. Enter one of the listed options.")
+        _out("Invalid number. Enter one of the listed options.", level="warning")
 
 
 def _prompt_source_csv_path(default_dir, extra_search_dirs=None):
@@ -128,19 +138,19 @@ def _prompt_source_csv_path(default_dir, extra_search_dirs=None):
 
         source_name = input("Source CSV filename: ").strip()
         if not source_name:
-            print("Filename cannot be empty")
+            _out("Filename cannot be empty", level="warning")
             continue
 
         source_csv = _resolve_source_csv(source_dir, source_name, extra_search_dirs)
         if source_csv is not None:
             if source_csv.parent.resolve() != source_dir.resolve():
-                print(f"Source CSV found in: {source_csv.parent}")
+                _out(f"Source CSV found in: {source_csv.parent}")
             return source_csv
 
         filename = source_name if source_name.lower().endswith(".csv") else f"{source_name}.csv"
-        print(f"CSV file not found in: {source_dir / filename}")
+        _out(f"CSV file not found in: {source_dir / filename}", level="warning")
         if extra_search_dirs:
-            print("Also checked fallback folders.")
+            _out("Also checked fallback folders.")
 
 
 def duplicate_csv(source_csv, output_csv):
@@ -179,8 +189,8 @@ def import_from_excel(workbook_path, output_csv, sheet_name=None):
         ws = wb[resolved_sheet_name]
     except KeyError:
         requested_label = sheet_name if sheet_name else "<auto-detect>"
-        print(f"Error: Sheet '{requested_label}' could not be resolved in workbook")
-        print(f"Available sheets: {wb.sheetnames}")
+        _out(f"Error: Sheet '{requested_label}' could not be resolved in workbook", level="error")
+        _out(f"Available sheets: {wb.sheetnames}", level="error")
         return 0, None
     
     header_row = []
@@ -190,10 +200,10 @@ def import_from_excel(workbook_path, output_csv, sheet_name=None):
         header_row.append(str(cell_value).strip())
     
     if not header_row:
-        print("Error: Excel file has no headers in first row")
+        _out("Error: Excel file has no headers in first row", level="error")
         return 0, None
-    
-    print(f"Found {len(header_row)} columns: {', '.join(header_row[:5])}...")
+
+    _out(f"Found {len(header_row)} columns: {', '.join(header_row[:5])}...")
     
     rows = []
 
@@ -226,7 +236,7 @@ def main():
     current_git_dir = Path.cwd().resolve()
     default_input_dir = mass_calc_dir
     
-    print("IMPORT COMPONENT PARAMETERS")
+    _out("IMPORT COMPONENT PARAMETERS")
     mode = _prompt_import_mode()
 
     if mode == "excel":
@@ -240,7 +250,7 @@ def main():
         while True:
             workbook_name = input("\n Excel file name (e.g., BoM_fuse_card or BoM_fuse_card.xlsx): ").strip()
             if not workbook_name:
-                print("File name cannot be empty")
+                _out("File name cannot be empty", level="warning")
                 continue
 
             if not workbook_name.lower().endswith(".xlsx"):
@@ -249,7 +259,7 @@ def main():
             excel_path = input_dir / workbook_name
             if excel_path.exists():
                 break
-            print(f"Excel file not found: {excel_path}")
+            _out(f"Excel file not found: {excel_path}", level="warning")
 
         workbook_stem = excel_path.stem
         default_csv_name = (
@@ -265,27 +275,30 @@ def main():
         if not sheet_name:
             sheet_name = None
 
-        print()
-        print(f"Importing from: {excel_path}")
-        print(f"Sheet: {sheet_name or 'auto-detect'}")
-        print(f"Output: {output_csv}")
-        print()
+        _out("")
+        _out(f"Importing from: {excel_path}")
+        _out(f"Sheet: {sheet_name or 'auto-detect'}")
+        _out(f"Output: {output_csv}")
+        _out("")
 
         count, resolved_sheet_name = import_from_excel(excel_path, output_csv, sheet_name)
 
         if resolved_sheet_name is None:
-            print("\nNo CSV file was generated.")
+            _out("\nNo CSV file was generated.")
             return
 
-        print(f"\nImported {count} component rows")
-        print(f"Sheet used: {resolved_sheet_name}")
-        print(f"Output saved to: {output_csv}")
+        _out(f"\nImported {count} component rows")
+        _out(f"Sheet used: {resolved_sheet_name}")
+        _out(f"Output saved to: {output_csv}")
         return
 
     source_csv = _prompt_source_csv_path(
         mass_calc_dir,
         extra_search_dirs=[current_git_dir],
     )
+    if source_csv is None:
+        _out("No source CSV selected. Aborting.", level="warning")
+        return
     output_dir = _prompt_directory(
         f"Destination folder (Enter for default: {mass_calc_dir}): ",
         mass_calc_dir,
@@ -293,14 +306,14 @@ def main():
     default_csv_name = f"{source_csv.stem}_copy.csv"
     output_csv = _prompt_output_csv_path(output_dir, default_csv_name, disallow_path=source_csv)
 
-    print()
-    print(f"Duplicating from: {source_csv}")
-    print(f"Output: {output_csv}")
-    print()
+    _out("")
+    _out(f"Duplicating from: {source_csv}")
+    _out(f"Output: {output_csv}")
+    _out("")
 
     duplicate_csv(source_csv, output_csv)
-    print("\nCSV duplicated successfully")
-    print(f"Output saved to: {output_csv}")
+    _out("\nCSV duplicated successfully")
+    _out(f"Output saved to: {output_csv}")
 
 
 if __name__ == "__main__":

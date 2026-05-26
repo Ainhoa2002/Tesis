@@ -1,6 +1,16 @@
 from __future__ import annotations
 
 import argparse
+import sys
+import logging
+
+# interactive-safe output helper
+_IS_TTY = sys.stdout.isatty()
+def _out(msg: str, level: str = "info") -> None:
+    if _IS_TTY:
+        print(msg)
+    else:
+        getattr(logging, level)(msg)
 import re
 from dataclasses import dataclass, field
 
@@ -245,7 +255,7 @@ def create_or_update_product_system(
     if not process_ref:
         report.skipped = True
         report.warnings.append(f"Process '{report.process_input}' not found, skipping.")
-        print(report.warnings[-1])
+        logging.warning(report.warnings[-1])
         return report
 
     process_name = str(getattr(process_ref, "name", "") or report.process_input)
@@ -264,7 +274,7 @@ def create_or_update_product_system(
     existing_ps = client.find(o.ProductSystem, name=process_name)
     if existing_ps:
         report.skipped = True
-        print(f"Skipped existing product system for '{process_name}'")
+        logging.info("Skipped existing product system for '%s'", process_name)
         return report
 
     config = o.LinkingConfig(
@@ -277,21 +287,23 @@ def create_or_update_product_system(
     except Exception as exc:
         report.skipped = True
         report.errors.append(f"Failed to create product system '{process_name}': {exc}")
-        print(report.errors[-1])
+        logging.exception("%s", report.errors[-1])
         return report
 
     if not new_ps:
         report.skipped = True
         report.errors.append(f"Product system '{process_name}' was not created.")
-        print(report.errors[-1])
+        logging.error("%s", report.errors[-1])
         return report
 
     report.product_system_uuid = str(getattr(new_ps, "id", "") or "")
     if not report.updated:
         report.created = True
-    print(
-        f"Created product system '{process_name}' (ID: {report.product_system_uuid}) "
-        f"with provider_linking={report.provider_linking}"
+    logging.info(
+        "Created product system '%s' (ID: %s) with provider_linking=%s",
+        process_name,
+        report.product_system_uuid,
+        report.provider_linking,
     )
     return report
 
@@ -355,7 +367,7 @@ def _prompt_linking_choice() -> str:
             return "prefer-defaults"
         if raw in {"2", "only", "only-defaults", "o", "no", "n"}:
             return "only-defaults"
-        print("Please choose 1 (Prefer default provider) or 2 (Only link default provider).")
+        _out("Please choose 1 (Prefer default provider) or 2 (Only link default provider).", level="warning")
 
 
 def _interactive_inputs() -> tuple[list[str], str]:
@@ -421,9 +433,10 @@ def _run_cli() -> int:
     if args.set_prefer_default_processes:
         new_values = _parse_csv_names(args.set_prefer_default_processes)
         set_prefer_defaults_processes(new_values)
-        print(
+        _out(
             "Updated parameter 'product_systems_prefer_defaults': "
-            f"{new_values}"
+            f"{new_values}",
+            level="info",
         )
         if not args.process_names and not args.interactive:
             return 0
@@ -431,18 +444,20 @@ def _run_cli() -> int:
     if args.set_module_components:
         module_components = _parse_component_modes(args.set_module_components)
         set_product_systems_module(module_components)
-        print(
+        _out(
             "Updated parameter 'product_systems_module.components': "
-            f"{module_components}"
+            f"{module_components}",
+            level="info",
         )
         if not args.process_names and not args.interactive:
             return 0
 
     if args.set_interactive_mode is not None:
         set_interactive_mode(args.set_interactive_mode)
-        print(
+        _out(
             f"Updated parameter 'product_systems_interactive_mode': {args.set_interactive_mode} "
-            f"({['silent (use params only)', 'interactive (ask user)'][args.set_interactive_mode]})"
+            f"({['silent (use params only)', 'interactive (ask user)'][args.set_interactive_mode]})",
+            level="info",
         )
         if not args.process_names and not args.interactive:
             return 0
@@ -474,13 +489,13 @@ def _run_cli() -> int:
         if allow_prompting:
             process_names = _prompt_process_inputs(client)
             if not process_names:
-                print("No process names were provided.")
+                _out("No process names were provided.", level="warning")
                 return 1
             if mode in {"", "parameter"}:
                 mode = _prompt_linking_choice()
         else:
             # Silent mode: no prompting allowed
-            print("No process names provided and interactive mode is disabled (product_systems_interactive_mode=0).")
+            _out("No process names provided and interactive mode is disabled (product_systems_interactive_mode=0).", level="warning")
             return 1
 
     if mode == "":
@@ -504,9 +519,10 @@ def _run_cli() -> int:
     updated = sum(1 for r in reports if r.updated)
     skipped = sum(1 for r in reports if r.skipped)
     errors = sum(len(r.errors) for r in reports)
-    print(
+    _out(
         "Product system builder complete. "
-        f"Created: {created}. Updated: {updated}. Skipped: {skipped}. Errors: {errors}."
+        f"Created: {created}. Updated: {updated}. Skipped: {skipped}. Errors: {errors}.",
+        level=("info" if errors == 0 else "warning"),
     )
     return 0 if errors == 0 else 2
 

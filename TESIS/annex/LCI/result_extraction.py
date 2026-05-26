@@ -6,8 +6,13 @@ import logging
 
 import json5
 import pandas as pd
-import olca_ipc as ipc
-import olca_schema as o
+try:
+    import olca_ipc as ipc
+    import olca_schema as o
+except Exception as exc:
+    logging.warning("olca_ipc/olca_schema not available: %s", exc)
+    ipc = None
+    o = None
 
 
 """
@@ -42,7 +47,7 @@ try:
                     if isinstance(target, ast.Name) and target.id in wanted:
                         try:
                             value = ast.literal_eval(node.value)
-                        except Exception:
+                        except Exception as exc:
                             # Non-literal expressions (computed at runtime) are skipped
                             continue
                         OVERRIDE_VARS[target.id] = value
@@ -96,13 +101,23 @@ def normalize_impact_categories(value):
 IMPACT_CATEGORIES = normalize_impact_categories(RAW_IMPACT_CATEGORIES)
 
 
-client = ipc.Client(8080)
 output_dir = str(Path(__file__).resolve().parent / "RESULTS" / "Deterministic results")
 os.makedirs(output_dir, exist_ok=True)
 
+if ipc is None or o is None:
+    logging.error("olca_ipc or olca_schema not available. Result extraction requires openLCA. Exiting.")
+    raise SystemExit(1)
+
+try:
+    client = ipc.Client(8080)
+except Exception as exc:
+    logging.exception("Could not connect to openLCA IPC: %s", exc)
+    raise SystemExit(1)
+
 method_ref = client.find(o.ImpactMethod, name=LCIA_METHOD)
 if not method_ref:
-    raise ValueError(f"Impact method '{LCIA_METHOD}' not found")
+    logging.error("Impact method '%s' not found", LCIA_METHOD)
+    raise SystemExit(1)
 logging.info("Using impact method: %s (ID: %s)", method_ref.name, method_ref.id)
 
 
@@ -290,8 +305,8 @@ def main():
     for sys_name in PRODUCT_SYSTEMS:
         try:
             process_system(sys_name)
-        except Exception:
-            logging.exception("Error processing %s", sys_name)
+        except Exception as exc:
+            logging.exception("Error processing %s: %s", sys_name, exc)
     logging.info("All extractions completed.")
 
 

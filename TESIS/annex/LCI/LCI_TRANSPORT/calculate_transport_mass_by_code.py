@@ -3,6 +3,15 @@ import csv
 from collections import defaultdict
 from pathlib import Path
 import logging
+import sys
+
+# interactive-safe output helper
+_IS_TTY = sys.stdout.isatty()
+def _out(msg: str, level: str = "info") -> None:
+    if _IS_TTY:
+        print(msg)
+    else:
+        getattr(logging, level)(msg)
 
 
 def _normalize_text(value):
@@ -288,13 +297,15 @@ def calculate_total_mass_by_transport_code(root_dir, include_pcb_mass_from_resul
 
     if include_pcb_mass_from_results:
         for csv_path in _iter_ipe_files(root_dir):
-                try:
-                    pcb_mass_kg = _load_pcb_mass_from_results(csv_path)
-                except Exception:
-                    logging.exception("Error loading PCB mass for %s", csv_path)
-                    pcb_mass_kg = 0.0
+            try:
+                pcb_mass_kg = _load_pcb_mass_from_results(csv_path)
+            except Exception as exc:
+                logging.exception("Error loading PCB mass for %s: %s", csv_path, exc)
+                pcb_mass_kg = 0.0
+
             if pcb_mass_kg <= 0:
                 continue
+
             pcb_codes = _collect_pcb_codes_from_ipe(csv_path)
             system_multiplier = _get_system_multiplier_for_file(root_dir, csv_path, system_units_map)
             pcb_mass_kg_scaled = pcb_mass_kg * system_multiplier
@@ -349,11 +360,12 @@ def calculate_total_mass_by_transport_code_per_subsystem(root_dir, include_pcb_m
 
     if include_pcb_mass_from_results:
         for csv_path in _iter_ipe_files(root_dir):
-                try:
-                    pcb_mass_kg = _load_pcb_mass_from_results(csv_path)
-                except Exception:
-                    logging.exception("Error loading PCB mass for %s", csv_path)
-                    pcb_mass_kg = 0.0
+            try:
+                pcb_mass_kg = _load_pcb_mass_from_results(csv_path)
+            except Exception as exc:
+                logging.exception("Error loading PCB mass for %s: %s", csv_path, exc)
+                pcb_mass_kg = 0.0
+
             if pcb_mass_kg <= 0:
                 continue
 
@@ -467,10 +479,10 @@ def main():
     if args.breakdown:
         breakdown = calculate_mass_breakdown_by_subsystem(args.root)
         if not breakdown:
-            print("No rows found.")
+            _out("No rows found.", level="warning")
             return
         for subsystem, payload in breakdown.items():
-            print(
+            _out(
                 f"{subsystem}: coded={payload['coded_mass_kg']:.12g} kg, "
                 f"uncoded={payload['uncoded_mass_kg']:.12g} kg, total={payload['total_mass_kg']:.12g} kg, "
                 f"coded_rows={payload['coded_rows']}, uncoded_rows={payload['uncoded_rows']}"
@@ -484,11 +496,11 @@ def main():
         )
 
         if not totals:
-            print("No coded mass rows found.")
+            _out("No coded mass rows found.", level="warning")
             return
 
         for code, mass_kg in totals.items():
-            print(f"{code}: {mass_kg:.12g} kg")
+            _out(f"{code}: {mass_kg:.12g} kg")
         return
 
     per_subsystem = calculate_total_mass_by_transport_code_per_subsystem(
@@ -496,7 +508,7 @@ def main():
         include_pcb_mass_from_results=args.include_pcb_mass_from_results,
     )
     if not per_subsystem:
-        print("No coded mass rows found.")
+        _out("No coded mass rows found.", level="warning")
         return
 
     global_total_coded_mass_kg = 0.0
@@ -506,10 +518,10 @@ def main():
         if not codes:
             continue
         code_chunks = [f"{mass_kg:.12g}kg {code}" for code, mass_kg in codes.items()]
-        print(f"{subsystem}: " + ", ".join(code_chunks) + f" | total={total_coded_mass_kg:.12g}kg")
+        _out(f"{subsystem}: " + ", ".join(code_chunks) + f" | total={total_coded_mass_kg:.12g}kg")
         global_total_coded_mass_kg += total_coded_mass_kg
 
-    print(f"TOTAL_CODED_MASS_ALL_SUBSYSTEMS: {global_total_coded_mass_kg:.12g}kg")
+    _out(f"TOTAL_CODED_MASS_ALL_SUBSYSTEMS: {global_total_coded_mass_kg:.12g}kg")
 
 
 if __name__ == "__main__":

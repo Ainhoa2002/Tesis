@@ -87,17 +87,20 @@ def calculate_losses(efficiency, cable_length_km_value=cable_length_km):
     }
 
 
+import logging
+
+
 def print_single_result(result):
-    print("=== FCC-ee Corrector Circuit Use Phase ===\n")
-    print(f"Converter efficiency:     {result['efficiency']:.2f} ({result['efficiency']*100:.0f}%)")
-    print(f"Cable length:             {result['cable_length_km']:.5f} km")
-    print(f"Cable resistance:         {result['R_cable']:.3f} ohm\n")
-    print(f"Average magnet losses:    {result['P_magnet_avg']:.2f} W ({result['prop_loss_magnet']:.2%})")
-    print(f"Average cable losses:     {result['P_cable_avg']:.2f} W ({result['prop_loss_cable']:.2%})")
-    print(f"Average converter losses: {result['P_conv_avg']:.2f} W ({result['prop_loss_conv']:.2%})")
-    print(f"Total average losses:     {result['P_loss_avg']:.2f} W\n")
-    print(f"Total operational time:   {T_op:.0f} h")
-    print(f"Lifetime energy losses:   {result['E_loss_total_MJ']:.2f} MJ")
+    logging.info("=== FCC-ee Corrector Circuit Use Phase ===\n")
+    logging.info("Converter efficiency:     %.2f (%.0f%%)", result['efficiency'], result['efficiency'] * 100)
+    logging.info("Cable length:             %.5f km", result['cable_length_km'])
+    logging.info("Cable resistance:         %.3f ohm\n", result['R_cable'])
+    logging.info("Average magnet losses:    %.2f W (%.2f%%)", result['P_magnet_avg'], result['prop_loss_magnet'] * 100)
+    logging.info("Average cable losses:     %.2f W (%.2f%%)", result['P_cable_avg'], result['prop_loss_cable'] * 100)
+    logging.info("Average converter losses: %.2f W (%.2f%%)", result['P_conv_avg'], result['prop_loss_conv'] * 100)
+    logging.info("Total average losses:     %.2f W\n", result['P_loss_avg'])
+    logging.info("Total operational time:   %.0f h", T_op)
+    logging.info("Lifetime energy losses:   %.2f MJ", result['E_loss_total_MJ'])
 
 
 # -----------------------

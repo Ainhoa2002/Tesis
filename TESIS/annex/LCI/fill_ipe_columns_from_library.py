@@ -51,6 +51,13 @@ def main():
         sync_provider_library=not args.no_sync_provider_library,
         dry_run=args.dry_run,
     )
+    
+if __name__ == "__main__":
+    try:
+        main()
+    except Exception as exc:
+        import logging
+        logging.exception("Error running fill_ipe_columns_from_library: %s", exc)
 
 
 if __name__ == "__main__":
