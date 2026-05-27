@@ -1,0 +1,656 @@
+{
+  "impact_category": "Eutrophication: terrestrial",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "EoL",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "EoL",
+      "direct_result": 0.0,
+      "total_result": 0.06593078153776442
+    },
+    {
+      "index": 14439,
+      "provider": "connecting_cable_EoL",
+      "direct_result": 0.0,
+      "total_result": 0.06152412675497543
+    },
+    {
+      "index": 14438,
+      "provider": "magnet_EoL",
+      "direct_result": 0.0,
+      "total_result": 0.002404499067483527
+    },
+    {
+      "index": 14440,
+      "provider": "converter_EoL",
+      "direct_result": 0.0,
+      "total_result": 0.0020021557153054644
+    },
+    {
+      "index": 9939,
+      "provider": "treatment of waste wire plastic, municipal incineration FAE | waste wire plastic | Cutoff, U",
+      "direct_result": 0.030019245023823766,
+      "total_result": 0.05998534064201591
+    },
+    {
+      "index": 9774,
+      "provider": "manual treatment facility construction, waste electric and electronic equipment | manual treatment facility, waste electric and electronic equipment | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0012106645665678271
+    },
+    {
+      "index": 10939,
+      "provider": "treatment of waste plastic, industrial electronics, municipal incineration FAE | waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 0.0022688815945697788,
+      "total_result": 0.002404659610930673
+    },
+    {
+      "index": 3022,
+      "provider": "treatment of waste electric and electronic equipment, shredding | waste electric and electronic equipment | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0016712843148556243
+    },
+    {
+      "index": 237,
+      "provider": "market for quicklime, milled, packed | quicklime, milled, packed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0119262878660209
+    },
+    {
+      "index": 244,
+      "provider": "market for sodium hydroxide, without water, in 50% solution state | sodium hydroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.007003801123758759
+    },
+    {
+      "index": 7296,
+      "provider": "market for residues, MSWI[F], waste wire plastic | residues, MSWI[F], waste wire plastic | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.004330745726584709
+    },
+    {
+      "index": 277,
+      "provider": "market for chemical, inorganic | chemical, inorganic | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0024457962843984025
+    },
+    {
+      "index": 588,
+      "provider": "market for hydrogen peroxide, without water, in 50% solution state | hydrogen peroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.001213952069527321
+    },
+    {
+      "index": 1285,
+      "provider": "market for building, hall | building, hall | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0014030076943755657
+    },
+    {
+      "index": 327,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.001505969875643249
+    },
+    {
+      "index": 15194,
+      "provider": "quicklime production, milled, packed | quicklime, milled, packed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.010995073542907277
+    },
+    {
+      "index": 166,
+      "provider": "market for transport, freight, lorry, unspecified | transport, freight, lorry, diesel, unspecified | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0023888569979969654
+    },
+    {
+      "index": 14709,
+      "provider": "chlor-alkali electrolysis, average production | sodium hydroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 7.988230940661982e-06,
+      "total_result": 0.006864808392959782
+    },
+    {
+      "index": 15662,
+      "provider": "treatment of residues, MSWI[F], waste wire plastic, residual material landfill | residues, MSWI[F], waste wire plastic | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.004173821998173978
+    },
+    {
+      "index": 4121,
+      "provider": "chemical production, inorganic | chemical, inorganic | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.002445796284398427
+    },
+    {
+      "index": 9303,
+      "provider": "hydrogen peroxide production, product in 50% solution state | hydrogen peroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0011238354287199971
+    },
+    {
+      "index": 2943,
+      "provider": "building construction, hall | building, hall | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0013919162846605338
+    },
+    {
+      "index": 13,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.002962823126575059
+    },
+    {
+      "index": 8839,
+      "provider": "quicklime production, milled, loose | quicklime, milled, loose | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.010641955811929466
+    },
+    {
+      "index": 11048,
+      "provider": "transport, freight, lorry, all sizes, EURO 3 to generic market for transport, freight, lorry, unspecified | transport, freight, lorry, diesel, unspecified | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0014162911168486409
+    },
+    {
+      "index": 8,
+      "provider": "market for sodium chloride, powder | sodium chloride, powder | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0034892031499131936
+    },
+    {
+      "index": 520,
+      "provider": "market for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.001474186573059708
+    },
+    {
+      "index": 547,
+      "provider": "market for cement, unspecified | cement, unspecified | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0035236540157838458
+    },
+    {
+      "index": 521,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0022314541893759627
+    },
+    {
+      "index": 2510,
+      "provider": "quicklime production, in pieces, loose | quicklime, in pieces, loose | Cutoff, U",
+      "direct_result": 0.005570758918461076,
+      "total_result": 0.010611895269487857
+    },
+    {
+      "index": 16913,
+      "provider": "sodium chloride production, powder | sodium chloride, powder | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.002048810562903673
+    },
+    {
+      "index": 16213,
+      "provider": "electricity voltage transformation from high to medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0014568298165182486
+    },
+    {
+      "index": 8464,
+      "provider": "cement, all types to generic market for cement, unspecified | cement, unspecified | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0028492792835148406
+    },
+    {
+      "index": 4921,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0019505836571252293
+    },
+    {
+      "index": 6440,
+      "provider": "market for heavy fuel oil | heavy fuel oil | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.002736215053004688
+    },
+    {
+      "index": 1280,
+      "provider": "market for limestone, crushed, washed | limestone, crushed, washed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.002312220720694096
+    },
+    {
+      "index": 95,
+      "provider": "market for diesel, burned in building machine | diesel, burned in building machine | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0030999267118982047
+    },
+    {
+      "index": 506,
+      "provider": "market for electricity, high voltage | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0015237249482645478
+    },
+    {
+      "index": 5033,
+      "provider": "market for cement, CEM II/B | cement, CEM II/B | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0017367198347390904
+    },
+    {
+      "index": 6713,
+      "provider": "petroleum refinery operation | heavy fuel oil | Cutoff, U",
+      "direct_result": 3.293331068019286e-05,
+      "total_result": 0.002688987088017005
+    },
+    {
+      "index": 7319,
+      "provider": "limestone production, crushed, washed | limestone, crushed, washed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0018850270168832227
+    },
+    {
+      "index": 16948,
+      "provider": "diesel, burned in building machine | diesel, burned in building machine | Cutoff, U",
+      "direct_result": 0.0029664457793555977,
+      "total_result": 0.0030999267118982047
+    },
+    {
+      "index": 15451,
+      "provider": "cement production, CEM II/B | cement, CEM II/B | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00170103318267891
+    },
+    {
+      "index": 2907,
+      "provider": "market for petroleum | petroleum | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0026314337710469623
+    },
+    {
+      "index": 585,
+      "provider": "market for limestone, unprocessed | limestone, unprocessed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.002085804025104768
+    },
+    {
+      "index": 4934,
+      "provider": "clinker production | clinker | Cutoff, U",
+      "direct_result": 0.002220063408595635,
+      "total_result": 0.0026590673014383974
+    },
+    {
+      "index": 1337,
+      "provider": "market for transport, freight, sea, tanker for petroleum, heavy fuel oil | transport, freight, sea, tanker for petroleum, heavy fuel oil | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0019389353006070331
+    },
+    {
+      "index": 12971,
+      "provider": "limestone quarry operation | limestone, unprocessed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0020858040251047687
+    },
+    {
+      "index": 5727,
+      "provider": "transport, freight, sea, tanker for petroleum, heavy fuel oil | transport, freight, sea, tanker for petroleum, heavy fuel oil | Cutoff, U",
+      "direct_result": 0.0018981509374329482,
+      "total_result": 0.001938935300607033
+    },
+    {
+      "index": 1719,
+      "provider": "blasting | blasting | Cutoff, U",
+      "direct_result": 0.001749512314570332,
+      "total_result": 0.0017979824399896426
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 14439,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 14438,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 14440,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 14439,
+      "provider_index": 9939,
+      "upstream_share": 0.9999999277104185
+    },
+    {
+      "node_index": 14439,
+      "provider_index": 9774,
+      "upstream_share": 0.7266790612770767
+    },
+    {
+      "node_index": 14438,
+      "provider_index": 10939,
+      "upstream_share": 0.999933076550051
+    },
+    {
+      "node_index": 14440,
+      "provider_index": 3022,
+      "upstream_share": 0.9999204824329242
+    },
+    {
+      "node_index": 14440,
+      "provider_index": 9774,
+      "upstream_share": 0.27331605501723616
+    },
+    {
+      "node_index": 9939,
+      "provider_index": 237,
+      "upstream_share": 0.999386079619199
+    },
+    {
+      "node_index": 9939,
+      "provider_index": 244,
+      "upstream_share": 0.9961186224856242
+    },
+    {
+      "node_index": 9939,
+      "provider_index": 7296,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 9939,
+      "provider_index": 277,
+      "upstream_share": 0.979958867388223
+    },
+    {
+      "node_index": 9939,
+      "provider_index": 588,
+      "upstream_share": 0.9951176604757935
+    },
+    {
+      "node_index": 9774,
+      "provider_index": 1285,
+      "upstream_share": 0.858422769169101
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 277,
+      "upstream_share": 0.0007892960145192645
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 237,
+      "upstream_share": 0.0005484686789185078
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 244,
+      "upstream_share": 0.000836001284487012
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 588,
+      "upstream_share": 0.0032609408724112105
+    },
+    {
+      "node_index": 3022,
+      "provider_index": 327,
+      "upstream_share": 0.9211952063233131
+    },
+    {
+      "node_index": 237,
+      "provider_index": 15194,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 237,
+      "provider_index": 166,
+      "upstream_share": 0.3659501417952509
+    },
+    {
+      "node_index": 244,
+      "provider_index": 14709,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 244,
+      "provider_index": 166,
+      "upstream_share": 0.0517169737286594
+    },
+    {
+      "node_index": 7296,
+      "provider_index": 15662,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 7296,
+      "provider_index": 166,
+      "upstream_share": 0.06426265429096271
+    },
+    {
+      "node_index": 277,
+      "provider_index": 4121,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 588,
+      "provider_index": 166,
+      "upstream_share": 0.030895003994488402
+    },
+    {
+      "node_index": 588,
+      "provider_index": 9303,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1285,
+      "provider_index": 2943,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 327,
+      "provider_index": 13,
+      "upstream_share": 0.4153765175229739
+    },
+    {
+      "node_index": 15194,
+      "provider_index": 8839,
+      "upstream_share": 0.9993384318288211
+    },
+    {
+      "node_index": 166,
+      "provider_index": 11048,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 14709,
+      "provider_index": 8,
+      "upstream_share": 0.9211854834833417
+    },
+    {
+      "node_index": 14709,
+      "provider_index": 277,
+      "upstream_share": 0.0016169565365083238
+    },
+    {
+      "node_index": 14709,
+      "provider_index": 520,
+      "upstream_share": 0.885899848781063
+    },
+    {
+      "node_index": 14709,
+      "provider_index": 588,
+      "upstream_share": 0.0010243596144476957
+    },
+    {
+      "node_index": 15662,
+      "provider_index": 547,
+      "upstream_share": 0.9589322501661174
+    },
+    {
+      "node_index": 4121,
+      "provider_index": 244,
+      "upstream_share": 0.0006666791960001165
+    },
+    {
+      "node_index": 9303,
+      "provider_index": 277,
+      "upstream_share": 0.0008132518162891742
+    },
+    {
+      "node_index": 9303,
+      "provider_index": 244,
+      "upstream_share": 0.000114720460583443
+    },
+    {
+      "node_index": 13,
+      "provider_index": 521,
+      "upstream_share": 0.900795321668679
+    },
+    {
+      "node_index": 8839,
+      "provider_index": 2510,
+      "upstream_share": 0.9996183726711694
+    },
+    {
+      "node_index": 8,
+      "provider_index": 16913,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 520,
+      "provider_index": 16213,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 547,
+      "provider_index": 8464,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 521,
+      "provider_index": 4921,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 2510,
+      "provider_index": 6440,
+      "upstream_share": 0.9992308764850486
+    },
+    {
+      "node_index": 2510,
+      "provider_index": 1280,
+      "upstream_share": 0.9756323574530151
+    },
+    {
+      "node_index": 16913,
+      "provider_index": 95,
+      "upstream_share": 0.004657974771160148
+    },
+    {
+      "node_index": 16913,
+      "provider_index": 13,
+      "upstream_share": 0.2849495326946898
+    },
+    {
+      "node_index": 16213,
+      "provider_index": 506,
+      "upstream_share": 0.9314726825688597
+    },
+    {
+      "node_index": 8464,
+      "provider_index": 5033,
+      "upstream_share": 0.996496619195567
+    },
+    {
+      "node_index": 6440,
+      "provider_index": 6713,
+      "upstream_share": 0.9935776879276939
+    },
+    {
+      "node_index": 6440,
+      "provider_index": 166,
+      "upstream_share": 0.014429862483257805
+    },
+    {
+      "node_index": 1280,
+      "provider_index": 166,
+      "upstream_share": 0.17384555486418912
+    },
+    {
+      "node_index": 1280,
+      "provider_index": 7319,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 95,
+      "provider_index": 16948,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 5033,
+      "provider_index": 166,
+      "upstream_share": 0.014606921521903684
+    },
+    {
+      "node_index": 5033,
+      "provider_index": 15451,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 6713,
+      "provider_index": 2907,
+      "upstream_share": 0.9286494307982123
+    },
+    {
+      "node_index": 7319,
+      "provider_index": 585,
+      "upstream_share": 0.899093523350209
+    },
+    {
+      "node_index": 15451,
+      "provider_index": 4934,
+      "upstream_share": 0.5940214672030532
+    },
+    {
+      "node_index": 2907,
+      "provider_index": 1337,
+      "upstream_share": 0.8448640004001114
+    },
+    {
+      "node_index": 585,
+      "provider_index": 12971,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 4934,
+      "provider_index": 95,
+      "upstream_share": 0.010594307967585282
+    },
+    {
+      "node_index": 4934,
+      "provider_index": 6440,
+      "upstream_share": 0.0003913180517203364
+    },
+    {
+      "node_index": 1337,
+      "provider_index": 5727,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 12971,
+      "provider_index": 95,
+      "upstream_share": 0.20465653309344845
+    },
+    {
+      "node_index": 12971,
+      "provider_index": 1719,
+      "upstream_share": 0.7477393682560164
+    }
+  ]
+}

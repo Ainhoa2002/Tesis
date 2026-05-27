@@ -1,0 +1,636 @@
+{
+  "impact_category": "Ecotoxicity: freshwater, organics",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "converter_EoL",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "converter_EoL",
+      "direct_result": 0.0,
+      "total_result": 0.01262365239558873
+    },
+    {
+      "index": 2,
+      "provider": "treatment of waste electric and electronic equipment, shredding | waste electric and electronic equipment | Cutoff, U",
+      "direct_result": 3.251845553693521e-06,
+      "total_result": 0.010746646686947598
+    },
+    {
+      "index": 1,
+      "provider": "manual treatment facility construction, waste electric and electronic equipment | manual treatment facility, waste electric and electronic equipment | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0018770075092504254
+    },
+    {
+      "index": 6,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.008864639427643033
+    },
+    {
+      "index": 5,
+      "provider": "market for mechanical treatment facility, waste electric and electronic equipment | mechanical treatment facility, waste electric and electronic equipment | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0019008739712787336
+    },
+    {
+      "index": 4,
+      "provider": "market for building, hall | building, hall | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0027936005849622434
+    },
+    {
+      "index": 12,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0061959314362695275
+    },
+    {
+      "index": 14,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0010813518020361132
+    },
+    {
+      "index": 18,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0007597724592276978
+    },
+    {
+      "index": 11,
+      "provider": "mechanical treatment facility construction, waste electric and electronic equipment | mechanical treatment facility, waste electric and electronic equipment | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0019008739712787336
+    },
+    {
+      "index": 9,
+      "provider": "building construction, hall | building, hall | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.002774095184257629
+    },
+    {
+      "index": 71,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0025768759349073214
+    },
+    {
+      "index": 57,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0017097536790773422
+    },
+    {
+      "index": 120,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0010259472879144019
+    },
+    {
+      "index": 49,
+      "provider": "market for building, multi-storey | building, multi-storey | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.000739156484951336
+    },
+    {
+      "index": 43,
+      "provider": "market for building, hall, steel construction | building, hall, steel construction | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.001954905294593964
+    },
+    {
+      "index": 42,
+      "provider": "market for building, hall, wood construction | building, hall, wood construction | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0008252906529141394
+    },
+    {
+      "index": 310,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0018819207519199467
+    },
+    {
+      "index": 309,
+      "provider": "market for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0007053306247618208
+    },
+    {
+      "index": 294,
+      "provider": "market for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0006146150529538109
+    },
+    {
+      "index": 293,
+      "provider": "market for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0005172669784298819
+    },
+    {
+      "index": 292,
+      "provider": "market for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0005024937748274659
+    },
+    {
+      "index": 281,
+      "provider": "building construction, multi-storey | building, multi-storey | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0005138972326122274
+    },
+    {
+      "index": 251,
+      "provider": "building construction, hall, steel construction | building, hall, steel construction | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0019410556893473651
+    },
+    {
+      "index": 250,
+      "provider": "building construction, hall, wood construction | building, hall, wood construction | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0008214155303725053
+    },
+    {
+      "index": 942,
+      "provider": "market for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0009532481015928218
+    },
+    {
+      "index": 937,
+      "provider": "electricity voltage transformation from high to medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0007028971427614923
+    },
+    {
+      "index": 922,
+      "provider": "electricity voltage transformation from high to medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0006138315280088521
+    },
+    {
+      "index": 921,
+      "provider": "electricity voltage transformation from high to medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0005167364229461804
+    },
+    {
+      "index": 920,
+      "provider": "electricity voltage transformation from high to medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0005018453341339986
+    },
+    {
+      "index": 264,
+      "provider": "market for polystyrene foam slab | polystyrene foam slab | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0009989663291594677
+    },
+    {
+      "index": 3155,
+      "provider": "electricity voltage transformation from high to medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00095012837221617
+    },
+    {
+      "index": 3150,
+      "provider": "market for electricity, high voltage | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0007185958587126312
+    },
+    {
+      "index": 3046,
+      "provider": "market for electricity, high voltage | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0006753907022384759
+    },
+    {
+      "index": 3045,
+      "provider": "market for electricity, high voltage | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0005259220142878304
+    },
+    {
+      "index": 3044,
+      "provider": "market for electricity, high voltage | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0005121964116218468
+    },
+    {
+      "index": 833,
+      "provider": "polystyrene foam slab production | polystyrene foam slab | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0007293281671891936
+    },
+    {
+      "index": 7221,
+      "provider": "market for electricity, high voltage | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.000961936616007852
+    },
+    {
+      "index": 7208,
+      "provider": "electricity production, natural gas, combined cycle power plant | electricity, high voltage | Cutoff, U",
+      "direct_result": 1.7497255004262029e-07,
+      "total_result": 0.0005573118125646636
+    },
+    {
+      "index": 7148,
+      "provider": "treatment of bagasse, from sugarcane, in heat and power co-generation unit, 6400kW thermal | electricity, high voltage | Cutoff, U",
+      "direct_result": 4.6905423768846904e-08,
+      "total_result": 0.0005958420433529472
+    },
+    {
+      "index": 2831,
+      "provider": "market for polystyrene, expandable | polystyrene, expandable | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0008232797162662363
+    },
+    {
+      "index": 641,
+      "provider": "market for natural gas, high pressure | natural gas, high pressure | Cutoff, U",
+      "direct_result": 2.7535628722102084e-07,
+      "total_result": 0.0023655440731006976
+    },
+    {
+      "index": 4005,
+      "provider": "market for bagasse, from sugarcane | bagasse, from sugarcane | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0017806617227882785
+    },
+    {
+      "index": 6716,
+      "provider": "polystyrene production, expandable | polystyrene, expandable | Cutoff, U",
+      "direct_result": 0.0002734929410139491,
+      "total_result": 0.0008187685191390951
+    },
+    {
+      "index": 2350,
+      "provider": "natural gas, high pressure, domestic supply with seasonal storage | natural gas, high pressure | Cutoff, U",
+      "direct_result": 1.6070968842000832e-08,
+      "total_result": 0.002142745116018651
+    },
+    {
+      "index": 8119,
+      "provider": "sugarcane processing, traditional annexed plant | bagasse, from sugarcane | Cutoff, U",
+      "direct_result": 6.6592773432604866e-09,
+      "total_result": 0.0017806402705921628
+    },
+    {
+      "index": 5643,
+      "provider": "petroleum and gas production, onshore | natural gas, high pressure | Cutoff, U",
+      "direct_result": 6.06784212661795e-07,
+      "total_result": 0.0021416468180073226
+    },
+    {
+      "index": 11490,
+      "provider": "market for sugarcane | sugarcane | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0017808616081005724
+    },
+    {
+      "index": 4719,
+      "provider": "treatment of water discharge from petroleum/natural gas extraction, onshore | water discharge from petroleum/natural gas extraction, onshore | Cutoff, U",
+      "direct_result": 0.006735177613086443,
+      "total_result": 0.006735177613086443
+    },
+    {
+      "index": 13438,
+      "provider": "sugarcane production | sugarcane | Cutoff, U",
+      "direct_result": 0.001702134628517966,
+      "total_result": 0.0017678987392136967
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 2,
+      "upstream_share": 0.9999340897960921
+    },
+    {
+      "node_index": 0,
+      "provider_index": 1,
+      "upstream_share": 0.9999988094187374
+    },
+    {
+      "node_index": 2,
+      "provider_index": 6,
+      "upstream_share": 0.9968161446049836
+    },
+    {
+      "node_index": 2,
+      "provider_index": 5,
+      "upstream_share": 0.9999996330882491
+    },
+    {
+      "node_index": 1,
+      "provider_index": 4,
+      "upstream_share": 0.6657402121707643
+    },
+    {
+      "node_index": 6,
+      "provider_index": 12,
+      "upstream_share": 0.9819290940656235
+    },
+    {
+      "node_index": 6,
+      "provider_index": 14,
+      "upstream_share": 0.9846956259064036
+    },
+    {
+      "node_index": 6,
+      "provider_index": 18,
+      "upstream_share": 0.9782727079022827
+    },
+    {
+      "node_index": 5,
+      "provider_index": 11,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 4,
+      "provider_index": 9,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 12,
+      "provider_index": 71,
+      "upstream_share": 0.98176603242313
+    },
+    {
+      "node_index": 12,
+      "provider_index": 57,
+      "upstream_share": 0.9789268018980288
+    },
+    {
+      "node_index": 14,
+      "provider_index": 120,
+      "upstream_share": 0.9842597984644209
+    },
+    {
+      "node_index": 11,
+      "provider_index": 4,
+      "upstream_share": 0.33223708572163246
+    },
+    {
+      "node_index": 11,
+      "provider_index": 49,
+      "upstream_share": 0.9652788946989892
+    },
+    {
+      "node_index": 9,
+      "provider_index": 43,
+      "upstream_share": 0.995196607683332
+    },
+    {
+      "node_index": 9,
+      "provider_index": 42,
+      "upstream_share": 0.9999981424027793
+    },
+    {
+      "node_index": 71,
+      "provider_index": 310,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 71,
+      "provider_index": 309,
+      "upstream_share": 0.9992018169217523
+    },
+    {
+      "node_index": 57,
+      "provider_index": 294,
+      "upstream_share": 0.999219788648246
+    },
+    {
+      "node_index": 57,
+      "provider_index": 293,
+      "upstream_share": 0.999303518144698
+    },
+    {
+      "node_index": 57,
+      "provider_index": 292,
+      "upstream_share": 0.9992846457943989
+    },
+    {
+      "node_index": 49,
+      "provider_index": 281,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 43,
+      "provider_index": 251,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 42,
+      "provider_index": 250,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 310,
+      "provider_index": 942,
+      "upstream_share": 0.9991951483477067
+    },
+    {
+      "node_index": 309,
+      "provider_index": 937,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 294,
+      "provider_index": 922,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 293,
+      "provider_index": 921,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 292,
+      "provider_index": 920,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 281,
+      "provider_index": 18,
+      "upstream_share": 1.9326604891685878e-05
+    },
+    {
+      "node_index": 281,
+      "provider_index": 14,
+      "upstream_share": 1.9453495070175584e-05
+    },
+    {
+      "node_index": 281,
+      "provider_index": 12,
+      "upstream_share": 1.9398839893377625e-05
+    },
+    {
+      "node_index": 251,
+      "provider_index": 12,
+      "upstream_share": 0.0012992790320417147
+    },
+    {
+      "node_index": 251,
+      "provider_index": 14,
+      "upstream_share": 0.0013029396800802791
+    },
+    {
+      "node_index": 251,
+      "provider_index": 264,
+      "upstream_share": 0.6890419968017948
+    },
+    {
+      "node_index": 251,
+      "provider_index": 18,
+      "upstream_share": 0.0012944409374137141
+    },
+    {
+      "node_index": 250,
+      "provider_index": 264,
+      "upstream_share": 0.294629758739334
+    },
+    {
+      "node_index": 250,
+      "provider_index": 14,
+      "upstream_share": 0.0005571283105757971
+    },
+    {
+      "node_index": 250,
+      "provider_index": 12,
+      "upstream_share": 0.0005555630419079395
+    },
+    {
+      "node_index": 250,
+      "provider_index": 18,
+      "upstream_share": 0.0005534943049374469
+    },
+    {
+      "node_index": 942,
+      "provider_index": 3155,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 937,
+      "provider_index": 3150,
+      "upstream_share": 0.9635997682150237
+    },
+    {
+      "node_index": 922,
+      "provider_index": 3046,
+      "upstream_share": 0.9003093348856986
+    },
+    {
+      "node_index": 921,
+      "provider_index": 3045,
+      "upstream_share": 0.9742374070215636
+    },
+    {
+      "node_index": 920,
+      "provider_index": 3044,
+      "upstream_share": 0.975242874660297
+    },
+    {
+      "node_index": 264,
+      "provider_index": 833,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 3155,
+      "provider_index": 7221,
+      "upstream_share": 0.9718769155629913
+    },
+    {
+      "node_index": 3150,
+      "provider_index": 7208,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 3046,
+      "provider_index": 7148,
+      "upstream_share": 0.9999279374154719
+    },
+    {
+      "node_index": 833,
+      "provider_index": 2831,
+      "upstream_share": 0.8753033624654776
+    },
+    {
+      "node_index": 7208,
+      "provider_index": 641,
+      "upstream_share": 0.23378849969857562
+    },
+    {
+      "node_index": 7148,
+      "provider_index": 4005,
+      "upstream_share": 0.3345666486936229
+    },
+    {
+      "node_index": 2831,
+      "provider_index": 6716,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 641,
+      "provider_index": 2350,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 4005,
+      "provider_index": 8119,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 6716,
+      "provider_index": 18,
+      "upstream_share": 9.288896999891788e-05
+    },
+    {
+      "node_index": 6716,
+      "provider_index": 14,
+      "upstream_share": 9.349883903949407e-05
+    },
+    {
+      "node_index": 6716,
+      "provider_index": 12,
+      "upstream_share": 9.323615125204645e-05
+    },
+    {
+      "node_index": 2350,
+      "provider_index": 5643,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 8119,
+      "provider_index": 43,
+      "upstream_share": 7.087934804432926e-08
+    },
+    {
+      "node_index": 8119,
+      "provider_index": 11490,
+      "upstream_share": 0.9998657406273047
+    },
+    {
+      "node_index": 5643,
+      "provider_index": 71,
+      "upstream_share": 0.00038138286087399355
+    },
+    {
+      "node_index": 5643,
+      "provider_index": 4719,
+      "upstream_share": 0.31421509587713153
+    },
+    {
+      "node_index": 11490,
+      "provider_index": 13438,
+      "upstream_share": 1.0
+    }
+  ]
+}

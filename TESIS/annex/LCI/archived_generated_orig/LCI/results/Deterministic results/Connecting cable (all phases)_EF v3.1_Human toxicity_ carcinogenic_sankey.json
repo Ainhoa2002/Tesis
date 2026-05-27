@@ -1,0 +1,223 @@
+{
+  "impact_category": "Human toxicity: carcinogenic",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "Connecting cable (all phases)",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "Connecting cable (all phases)",
+      "direct_result": 0.0,
+      "total_result": 4.938927897162706e-06
+    },
+    {
+      "index": 17922,
+      "provider": "connecting_cable_man&ext",
+      "direct_result": 0.0,
+      "total_result": 4.886322364977176e-06
+    },
+    {
+      "index": 57,
+      "provider": "market for copper, cathode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.875538915012161e-06
+    },
+    {
+      "index": 4932,
+      "provider": "wire drawing, copper | wire drawing, copper | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.63401679070258e-07
+    },
+    {
+      "index": 94,
+      "provider": "electrorefining of copper, anode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.591452901703374e-06
+    },
+    {
+      "index": 112,
+      "provider": "treatment of copper scrap by electrolytic refining | copper, cathode | Cutoff, U",
+      "direct_result": 3.04842565929429e-08,
+      "total_result": 1.6612429275695667e-07
+    },
+    {
+      "index": 103,
+      "provider": "copper production, cathode, solvent extraction and electrowinning process | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 8.284901889019414e-08
+    },
+    {
+      "index": 772,
+      "provider": "market for copper, anode | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 4.735381877118982e-06
+    },
+    {
+      "index": 1047,
+      "provider": "market for mine infrastructure, open cast, non-ferrous metal | mine infrastructure, open cast, non-ferrous metal | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.058697117035467e-08
+    },
+    {
+      "index": 2709,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 1.8992453703796906e-06,
+      "total_result": 1.984604351810987e-06
+    },
+    {
+      "index": 2705,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 1.8675052172464172e-06,
+      "total_result": 1.9517986424658724e-06
+    },
+    {
+      "index": 2707,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 3.7323406341251885e-07,
+      "total_result": 3.9040869054568184e-07
+    },
+    {
+      "index": 2711,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 2.238438723245939e-07,
+      "total_result": 2.3464938845061955e-07
+    },
+    {
+      "index": 2708,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 1.428885384121594e-07,
+      "total_result": 1.4983171742330024e-07
+    },
+    {
+      "index": 3558,
+      "provider": "mine construction, open cast, non-ferrous metal | mine infrastructure, open cast, non-ferrous metal | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.058697117035466e-08
+    },
+    {
+      "index": 6524,
+      "provider": "market for copper concentrate, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.7249838622459093e-07
+    },
+    {
+      "index": 363,
+      "provider": "market for building, multi-storey | building, multi-storey | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.953369449333681e-08
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 17922,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 17922,
+      "provider_index": 57,
+      "upstream_share": 0.9548400854488255
+    },
+    {
+      "node_index": 17922,
+      "provider_index": 4932,
+      "upstream_share": 0.9996075387848582
+    },
+    {
+      "node_index": 57,
+      "provider_index": 94,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 57,
+      "provider_index": 112,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 57,
+      "provider_index": 103,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 4932,
+      "provider_index": 57,
+      "upstream_share": 0.03233795548860337
+    },
+    {
+      "node_index": 94,
+      "provider_index": 772,
+      "upstream_share": 0.9662294480291663
+    },
+    {
+      "node_index": 112,
+      "provider_index": 772,
+      "upstream_share": 0.02753298701478338
+    },
+    {
+      "node_index": 103,
+      "provider_index": 1047,
+      "upstream_share": 0.7102376037199195
+    },
+    {
+      "node_index": 772,
+      "provider_index": 2709,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 772,
+      "provider_index": 2705,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 772,
+      "provider_index": 2707,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 772,
+      "provider_index": 2711,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 772,
+      "provider_index": 2708,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1047,
+      "provider_index": 3558,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 2709,
+      "provider_index": 6524,
+      "upstream_share": 0.3917490278546887
+    },
+    {
+      "node_index": 2705,
+      "provider_index": 6524,
+      "upstream_share": 0.3852021254228913
+    },
+    {
+      "node_index": 2707,
+      "provider_index": 6524,
+      "upstream_share": 0.07698535628120494
+    },
+    {
+      "node_index": 2711,
+      "provider_index": 6524,
+      "upstream_share": 0.046171295579811214
+    },
+    {
+      "node_index": 2708,
+      "provider_index": 6524,
+      "upstream_share": 0.029472993267505073
+    },
+    {
+      "node_index": 3558,
+      "provider_index": 363,
+      "upstream_share": 0.8103989016311933
+    }
+  ]
+}

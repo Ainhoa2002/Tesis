@@ -16,8 +16,6 @@ Format: Script — Imports relevantes — Data files read/written
 - `process_builder.py` — imports: `olca_schema`, `csv_reader` — reads `*_ipe_flows_from_parameters.csv` (via `csv_reader` helpers), writes openLCA entities via IPC
 - `result_extraction.py` — imports: `pandas`, `json5`, `olca_ipc` — reads config from `global_parameters.json` and (optionally) `RESULTS/result_calculation_explained.py`; writes CSVs into `RESULTS/Deterministic results` (these outputs were removed from annex copy)
 - `transport_workflow.py` — imports: `csv`, `pathlib` — reads: `LCI_TRANSPORT/code_transport.csv` and writes generated transport `*_ipe_flows_from_parameters.csv` files under `LCI_TRANSPORT`
-- `flow_loader.py` — imports: `csv`, `parameter_library` — reads arbitrary `*_ipe_flows_from_parameters.csv` and evaluates `${param}`-style amounts using `parameter_library.list_params()`
-- `flow_builder.py` — imports: `olca_schema` — writes `created_flows_uuid_map.csv` and per-flow summary files when creating flows
 - `finder.py` — imports: `olca_ipc`, `olca_schema` — helper to search openLCA for flows/processes
 - `fill_ipe_columns_from_library.py` — wrapper CLI that calls `library_sync.run_fill_ipe_columns_from_library`
 

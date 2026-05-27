@@ -1,0 +1,176 @@
+{
+  "impact_category": "Water use",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "Converter (all phases)",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "Converter (all phases)",
+      "direct_result": 0.0,
+      "total_result": 1941.0713358457624
+    },
+    {
+      "index": 1,
+      "provider": "use_converter_renewables",
+      "direct_result": 0.0,
+      "total_result": 1028.9083156819797
+    },
+    {
+      "index": 2,
+      "provider": "use_converter_mix",
+      "direct_result": 0.0,
+      "total_result": 789.0299723565086
+    },
+    {
+      "index": 4,
+      "provider": "converter_man&ext_modules",
+      "direct_result": 0.0,
+      "total_result": 122.76482728642323
+    },
+    {
+      "index": 6,
+      "provider": "market for electricity, high voltage, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1028.9083156819795
+    },
+    {
+      "index": 7,
+      "provider": "market for electricity, high voltage | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 790.1266012486999
+    },
+    {
+      "index": 15,
+      "provider": "mechanical_components",
+      "direct_result": 0.0,
+      "total_result": 31.56228042796294
+    },
+    {
+      "index": 40,
+      "provider": "electricity production, hydro, reservoir, alpine region, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 985.5592189470013,
+      "total_result": 988.0453608487622
+    },
+    {
+      "index": 36,
+      "provider": "electricity, high voltage, hydro, reservoir, import from FR, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 36.91743516007855
+    },
+    {
+      "index": 47,
+      "provider": "electricity production, hydro, reservoir, alpine region | electricity, high voltage | Cutoff, U",
+      "direct_result": 684.2813981718829,
+      "total_result": 686.0350738949558
+    },
+    {
+      "index": 46,
+      "provider": "electricity, high voltage, hydro, reservoir, import from FR | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 47.33416070615752
+    },
+    {
+      "index": 43,
+      "provider": "electricity production, nuclear, pressure water reactor | electricity, high voltage | Cutoff, U",
+      "direct_result": 28.884936188547368,
+      "total_result": 30.57802319146563
+    },
+    {
+      "index": 53,
+      "provider": "electricity production, nuclear, boiling water reactor | electricity, high voltage | Cutoff, U",
+      "direct_result": 20.603886617644235,
+      "total_result": 21.925528221883468
+    },
+    {
+      "index": 73,
+      "provider": "aluminium alloy production, AlMg3 | aluminium alloy, AlMg3 | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 21.020150867783176
+    },
+    {
+      "index": 130,
+      "provider": "electricity production, hydro, reservoir, alpine region | electricity, high voltage | Cutoff, U",
+      "direct_result": 84.41240038714584,
+      "total_result": 84.63229652785341
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 1,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 2,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 4,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1,
+      "provider_index": 6,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 2,
+      "provider_index": 7,
+      "upstream_share": 0.9974298533817704
+    },
+    {
+      "node_index": 4,
+      "provider_index": 15,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 6,
+      "provider_index": 40,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 6,
+      "provider_index": 36,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 7,
+      "provider_index": 47,
+      "upstream_share": 0.9999610283898653
+    },
+    {
+      "node_index": 7,
+      "provider_index": 46,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 7,
+      "provider_index": 43,
+      "upstream_share": 0.999997124085149
+    },
+    {
+      "node_index": 7,
+      "provider_index": 53,
+      "upstream_share": 0.999996256643766
+    },
+    {
+      "node_index": 15,
+      "provider_index": 73,
+      "upstream_share": 0.9999424172569371
+    },
+    {
+      "node_index": 36,
+      "provider_index": 130,
+      "upstream_share": 0.4362061781253984
+    },
+    {
+      "node_index": 46,
+      "provider_index": 130,
+      "upstream_share": 0.5592890786559771
+    }
+  ]
+}

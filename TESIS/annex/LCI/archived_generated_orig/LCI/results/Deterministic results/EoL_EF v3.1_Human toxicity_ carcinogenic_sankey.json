@@ -1,0 +1,313 @@
+{
+  "impact_category": "Human toxicity: carcinogenic",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "EoL",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "EoL",
+      "direct_result": 0.0,
+      "total_result": 9.32031944224127e-09
+    },
+    {
+      "index": 14439,
+      "provider": "connecting_cable_EoL",
+      "direct_result": 0.0,
+      "total_result": 9.135091411625725e-09
+    },
+    {
+      "index": 14438,
+      "provider": "magnet_EoL",
+      "direct_result": 0.0,
+      "total_result": 1.2792464373683515e-10
+    },
+    {
+      "index": 9939,
+      "provider": "treatment of waste wire plastic, municipal incineration FAE | waste wire plastic | Cutoff, U",
+      "direct_result": 5.02000707232094e-10,
+      "total_result": 9.092359215177126e-09
+    },
+    {
+      "index": 10939,
+      "provider": "treatment of waste plastic, industrial electronics, municipal incineration FAE | waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 1.3897582494098909e-11,
+      "total_result": 1.2793318500164905e-10
+    },
+    {
+      "index": 244,
+      "provider": "market for sodium hydroxide, without water, in 50% solution state | sodium hydroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 6.085536011977852e-09
+    },
+    {
+      "index": 7296,
+      "provider": "market for residues, MSWI[F], waste wire plastic | residues, MSWI[F], waste wire plastic | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.8592127384742325e-09
+    },
+    {
+      "index": 258,
+      "provider": "market for hydrochloric acid, without water, in 30% solution state | hydrochloric acid, without water, in 30% solution state | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.281760957904656e-10
+    },
+    {
+      "index": 277,
+      "provider": "market for chemical, inorganic | chemical, inorganic | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.1119996215067461e-10
+    },
+    {
+      "index": 7491,
+      "provider": "market for residues, MSWI[F], waste plastic, industrial electronics | residues, MSWI[F], waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.0271940928317689e-10
+    },
+    {
+      "index": 14709,
+      "provider": "chlor-alkali electrolysis, average production | sodium hydroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 5.840351578690457e-09,
+      "total_result": 6.0838572243103105e-09
+    },
+    {
+      "index": 15662,
+      "provider": "treatment of residues, MSWI[F], waste wire plastic, residual material landfill | residues, MSWI[F], waste wire plastic | Cutoff, U",
+      "direct_result": 1.7102841376787977e-09,
+      "total_result": 1.85721220209187e-09
+    },
+    {
+      "index": 13621,
+      "provider": "hydrochloric acid production, from the reaction of hydrogen with chlorine | hydrochloric acid, without water, in 30% solution state | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.0629664950457795e-10
+    },
+    {
+      "index": 4121,
+      "provider": "chemical production, inorganic | chemical, inorganic | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.1119996215067513e-10
+    },
+    {
+      "index": 12994,
+      "provider": "treatment of residues, MSWI[F], waste plastic, industrial electronics, residual material landfill | residues, MSWI[F], waste plastic, industrial electronics | Cutoff, U",
+      "direct_result": 1.0220027497121595e-10,
+      "total_result": 1.027124358281953e-10
+    },
+    {
+      "index": 8,
+      "provider": "market for sodium chloride, powder | sodium chloride, powder | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.0675877028901117e-10
+    },
+    {
+      "index": 637,
+      "provider": "treatment of waste cement, hydrated, residual material landfill | waste cement, hydrated | Cutoff, U",
+      "direct_result": 1.1085232403466096e-10,
+      "total_result": 1.1270837392293053e-10
+    },
+    {
+      "index": 82,
+      "provider": "market for chlorine, liquid | chlorine, liquid | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.0869215964046218e-10
+    },
+    {
+      "index": 1707,
+      "provider": "market for chlorine, gaseous | chlorine, gaseous | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.1676977176281055e-10
+    },
+    {
+      "index": 191,
+      "provider": "market for reinforcing steel | reinforcing steel | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.0273962216187174e-10
+    },
+    {
+      "index": 12326,
+      "provider": "chlorine production, liquid | chlorine, liquid | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.0861311292605902e-10
+    },
+    {
+      "index": 6165,
+      "provider": "chlor-alkali electrolysis, average production | chlorine, gaseous | Cutoff, U",
+      "direct_result": 2.0909288803157647e-10,
+      "total_result": 2.1673534515827588e-10
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 14439,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 14438,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 14439,
+      "provider_index": 9939,
+      "upstream_share": 0.9999999277104185
+    },
+    {
+      "node_index": 14438,
+      "provider_index": 10939,
+      "upstream_share": 0.999933076550051
+    },
+    {
+      "node_index": 9939,
+      "provider_index": 244,
+      "upstream_share": 0.9961186224856242
+    },
+    {
+      "node_index": 9939,
+      "provider_index": 7296,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 9939,
+      "provider_index": 258,
+      "upstream_share": 0.8301409152492973
+    },
+    {
+      "node_index": 9939,
+      "provider_index": 277,
+      "upstream_share": 0.979958867388223
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 277,
+      "upstream_share": 0.0007892960145192645
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 258,
+      "upstream_share": 0.001991574933893839
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 244,
+      "upstream_share": 0.000836001284487012
+    },
+    {
+      "node_index": 10939,
+      "provider_index": 7491,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 244,
+      "provider_index": 14709,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 7296,
+      "provider_index": 15662,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 258,
+      "provider_index": 13621,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 277,
+      "provider_index": 4121,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 7491,
+      "provider_index": 12994,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 14709,
+      "provider_index": 258,
+      "upstream_share": 0.14727978279342363
+    },
+    {
+      "node_index": 14709,
+      "provider_index": 277,
+      "upstream_share": 0.0016169565365083238
+    },
+    {
+      "node_index": 14709,
+      "provider_index": 8,
+      "upstream_share": 0.9211854834833417
+    },
+    {
+      "node_index": 15662,
+      "provider_index": 637,
+      "upstream_share": 0.9962327589741667
+    },
+    {
+      "node_index": 13621,
+      "provider_index": 82,
+      "upstream_share": 0.9652591726839738
+    },
+    {
+      "node_index": 4121,
+      "provider_index": 258,
+      "upstream_share": 0.010960867637300283
+    },
+    {
+      "node_index": 4121,
+      "provider_index": 244,
+      "upstream_share": 0.0006666791960001165
+    },
+    {
+      "node_index": 4121,
+      "provider_index": 1707,
+      "upstream_share": 0.0075846260508294835
+    },
+    {
+      "node_index": 4121,
+      "provider_index": 82,
+      "upstream_share": 0.01322658876517684
+    },
+    {
+      "node_index": 12994,
+      "provider_index": 637,
+      "upstream_share": 0.0034726620797620854
+    },
+    {
+      "node_index": 637,
+      "provider_index": 191,
+      "upstream_share": 0.001350253351938678
+    },
+    {
+      "node_index": 82,
+      "provider_index": 12326,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1707,
+      "provider_index": 6165,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 12326,
+      "provider_index": 1707,
+      "upstream_share": 0.9614898677728962
+    },
+    {
+      "node_index": 6165,
+      "provider_index": 277,
+      "upstream_share": 5.788934235974014e-05
+    },
+    {
+      "node_index": 6165,
+      "provider_index": 258,
+      "upstream_share": 0.00527282556846436
+    },
+    {
+      "node_index": 6165,
+      "provider_index": 8,
+      "upstream_share": 0.03297974968785773
+    }
+  ]
+}

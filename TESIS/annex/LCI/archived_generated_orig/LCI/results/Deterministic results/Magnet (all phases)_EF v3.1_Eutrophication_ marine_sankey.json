@@ -1,0 +1,651 @@
+{
+  "impact_category": "Eutrophication: marine",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "Magnet (all phases)",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "Magnet (all phases)",
+      "direct_result": 0.0,
+      "total_result": 0.5898627035200038
+    },
+    {
+      "index": 17064,
+      "provider": "magnet_man&ext",
+      "direct_result": 0.0,
+      "total_result": 0.4440878374605313
+    },
+    {
+      "index": 17063,
+      "provider": "use_magnet_mix",
+      "direct_result": 0.0,
+      "total_result": 0.09661723576290134
+    },
+    {
+      "index": 17062,
+      "provider": "use_magnet_renewables",
+      "direct_result": 0.0,
+      "total_result": 0.04076151898620542
+    },
+    {
+      "index": 245,
+      "provider": "market for copper, cathode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.2654983666760937
+    },
+    {
+      "index": 1375,
+      "provider": "market for metal working, average for steel product manufacturing | metal working, average for steel product manufacturing | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.08985268014561212
+    },
+    {
+      "index": 14597,
+      "provider": "market for steel, 3.2% silicon alloy, for grain oriented electrical steel | steel, 3.2% silicon alloy, for grain oriented electrical steel | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0889979467241412
+    },
+    {
+      "index": 5111,
+      "provider": "market for electricity, high voltage | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.09670975605739762
+    },
+    {
+      "index": 1218,
+      "provider": "market for electricity, high voltage, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.040761518986205364
+    },
+    {
+      "index": 6329,
+      "provider": "electrorefining of copper, anode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.17050364473347324
+    },
+    {
+      "index": 6332,
+      "provider": "copper production, cathode, solvent extraction and electrowinning process | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.08265257967733938
+    },
+    {
+      "index": 11425,
+      "provider": "metal working, average for steel product manufacturing | metal working, average for steel product manufacturing | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.06445052915542657
+    },
+    {
+      "index": 1239,
+      "provider": "metal working, average for steel product manufacturing | metal working, average for steel product manufacturing | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.02540317746889984
+    },
+    {
+      "index": 15093,
+      "provider": "steel production, 3.2% silicon alloy, for grain oriented electrical steel | steel, 3.2% silicon alloy, for grain oriented electrical steel | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.08629781971948418
+    },
+    {
+      "index": 12177,
+      "provider": "electricity production, nuclear, pressure water reactor | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.025138219953071875
+    },
+    {
+      "index": 12115,
+      "provider": "electricity production, nuclear, boiling water reactor | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.018999868572959364
+    },
+    {
+      "index": 12173,
+      "provider": "electricity, high voltage, coal, import from DE | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.01801826011354215
+    },
+    {
+      "index": 4300,
+      "provider": "market for copper, anode | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.15755841211978577
+    },
+    {
+      "index": 95,
+      "provider": "market for diesel, burned in building machine | diesel, burned in building machine | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.043591684625592805
+    },
+    {
+      "index": 1538,
+      "provider": "market for blasting | blasting | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.19126646176883869
+    },
+    {
+      "index": 13604,
+      "provider": "market for energy and auxilliary inputs, metal working machine | energy and auxilliary inputs, metal working machine | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.033909640274724144
+    },
+    {
+      "index": 75,
+      "provider": "market for steel, low-alloyed, hot rolled | steel, low-alloyed, hot rolled | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.03210396942771845
+    },
+    {
+      "index": 11715,
+      "provider": "steel production, converter, unalloyed | steel, unalloyed | Cutoff, U",
+      "direct_result": 0.00038190257809855567,
+      "total_result": 0.06561420937841078
+    },
+    {
+      "index": 1050,
+      "provider": "market for nuclear fuel element, for pressure water reactor, UO2 4.2% & MOX | nuclear fuel element, for pressure water reactor, UO2 4.2% & MOX | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.023511785234819303
+    },
+    {
+      "index": 1502,
+      "provider": "market for uranium, enriched 3.8%, in fuel element for light water reactor | uranium, enriched 3.8%, in fuel element for light water reactor | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.01799243945427824
+    },
+    {
+      "index": 13471,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.061711470715006246
+    },
+    {
+      "index": 13473,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.05884174189553311
+    },
+    {
+      "index": 16961,
+      "provider": "diesel, burned in building machine | diesel, burned in building machine | Cutoff, U",
+      "direct_result": 0.041597405895498214,
+      "total_result": 0.043591684625592805
+    },
+    {
+      "index": 10102,
+      "provider": "blasting | blasting | Cutoff, U",
+      "direct_result": 0.12467364760405429,
+      "total_result": 0.1280789344405045
+    },
+    {
+      "index": 1731,
+      "provider": "blasting | blasting | Cutoff, U",
+      "direct_result": 0.06280782549957319,
+      "total_result": 0.06454549010645957
+    },
+    {
+      "index": 14751,
+      "provider": "energy and auxilliary inputs, metal working machine, with process heat from light fuel oil | energy and auxilliary inputs, metal working machine | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.019389647020382563
+    },
+    {
+      "index": 12360,
+      "provider": "steel production, low-alloyed, hot rolled | steel, low-alloyed, hot rolled | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.02552291722881461
+    },
+    {
+      "index": 951,
+      "provider": "market for pig iron | pig iron | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.06119434002984855
+    },
+    {
+      "index": 4979,
+      "provider": "market for iron ore concentrate | iron ore concentrate | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.02442866796064478
+    },
+    {
+      "index": 385,
+      "provider": "market for coke | coke | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.021794816065231308
+    },
+    {
+      "index": 17480,
+      "provider": "nuclear fuel element production, for pressure water reactor, UO2 4.2% & MOX | nuclear fuel element, for pressure water reactor, UO2 4.2% & MOX | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.023313772000510585
+    },
+    {
+      "index": 3941,
+      "provider": "market for copper concentrate, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.1450674206299737
+    },
+    {
+      "index": 150,
+      "provider": "market group for electricity, low voltage | electricity, low voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.02675881691063018
+    },
+    {
+      "index": 268,
+      "provider": "market for steel, low-alloyed | steel, low-alloyed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.032192767249792434
+    },
+    {
+      "index": 15185,
+      "provider": "pig iron production | pig iron | Cutoff, U",
+      "direct_result": 0.0012968860165542735,
+      "total_result": 0.058870724802348354
+    },
+    {
+      "index": 2281,
+      "provider": "market for transport, freight, sea, bulk carrier for dry goods, heavy fuel oil | transport, freight, sea, bulk carrier for dry goods, heavy fuel oil | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.021079730994433114
+    },
+    {
+      "index": 5298,
+      "provider": "market for uranium, enriched 4.2%, in fuel element for light water reactor | uranium, enriched 4.2%, in fuel element for light water reactor | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.023501419595658952
+    },
+    {
+      "index": 10091,
+      "provider": "copper mine operation and beneficiation, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 5.437480216581188e-08,
+      "total_result": 0.03900441265874365
+    },
+    {
+      "index": 10095,
+      "provider": "copper mine operation and beneficiation, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 5.170572188603624e-08,
+      "total_result": 0.03559843876060007
+    },
+    {
+      "index": 8342,
+      "provider": "steel production, converter, low-alloyed | steel, low-alloyed | Cutoff, U",
+      "direct_result": 7.933143855508e-05,
+      "total_result": 0.019227478431198798
+    },
+    {
+      "index": 13145,
+      "provider": "iron sinter production | iron sinter | Cutoff, U",
+      "direct_result": 0.009525894900030888,
+      "total_result": 0.028515424085589543
+    },
+    {
+      "index": 16027,
+      "provider": "transport, freight, sea, bulk carrier for dry goods, heavy fuel oil | transport, freight, sea, bulk carrier for dry goods, heavy fuel oil | Cutoff, U",
+      "direct_result": 0.02044332025319573,
+      "total_result": 0.021079730994433114
+    },
+    {
+      "index": 2963,
+      "provider": "uranium fuel element production, enriched 4.2%, for light water reactor | uranium, enriched 4.2%, in fuel element for light water reactor | Cutoff, U",
+      "direct_result": 6.139640288968e-05,
+      "total_result": 0.02350124548064227
+    },
+    {
+      "index": 952,
+      "provider": "market for pig iron | pig iron | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.020128284536399633
+    },
+    {
+      "index": 7689,
+      "provider": "market for uranium, enriched 4.2%, per separative work unit | uranium, enriched 4.2%, per separative work unit | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.023380851683845717
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 17064,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 17063,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 0,
+      "provider_index": 17062,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 17064,
+      "provider_index": 245,
+      "upstream_share": 0.9322509566886307
+    },
+    {
+      "node_index": 17064,
+      "provider_index": 1375,
+      "upstream_share": 0.9998945698221173
+    },
+    {
+      "node_index": 17064,
+      "provider_index": 14597,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 17063,
+      "provider_index": 5111,
+      "upstream_share": 0.9978605782190442
+    },
+    {
+      "node_index": 17062,
+      "provider_index": 1218,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 245,
+      "provider_index": 6329,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 245,
+      "provider_index": 6332,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1375,
+      "provider_index": 11425,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1375,
+      "provider_index": 1239,
+      "upstream_share": 0.9999752377760439
+    },
+    {
+      "node_index": 14597,
+      "provider_index": 15093,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 5111,
+      "provider_index": 12177,
+      "upstream_share": 0.9999969058699114
+    },
+    {
+      "node_index": 5111,
+      "provider_index": 12115,
+      "upstream_share": 0.9999959726101103
+    },
+    {
+      "node_index": 5111,
+      "provider_index": 12173,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 6329,
+      "provider_index": 4300,
+      "upstream_share": 0.9662276745169324
+    },
+    {
+      "node_index": 6329,
+      "provider_index": 95,
+      "upstream_share": 0.12845488114660897
+    },
+    {
+      "node_index": 6332,
+      "provider_index": 1538,
+      "upstream_share": 0.32939185360352746
+    },
+    {
+      "node_index": 6332,
+      "provider_index": 95,
+      "upstream_share": 0.1321218987250993
+    },
+    {
+      "node_index": 11425,
+      "provider_index": 13604,
+      "upstream_share": 0.9999937978551346
+    },
+    {
+      "node_index": 11425,
+      "provider_index": 75,
+      "upstream_share": 0.4961866494838348
+    },
+    {
+      "node_index": 1239,
+      "provider_index": 75,
+      "upstream_share": 0.24505183603930003
+    },
+    {
+      "node_index": 15093,
+      "provider_index": 11715,
+      "upstream_share": 0.9897409322610812
+    },
+    {
+      "node_index": 12177,
+      "provider_index": 75,
+      "upstream_share": 5.081658311278489e-05
+    },
+    {
+      "node_index": 12177,
+      "provider_index": 1050,
+      "upstream_share": 0.9717232765673677
+    },
+    {
+      "node_index": 12115,
+      "provider_index": 75,
+      "upstream_share": 0.00012163216612468717
+    },
+    {
+      "node_index": 12115,
+      "provider_index": 1502,
+      "upstream_share": 0.9592394700905538
+    },
+    {
+      "node_index": 4300,
+      "provider_index": 13471,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 4300,
+      "provider_index": 13473,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 95,
+      "provider_index": 16961,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1538,
+      "provider_index": 10102,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1538,
+      "provider_index": 1731,
+      "upstream_share": 0.980309112974478
+    },
+    {
+      "node_index": 13604,
+      "provider_index": 14751,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 75,
+      "provider_index": 12360,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 11715,
+      "provider_index": 951,
+      "upstream_share": 0.9565779410974148
+    },
+    {
+      "node_index": 11715,
+      "provider_index": 4979,
+      "upstream_share": 0.0004876490581354248
+    },
+    {
+      "node_index": 11715,
+      "provider_index": 385,
+      "upstream_share": 1.4199927605546483e-05
+    },
+    {
+      "node_index": 1050,
+      "provider_index": 17480,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 13471,
+      "provider_index": 3941,
+      "upstream_share": 0.39156751694653136
+    },
+    {
+      "node_index": 13473,
+      "provider_index": 3941,
+      "upstream_share": 0.3850236479216386
+    },
+    {
+      "node_index": 14751,
+      "provider_index": 150,
+      "upstream_share": 0.5038998586238786
+    },
+    {
+      "node_index": 12360,
+      "provider_index": 268,
+      "upstream_share": 0.7084303267152959
+    },
+    {
+      "node_index": 951,
+      "provider_index": 15185,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 4979,
+      "provider_index": 2281,
+      "upstream_share": 0.6056516055858522
+    },
+    {
+      "node_index": 385,
+      "provider_index": 2281,
+      "upstream_share": 0.02425124528275722
+    },
+    {
+      "node_index": 17480,
+      "provider_index": 5298,
+      "upstream_share": 0.9915831144403219
+    },
+    {
+      "node_index": 3941,
+      "provider_index": 10091,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 3941,
+      "provider_index": 10095,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 268,
+      "provider_index": 2281,
+      "upstream_share": 0.01293290268655154
+    },
+    {
+      "node_index": 268,
+      "provider_index": 8342,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 15185,
+      "provider_index": 13145,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 15185,
+      "provider_index": 4979,
+      "upstream_share": 0.10614221308021596
+    },
+    {
+      "node_index": 15185,
+      "provider_index": 385,
+      "upstream_share": 0.6811976458619858
+    },
+    {
+      "node_index": 2281,
+      "provider_index": 16027,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 5298,
+      "provider_index": 2963,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 10091,
+      "provider_index": 1538,
+      "upstream_share": 0.16934473058926994
+    },
+    {
+      "node_index": 10091,
+      "provider_index": 95,
+      "upstream_share": 0.00014805610669522062
+    },
+    {
+      "node_index": 10095,
+      "provider_index": 95,
+      "upstream_share": 0.00012910430572067274
+    },
+    {
+      "node_index": 10095,
+      "provider_index": 1538,
+      "upstream_share": 0.14766789670613292
+    },
+    {
+      "node_index": 8342,
+      "provider_index": 245,
+      "upstream_share": 7.771445365003312e-07
+    },
+    {
+      "node_index": 8342,
+      "provider_index": 4979,
+      "upstream_share": 0.00010129782701265144
+    },
+    {
+      "node_index": 8342,
+      "provider_index": 385,
+      "upstream_share": 9.447883736890344e-07
+    },
+    {
+      "node_index": 8342,
+      "provider_index": 952,
+      "upstream_share": 0.5951319527400091
+    },
+    {
+      "node_index": 13145,
+      "provider_index": 4979,
+      "upstream_share": 0.6535164185061072
+    },
+    {
+      "node_index": 13145,
+      "provider_index": 385,
+      "upstream_share": 0.09390145623640286
+    },
+    {
+      "node_index": 2963,
+      "provider_index": 7689,
+      "upstream_share": 1.0000000000000004
+    },
+    {
+      "node_index": 952,
+      "provider_index": 2281,
+      "upstream_share": 0.011132040559323687
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+﻿python : C:\Users\alorzaga\Git\tesis\TESIS\annex\LCI\main.py:14: 
+SyntaxWarning: invalid escape sequence '\.'
+At line:1 char:312
++ ... ocation .\TESIS\annex\LCI; python -u .\main.py --dry-run *>&1 | Out-F ...
++                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\alorza...e sequence '\.' 
+   :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  .\.venv\Scripts\python.exe .\LCI\main.py --systems LCI_MEXICO_CONVERTER 
+--ipe-prefixes SECTION_ --product-systems none
+INFO: Preparing transport unit processes from code_transport.csv...
+INFO: [DRY-RUN] Would generate transport code unit file: 
+transport_code_p1_ipe_flows_from_parameters.csv
+INFO: [DRY-RUN] Would generate transport code unit file: 
+transport_code_p2_ipe_flows_from_parameters.csv
+INFO: [DRY-RUN] Would generate transport code unit file: 
+transport_code_r1_ipe_flows_from_parameters.csv
+INFO: [DRY-RUN] Would generate transport code unit file: 
+transport_code_r2_ipe_flows_from_parameters.csv
+INFO: [DRY-RUN] Would generate transport code unit file: 
+transport_code_r3_ipe_flows_from_parameters.csv
+INFO: [DRY-RUN] Would generate transport code unit file: 
+transport_code_s1_ipe_flows_from_parameters.csv
+INFO: [DRY-RUN] Would generate transport code unit file: 
+transport_code_s2_ipe_flows_from_parameters.csv
+INFO: Transport unit process files generated: 7

@@ -11,7 +11,6 @@ Core scripts and helpers to include:
 - `LCI/process_builder.py` — openLCA process/flow builders
 - `LCI/transport_workflow.py` — transport CSV preparation
 - `LCI/product_system_builder.py` and `LCI/create_product_systems.py`
-- `LCI/flow_builder.py` and `LCI/flow_loader.py`
 - `LCI/fill_ipe_columns_from_library.py` — library-backed IPE filling
 - `LCI/params.py` and `LCI/global_parameters.json`
 
@@ -24,7 +23,7 @@ Subsystems (examples):
 Documentation and packaging notes:
 
 - `README.md`, `LICENSE` are present at `TESIS/annex/`
-- Generated outputs removed from `LCI/LCI_MEXICO_CONVERTER/archived_generated/` to keep annex clean
+- Preserved original generated outputs are archived under `LCI/archived_generated_orig/`
 - Keep `--dry-run` behavior and IPC tolerance (openLCA) in distributed scripts
 
 - Archived library CSVs moved to `LCI/archived_libraries/` (non-generated canonical maps)

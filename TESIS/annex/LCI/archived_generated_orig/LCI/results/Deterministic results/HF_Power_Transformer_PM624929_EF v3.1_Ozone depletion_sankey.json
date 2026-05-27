@@ -1,0 +1,160 @@
+{
+  "impact_category": "Ozone depletion",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "HF_Power_Transformer_PM624929",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "HF_Power_Transformer_PM624929",
+      "direct_result": 0.0,
+      "total_result": 5.935060190870172e-06
+    },
+    {
+      "index": 14898,
+      "provider": "market for polytetrafluoroethylene | polytetrafluoroethylene | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.9148290417375365e-06
+    },
+    {
+      "index": 9254,
+      "provider": "polytetrafluoroethylene production, emulsion polymerization | polytetrafluoroethylene | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.914828234404789e-06
+    },
+    {
+      "index": 1606,
+      "provider": "market for tetrafluoroethylene | tetrafluoroethylene | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 5.91484575333416e-06
+    },
+    {
+      "index": 13921,
+      "provider": "tetrafluoroethylene production | tetrafluoroethylene | Cutoff, U",
+      "direct_result": 1.0637349404845391e-07,
+      "total_result": 4.047031301914403e-06
+    },
+    {
+      "index": 13922,
+      "provider": "tetrafluoroethylene production | tetrafluoroethylene | Cutoff, U",
+      "direct_result": 4.9095458791594215e-08,
+      "total_result": 1.8678148044202849e-06
+    },
+    {
+      "index": 4078,
+      "provider": "market for chlorodifluoromethane | chlorodifluoromethane | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 3.94068480808469e-06
+    },
+    {
+      "index": 5949,
+      "provider": "market for chlorodifluoromethane | chlorodifluoromethane | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.8187265652320959e-06
+    },
+    {
+      "index": 7686,
+      "provider": "chlorodifluoromethane production | chlorodifluoromethane | Cutoff, U",
+      "direct_result": 1.5402165799651422e-06,
+      "total_result": 3.940684365243479e-06
+    },
+    {
+      "index": 13968,
+      "provider": "chlorodifluoromethane production | chlorodifluoromethane | Cutoff, U",
+      "direct_result": 7.108692867259858e-07,
+      "total_result": 1.8187263864037156e-06
+    },
+    {
+      "index": 2210,
+      "provider": "market for chloroform | chloroform | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 2.4004447909548297e-06
+    },
+    {
+      "index": 2209,
+      "provider": "market for chloroform | chloroform | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 1.1078826241326056e-06
+    },
+    {
+      "index": 6927,
+      "provider": "chloroform production | chloroform | Cutoff, U",
+      "direct_result": 2.4000773936499654e-06,
+      "total_result": 2.400444084047716e-06
+    },
+    {
+      "index": 10244,
+      "provider": "chloroform production | chloroform | Cutoff, U",
+      "direct_result": 1.1077861599859843e-06,
+      "total_result": 1.1078823381999532e-06
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 14898,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 14898,
+      "provider_index": 9254,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 9254,
+      "provider_index": 1606,
+      "upstream_share": 0.9999922524127038
+    },
+    {
+      "node_index": 1606,
+      "provider_index": 13921,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1606,
+      "provider_index": 13922,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 13921,
+      "provider_index": 4078,
+      "upstream_share": 0.9999916306383374
+    },
+    {
+      "node_index": 13922,
+      "provider_index": 5949,
+      "upstream_share": 0.9999914956317469
+    },
+    {
+      "node_index": 4078,
+      "provider_index": 7686,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 5949,
+      "provider_index": 13968,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 7686,
+      "provider_index": 2210,
+      "upstream_share": 0.9999731077444441
+    },
+    {
+      "node_index": 13968,
+      "provider_index": 2209,
+      "upstream_share": 0.9999207681878655
+    },
+    {
+      "node_index": 2210,
+      "provider_index": 6927,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 2209,
+      "provider_index": 10244,
+      "upstream_share": 1.0
+    }
+  ]
+}

@@ -1,0 +1,616 @@
+{
+  "impact_category": "Climate change: biogenic",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "connecting_cable_EoL",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "connecting_cable_EoL",
+      "direct_result": 0.0,
+      "total_result": 0.006788611048268395
+    },
+    {
+      "index": 9939,
+      "provider": "treatment of waste wire plastic, municipal incineration FAE | waste wire plastic | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0064431772752426555
+    },
+    {
+      "index": 9774,
+      "provider": "manual treatment facility construction, waste electric and electronic equipment | manual treatment facility, waste electric and electronic equipment | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0003076012387088895
+    },
+    {
+      "index": 588,
+      "provider": "market for hydrogen peroxide, without water, in 50% solution state | hydrogen peroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0028240519845687995
+    },
+    {
+      "index": 244,
+      "provider": "market for sodium hydroxide, without water, in 50% solution state | sodium hydroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0019161402846057606
+    },
+    {
+      "index": 277,
+      "provider": "market for chemical, inorganic | chemical, inorganic | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0007853458187000218
+    },
+    {
+      "index": 237,
+      "provider": "market for quicklime, milled, packed | quicklime, milled, packed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0006591985301214109
+    },
+    {
+      "index": 1285,
+      "provider": "market for building, hall | building, hall | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00031895080927772624
+    },
+    {
+      "index": 9303,
+      "provider": "hydrogen peroxide production, product in 50% solution state | hydrogen peroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00282304137319067
+    },
+    {
+      "index": 14706,
+      "provider": "chlor-alkali electrolysis, average production | sodium hydroxide, without water, in 50% solution state | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.001914521792828542
+    },
+    {
+      "index": 4121,
+      "provider": "chemical production, inorganic | chemical, inorganic | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.000785345818700024
+    },
+    {
+      "index": 15191,
+      "provider": "quicklime production, milled, packed | quicklime, milled, packed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0006493081843518117
+    },
+    {
+      "index": 2943,
+      "provider": "building construction, hall | building, hall | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00031857024949475234
+    },
+    {
+      "index": 439,
+      "provider": "market group for municipal solid waste | municipal solid waste | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00274500031864491
+    },
+    {
+      "index": 195,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00016124356240134496
+    },
+    {
+      "index": 520,
+      "provider": "market for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00116697402588958
+    },
+    {
+      "index": 8,
+      "provider": "market for sodium chloride, powder | sodium chloride, powder | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0005427535100052754
+    },
+    {
+      "index": 7,
+      "provider": "market for sodium chlorate, powder | sodium chlorate, powder | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00047352120825759023
+    },
+    {
+      "index": 6854,
+      "provider": "packing, lime product | packing, lime product | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0004910600153308058
+    },
+    {
+      "index": 8839,
+      "provider": "quicklime production, milled, loose | quicklime, milled, loose | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00015687292849587758
+    },
+    {
+      "index": 7202,
+      "provider": "market for building, hall, wood construction | building, hall, wood construction | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0002730454596784178
+    },
+    {
+      "index": 1176,
+      "provider": "market group for municipal solid waste | municipal solid waste | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0027413833334520347
+    },
+    {
+      "index": 107,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00017382184394089699
+    },
+    {
+      "index": 16210,
+      "provider": "electricity voltage transformation from high to medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0011657299193146857
+    },
+    {
+      "index": 16910,
+      "provider": "sodium chloride production, powder | sodium chloride, powder | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0004462542303229145
+    },
+    {
+      "index": 16457,
+      "provider": "sodium chlorate production, powder | sodium chlorate, powder | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00047305210841892847
+    },
+    {
+      "index": 1279,
+      "provider": "market for waste graphical paper | waste graphical paper | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0004445265569802097
+    },
+    {
+      "index": 17057,
+      "provider": "building construction, hall, wood construction | building, hall, wood construction | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00027299921268204033
+    },
+    {
+      "index": 1417,
+      "provider": "market for municipal solid waste | municipal solid waste | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00044498093921334456
+    },
+    {
+      "index": 3300,
+      "provider": "market for municipal solid waste | municipal solid waste | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00027972049058402204
+    },
+    {
+      "index": 2847,
+      "provider": "market for municipal solid waste | municipal solid waste | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00027186185229683064
+    },
+    {
+      "index": 3310,
+      "provider": "market for municipal solid waste | municipal solid waste | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0002457616441374343
+    },
+    {
+      "index": 3255,
+      "provider": "market for municipal solid waste | municipal solid waste | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0002269305287417362
+    },
+    {
+      "index": 2863,
+      "provider": "market for municipal solid waste | municipal solid waste | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00017938932716916333
+    },
+    {
+      "index": 506,
+      "provider": "market for electricity, high voltage | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0012185475612450521
+    },
+    {
+      "index": 3,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0002558390671089722
+    },
+    {
+      "index": 9,
+      "provider": "market for chemical factory, organics | chemical factory, organics | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00019709256489718817
+    },
+    {
+      "index": 282,
+      "provider": "market for municipal solid waste | municipal solid waste | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0005762599079415006
+    },
+    {
+      "index": 5525,
+      "provider": "treatment of waste graphical paper, open dump, wet infiltration class (500mm) | waste graphical paper | Cutoff, U",
+      "direct_result": 0.00048221868045253955,
+      "total_result": 0.0004822186804525396
+    },
+    {
+      "index": 119,
+      "provider": "market for waste wood, untreated | waste wood, untreated | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0003726760465749374
+    },
+    {
+      "index": 8966,
+      "provider": "treatment of municipal solid waste, unsanitary landfill | municipal solid waste | Cutoff, U",
+      "direct_result": 0.0002555263938518879,
+      "total_result": 0.00025552660363437383
+    },
+    {
+      "index": 8965,
+      "provider": "treatment of municipal solid waste, sanitary landfill | municipal solid waste | Cutoff, U",
+      "direct_result": 0.00018801950152516197,
+      "total_result": 0.0001880481131334506
+    },
+    {
+      "index": 8356,
+      "provider": "treatment of municipal solid waste, sanitary landfill | municipal solid waste | Cutoff, U",
+      "direct_result": 0.0002712431670757663,
+      "total_result": 0.00027126958165935114
+    },
+    {
+      "index": 17466,
+      "provider": "treatment of municipal solid waste, sanitary landfill | municipal solid waste | Cutoff, U",
+      "direct_result": 0.0002251073056021169,
+      "total_result": 0.00022514010239165863
+    },
+    {
+      "index": 7662,
+      "provider": "treatment of municipal solid waste, unsanitary landfill, dry infiltration class (100mm) | municipal solid waste | Cutoff, U",
+      "direct_result": 0.00026433780553128763,
+      "total_result": 0.0002643379248359869
+    },
+    {
+      "index": 5238,
+      "provider": "heat and power co-generation, biogas, gas engine | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.00018108931651393827,
+      "total_result": 0.0011144992926989611
+    },
+    {
+      "index": 52,
+      "provider": "market group for electricity, medium voltage | electricity, medium voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00022476018776608746
+    },
+    {
+      "index": 1147,
+      "provider": "treatment of municipal solid waste, unsanitary landfill, wet infiltration class (500mm) | municipal solid waste | Cutoff, U",
+      "direct_result": 0.000274174670798924,
+      "total_result": 0.0002741747847717712
+    },
+    {
+      "index": 419,
+      "provider": "market for biogas | biogas | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.001065806342628241
+    },
+    {
+      "index": 3209,
+      "provider": "anaerobic digestion of manure | biogas | Cutoff, U",
+      "direct_result": 0.001056549746909628,
+      "total_result": 0.001061169344593536
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 9939,
+      "upstream_share": 0.9999999291871676
+    },
+    {
+      "node_index": 0,
+      "provider_index": 9774,
+      "upstream_share": 0.9999938238256163
+    },
+    {
+      "node_index": 9939,
+      "provider_index": 588,
+      "upstream_share": 0.9983824013148868
+    },
+    {
+      "node_index": 9939,
+      "provider_index": 244,
+      "upstream_share": 0.9969793898825151
+    },
+    {
+      "node_index": 9939,
+      "provider_index": 277,
+      "upstream_share": 0.9811608720698715
+    },
+    {
+      "node_index": 9939,
+      "provider_index": 237,
+      "upstream_share": 0.9999346571724563
+    },
+    {
+      "node_index": 9774,
+      "provider_index": 1285,
+      "upstream_share": 0.9634344904966559
+    },
+    {
+      "node_index": 588,
+      "provider_index": 9303,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 244,
+      "provider_index": 14706,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 277,
+      "provider_index": 4121,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 237,
+      "provider_index": 15191,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1285,
+      "provider_index": 2943,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 9303,
+      "provider_index": 439,
+      "upstream_share": 0.9885494251196422
+    },
+    {
+      "node_index": 9303,
+      "provider_index": 244,
+      "upstream_share": 0.00011444412942223129
+    },
+    {
+      "node_index": 9303,
+      "provider_index": 277,
+      "upstream_share": 0.0008115867201652422
+    },
+    {
+      "node_index": 9303,
+      "provider_index": 195,
+      "upstream_share": 0.34363403966900147
+    },
+    {
+      "node_index": 14706,
+      "provider_index": 588,
+      "upstream_share": 0.0010268329827470375
+    },
+    {
+      "node_index": 14706,
+      "provider_index": 520,
+      "upstream_share": 0.891613356850274
+    },
+    {
+      "node_index": 14706,
+      "provider_index": 277,
+      "upstream_share": 0.0016175421214410456
+    },
+    {
+      "node_index": 14706,
+      "provider_index": 8,
+      "upstream_share": 0.9216960318682667
+    },
+    {
+      "node_index": 4121,
+      "provider_index": 244,
+      "upstream_share": 0.000666437843835643
+    },
+    {
+      "node_index": 4121,
+      "provider_index": 7,
+      "upstream_share": 0.9980806952100595
+    },
+    {
+      "node_index": 15191,
+      "provider_index": 6854,
+      "upstream_share": 0.9996296299000411
+    },
+    {
+      "node_index": 15191,
+      "provider_index": 8839,
+      "upstream_share": 0.9993401545465046
+    },
+    {
+      "node_index": 2943,
+      "provider_index": 7202,
+      "upstream_share": 0.9999891827803139
+    },
+    {
+      "node_index": 439,
+      "provider_index": 1176,
+      "upstream_share": 0.9995046438461571
+    },
+    {
+      "node_index": 195,
+      "provider_index": 107,
+      "upstream_share": 0.9218148974826132
+    },
+    {
+      "node_index": 520,
+      "provider_index": 16210,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 8,
+      "provider_index": 16910,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 7,
+      "provider_index": 16457,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 6854,
+      "provider_index": 1279,
+      "upstream_share": 0.9882443711069993
+    },
+    {
+      "node_index": 7202,
+      "provider_index": 17057,
+      "upstream_share": 1.0000000000000004
+    },
+    {
+      "node_index": 1176,
+      "provider_index": 1417,
+      "upstream_share": 0.9996025399198125
+    },
+    {
+      "node_index": 1176,
+      "provider_index": 3300,
+      "upstream_share": 0.9997182486049254
+    },
+    {
+      "node_index": 1176,
+      "provider_index": 2847,
+      "upstream_share": 0.9996922420944439
+    },
+    {
+      "node_index": 1176,
+      "provider_index": 3310,
+      "upstream_share": 0.9998387743790824
+    },
+    {
+      "node_index": 1176,
+      "provider_index": 3255,
+      "upstream_share": 0.9999800222577316
+    },
+    {
+      "node_index": 1176,
+      "provider_index": 2863,
+      "upstream_share": 0.9996821075665915
+    },
+    {
+      "node_index": 107,
+      "provider_index": 520,
+      "upstream_share": 0.06533659530374555
+    },
+    {
+      "node_index": 16210,
+      "provider_index": 506,
+      "upstream_share": 0.9320159356524281
+    },
+    {
+      "node_index": 16910,
+      "provider_index": 3,
+      "upstream_share": 0.4210505886381009
+    },
+    {
+      "node_index": 16910,
+      "provider_index": 9,
+      "upstream_share": 0.8053097951613731
+    },
+    {
+      "node_index": 16457,
+      "provider_index": 8,
+      "upstream_share": 0.003511793244045972
+    },
+    {
+      "node_index": 16457,
+      "provider_index": 282,
+      "upstream_share": 0.7530018735891315
+    },
+    {
+      "node_index": 16457,
+      "provider_index": 3,
+      "upstream_share": 0.10337078239799227
+    },
+    {
+      "node_index": 16457,
+      "provider_index": 9,
+      "upstream_share": 0.0060576174046080905
+    },
+    {
+      "node_index": 1279,
+      "provider_index": 5525,
+      "upstream_share": 0.9143775116159283
+    },
+    {
+      "node_index": 17057,
+      "provider_index": 119,
+      "upstream_share": 0.4177759312090332
+    },
+    {
+      "node_index": 17057,
+      "provider_index": 3,
+      "upstream_share": 0.000590437726450893
+    },
+    {
+      "node_index": 17057,
+      "provider_index": 107,
+      "upstream_share": 9.131297199360825e-05
+    },
+    {
+      "node_index": 1417,
+      "provider_index": 8966,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1417,
+      "provider_index": 8965,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 2847,
+      "provider_index": 8356,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 3310,
+      "provider_index": 17466,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 3255,
+      "provider_index": 7662,
+      "upstream_share": 0.5833998394513727
+    },
+    {
+      "node_index": 506,
+      "provider_index": 5238,
+      "upstream_share": 0.999488921506396
+    },
+    {
+      "node_index": 3,
+      "provider_index": 52,
+      "upstream_share": 0.9731837798048146
+    },
+    {
+      "node_index": 282,
+      "provider_index": 1147,
+      "upstream_share": 0.7096842180658075
+    },
+    {
+      "node_index": 282,
+      "provider_index": 7662,
+      "upstream_share": 0.2021210331598015
+    },
+    {
+      "node_index": 5238,
+      "provider_index": 419,
+      "upstream_share": 0.8755289454029759
+    },
+    {
+      "node_index": 419,
+      "provider_index": 3209,
+      "upstream_share": 0.99999999995514
+    }
+  ]
+}

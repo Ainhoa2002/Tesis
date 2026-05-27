@@ -1,0 +1,706 @@
+{
+  "impact_category": "Material resources: metals/minerals",
+  "mode": 1,
+  "max_nodes": 50,
+  "system_name": "use_renewables",
+  "method": "EF v3.1",
+  "nodes": [
+    {
+      "index": 0,
+      "provider": "use_renewables",
+      "direct_result": 0.0,
+      "total_result": 0.0031174361106464242
+    },
+    {
+      "index": 1218,
+      "provider": "market for electricity, high voltage, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00311743611064642
+    },
+    {
+      "index": 1224,
+      "provider": "market for transmission network, electricity, high voltage | transmission network, electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0022127112464117066
+    },
+    {
+      "index": 1233,
+      "provider": "electricity production, hydro, reservoir, alpine region, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00022894466977718353
+    },
+    {
+      "index": 1219,
+      "provider": "electricity production, wind, >3MW turbine, onshore, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00019749152560238477
+    },
+    {
+      "index": 1216,
+      "provider": "electricity, high voltage, wind power, import from DE, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00015434024333521135
+    },
+    {
+      "index": 1229,
+      "provider": "electricity production, hydro, run-of-river, renewable energy products | electricity, high voltage, renewable energy products | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00012641064442812282
+    },
+    {
+      "index": 6015,
+      "provider": "transmission network construction, electricity, high voltage | transmission network, electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0014167115443605156
+    },
+    {
+      "index": 6014,
+      "provider": "transmission network construction, electricity, high voltage | transmission network, electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0007960476664625194
+    },
+    {
+      "index": 3594,
+      "provider": "hydropower plant construction, reservoir, alpine region | hydropower plant, reservoir, alpine region | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00023704090614959356
+    },
+    {
+      "index": 1266,
+      "provider": "market for wind turbine, 4.5MW, onshore | wind turbine, 4.5MW, onshore | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0001226645044585533
+    },
+    {
+      "index": 5253,
+      "provider": "electricity production, wind, 1-3MW turbine, onshore | electricity, high voltage | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00015483559484388967
+    },
+    {
+      "index": 6464,
+      "provider": "hydropower plant construction, run-of-river | hydropower plant, run-of-river | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0001256773013490245
+    },
+    {
+      "index": 245,
+      "provider": "market for copper, cathode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0024019100916553003
+    },
+    {
+      "index": 75,
+      "provider": "market for steel, low-alloyed, hot rolled | steel, low-alloyed, hot rolled | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00013530524799825223
+    },
+    {
+      "index": 1172,
+      "provider": "market for bronze | bronze | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.000171793982613426
+    },
+    {
+      "index": 268,
+      "provider": "market for steel, low-alloyed | steel, low-alloyed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0001712720916914065
+    },
+    {
+      "index": 313,
+      "provider": "market for lead | lead | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00014844325241346014
+    },
+    {
+      "index": 759,
+      "provider": "market for zinc | zinc | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 9.953731049489751e-05
+    },
+    {
+      "index": 143,
+      "provider": "market for steel, chromium steel 18/8, hot rolled | steel, chromium steel 18/8, hot rolled | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00013069851044039953
+    },
+    {
+      "index": 16272,
+      "provider": "wind turbine construction, 4.5MW, onshore | wind turbine, 4.5MW, onshore | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00012266450445855344
+    },
+    {
+      "index": 538,
+      "provider": "market for wind turbine, 2MW, onshore | wind turbine, 2MW, onshore | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00022662859821572732
+    },
+    {
+      "index": 6329,
+      "provider": "electrorefining of copper, anode | copper, cathode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.002197407446037061
+    },
+    {
+      "index": 6332,
+      "provider": "copper production, cathode, solvent extraction and electrowinning process | copper, cathode | Cutoff, U",
+      "direct_result": 0.00011094928820675909,
+      "total_result": 0.0001263746689715223
+    },
+    {
+      "index": 12358,
+      "provider": "steel production, low-alloyed, hot rolled | steel, low-alloyed, hot rolled | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00010693250703071597
+    },
+    {
+      "index": 16698,
+      "provider": "bronze production | bronze | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00017093007517980963
+    },
+    {
+      "index": 8342,
+      "provider": "steel production, converter, low-alloyed | steel, low-alloyed | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00012872882609979831
+    },
+    {
+      "index": 5552,
+      "provider": "primary lead production from concentrate | lead | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0001409206187858222
+    },
+    {
+      "index": 8109,
+      "provider": "primary zinc production from concentrate | zinc | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 9.684630332441992e-05
+    },
+    {
+      "index": 17057,
+      "provider": "steel production, chromium steel 18/8, hot rolled | steel, chromium steel 18/8, hot rolled | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00011368188647261103
+    },
+    {
+      "index": 1100,
+      "provider": "market for steel, chromium steel 18/8 | steel, chromium steel 18/8 | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0001444731251115629
+    },
+    {
+      "index": 4489,
+      "provider": "wind turbine construction, 2MW, onshore | wind turbine, 2MW, onshore | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00022662859821571688
+    },
+    {
+      "index": 4300,
+      "provider": "market for copper, anode | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.002272186179525915
+    },
+    {
+      "index": 574,
+      "provider": "market for lead concentrate | lead concentrate | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00014320125263921405
+    },
+    {
+      "index": 844,
+      "provider": "market for zinc concentrate | zinc concentrate | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00011053756622696149
+    },
+    {
+      "index": 5043,
+      "provider": "steel production, electric, chromium steel 18/8 | steel, chromium steel 18/8 | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00012553953412973188
+    },
+    {
+      "index": 13470,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0008894267437353322
+    },
+    {
+      "index": 13472,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0008745869460483643
+    },
+    {
+      "index": 13466,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.00017501876802871223
+    },
+    {
+      "index": 13469,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0001590345849030038
+    },
+    {
+      "index": 13468,
+      "provider": "smelting of copper concentrate, sulfide ore | copper, anode | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.0001049849190783536
+    },
+    {
+      "index": 2725,
+      "provider": "market for ferrochromium, high-carbon, 68% Cr | ferrochromium, high-carbon, 68% Cr | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 9.75955024576523e-05
+    },
+    {
+      "index": 3941,
+      "provider": "market for copper concentrate, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 0.0,
+      "total_result": 0.002267816398095311
+    },
+    {
+      "index": 10091,
+      "provider": "copper mine operation and beneficiation, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 0.0006793549965234474,
+      "total_result": 0.0006824160121171796
+    },
+    {
+      "index": 10095,
+      "provider": "copper mine operation and beneficiation, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 0.0005759926227229704,
+      "total_result": 0.0005789685394042965
+    },
+    {
+      "index": 10089,
+      "provider": "copper mine operation and beneficiation, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 0.00021460660703788036,
+      "total_result": 0.00021537310105495093
+    },
+    {
+      "index": 10097,
+      "provider": "copper mine operation and beneficiation, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 0.00013850153591456042,
+      "total_result": 0.0001392383288259869
+    },
+    {
+      "index": 10090,
+      "provider": "copper mine operation and beneficiation, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 0.00010748177570924145,
+      "total_result": 0.00010799537948695817
+    },
+    {
+      "index": 10087,
+      "provider": "copper mine operation and beneficiation, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 0.00010561097658552603,
+      "total_result": 0.00010650279546111758
+    },
+    {
+      "index": 10098,
+      "provider": "copper mine operation and beneficiation, sulfide ore | copper concentrate, sulfide ore | Cutoff, U",
+      "direct_result": 0.00010273664408797256,
+      "total_result": 0.00010377008725001055
+    }
+  ],
+  "edges": [
+    {
+      "node_index": 0,
+      "provider_index": 1218,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 1218,
+      "provider_index": 1224,
+      "upstream_share": 0.999573185879386
+    },
+    {
+      "node_index": 1218,
+      "provider_index": 1233,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 1218,
+      "provider_index": 1219,
+      "upstream_share": 1.0000000000000004
+    },
+    {
+      "node_index": 1218,
+      "provider_index": 1216,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 1218,
+      "provider_index": 1229,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 1224,
+      "provider_index": 6015,
+      "upstream_share": 0.999942245034908
+    },
+    {
+      "node_index": 1224,
+      "provider_index": 6014,
+      "upstream_share": 0.9999758656544155
+    },
+    {
+      "node_index": 1233,
+      "provider_index": 3594,
+      "upstream_share": 0.9621189380020425
+    },
+    {
+      "node_index": 1219,
+      "provider_index": 1266,
+      "upstream_share": 0.9946321480605488
+    },
+    {
+      "node_index": 1216,
+      "provider_index": 5253,
+      "upstream_share": 0.9967463063049188
+    },
+    {
+      "node_index": 1229,
+      "provider_index": 6464,
+      "upstream_share": 0.999683171187093
+    },
+    {
+      "node_index": 6015,
+      "provider_index": 245,
+      "upstream_share": 0.5489991225581334
+    },
+    {
+      "node_index": 6015,
+      "provider_index": 75,
+      "upstream_share": 0.25030632268253783
+    },
+    {
+      "node_index": 6014,
+      "provider_index": 245,
+      "upstream_share": 0.15668713158291095
+    },
+    {
+      "node_index": 6014,
+      "provider_index": 1172,
+      "upstream_share": 0.948206603757652
+    },
+    {
+      "node_index": 6014,
+      "provider_index": 268,
+      "upstream_share": 0.0057013744047757775
+    },
+    {
+      "node_index": 6014,
+      "provider_index": 313,
+      "upstream_share": 0.9279010510761522
+    },
+    {
+      "node_index": 6014,
+      "provider_index": 759,
+      "upstream_share": 0.7310399628873447
+    },
+    {
+      "node_index": 3594,
+      "provider_index": 75,
+      "upstream_share": 0.28766150545818286
+    },
+    {
+      "node_index": 3594,
+      "provider_index": 143,
+      "upstream_share": 0.6483078574901725
+    },
+    {
+      "node_index": 1266,
+      "provider_index": 16272,
+      "upstream_share": 0.9999999999999989
+    },
+    {
+      "node_index": 5253,
+      "provider_index": 538,
+      "upstream_share": 0.6472569127747428
+    },
+    {
+      "node_index": 6464,
+      "provider_index": 75,
+      "upstream_share": 0.3390789457022026
+    },
+    {
+      "node_index": 6464,
+      "provider_index": 143,
+      "upstream_share": 0.22252683526545547
+    },
+    {
+      "node_index": 245,
+      "provider_index": 6329,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 245,
+      "provider_index": 6332,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 75,
+      "provider_index": 12358,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 1172,
+      "provider_index": 16698,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 268,
+      "provider_index": 8342,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 313,
+      "provider_index": 5552,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 759,
+      "provider_index": 8109,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 143,
+      "provider_index": 17057,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 16272,
+      "provider_index": 245,
+      "upstream_share": 0.045478100829229755
+    },
+    {
+      "node_index": 16272,
+      "provider_index": 1100,
+      "upstream_share": 0.0021334875188480703
+    },
+    {
+      "node_index": 16272,
+      "provider_index": 268,
+      "upstream_share": 0.004994688792453729
+    },
+    {
+      "node_index": 538,
+      "provider_index": 4489,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 6329,
+      "provider_index": 4300,
+      "upstream_share": 0.9661729530272726
+    },
+    {
+      "node_index": 6332,
+      "provider_index": 143,
+      "upstream_share": 0.0114744291870064
+    },
+    {
+      "node_index": 12358,
+      "provider_index": 268,
+      "upstream_share": 0.6096763752190791
+    },
+    {
+      "node_index": 16698,
+      "provider_index": 245,
+      "upstream_share": 0.05878248559805442
+    },
+    {
+      "node_index": 8342,
+      "provider_index": 245,
+      "upstream_share": 1.5324554940901707e-05
+    },
+    {
+      "node_index": 5552,
+      "provider_index": 574,
+      "upstream_share": 0.9828863745007834
+    },
+    {
+      "node_index": 8109,
+      "provider_index": 759,
+      "upstream_share": 0.002272349579554357
+    },
+    {
+      "node_index": 8109,
+      "provider_index": 574,
+      "upstream_share": 0.01286942812901229
+    },
+    {
+      "node_index": 8109,
+      "provider_index": 313,
+      "upstream_share": 0.00017588091171470563
+    },
+    {
+      "node_index": 8109,
+      "provider_index": 245,
+      "upstream_share": 1.930697747315529e-06
+    },
+    {
+      "node_index": 8109,
+      "provider_index": 844,
+      "upstream_share": 0.8542072489695102
+    },
+    {
+      "node_index": 17057,
+      "provider_index": 1100,
+      "upstream_share": 0.7849110258812503
+    },
+    {
+      "node_index": 1100,
+      "provider_index": 5043,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 4489,
+      "provider_index": 268,
+      "upstream_share": 0.11297062769692098
+    },
+    {
+      "node_index": 4489,
+      "provider_index": 245,
+      "upstream_share": 0.05273154965381733
+    },
+    {
+      "node_index": 4489,
+      "provider_index": 1100,
+      "upstream_share": 0.08091134383446288
+    },
+    {
+      "node_index": 4489,
+      "provider_index": 759,
+      "upstream_share": 0.024564306791063556
+    },
+    {
+      "node_index": 4300,
+      "provider_index": 13470,
+      "upstream_share": 0.9999999999999998
+    },
+    {
+      "node_index": 4300,
+      "provider_index": 13472,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 4300,
+      "provider_index": 13466,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 4300,
+      "provider_index": 13469,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 4300,
+      "provider_index": 13468,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 5043,
+      "provider_index": 2725,
+      "upstream_share": 0.8635776100666944
+    },
+    {
+      "node_index": 13470,
+      "provider_index": 3941,
+      "upstream_share": 0.3910157747939308
+    },
+    {
+      "node_index": 13472,
+      "provider_index": 3941,
+      "upstream_share": 0.38448112647358035
+    },
+    {
+      "node_index": 13466,
+      "provider_index": 3941,
+      "upstream_share": 0.07684125956592815
+    },
+    {
+      "node_index": 13469,
+      "provider_index": 3941,
+      "upstream_share": 0.06981941016991544
+    },
+    {
+      "node_index": 13468,
+      "provider_index": 3941,
+      "upstream_share": 0.046084874832353455
+    },
+    {
+      "node_index": 3941,
+      "provider_index": 10091,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 3941,
+      "provider_index": 10095,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 3941,
+      "provider_index": 10089,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 3941,
+      "provider_index": 10097,
+      "upstream_share": 1.0000000000000002
+    },
+    {
+      "node_index": 3941,
+      "provider_index": 10090,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 3941,
+      "provider_index": 10087,
+      "upstream_share": 1.0
+    },
+    {
+      "node_index": 3941,
+      "provider_index": 10098,
+      "upstream_share": 0.9999999999999999
+    },
+    {
+      "node_index": 10091,
+      "provider_index": 143,
+      "upstream_share": 0.0067687142011107196
+    },
+    {
+      "node_index": 10095,
+      "provider_index": 143,
+      "upstream_share": 0.006436460273298157
+    },
+    {
+      "node_index": 10089,
+      "provider_index": 143,
+      "upstream_share": 0.0013721876726054427
+    },
+    {
+      "node_index": 10097,
+      "provider_index": 143,
+      "upstream_share": 0.0013539243024492797
+    },
+    {
+      "node_index": 10090,
+      "provider_index": 143,
+      "upstream_share": 0.0009134763741163273
+    },
+    {
+      "node_index": 10087,
+      "provider_index": 143,
+      "upstream_share": 0.0017401688583254557
+    },
+    {
+      "node_index": 10098,
+      "provider_index": 143,
+      "upstream_share": 0.002029605168378208
+    }
+  ]
+}

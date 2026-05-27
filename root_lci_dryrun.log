@@ -1,0 +1,114 @@
+﻿python : C:\Users\alorzaga\Git\tesis\LCI\main.py:14: SyntaxWarning: invalid 
+escape sequence '\.'
+At line:1 char:184
++ ... inue; Push-Location .\LCI; python -u .\main.py --dry-run *>&1 | Out-F ...
++                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (C:\Users\alorza...e sequence '\.' 
+   :String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+  .\.venv\Scripts\python.exe .\LCI\main.py --systems LCI_MEXICO_CONVERTER 
+--ipe-prefixes SECTION_ --product-systems none
+Preparing transport unit processes from code_transport.csv...
+  [DRY-RUN] Would generate transport code unit file: transport_code_P1_ipe_flows_from_parameters.csv
+  [DRY-RUN] Would generate transport code unit file: transport_code_P2_ipe_flows_from_parameters.csv
+  [DRY-RUN] Would generate transport code unit file: transport_code_R1_ipe_flows_from_parameters.csv
+  [DRY-RUN] Would generate transport code unit file: transport_code_R2_ipe_flows_from_parameters.csv
+  [DRY-RUN] Would generate transport code unit file: transport_code_R3_ipe_flows_from_parameters.csv
+  [DRY-RUN] Would generate transport code unit file: transport_code_S1_ipe_flows_from_parameters.csv
+  [DRY-RUN] Would generate transport code unit file: transport_code_S2_ipe_flows_from_parameters.csv
+  Transport unit process files generated: 7
+  [DRY-RUN] Would fill transport amounts in: magnet_transport_ipe_flows_from_parameters.csv
+  [DRY-RUN] Would fill transport amounts in: mexico_transport_ipe_flows_from_parameters.csv
+  Transport parent files with Amount updated: 2
+  Running UUID fill in LCI_AUXILIARY_COMPONENTS...
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_AUXILIARY_COMPONENTS\aux_TEN_6_2415N_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_AUXILIARY_COMPONENTS\TEN_6-2415N_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+
+Processed 2 file(s). Changed: 0. UUID filled: 0. UUID_provider filled: 0. Unmapped input rows: 0. Unmapped provider rows: 0.
+  UUID fill in LCI_AUXILIARY_COMPONENTS completed.
+  Running UUID fill in LCI_CONNECTION...
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_CONNECTION\connector_system_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+
+Processed 1 file(s). Changed: 0. UUID filled: 0. UUID_provider filled: 0. Unmapped input rows: 0. Unmapped provider rows: 0.
+  UUID fill in LCI_CONNECTION completed.
+  Running UUID fill in LCI_EoL...
+Warning: could not connect to openLCA IPC for provider auto-sync: HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: / (Caused by NewConnectionError("HTTPConnection(host='localhost', port=8080): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+Warning: no UUID mapping found for 'total_waste_disgregation' in 1system_waste_disgregation_ipe_flows_from_parameters.csv
+Warning: no UUID_provider mapping found for 'total_waste_disgregation' in 1system_waste_disgregation_ipe_flows_from_parameters.csv
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_EoL\1system_waste_disgregation_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=1 | missing_provider_map=1
+
+Processed 1 file(s). Changed: 0. UUID filled: 0. UUID_provider filled: 0. Unmapped input rows: 1. Unmapped provider rows: 1.
+  UUID fill in LCI_EoL completed.
+  Running UUID fill in LCI_MAGNET...
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MAGNET\magnet_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+
+Processed 1 file(s). Changed: 0. UUID filled: 0. UUID_provider filled: 0. Unmapped input rows: 0. Unmapped provider rows: 0.
+  UUID fill in LCI_MAGNET completed.
+  Running UUID fill in LCI_MEXICO_CONVERTER...
+Warning: could not connect to openLCA IPC for provider auto-sync: HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: / (Caused by NewConnectionError("HTTPConnection(host='localhost', port=8080): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\4Q_output_control_card_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\4Q_output_power_card_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\4Q_power_card_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\analog_control_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\cabling_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\caen_els_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\contactor_card_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\control_backplane_card_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\digital_control_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\fan_supervision_card_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\filter_card_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\fuse_card_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\HF_Power_Transformer_PM624929_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\inverter_power_card_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\mechanical_components_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+Warning: no UUID mapping found for 'cabling_components' in MEXICO_ipe_flows_from_parameters.csv
+Warning: no UUID_provider mapping found for 'cabling_components' in MEXICO_ipe_flows_from_parameters.csv
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\MEXICO_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=1 | missing_provider_map=1
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\power_inductor_PM6249_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\SECTION_Assembly_Processes_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\SECTION_Cabling_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\SECTION_Discrete_Semiconductors_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\SECTION_Electromechanical_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\SECTION_Hardware_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\SECTION_IC_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\SECTION_Magnetics_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\SECTION_Mechanical_components_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+Warning: no UUID mapping found for 'can_els' in SECTION_Modules_ipe_flows_from_parameters.csv
+Warning: no UUID_provider mapping found for 'can_els' in SECTION_Modules_ipe_flows_from_parameters.csv
+Warning: no UUID mapping found for 'ten' in SECTION_Modules_ipe_flows_from_parameters.csv
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\SECTION_Modules_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=2 | missing_provider_map=1
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\SECTION_Passives_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\SECTION_PCB_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_MEXICO_CONVERTER\ten62415aux_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+
+Processed 29 file(s). Changed: 0. UUID filled: 0. UUID_provider filled: 0. Unmapped input rows: 3. Unmapped provider rows: 2.
+  UUID fill in LCI_MEXICO_CONVERTER completed.
+  Running UUID fill in LCI_SYSTEM...
+Warning: could not connect to openLCA IPC for provider auto-sync: HTTPConnectionPool(host='localhost', port=8080): Max retries exceeded with url: / (Caused by NewConnectionError("HTTPConnection(host='localhost', port=8080): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it"))
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_SYSTEM\system_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+
+Processed 1 file(s). Changed: 0. UUID filled: 0. UUID_provider filled: 0. Unmapped input rows: 0. Unmapped provider rows: 0.
+  UUID fill in LCI_SYSTEM completed.
+  Running UUID fill in LCI_TRANSPORT...
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_TRANSPORT\connector_system_transport_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_TRANSPORT\magnet_transport_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_TRANSPORT\mexico_transport_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_TRANSPORT\transport_code_P1_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_TRANSPORT\transport_code_P2_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_TRANSPORT\transport_code_R1_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_TRANSPORT\transport_code_R2_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_TRANSPORT\transport_code_R3_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_TRANSPORT\transport_code_S1_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_TRANSPORT\transport_code_S2_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_TRANSPORT\transport_code_SS1_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+unchanged: C:\Users\alorzaga\Git\tesis\LCI\LCI_TRANSPORT\transport_ipe_flows_from_parameters.csv | uuid=0 | provider=0 | missing_uuid_map=0 | missing_provider_map=0
+
+Processed 12 file(s). Changed: 0. UUID filled: 0. UUID_provider filled: 0. Unmapped input rows: 0. Unmapped provider rows: 0.
+  UUID fill in LCI_TRANSPORT completed.
+  Running UUID fill in LCI_USE...
+updated: C:\Users\alorzaga\Git\tesis\LCI\LCI_USE\use_mix_ipe_flows_from_parameters.csv | uuid=1 | provider=1 | missing_uuid_map=0 | missing_provider_map=0
+updated: C:\Users\alorzaga\Git\tesis\LCI\LCI_USE\use_renewables_ipe_flows_from_parameters.csv | uuid=1 | provider=1 | missing_uuid_map=0 | missing_provider_map=0
+
+Processed 2 file(s). Changed: 2. UUID filled: 2. UUID_provider filled: 2. Unmapped input rows: 0. Unmapped provider rows: 0.
+  UUID fill in LCI_USE completed.
