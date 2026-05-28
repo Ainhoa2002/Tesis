@@ -68,7 +68,7 @@ Typical examples for `main.py`:
 
 ## Main Execution Dynamics
 
-Main orchestration is implemented in [LCI/main.py](LCI/main.py).
+Main orchestration is implemented in [LCI/main.py](main.py).
 
 Per system, the runtime sequence is:
 
@@ -104,28 +104,28 @@ Important: created libraries are updated by key. Existing stale process/provider
 
 Main entry and orchestration:
 
-- [main](LCI/main.py)
-- [iter_system_folders](LCI/main.py)
-- [iter_system_csvs](LCI/main.py)
-- [resolve_category_name](LCI/main.py)
+- [main](main.py)
+- [iter_system_folders](main.py)
+- [iter_system_csvs](main.py)
+- [resolve_category_name](main.py)
 
 UUID filling helpers:
 
-- [run_uuid_fill_if_available](LCI/main.py)
-- [run_created_uuid_fill_if_available](LCI/main.py)
-- [run_final_system_uuid_fill_if_available](LCI/main.py)
-- [run_system_pipeline_if_available](LCI/main.py)
+- [run_uuid_fill_if_available](main.py)
+- [run_created_uuid_fill_if_available](main.py)
+- [run_final_system_uuid_fill_if_available](main.py)
+- [run_system_pipeline_if_available](main.py)
 
 Created-library updates:
 
-- [_upsert_created_flows_library](LCI/main.py)
-- [_upsert_created_process_library](LCI/main.py)
+- [_upsert_created_flows_library](main.py)
+- [_upsert_created_process_library](main.py)
 
 Process construction and persistence:
 
-- [process_csv](LCI/process_builder.py)
-- [build_process_from_inputs](LCI/process_builder.py)
-- [_find_or_create_output_flow](LCI/process_builder.py)
+- [process_csv](process_builder.py)
+- [build_process_from_inputs](process_builder.py)
+- [_find_or_create_output_flow](process_builder.py)
 
 ## Process Creation Rules
 
@@ -164,7 +164,7 @@ Output rows:
 
 ## UUID Fill Script Behavior
 
-Shared CLI: [library_sync_cli.py](LCI/library_sync_cli.py)
+Shared CLI: [library_sync_cli.py](library_sync_cli.py)
 
 Behavior summary:
 
@@ -204,7 +204,7 @@ Third-round single target example (system aggregate file):
 
 ## Product System Creation and Provider Linking
 
-Product system creation is implemented in [product_system_builder.py](LCI/product_system_builder.py).
+Product system creation is implemented in [product_system_builder.py](product_system_builder.py).
 
 ### Provider-Linking Modes
 
@@ -216,7 +216,7 @@ Three provider-linking strategies are available when creating product systems:
 
 ### Configuration via Parameters
 
-Product system behavior is controlled by parameters stored in [global_parameters.json](LCI/global_parameters.json):
+Product system behavior is controlled by parameters stored in [global_parameters.json](global_parameters.json):
 
 #### Interactive Mode Flag
 - **Parameter**: `product_systems_interactive_mode`
@@ -285,7 +285,7 @@ When `--provider-linking parameter` (default), the builder selects linking mode 
 
 ### Behavior in Main Workflow
 
-When integrated in [main.py](LCI/main.py):
+When integrated in [main.py](main.py):
 
 - Phase 5 of the workflow calls the product system builder
 - Builder respects the `product_systems_interactive_mode` flag
@@ -310,7 +310,7 @@ Real import:
 
 ## Transport Validation and PCB Handling
 
-Transport aggregation is implemented in [LCI/LCI_TRANSPORT/calculate_transport_mass_by_code.py](LCI/LCI_TRANSPORT/calculate_transport_mass_by_code.py).
+Transport aggregation is implemented in [LCI/LCI_TRANSPORT/calculate_transport_mass_by_code.py](LCI_TRANSPORT/calculate_transport_mass_by_code.py).
 
 Validation checks that should pass after a normal run:
 
@@ -374,9 +374,9 @@ The project now includes a general parameter library for cross-folder reuse.
 
 Files:
 
-- [LCI/global_parameters.json](LCI/global_parameters.json)
-- [LCI/parameter_library.py](LCI/parameter_library.py)
-- [LCI/params.py](LCI/params.py)
+- [LCI/global_parameters.json](global_parameters.json)
+- [LCI/parameter_library.py](parameter_library.py)
+- [LCI/params.py](params.py)
 
 Purpose:
 
@@ -416,12 +416,13 @@ Common messages and meaning:
 
 ## Related Files
 
-- [LCI/process_builder.py](LCI/process_builder.py)
-- [LCI/product_system_builder.py](LCI/product_system_builder.py)
-- [LCI/csv_reader.py](LCI/csv_reader.py)
-- [LCI/library_sync.py](LCI/library_sync.py)
-- [LCI/library_sync_cli.py](LCI/library_sync_cli.py)
-- [LCI/diagnosis.py](LCI/diagnosis.py)
-- [LCI/finder.py](LCI/finder.py)
+- [LCI/process_builder.py](process_builder.py)
+- [LCI/product_system_builder.py](product_system_builder.py)
+- [LCI/csv_reader.py](csv_reader.py)
+- [LCI/library_sync.py](library_sync.py)
+- [LCI/library_sync_cli.py](library_sync_cli.py)
+- [LCI/diagnosis.py](diagnosis.py)
+- [LCI/finder.py](finder.py)
+
 
 

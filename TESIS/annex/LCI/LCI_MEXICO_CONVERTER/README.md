@@ -1,6 +1,6 @@
-# LCI_MEXICO_CONVERTER Workflow
+﻿# LCI_MEXICO_CONVERTER Workflow
 
-This folder turns component-level parameters into subsystem mass outputs, grouped ipe files, and the converter-level import files consumed by [LCI/main.py](LCI/main.py).
+This folder turns component-level parameters into subsystem mass outputs, grouped ipe files, and the converter-level import files consumed by [LCI/main.py](../main.py).
 
 ## Overview
 
@@ -15,14 +15,14 @@ The converter workflow transforms subsystem component parameters into:
 
 Pipeline and helpers:
 
-- [LCI/LCI_MEXICO_CONVERTER/Pipeline.py](LCI/LCI_MEXICO_CONVERTER/Pipeline.py)
-- [LCI/library_sync.py](LCI/library_sync.py)
-- [LCI/library_sync_cli.py](LCI/library_sync_cli.py)
+- [LCI/LCI_MEXICO_CONVERTER/Pipeline.py](Pipeline.py)
+- [LCI/library_sync.py](../library_sync.py)
+- [LCI/library_sync_cli.py](../library_sync_cli.py)
 
 Important data files:
 
-- [LCI/LCI_MEXICO_CONVERTER/subsystem_units.csv](LCI/LCI_MEXICO_CONVERTER/subsystem_units.csv)
-- [LCI/LCI_MEXICO_CONVERTER/MEXICO_ipe_flows_from_parameters.csv](LCI/LCI_MEXICO_CONVERTER/MEXICO_ipe_flows_from_parameters.csv)
+- [LCI/LCI_MEXICO_CONVERTER/subsystem_units.csv](subsystem_units.csv)
+- [LCI/LCI_MEXICO_CONVERTER/MEXICO_ipe_flows_from_parameters.csv](MEXICO_ipe_flows_from_parameters.csv)
 
 Per-subsystem patterns:
 
@@ -64,26 +64,26 @@ Run specific subsystems:
 
 Optional tools:
 
-- add or remove components with [LCI/LCI_MEXICO_CONVERTER/tools/add_eliminate_component.py](LCI/LCI_MEXICO_CONVERTER/tools/add_eliminate_component.py)
-- export to Excel with [LCI/LCI_MEXICO_CONVERTER/tools/export_to_excel.py](LCI/LCI_MEXICO_CONVERTER/tools/export_to_excel.py)
+- add or remove components with [LCI/LCI_MEXICO_CONVERTER/tools/add_eliminate_component.py](tools/add_eliminate_component.py)
+- export to Excel with [LCI/LCI_MEXICO_CONVERTER/tools/export_to_excel.py](tools/export_to_excel.py)
 
 ## Execution Dynamics
 
-Main runtime sequence in [LCI/LCI_MEXICO_CONVERTER/Pipeline.py](LCI/LCI_MEXICO_CONVERTER/Pipeline.py):
+Main runtime sequence in [LCI/LCI_MEXICO_CONVERTER/Pipeline.py](Pipeline.py):
 
 1. Discover subsystems from files ending with _component_parameters.csv.
 2. Synchronize subsystem units table:
-   - [_sync_subsystem_units_file](LCI/LCI_MEXICO_CONVERTER/Pipeline.py)
+   - [_sync_subsystem_units_file](Pipeline.py)
 3. Synchronize converter-level ipe from subsystem units:
-   - [_sync_mexico_ipe_from_subsystem_units](LCI/LCI_MEXICO_CONVERTER/Pipeline.py)
+   - [_sync_mexico_ipe_from_subsystem_units](Pipeline.py)
 4. Execute selected subsystem pipelines:
-   - [run_pipeline](LCI/LCI_MEXICO_CONVERTER/Pipeline.py)
+   - [run_pipeline](Pipeline.py)
 5. Fill UUID and UUID_provider for each generated subsystem ipe:
-   - [_fill_uuid_for_subsystem_ipe](LCI/LCI_MEXICO_CONVERTER/Pipeline.py)
+   - [_fill_uuid_for_subsystem_ipe](Pipeline.py)
 
 ## Subsystem Units Behavior
 
-File: [LCI/LCI_MEXICO_CONVERTER/subsystem_units.csv](LCI/LCI_MEXICO_CONVERTER/subsystem_units.csv)
+File: [LCI/LCI_MEXICO_CONVERTER/subsystem_units.csv](subsystem_units.csv)
 
 Columns:
 
@@ -95,7 +95,7 @@ Rules:
 - New discovered subsystems are added with default value 1.
 - Removed subsystems are removed from this file on sync.
 - Existing subsystem values are preserved.
-- Invalid, empty, or non-positive values fallback to 1.0 via [_parse_subsystem_units](LCI/LCI_MEXICO_CONVERTER/Pipeline.py).
+- Invalid, empty, or non-positive values fallback to 1.0 via [_parse_subsystem_units](Pipeline.py).
 
 Scaling effect:
 
@@ -104,9 +104,9 @@ Scaling effect:
 
 ## MEXICO ipe Sync Behavior
 
-File: [LCI/LCI_MEXICO_CONVERTER/MEXICO_ipe_flows_from_parameters.csv](LCI/LCI_MEXICO_CONVERTER/MEXICO_ipe_flows_from_parameters.csv)
+File: [LCI/LCI_MEXICO_CONVERTER/MEXICO_ipe_flows_from_parameters.csv](MEXICO_ipe_flows_from_parameters.csv)
 
-Function: [_sync_mexico_ipe_from_subsystem_units](LCI/LCI_MEXICO_CONVERTER/Pipeline.py)
+Function: [_sync_mexico_ipe_from_subsystem_units](Pipeline.py)
 
 Current rules:
 
@@ -122,7 +122,7 @@ Current rules:
 
 Reusable helper:
 
-- [calculate_subsystem_total_mass](LCI/LCI_MEXICO_CONVERTER/Pipeline.py)
+- [calculate_subsystem_total_mass](Pipeline.py)
 
 What it does:
 
@@ -140,18 +140,18 @@ Important practical note:
 
 ## UUID Fill Behavior in Converter Pipeline
 
-During converter pipeline execution, each generated subsystem ipe file is enriched through [LCI/library_sync.py](LCI/library_sync.py) using `run_fill_ipe_columns_from_library`.
+During converter pipeline execution, each generated subsystem ipe file is enriched through [LCI/library_sync.py](../library_sync.py) using `run_fill_ipe_columns_from_library`.
 
 Default mapping libraries used by converter pipeline:
 
-- [LCI/component_library_ecoinvent_uuid_map.csv](LCI/component_library_ecoinvent_uuid_map.csv)
-- [LCI/component_library_ecoinvent_uuid_provider_map.csv](LCI/component_library_ecoinvent_uuid_provider_map.csv)
+- [LCI/component_library_ecoinvent_uuid_map.csv](../component_library_ecoinvent_uuid_map.csv)
+- [LCI/component_library_ecoinvent_uuid_provider_map.csv](../component_library_ecoinvent_uuid_provider_map.csv)
 
 Direction=Output rows are intentionally skipped by UUID fill logic.
 
 ## Global Import Integration
 
-After converter pipeline outputs are ready, [LCI/main.py](LCI/main.py) imports all ipe files to openLCA.
+After converter pipeline outputs are ready, [LCI/main.py](../main.py) imports all ipe files to openLCA.
 
 Global main.py currently performs:
 
@@ -159,14 +159,14 @@ Global main.py currently performs:
 2. Process create or overwrite.
 3. Upsert update of created libraries.
 4. Second fill pass using created libraries:
-   - [LCI/created_flows_uuid_map.csv](LCI/created_flows_uuid_map.csv)
-   - [LCI/created_process_uuid_map.csv](LCI/created_process_uuid_map.csv)
+   - [LCI/created_flows_uuid_map.csv](../created_flows_uuid_map.csv)
+   - [LCI/created_process_uuid_map.csv](../created_process_uuid_map.csv)
    - overwrite UUID enabled
    - overwrite provider enabled
 
 ## Validation and Guardrails
 
-Current validation highlights in [LCI/LCI_MEXICO_CONVERTER/Pipeline.py](LCI/LCI_MEXICO_CONVERTER/Pipeline.py):
+Current validation highlights in [LCI/LCI_MEXICO_CONVERTER/Pipeline.py](Pipeline.py):
 
 - Section and Ecoinvent_flow are required.
 - g is rejected for mass context; kg is required for mass-based inputs.
@@ -180,8 +180,9 @@ Optional environment flags:
 
 ## Related Utilities
 
-- [LCI/LCI_MEXICO_CONVERTER/tools/build_component_libraries.py](LCI/LCI_MEXICO_CONVERTER/tools/build_component_libraries.py)
-- [LCI/LCI_MEXICO_CONVERTER/tools/find_component.py](LCI/LCI_MEXICO_CONVERTER/tools/find_component.py)
-- [LCI/LCI_MEXICO_CONVERTER/visualization/mass_visuals_app.py](LCI/LCI_MEXICO_CONVERTER/visualization/mass_visuals_app.py)
+- [LCI/LCI_MEXICO_CONVERTER/tools/build_component_libraries.py](tools/build_component_libraries.py)
+- [LCI/LCI_MEXICO_CONVERTER/tools/find_component.py](tools/find_component.py)
+- [LCI/LCI_MEXICO_CONVERTER/visualization/mass_visuals_app.py](visualization/mass_visuals_app.py)
+
 
 
