@@ -37,7 +37,8 @@ Included
 
 Notes & repro tips
 ------------------
-- Heavy outputs and visual exports were removed from this copy (RESULTS, HTML, images, and compiled files) to keep the annex small. If you need full outputs, use the original branch.
+- The annex keeps the CSV inputs/outputs required for reproducibility.
+- Visualization exports (HTML/images) may be regenerated from preserved CSV/JSON result artifacts using tools in `TESIS/annex/LCI/results_tools/`.
 - If a `requirements.txt` is missing, install project dependencies listed in the thesis or ask me to generate one from the environment.
 
 License

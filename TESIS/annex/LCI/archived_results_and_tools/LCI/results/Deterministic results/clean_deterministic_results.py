@@ -1,11 +1,13 @@
 """Cleanup helper for deterministic result outputs.
 
-This script removes generated result artifacts from the deterministic results
-folder while keeping the cleanup script itself in place.
+By default this script preserves CSV files and deletes only derived artifacts
+such as JSON, HTML, image, and spreadsheet exports. Use --include-csv to also
+remove CSV files.
 """
 
 from __future__ import annotations
 
+import argparse
 from pathlib import Path
 
 
@@ -13,7 +15,6 @@ RESULTS_DIR = Path(__file__).resolve().parent
 
 
 GENERATED_SUFFIXES = {
-    ".csv",
     ".json",
     ".png",
     ".html",
@@ -21,7 +22,7 @@ GENERATED_SUFFIXES = {
 }
 
 
-def clean_deterministic_results(folder: Path | None = None) -> int:
+def clean_deterministic_results(folder: Path | None = None, include_csv: bool = False) -> int:
     """Delete generated files from the deterministic results folder.
 
     Returns the number of files removed.
@@ -34,7 +35,10 @@ def clean_deterministic_results(folder: Path | None = None) -> int:
             continue
         if path == Path(__file__).resolve():
             continue
-        if path.suffix.lower() not in GENERATED_SUFFIXES:
+        suffix = path.suffix.lower()
+        if suffix == ".csv" and not include_csv:
+            continue
+        if suffix not in GENERATED_SUFFIXES and suffix != ".csv":
             continue
         path.unlink()
         removed += 1
@@ -52,5 +56,14 @@ def clean_deterministic_results(folder: Path | None = None) -> int:
 
 
 if __name__ == "__main__":
-    removed_count = clean_deterministic_results()
-    print(f"Removed {removed_count} generated file(s) from {RESULTS_DIR}")
+    parser = argparse.ArgumentParser(description="Clean deterministic result artifacts.")
+    parser.add_argument(
+        "--include-csv",
+        action="store_true",
+        help="Also delete CSV files (disabled by default).",
+    )
+    args = parser.parse_args()
+
+    removed_count = clean_deterministic_results(include_csv=args.include_csv)
+    mode = "including CSV" if args.include_csv else "preserving CSV"
+    print(f"Removed {removed_count} generated file(s) from {RESULTS_DIR} ({mode})")
