@@ -1,0 +1,39 @@
+{
+  "smoke_test": {
+    "ok": true,
+    "output": ""
+  },
+  "imports": {
+    "Pipeline": {
+      "ok": true,
+      "info": "Pipeline"
+    },
+    "library_sync_cli": {
+      "ok": true,
+      "info": "library_sync_cli"
+    },
+    "sankey_visualizer": {
+      "ok": true,
+      "info": "sankey_visualizer"
+    },
+    "interactive_visualizer": {
+      "ok": true,
+      "info": "visualize_results_interactive"
+    }
+  },
+  "csv_scan": {
+    "count": 15,
+    "examples": [
+      "C:\\Users\\alorzaga\\Git\\tesis\\TESIS\\annex\\LCI\\LCI_MEXICO_CONVERTER\\4Q_output_control_card_component_parameters.csv",
+      "C:\\Users\\alorzaga\\Git\\tesis\\TESIS\\annex\\LCI\\LCI_MEXICO_CONVERTER\\4Q_output_power_card_component_parameters.csv",
+      "C:\\Users\\alorzaga\\Git\\tesis\\TESIS\\annex\\LCI\\LCI_MEXICO_CONVERTER\\4Q_power_card_component_parameters.csv",
+      "C:\\Users\\alorzaga\\Git\\tesis\\TESIS\\annex\\LCI\\LCI_MEXICO_CONVERTER\\analog_control_component_parameters.csv",
+      "C:\\Users\\alorzaga\\Git\\tesis\\TESIS\\annex\\LCI\\LCI_MEXICO_CONVERTER\\cabling_component_parameters.csv",
+      "C:\\Users\\alorzaga\\Git\\tesis\\TESIS\\annex\\LCI\\LCI_MEXICO_CONVERTER\\contactor_card_component_parameters.csv",
+      "C:\\Users\\alorzaga\\Git\\tesis\\TESIS\\annex\\LCI\\LCI_MEXICO_CONVERTER\\control_backplane_card_component_parameters.csv",
+      "C:\\Users\\alorzaga\\Git\\tesis\\TESIS\\annex\\LCI\\LCI_MEXICO_CONVERTER\\digital_control_component_parameters.csv",
+      "C:\\Users\\alorzaga\\Git\\tesis\\TESIS\\annex\\LCI\\LCI_MEXICO_CONVERTER\\fan_supervision_card_component_parameters.csv",
+      "C:\\Users\\alorzaga\\Git\\tesis\\TESIS\\annex\\LCI\\LCI_MEXICO_CONVERTER\\filter_card_component_parameters.csv"
+    ]
+  }
+}

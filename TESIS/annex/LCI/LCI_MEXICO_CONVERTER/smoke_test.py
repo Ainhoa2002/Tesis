@@ -5,14 +5,6 @@ Brief: Lightweight checks that run a subset of the Mexico converter pipeline to
 ensure outputs are generated and basic invariants hold.
 """
 
-#!/usr/bin/env python3
-"""Local smoke test for the Mexico converter pipeline.
-
-This test runs `Pipeline.run_pipeline` against a tiny CSV fixture written to a
-temporary directory. It avoids openLCA entirely and checks the local mass and
-flow calculations still work after cleanup changes.
-"""
-
 from __future__ import annotations
 
 import csv

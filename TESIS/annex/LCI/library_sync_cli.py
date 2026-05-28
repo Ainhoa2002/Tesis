@@ -6,9 +6,10 @@ component UUID mappings and syncing with the parameter library.
 """
 
 import argparse
+import logging
 from pathlib import Path
 
-from library_sync import run_fill_ipe_columns_from_library
+# Defer heavy imports to runtime so the module is safe to import during static checks.
 
 
 # Purpose: Main.
@@ -50,6 +51,9 @@ def main():
     root_dir = None if target_file is not None else Path(args.root).resolve()
 
     try:
+        # Import the implementation at runtime to avoid import-time side effects
+        from library_sync import run_fill_ipe_columns_from_library
+
         run_fill_ipe_columns_from_library(
             library_path=Path(args.library).resolve(),
             provider_library_path=Path(args.provider_library).resolve(),
@@ -60,8 +64,8 @@ def main():
             sync_provider_library=not args.no_sync_provider_library,
             dry_run=args.dry_run,
         )
-    except Exception as exc:
-        logging.exception("Error running library sync CLI: %s", exc)
+    except Exception:
+        logging.exception("Error running library sync CLI")
 
 
 if __name__ == "__main__":

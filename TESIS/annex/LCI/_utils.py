@@ -5,10 +5,6 @@ Brief: Common helper functions and lightweight utilities referenced by other
 modules. Keep utilities generic and free of side effects.
 """
 
-"""Common helpers for TESIS/annex/LCI scripts.
-
-Contains safe CSV read/write and simple heuristics used by the cleanup scripts.
-"""
 from __future__ import annotations
 
 import csv
@@ -168,4 +164,5 @@ def sanitize_filename_part(value) -> str:
                 previous_was_separator = True
 
     result = "".join(cleaned).strip("_")
+
     return result or "UNKNOWN"
