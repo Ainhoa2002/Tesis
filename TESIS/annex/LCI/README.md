@@ -1,5 +1,7 @@
 ﻿# LCI Import Workflow
 
+> Provenance: commit 227f1a0 — validation: validation_report.json; archive inventory: ARCHIVE_INVENTORY.txt
+
 This folder contains the orchestration layer that rebuilds LCI CSVs, fills openLCA UUID fields, creates or updates processes, and refreshes the created-object libraries used by later passes.
 
 ## Recent Changes
@@ -209,220 +211,97 @@ Product system creation is implemented in [product_system_builder.py](product_sy
 ### Provider-Linking Modes
 
 Three provider-linking strategies are available when creating product systems:
+# LCI Workflow — Dynamics
 
-- `prefer-defaults`: Prefer default providers when available, fall back to any provider if needed.
-- `only-defaults`: Link only to default providers; fail if no default provider is available.
-- `ignore-defaults`: Ignore default providers and link to any available provider.
+This folder contains the tools and orchestration to generate, enrich and import CSV inventories (LCI) that feed processes in openLCA and the project-created libraries.
 
-### Configuration via Parameters
+Purpose: explain how components interact (process dynamics), provide clear execution and validation instructions, and make the annex reproducible.
 
-Product system behavior is controlled by parameters stored in [global_parameters.json](global_parameters.json):
+Summary of the dynamics (high level)
+- Subsystem converters consume `*_component_parameters.csv` and produce intermediate outputs: `*_component_results.csv`, `*_component_io_flows.csv` and `*_ipe_flows_from_parameters.csv`.
+- A library synchronization step (`library_sync`) fills `UUID` and `UUID_provider` in ipe files using global maps and created-object libraries.
+- The main orchestrator (`main.py`) creates or updates processes in openLCA from those ipe files and updates created-object maps (`created_flows_uuid_map.csv`, `created_process_uuid_map.csv`).
+- After process creation, a secondary UUID fill pass uses the created-object maps and ipe files are re-imported to persist updates.
 
-#### Interactive Mode Flag
-- **Parameter**: `product_systems_interactive_mode`
-- **Value 0**: Silent mode (uses parameter-defined components only, no user prompts)
-- **Value 1**: Interactive mode (prompts user to enter process names and provider-linking mode)
+Operational steps (runtime sequence)
+1. (Optional) Run per-system pipelines to regenerate source CSVs.
+2. Perform initial `UUID`/`UUID_provider` filling on generated ipe files using global libraries.
+3. Import each ipe into openLCA: create or overwrite processes and reconstruct exchanges.
+4. Extract results and update `created_*_uuid_map.csv` maps.
+5. Run a second UUID fill using the created-object maps and re-import ipe files to apply updates.
+6. If applicable, run final fills for system-level aggregates and transport.
 
-Set the flag:
-```powershell
-.\.venv\Scripts\python.exe .\LCI\product_system_builder.py --set-interactive-mode 0
-```
+Key operational rules
+- Only files ending with `_ipe_flows_from_parameters.csv` are imported.
+- Rows with `Direction=Output` are skipped during library filling by design.
+- If an output row lacks a `UUID`, the importer attempts to create the flow and mark reference properties (Number, Mass).
 
-#### Component Module
-- **Parameter**: `product_systems_module`
-- **Purpose**: Defines which components should be analyzed and their provider-linking mode per component
+Relevant locations
+- Orchestrator: [LCI/main.py](main.py)
+- Library sync: [LCI/library_sync.py](library_sync.py) and [LCI/library_sync_cli.py](library_sync_cli.py)
+- Example converter: `LCI/LCI_MEXICO_CONVERTER/` (Pipeline.py and helpers)
+- Transport tools: `LCI/LCI_TRANSPORT/` (calculate_transport_mass_by_code.py)
+- Maps and parameters: `component_library_ecoinvent_uuid_map.csv`, `created_flows_uuid_map.csv`, `global_parameters.json`
 
-Example structure:
-```json
-"product_systems_module": {
-  "components": [
-    {"name": "4Q_output_control_card", "provider_linking": "prefer-defaults"},
-    {"name": "magnet", "provider_linking": "only-defaults"},
-    {"name": "MEXICO", "provider_linking": "only-defaults"}
-  ]
-}
-```
-
-Set module components via CLI:
-```powershell
-.\.venv\Scripts\python.exe .\LCI\product_system_builder.py --set-module-components "magnet:prefer-defaults,connection_cables:only-defaults"
-```
-
-#### Legacy Vector (Deprecated)
-- **Parameter**: `product_systems_prefer_defaults`
-- **Purpose**: Legacy vector for backward compatibility; specify process names that default to `prefer-defaults` mode
-- **Fallback**: Used only if component module mode is not specified for a process
-
-### Running the Product System Builder
-
-Standalone usage with parameter mode (uses components from `product_systems_module`):
-```powershell
-.\.venv\Scripts\python.exe .\LCI\product_system_builder.py
-```
-
-With explicit process names and linking mode:
-```powershell
-.\.venv\Scripts\python.exe .\LCI\product_system_builder.py --process-names "magnet,connector_system" --provider-linking prefer-defaults
-```
-
-Interactive mode (prompts for input):
-```powershell
-.\.venv\Scripts\python.exe .\LCI\product_system_builder.py --interactive
-```
-
-Force interactive even when `product_systems_interactive_mode=0`:
-```powershell
-.\.venv\Scripts\python.exe .\LCI\product_system_builder.py --interactive --process-names "magnet"
-```
-
-### Mode Selection Logic
-
-When `--provider-linking parameter` (default), the builder selects linking mode by cascading:
-
-1. Check component-specific mode in `product_systems_module.components`
-2. Fall back to legacy `product_systems_prefer_defaults` vector
-3. Default to `only-defaults` if not specified elsewhere
-
-### Behavior in Main Workflow
-
-When integrated in [main.py](main.py):
-
-- Phase 5 of the workflow calls the product system builder
-- Builder respects the `product_systems_interactive_mode` flag
-- If mode=0 (silent), components from `product_systems_module` are created without prompting
-- If mode=1 (interactive), user is prompted to enter process names and mode
-
-## Running the Workflow
-
-From repository root:
-
-Dry run:
+Quick commands
+Activate venv and run the orchestrator (dry run example):
 
 ```powershell
+.\.venv\Scripts\Activate.ps1
 .\.venv\Scripts\python.exe .\LCI\main.py --dry-run
 ```
 
-Real import:
+Sync a single ipe file:
 
 ```powershell
-.\.venv\Scripts\python.exe .\LCI\main.py
+.\.venv\Scripts\python.exe .\LCI\library_sync_cli.py --target-file .\LCI\LCI_MEXICO_CONVERTER\<subsystem>_ipe_flows_from_parameters.csv
 ```
 
-## Transport Validation and PCB Handling
-
-Transport aggregation is implemented in [LCI/LCI_TRANSPORT/calculate_transport_mass_by_code.py](LCI_TRANSPORT/calculate_transport_mass_by_code.py).
-
-Validation checks that should pass after a normal run:
-
-1. No double multiplication in transport:
-   - IPE Amount values are already produced by each pipeline and are consumed as-is.
-2. Coded totals are stable:
-   - `--overall` prints one mass total per transport code.
-3. Per-subsystem coded totals are available:
-   - default mode prints per subsystem + code and total coded mass.
-
-Important modeling detail:
-
-- PCB/OCB rows in several converter cards are modeled as `m2` flows.
-- Component mass totals are in `kg` in `*_component_results.csv`.
-- If comparing transport against converter mass on a `kg` basis, PCB/OCB can be added from results using the dedicated flag below.
-
-Commands:
-
-Overall coded mass by transport code:
+Run the Mexico converter smoke test:
 
 ```powershell
-.\.venv\Scripts\python.exe .\LCI\LCI_TRANSPORT\calculate_transport_mass_by_code.py --root .\LCI --overall
+.\.venv\Scripts\python.exe TESIS\annex\LCI\LCI_MEXICO_CONVERTER\smoke_test.py
 ```
 
-Per-subsystem coded mass (default mode):
+Automated validation
+- `TESIS/annex/LCI/validate_all.py` performs smoke checks, import-safety tests and CSV discovery. It writes `validation_report.json` with findings.
+
+Optional dependencies
+Some visualization helpers and the openLCA IPC integration require optional packages. Install them to enable full functionality and to avoid import failures during validation:
 
 ```powershell
-.\.venv\Scripts\python.exe .\LCI\LCI_TRANSPORT\calculate_transport_mass_by_code.py --root .\LCI
+.\.venv\Scripts\python.exe -m pip install pandas numpy matplotlib plotly kaleido json5 olca-ipc olca-schema
 ```
 
-Coded/uncoded diagnostic breakdown:
+Archive inventory
+- `ARCHIVE_INVENTORY.txt` lists preserved generated outputs under `archived_generated_orig/`.
+- Note: this inventory is partial and catalogs outputs preserved since a refactor; it is not a complete historical archive.
 
+Checks recommended before thesis inclusion
+- Run `TESIS/annex/LCI/LCI_MEXICO_CONVERTER/smoke_test.py`.
+- Run `TESIS/annex/LCI/validate_all.py` and resolve import failures caused by modules executing code at import time.
+- Confirm the `*_component_parameters.csv` files you intend to preserve are present in the annex.
+
+Making modules import-safe
+To allow static imports and automated validation, guard CLI or runtime entry points:
+
+```python
+if __name__ == "__main__":
+    main()
+```
+
+Thesis integration suggestions
+- Keep `results_tools/` as the canonical folder for extraction and visualization scripts.
+- Preserve the original `*.csv` input datasets inside the annex and reference them explicitly in the thesis data section.
+- Document the archive inventory limitation and list optional dependencies required to reproduce visualizations.
+
+Next steps
+- I can now run `validate_all.py`, patch modules that run logic at import time to be import-safe, and re-run validation; then I will provide a short report and the "visto bueno" to start drafting the thesis integration strategies.
+
+---
 ```powershell
-.\.venv\Scripts\python.exe .\LCI\LCI_TRANSPORT\calculate_transport_mass_by_code.py --root .\LCI --breakdown
+
+.\.venv\Scripts\python.exe .\LCI\main.py --dry-run
+
 ```
-
-Include PCB/OCB `kg` mass from component results in transport totals:
-
-```powershell
-.\.venv\Scripts\python.exe .\LCI\LCI_TRANSPORT\calculate_transport_mass_by_code.py --root .\LCI --overall --include-pcb-mass-from-results
-```
-
-How the PCB/OCB option works:
-
-1. Reads PCB/OCB `Total_mass_kg` from each module `*_component_results.csv`.
-2. Reads PCB transport code(s) from each module `*_ipe_flows_from_parameters.csv` PCB flow row.
-3. Adds that PCB mass to those same transport code totals.
-
-This avoids duplicating the PCB `m2 -> kg` conversion logic in the transport script and keeps the pipeline result as the single source of truth for PCB mass.
-
-## Practical Notes and Limits
-
-- openLCA IPC must be reachable at localhost:8080 in real mode.
-- Direction matching is case-insensitive in CSV readers.
-- created_process_uuid_map uses flow reference as key. If two processes share the same output flow name, that key can collide by design.
-- created libraries are not intended to mirror all existing database objects; they are intended to record and refresh project-created object mappings.
-
-## Global Parameter Library
-
-The project now includes a general parameter library for cross-folder reuse.
-
-Files:
-
-- [LCI/global_parameters.json](global_parameters.json)
-- [LCI/parameter_library.py](parameter_library.py)
-- [LCI/params.py](params.py)
-
-Purpose:
-
-- Store shared parameters (for example: masa_patatas) in one place.
-- Expose get/set helpers for any script under the repository.
-- Store execution scope keys for orchestration control:
-   - execution.run_scope: all | single
-   - execution.target_system: e.g., MEXICO
-
-Commented configuration support:
-
-- `global_parameters.json` can contain `//` comments.
-- Parameter readers in this repository use `json5` to parse that file.
-- Ensure dependency is installed in the active environment:
-
-```powershell
-.\.venv\Scripts\python.exe -m pip install json5
-```
-
-Important behavior:
-
-- Reading preserves compatibility with comments.
-- Writing parameters via `parameter_library.py` currently serializes with standard JSON (`json.dump`), so inline `//` comments may be removed after set/delete operations.
-
-## Troubleshooting Patterns
-
-Common messages and meaning:
-
-- Flow with UUID ... not found, skipping.
-  - UUID not found in the connected openLCA database.
-
-- Output flow UUID ... not found for ..., skipping output.
-  - output row references missing flow UUID.
-
-- no UUID mapping found for ...
-  - current library set has no mapping for that flow key.
-
-## Related Files
-
-- [LCI/process_builder.py](process_builder.py)
-- [LCI/product_system_builder.py](product_system_builder.py)
-- [LCI/csv_reader.py](csv_reader.py)
-- [LCI/library_sync.py](library_sync.py)
-- [LCI/library_sync_cli.py](library_sync_cli.py)
-- [LCI/diagnosis.py](diagnosis.py)
-- [LCI/finder.py](finder.py)
-
-
 
