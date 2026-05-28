@@ -1,0 +1,10 @@
+Flow,UUID,Unit,Amount,Direction,Section,Subsections,Source_subsystems,Component_rows,Total_mass_kg,Missing_process_components,UUID_provider
+"copper, cathode",fbb039f7-f9cc-46d2-b631-313ddb125c1a,kg,0.6054633,Input,Magnetics,Inductors,"HF_Power_Transformer_PM624929, power_inductor_PM6249",3,0.6054633,0,9e4d4bb4-2aed-3ef2-9caa-46439cf1c523
+ferrite,fa6aa6bf-07c9-45bf-9fdc-a358a497b7e1,kg,2.380512,Input,Magnetics,Inductors,"HF_Power_Transformer_PM624929, power_inductor_PM6249",2,2.380512,0,d8bf7542-3566-3477-bcbd-9d7921725e6c
+injection moulding,68d6dfcf-2089-4586-9bbf-ad75591105cf,kg,0.11,Input,Magnetics,Inductors,"HF_Power_Transformer_PM624929, power_inductor_PM6249",2,0.11,0,2425ed8d-4a27-32f5-b80e-07711f419c02
+nylon 6,d16b5d3f-b5e4-45b6-9a04-23cde05220c0,kg,0.0036,Input,Magnetics,Inductors,power_inductor_PM6249,1,0.0036,0,1b7bae70-5229-3aa6-8571-bdae966d5782
+"polyester resin, unsaturated",4bf60736-bc87-4e3d-8d34-ea8bcc46f551,kg,0.11,Input,Magnetics,Inductors,"HF_Power_Transformer_PM624929, power_inductor_PM6249",2,0.11,0,e6527622-8abc-3acd-ab99-e802a07c198f
+polytetrafluoroethylene,53556443-eb03-5fa4-886b-bd89d3526a6c,kg,0.0064,Input,Magnetics,Inductors,"HF_Power_Transformer_PM624929, power_inductor_PM6249",2,0.0064,0,8ff16422-4d71-3a6a-8b8f-9a273275f073
+"transformer production, low voltage use",0c7faf73-f5ea-4a3b-96ec-54d025cae6f4,kg,0.0922,Input,Magnetics,"Current sensing, Inductors","filter_card, inverter_power_card",2,0.0922,0,fae82ba0-8a94-328c-8dc2-410e3fc0227e
+"wire drawing, copper",cdb7b939-f508-49ed-80f3-b39f6137fe1c,kg,0.6054633,Input,Magnetics,Inductors,"HF_Power_Transformer_PM624929, power_inductor_PM6249",3,0.6054633,0,9dd1ce4b-030a-33ee-a66e-05dc9455269a
+SECTION_Magnetics,,kg,3.1981753,Output,Magnetics,"Current sensing, Inductors","HF_Power_Transformer_PM624929, filter_card, inverter_power_card, power_inductor_PM6249",12,3.1981753,0,
