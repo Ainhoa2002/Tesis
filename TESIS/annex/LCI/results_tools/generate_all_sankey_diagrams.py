@@ -1,3 +1,10 @@
+"""
+Role: Batch-generate Sankey diagrams for all available result sets.
+
+Brief: Runs a non-interactive batch process to create Sankey diagrams for a
+collection of result JSON files. Useful for creating an archive of diagrams.
+"""
+
 #!/usr/bin/env python3
 """
 Generate Sankey diagrams for all available Sankey JSON files.

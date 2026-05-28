@@ -1,3 +1,10 @@
+"""
+Role: CLI/interactive selector for generating Sankey diagrams from results.
+
+Brief: Provides a command-line interface to choose Sankey inputs and export
+selected diagrams. Focuses on selection logic and user-driven exports.
+"""
+
 #!/usr/bin/env python3
 """
 Interactive Sankey Diagram Generator

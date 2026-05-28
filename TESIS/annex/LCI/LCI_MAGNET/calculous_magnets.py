@@ -1,3 +1,10 @@
+"""
+Role: Magnet calculations and helper routines.
+
+Brief: Contains functions to compute magnet masses, material breakdowns, and
+other magnet-specific calculations used in the LCI magnet pipeline.
+"""
+
 import math
 import logging
 

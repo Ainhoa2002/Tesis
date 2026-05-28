@@ -1,4 +1,12 @@
 """
+Role: Interactive visualization of LCI results for comparison and exploration.
+
+Brief: Provides interactive dashboards and comparison tools for exploring
+calculated impacts and inventories. Intended for interactive analysis, not
+for batch processing or result calculation.
+"""
+
+"""
 INTERACTIVE LCA RESULTS VISUALIZATION WITH MULTI-SYSTEM COMPARISON
 ====================================================================
 

@@ -1,3 +1,11 @@
+"""
+Role: Static plotting utilities for impact results (charts and figures).
+
+Brief: Contains helper functions to render static charts (matplotlib/plotly)
+for impact and inventory results; used to create figures for reports or quick
+visual inspections.
+"""
+
 from __future__ import annotations
 
 import os

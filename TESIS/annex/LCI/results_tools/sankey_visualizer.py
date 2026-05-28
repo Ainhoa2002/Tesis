@@ -1,4 +1,12 @@
 """
+Role: Generate Sankey diagrams from LCI result JSON and export interactive HTML.
+
+Brief: Loads Sankey data, builds visualization structure, and writes an interactive
+HTML/SVG output for inspection. This module focuses on visualization export
+and does not perform result calculation or data aggregation.
+"""
+
+"""
 SANKEY DIAGRAM VISUALIZER FOR LCA RESULTS
 ==========================================
 

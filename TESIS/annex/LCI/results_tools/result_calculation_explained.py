@@ -1,4 +1,12 @@
 """
+Role: Orchestrate result extraction and explain calculation steps.
+
+Brief: Orchestrates extraction of results from raw outputs and annotates the
+calculation steps for reproducibility and documentation. Not intended for
+visualization; it prepares data for downstream tools.
+"""
+
+"""
 LCA RESULT CALCULATION & EXTRACTION SCRIPT WITH PARAMETER DOCUMENTATION
 ========================================================================
 

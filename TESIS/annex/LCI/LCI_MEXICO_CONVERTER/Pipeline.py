@@ -1,4 +1,11 @@
-﻿#!/usr/bin/env python3
+﻿"""
+Role: Pipeline utilities specific to the Mexico converter components.
+
+Brief: Coordinates conversion tasks, IPE generation, and export for the
+Mexico converter subset of components in the LCI.
+"""
+
+#!/usr/bin/env python3
 """
 Run parametric mass + ecoinvent pipeline for one or more selected subsystems.
 Subsystem names are resolved from files named <subsystem>_component_parameters.csv.

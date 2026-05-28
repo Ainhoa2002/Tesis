@@ -1,3 +1,10 @@
+"""
+Role: Magnet-specific pipeline for preparing magnet component IPE and mass data.
+
+Brief: Handles extraction, mass distribution and IPE preparation for magnet
+components; used by magnet-focused workflows and tests.
+"""
+
 import argparse
 import csv
 import sys
