@@ -1,3 +1,10 @@
+"""
+Role: Calculate mass distributions across components and assemblies.
+
+Brief: Implements algorithms to split component masses into sub-components and
+produce per-component mass summaries used by downstream IPE generation.
+"""
+
 import matplotlib.pyplot as plt
 
 

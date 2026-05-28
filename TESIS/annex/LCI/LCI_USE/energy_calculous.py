@@ -47,6 +47,7 @@ hours_per_year = days_per_year * hours_per_day
 T_op = lifetime_years * hours_per_year
 
 
+# Purpose: Calculate losses.
 def calculate_losses(efficiency, cable_length_km_value=cable_length_km):
     R_cable = R_cable_km * cable_length_km_value
     E_loss_total_Wh = 0.0
@@ -97,6 +98,7 @@ def calculate_losses(efficiency, cable_length_km_value=cable_length_km):
 import logging
 
 
+# Purpose: Print single result.
 def print_single_result(result):
     logging.info("=== FCC-ee Corrector Circuit Use Phase ===\n")
     logging.info("Converter efficiency:     %.2f (%.0f%%)", result['efficiency'], result['efficiency'] * 100)

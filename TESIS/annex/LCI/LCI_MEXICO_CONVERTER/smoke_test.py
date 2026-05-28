@@ -26,6 +26,7 @@ sys.dont_write_bytecode = True
 # interactive-safe output helper
 import logging
 _IS_TTY = sys.stdout.isatty()
+# Purpose: Out.
 def _out(msg: str, level: str = "info") -> None:
     if _IS_TTY:
         print(msg)
@@ -66,6 +67,7 @@ FIXTURE_ROWS = [
 ]
 
 
+# Purpose: Write fixture csv.
 def _write_fixture_csv(path: Path) -> None:
     fieldnames = list(FIXTURE_ROWS[0].keys())
     with open(path, "w", newline="", encoding="utf-8") as handle:
@@ -74,12 +76,14 @@ def _write_fixture_csv(path: Path) -> None:
         writer.writerows(FIXTURE_ROWS)
 
 
+# Purpose: Read csv rows.
 def _read_csv_rows(path: Path):
     with open(path, newline="", encoding="utf-8-sig") as handle:
         reader = csv.DictReader(handle)
         return list(reader)
 
 
+# Purpose: Run smoke test.
 def run_smoke_test() -> None:
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_path = Path(temp_dir)

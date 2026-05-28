@@ -1,9 +1,17 @@
+"""
+Role: Command-line interface for library synchronization operations.
+
+Brief: Provides a CLI wrapper to run `library_sync` actions such as updating
+component UUID mappings and syncing with the parameter library.
+"""
+
 import argparse
 from pathlib import Path
 
 from library_sync import run_fill_ipe_columns_from_library
 
 
+# Purpose: Main.
 def main():
     base_dir = Path(__file__).resolve().parent
     default_uuid_library = base_dir / "component_library_ecoinvent_uuid_map.csv"

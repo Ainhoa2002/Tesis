@@ -1,9 +1,17 @@
+"""
+Role: Fill IPE (openLCA parameter) columns using the component library mapping.
+
+Brief: Matches library entries with IPE input rows to populate UUID and
+background system references required for openLCA imports.
+"""
+
 import argparse
 from pathlib import Path
 
 from library_sync import run_fill_ipe_columns_from_library
 
 
+# Purpose: Main.
 def main():
     base_dir = Path(__file__).resolve().parent
     default_uuid_library = base_dir / "component_library_ecoinvent_uuid_map.csv"

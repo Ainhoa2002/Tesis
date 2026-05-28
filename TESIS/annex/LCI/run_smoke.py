@@ -1,3 +1,10 @@
+"""
+Role: Smoke test runner for quick validation of annex workflows.
+
+Brief: Provides a lightweight smoke harness to run a minimal subset of the
+pipeline and validate that scripts execute end-to-end in the annex environment.
+"""
+
 """Run basic smoke checks for the LCI annex.
 
 This script runs the main pipeline in dry-run mode and the Mexico converter smoke test.
@@ -11,6 +18,7 @@ ROOT = Path(__file__).resolve().parent
 
 logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
+# Purpose: Run.
 def run(cmd):
     logging.info("Running: %s", cmd)
     proc = subprocess.run(cmd, shell=True)

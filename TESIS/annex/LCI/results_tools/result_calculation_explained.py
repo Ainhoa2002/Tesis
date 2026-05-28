@@ -267,6 +267,7 @@ def find_entity(client, model_type, name):
     return ref
 
 
+# Purpose: Filter impacts by names.
 def filter_impacts_by_names(impacts, allowed_names):
     """
     Filter impact results to only include specified categories.
@@ -283,6 +284,7 @@ def filter_impacts_by_names(impacts, allowed_names):
     return [i for i in impacts if i.impact_category.name in allowed_names]
 
 
+# Purpose: Safe filename.
 def safe_filename(value):
     """
     Convert any string to a filesystem-safe filename.
@@ -308,6 +310,7 @@ def safe_filename(value):
     return text or "unnamed"
 
 
+# Purpose: Save to results.
 def save_to_results(filename, content_saver):
     """
     Save content to both output directories (local and export folder).
@@ -337,10 +340,12 @@ def save_to_results(filename, content_saver):
     return local_path, export_path
 
 
+# Purpose: Normalize key.
 def normalize_key(value):
     return re.sub(r"\s+", " ", str(value).strip().lower())
 
 
+# Purpose: Run with timeout.
 def run_with_timeout(fn, timeout=IPC_TIMEOUT):
     """Run callable `fn` in a thread and return its value or raise on timeout/exception.
 
@@ -521,6 +526,7 @@ def extract_process_dq_info(client, process_id):
         return None
 
 
+# Purpose: Extract exchange dq info.
 def extract_exchange_dq_info(client, process_id):
     """
     Extract data quality scores for each flow input/output.

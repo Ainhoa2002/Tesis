@@ -1,3 +1,10 @@
+"""
+Role: Transport-related workflows and transport impact calculations.
+
+Brief: Encapsulates transport mass calculations, transport code handling, and
+aggregations used by the transport phase of the LCI.
+"""
+
 """Transport CSV preparation workflow used before openLCA import.
 
 This module prepares transport-specific *_ipe_flows_from_parameters.csv files
@@ -20,6 +27,7 @@ from _utils import (
 )
 
 
+# Purpose: Distance to km.
 def _distance_to_km(distance, unit):
     distance_value = to_float(distance)
     if distance_value is None:
@@ -35,10 +43,12 @@ def _distance_to_km(distance, unit):
     return None
 
 
+# Purpose: Safe code name.
 def _safe_code_name(code: str) -> str:
     return sanitize_filename_part(code).lower()
 
 
+# Purpose: Create transport unit process files.
 def _create_transport_unit_process_files(base_dir: Path, dry_run: bool = False):
     """Create one transport code unit-process file per code from code_transport.csv."""
     transport_dir = base_dir / "LCI_TRANSPORT"
@@ -110,6 +120,7 @@ def _create_transport_unit_process_files(base_dir: Path, dry_run: bool = False):
     return generated
 
 
+# Purpose: Load tkm per kg by code.
 def _load_tkm_per_kg_by_code(base_dir: Path):
     """Load transport intensity map: code -> tkm per 1 kg."""
     transport_dir = base_dir / "LCI_TRANSPORT"
@@ -139,6 +150,7 @@ def _load_tkm_per_kg_by_code(base_dir: Path):
     return per_code
 
 
+# Purpose: Fill transport parent amounts.
 def _fill_transport_parent_amounts(base_dir: Path, dry_run: bool = False):
     """Fill Amount in *_transport_ipe files from mass-by-code per subsystem."""
     tools_dir = base_dir / "LCI_TRANSPORT"
@@ -248,6 +260,7 @@ def _fill_transport_parent_amounts(base_dir: Path, dry_run: bool = False):
     return updates
 
 
+# Purpose: Prepare transport unit processes.
 def prepare_transport_unit_processes(base_dir: Path, dry_run: bool = False):
     """Prepare transport unit process CSVs before standard import passes."""
     logging.info("Preparing transport unit processes from code_transport.csv...")

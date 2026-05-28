@@ -14,6 +14,7 @@ import sys
 
 # interactive-safe output helper
 _IS_TTY = sys.stdout.isatty()
+# Purpose: Out.
 def _out(msg: str, level: str = "info") -> None:
     if _IS_TTY:
         print(msg)
@@ -21,10 +22,12 @@ def _out(msg: str, level: str = "info") -> None:
         getattr(logging, level)(msg)
 
 
+# Purpose: Normalize text.
 def _normalize_text(value):
     return str(value or "").strip()
 
 
+# Purpose: Parse codes.
 def _parse_codes(raw_codes):
     text = _normalize_text(raw_codes)
     if text == "":
@@ -38,6 +41,7 @@ def _parse_codes(raw_codes):
     return codes
 
 
+# Purpose: To float.
 def _to_float(value):
     if value is None:
         return None
@@ -50,6 +54,7 @@ def _to_float(value):
         return None
 
 
+# Purpose: Unit to kg.
 def _unit_to_kg(amount, unit):
     if amount is None:
         return None
@@ -67,12 +72,14 @@ def _unit_to_kg(amount, unit):
     return None
 
 
+# Purpose: Iter ipe files.
 def _iter_ipe_files(root_dir):
     for path in sorted(Path(root_dir).rglob("*_ipe_flows_from_parameters.csv")):
         if path.is_file():
             yield path
 
 
+# Purpose: Module name from ipe path.
 def _module_name_from_ipe_path(csv_path):
     suffix = "_ipe_flows_from_parameters.csv"
     name = Path(csv_path).name
@@ -81,10 +88,12 @@ def _module_name_from_ipe_path(csv_path):
     return name[: -len(suffix)]
 
 
+# Purpose: Is pcb flow.
 def _is_pcb_flow(flow_name):
     return "printed wiring board production" in _normalize_text(flow_name).lower()
 
 
+# Purpose: Load pcb mass from results.
 def _load_pcb_mass_from_results(csv_path):
     """Load PCB/OCB mass (kg) from sibling *_component_results.csv for one module."""
     module = _module_name_from_ipe_path(csv_path)
@@ -111,6 +120,7 @@ def _load_pcb_mass_from_results(csv_path):
     return pcb_mass_kg
 
 
+# Purpose: Collect pcb codes from ipe.
 def _collect_pcb_codes_from_ipe(csv_path):
     """Collect transport codes present on PCB rows in one *_ipe file."""
     codes = set()
@@ -132,6 +142,7 @@ def _collect_pcb_codes_from_ipe(csv_path):
     return codes
 
 
+# Purpose: Load mexico subsystem units.
 def _load_mexico_subsystem_units(root_dir):
     """Load Quantity_per_subsystem map for LCI_MEXICO_CONVERTER."""
     units_path = Path(root_dir) / "LCI_MEXICO_CONVERTER" / "subsystem_units.csv"
@@ -154,6 +165,7 @@ def _load_mexico_subsystem_units(root_dir):
     return units_map
 
 
+# Purpose: Load system units.
 def _load_system_units(root_dir):
     """Load system-level LU multipliers from LCI_SYSTEM/system_ipe_flows_from_parameters.csv."""
     system_path = Path(root_dir) / "LCI_SYSTEM" / "system_ipe_flows_from_parameters.csv"
@@ -184,6 +196,7 @@ def _load_system_units(root_dir):
     return units_map
 
 
+# Purpose: Get mass multiplier for file.
 def _get_mass_multiplier_for_file(root_dir, csv_path, mexico_units_map):
     """Return mass multiplier for one *_ipe file.
 
@@ -210,6 +223,7 @@ def _get_mass_multiplier_for_file(root_dir, csv_path, mexico_units_map):
     return mexico_units_map[subsystem], True
 
 
+# Purpose: Get system multiplier for file.
 def _get_system_multiplier_for_file(root_dir, csv_path, system_units_map):
     """Return system-level multiplier for one *_ipe file based on system_ipe LU rows."""
     if not system_units_map:
@@ -245,6 +259,7 @@ def _get_system_multiplier_for_file(root_dir, csv_path, system_units_map):
     return 1.0
 
 
+# Purpose: Subsystem name from path.
 def _subsystem_name_from_path(root_dir, csv_path):
     """Resolve subsystem name from a file path relative to the LCI root."""
     rel_parts = Path(csv_path).resolve().relative_to(Path(root_dir).resolve()).parts
@@ -257,6 +272,7 @@ def _subsystem_name_from_path(root_dir, csv_path):
     return top.lower()
 
 
+# Purpose: Calculate total mass by transport code.
 def calculate_total_mass_by_transport_code(root_dir, include_pcb_mass_from_results=False):
     """Calculate total mass in kg aggregated by Transport_phase_codes.
 
@@ -322,6 +338,7 @@ def calculate_total_mass_by_transport_code(root_dir, include_pcb_mass_from_resul
     return dict(sorted(totals_kg.items(), key=lambda kv: kv[0].lower()))
 
 
+# Purpose: Calculate total mass by transport code per subsystem.
 def calculate_total_mass_by_transport_code_per_subsystem(root_dir, include_pcb_mass_from_results=False):
     """Calculate total mass in kg per subsystem and Transport_phase_codes.
     
@@ -397,6 +414,7 @@ def calculate_total_mass_by_transport_code_per_subsystem(root_dir, include_pcb_m
     return ordered
 
 
+# Purpose: Calculate mass breakdown by subsystem.
 def calculate_mass_breakdown_by_subsystem(root_dir):
     """Calculate coded and uncoded mass totals per subsystem.
 
@@ -457,6 +475,7 @@ def calculate_mass_breakdown_by_subsystem(root_dir):
     return ordered
 
 
+# Purpose: Main.
 def main():
     parser = argparse.ArgumentParser(
         description="Calculate total mass (kg) per Transport_phase_codes from *_ipe_flows_from_parameters.csv files."

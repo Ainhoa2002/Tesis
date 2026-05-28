@@ -1,3 +1,10 @@
+"""
+Role: Helper functions to build and validate product systems for LCI.
+
+Brief: Provides routines to assemble process graphs, connect flows, and
+validate completeness of product system definitions before exporting.
+"""
+
 from __future__ import annotations
 
 import argparse
@@ -6,6 +13,7 @@ import logging
 
 # interactive-safe output helper
 _IS_TTY = sys.stdout.isatty()
+# Purpose: Out.
 def _out(msg: str, level: str = "info") -> None:
     if _IS_TTY:
         print(msg)
@@ -38,10 +46,12 @@ class ProductSystemCreationReport:
     errors: list[str] = field(default_factory=list)
 
 
+# Purpose: Normalize name.
 def _normalize_name(value: str) -> str:
     return str(value or "").strip().lower()
 
 
+# Purpose: Parse csv names.
 def _parse_csv_names(raw: str) -> list[str]:
     out = []
     seen = set()
@@ -55,6 +65,7 @@ def _parse_csv_names(raw: str) -> list[str]:
     return out
 
 
+# Purpose: As name list.
 def _as_name_list(value) -> list[str]:
     if isinstance(value, list):
         return [str(v).strip() for v in value if str(v).strip()]
@@ -63,10 +74,12 @@ def _as_name_list(value) -> list[str]:
     return []
 
 
+# Purpose: Get prefer defaults processes.
 def get_prefer_defaults_processes() -> list[str]:
     return _as_name_list(get_param(PREFER_DEFAULTS_PARAM, default=[]))
 
 
+# Purpose: Get interactive mode.
 def get_interactive_mode() -> int:
     """Get interactive mode: 0=silent (use params only), 1=interactive (can ask user)."""
     value = get_param(INTERACTIVE_MODE_PARAM, default=1)
@@ -76,11 +89,13 @@ def get_interactive_mode() -> int:
         return 1  # Default to interactive if invalid
 
 
+# Purpose: Set interactive mode.
 def set_interactive_mode(mode: int) -> None:
     """Set interactive mode: 0=silent, 1=interactive."""
     set_param(INTERACTIVE_MODE_PARAM, int(mode))
 
 
+# Purpose: Set prefer defaults processes.
 def set_prefer_defaults_processes(process_names: list[str]) -> None:
     cleaned = []
     seen = set()
@@ -94,6 +109,7 @@ def set_prefer_defaults_processes(process_names: list[str]) -> None:
     set_param(PREFER_DEFAULTS_PARAM, cleaned)
 
 
+# Purpose: Normalize mode text.
 def _normalize_mode_text(value: str) -> str:
     text = str(value or "").strip().lower()
     if text in {"prefer", "prefer-defaults", "prefer_defaults", "p"}:
@@ -105,12 +121,14 @@ def _normalize_mode_text(value: str) -> str:
     return ""
 
 
+# Purpose: Default product systems module.
 def _default_product_systems_module() -> dict:
     return {
         "components": []
     }
 
 
+# Purpose: Get product systems module.
 def get_product_systems_module() -> dict:
     raw = get_param(PRODUCT_SYSTEMS_MODULE_PARAM, default=_default_product_systems_module())
     if not isinstance(raw, dict):
@@ -138,6 +156,7 @@ def get_product_systems_module() -> dict:
     return {"components": normalized_components}
 
 
+# Purpose: Set product systems module.
 def set_product_systems_module(components: list[dict[str, str]]) -> None:
     cleaned = []
     seen = set()
@@ -155,6 +174,7 @@ def set_product_systems_module(components: list[dict[str, str]]) -> None:
     set_param(PRODUCT_SYSTEMS_MODULE_PARAM, {"components": cleaned})
 
 
+# Purpose: Module component mode map.
 def _module_component_mode_map(module_doc: dict) -> dict[str, str]:
     component_mode_map = {}
     for item in module_doc.get("components", []):
@@ -166,6 +186,7 @@ def _module_component_mode_map(module_doc: dict) -> dict[str, str]:
     return component_mode_map
 
 
+# Purpose: Module component names.
 def _module_component_names(module_doc: dict) -> list[str]:
     out = []
     seen = set()
@@ -179,6 +200,7 @@ def _module_component_names(module_doc: dict) -> list[str]:
     return out
 
 
+# Purpose: Mode name.
 def _mode_name(mode: o.ProviderLinking) -> str:
     if mode == o.ProviderLinking.PREFER_DEFAULTS:
         return "PREFER_DEFAULTS"
@@ -189,11 +211,13 @@ def _mode_name(mode: o.ProviderLinking) -> str:
     return str(mode)
 
 
+# Purpose: Is uuid like.
 def _is_uuid_like(value: str) -> bool:
     text = str(value or "").strip()
     return bool(re.fullmatch(r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}", text))
 
 
+# Purpose: Resolve process descriptor.
 def _resolve_process_descriptor(client, process_input: str):
     token = str(process_input or "").strip()
     if token == "":
@@ -208,6 +232,7 @@ def _resolve_process_descriptor(client, process_input: str):
     return client.find(o.Process, name=token)
 
 
+# Purpose: Select provider linking.
 def _select_provider_linking(
     process_name: str,
     strategy: str,
@@ -242,6 +267,7 @@ def _select_provider_linking(
     return o.ProviderLinking.ONLY_DEFAULTS
 
 
+# Purpose: Create or update product system.
 def create_or_update_product_system(
     client,
     process_input: str,
@@ -308,6 +334,7 @@ def create_or_update_product_system(
     return report
 
 
+# Purpose: Create product systems for processes.
 def create_product_systems_for_processes(
     client,
     process_inputs: list[str],
@@ -334,6 +361,7 @@ def create_product_systems_for_processes(
     return reports
 
 
+# Purpose: Parse component modes.
 def _parse_component_modes(raw: str) -> list[dict[str, str]]:
     out = []
     seen = set()
@@ -360,6 +388,7 @@ def _parse_component_modes(raw: str) -> list[dict[str, str]]:
     return out
 
 
+# Purpose: Prompt linking choice.
 def _prompt_linking_choice() -> str:
     while True:
         raw = input("Provider linking mode? [1=Prefer default provider, 2=Only link default provider]: ").strip().lower()
@@ -370,6 +399,7 @@ def _prompt_linking_choice() -> str:
         _out("Please choose 1 (Prefer default provider) or 2 (Only link default provider).", level="warning")
 
 
+# Purpose: Interactive inputs.
 def _interactive_inputs() -> tuple[list[str], str]:
     raw_names = input("Process names or UUIDs (comma-separated): ").strip()
     names = _parse_csv_names(raw_names)
@@ -379,11 +409,13 @@ def _interactive_inputs() -> tuple[list[str], str]:
     return names, _prompt_linking_choice()
 
 
+# Purpose: Prompt process inputs.
 def _prompt_process_inputs(client) -> list[str]:
     raw_names = input("Enter process names or UUIDs to analyze/create (comma-separated): ").strip()
     return _parse_csv_names(raw_names)
 
 
+# Purpose: Build parser.
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="Standalone product system builder for openLCA")
     parser.add_argument(
@@ -426,6 +458,7 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+# Purpose: Run cli.
 def _run_cli() -> int:
     parser = _build_parser()
     args = parser.parse_args()

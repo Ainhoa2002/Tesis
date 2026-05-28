@@ -33,6 +33,7 @@ LCIA_METHOD = "EF v3.1"
 IMPACTS_TO_PLOT = None  # e.g. ["Climate change", "Water use"] or None for all
 
 
+# Purpose: Safe filename.
 def safe_filename(value: object) -> str:
     text = str(value)
     for char in '<>:"/\\|?*':
@@ -41,10 +42,12 @@ def safe_filename(value: object) -> str:
     return text or "unnamed"
 
 
+# Purpose: Normalize key.
 def normalize_key(value: object) -> str:
     return " ".join(str(value).strip().lower().split())
 
 
+# Purpose: Load impacts.
 def load_impacts(system_name: str, method_name: str) -> pd.DataFrame:
     impacts_path = RESULTS_DIR / f"{safe_filename(system_name)}_{safe_filename(method_name)}_impacts.csv"
     if not impacts_path.exists():
@@ -52,6 +55,7 @@ def load_impacts(system_name: str, method_name: str) -> pd.DataFrame:
     return pd.read_csv(impacts_path)
 
 
+# Purpose: Filter impacts.
 def filter_impacts(df: pd.DataFrame, impacts_to_plot: Iterable[str] | None) -> pd.DataFrame:
     if not impacts_to_plot:
         return df
@@ -60,6 +64,7 @@ def filter_impacts(df: pd.DataFrame, impacts_to_plot: Iterable[str] | None) -> p
     return df.loc[mask].copy()
 
 
+# Purpose: Plot relative impacts.
 def plot_relative_impacts(system_name: str, method_name: str, df: pd.DataFrame) -> Path | None:
     if plt is None or df.empty:
         return None
@@ -86,6 +91,7 @@ def plot_relative_impacts(system_name: str, method_name: str, df: pd.DataFrame) 
     return out_path
 
 
+# Purpose: Plot normalized impacts.
 def plot_normalized_impacts(system_name: str, method_name: str, df: pd.DataFrame) -> Path | None:
     if plt is None or df.empty or "Amount (Normalized)" not in df.columns:
         return None
@@ -110,6 +116,7 @@ def plot_normalized_impacts(system_name: str, method_name: str, df: pd.DataFrame
     return out_path
 
 
+# Purpose: Main.
 def main() -> None:
     if plt is None:
         raise RuntimeError("matplotlib is not available in the current environment")

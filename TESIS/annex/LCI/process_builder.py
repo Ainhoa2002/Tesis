@@ -1,3 +1,10 @@
+"""
+Role: Build individual processes and map component IO for LCI processes.
+
+Brief: Constructs process-level definitions used to assemble product systems
+and to export process data to openLCA or CSV formats.
+"""
+
 """openLCA process and flow creation logic.
 
 This module owns all openLCA-creation-related behavior for the import workflow:
@@ -48,16 +55,19 @@ class ProductSystemCreationReport:
     errors: list[str] = field(default_factory=list)
 
 
+# Purpose: Warn.
 def _warn(report: ProcessImportReport, message: str) -> None:
     report.warnings.append(message)
     logging.warning(message)
 
 
+# Purpose: Error.
 def _error(report: ProcessImportReport, message: str) -> None:
     report.errors.append(message)
     logging.error(message)
 
 
+# Purpose: Normalize category path.
 def _normalize_category_path(value):
     """Return a normalized openLCA category path as plain string."""
     if value is None:
@@ -92,6 +102,7 @@ def _get_mass_flow_property(client):
     return _get_entity_by_name(client, o.FlowProperty, "Mass")
 
 
+# Purpose: Get transport work flow property.
 def _get_transport_work_flow_property(client):
     # Common openLCA names for tkm-like properties.
     for prop_name in (
@@ -125,6 +136,7 @@ def _get_transport_work_flow_property(client):
     return None
 
 
+# Purpose: Get existing process by name.
 def _get_existing_process_by_name(client, process_name):
     """Return the existing openLCA process with this name, if any."""
     existing_ref = client.find(o.Process, name=process_name)
@@ -133,6 +145,7 @@ def _get_existing_process_by_name(client, process_name):
     return client.get(o.Process, uid=existing_ref.id)
 
 
+# Purpose: Same ref.
 def _same_ref(ref_a, ref_b):
     if not ref_a or not ref_b:
         return False
@@ -145,6 +158,7 @@ def _same_ref(ref_a, ref_b):
     return bool(name_a and name_b and name_a == name_b)
 
 
+# Purpose: Upsert flow property factor.
 def _upsert_flow_property_factor(flow, flow_property, conversion_factor, is_reference):
     if flow.flow_properties is None:
         flow.flow_properties = []
@@ -168,6 +182,7 @@ def _upsert_flow_property_factor(flow, flow_property, conversion_factor, is_refe
     return True
 
 
+# Purpose: Prune non reference flow properties.
 def _prune_non_reference_flow_properties(flow, keep_props):
     """Keep non-reference factors only for allowed flow properties.
 
@@ -196,6 +211,7 @@ def _prune_non_reference_flow_properties(flow, keep_props):
     return changed
 
 
+# Purpose: Sync output flow definition.
 def _sync_output_flow_definition(client, flow, flow_name, amount_per_lu, output_unit, category_path):
     """Synchronize mutable output-flow attributes when possible.
 
@@ -318,6 +334,7 @@ def _find_or_create_output_flow(client, flow_name, amount_per_lu, output_unit, c
     return created_flow, True
 
 
+# Purpose: Build process provider rows.
 def _build_process_provider_rows(process_name: str, process_uuid: str, output_flow_references: list[str]):
     rows = []
     for flow_ref in output_flow_references:

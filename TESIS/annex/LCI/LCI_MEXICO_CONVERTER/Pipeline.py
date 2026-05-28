@@ -45,6 +45,7 @@ DEPRECATED_INPUT_FIELDS = {
 }
 
 
+# Purpose: Parse subsystem units.
 def _parse_subsystem_units(value):
     parsed = to_float(value)
     if parsed is None or parsed <= 0:
@@ -52,6 +53,7 @@ def _parse_subsystem_units(value):
     return parsed
 
 
+# Purpose: Sync subsystem units file.
 def _sync_subsystem_units_file(base_dir, subsystem_names):
     """Keep subsystem units table in sync with discovered subsystem names.
 
@@ -95,6 +97,7 @@ def _sync_subsystem_units_file(base_dir, subsystem_names):
     return units_map
 
 
+# Purpose: Sync mexico ipe from subsystem units.
 def _sync_mexico_ipe_from_subsystem_units(base_dir, subsystem_units_map):
     """Fill MEXICO_ipe_flows_from_parameters.csv from subsystem units.
 
@@ -200,6 +203,7 @@ def _sync_mexico_ipe_from_subsystem_units(base_dir, subsystem_units_map):
     )
 
 
+# Purpose: Sync mexico ipe output from section total.
 def _sync_mexico_ipe_output_from_section_total(base_dir, section_mass_total):
     """Align the Mexico aggregate output amount with the total section mass."""
     path = base_dir / MEXICO_IPE_FILENAME
@@ -244,6 +248,7 @@ def _sync_mexico_ipe_output_from_section_total(base_dir, section_mass_total):
 
     return updated
 
+# Purpose: Calculate subsystem total mass.
 def calculate_subsystem_total_mass(results_csv_path):
     """
     Read component results CSV and sum all Total_mass_kg values.
@@ -281,6 +286,7 @@ def _sort_key(row):
     return (category_order, group_order, order_idx)
 
 
+# Purpose: Build row metadata.
 def _build_row_metadata(rows):
     """Compute sortable/groupable metadata using user-provided grouping parameters."""
     category_order_map = OrderedDict()
@@ -313,6 +319,7 @@ def _build_row_metadata(rows):
     return metadata
 
 
+# Purpose: Validate required non empty fields.
 def _validate_required_non_empty_fields(raw_rows, required_fields):
     missing_by_field = {field: [] for field in required_fields}
 
@@ -325,6 +332,7 @@ def _validate_required_non_empty_fields(raw_rows, required_fields):
     return {field: rows for field, rows in missing_by_field.items() if rows}
 
 
+# Purpose: Validate input consistency.
 def _validate_input_consistency(raw_rows):
     conflicts = []
 
@@ -348,6 +356,7 @@ def _validate_input_consistency(raw_rows):
     return conflicts
 
 
+# Purpose: Validate disallowed mass units.
 def _validate_disallowed_mass_units(raw_rows):
     """Reject gram-based inputs to keep the system mass context strictly in kg."""
     gram_rows = []
@@ -380,6 +389,7 @@ def _resolve_density(row):
     return None, "MISSING"
 
 
+# Purpose: Resolve quantity inputs.
 def _resolve_quantity_inputs(row):
     """Collect the quantity inputs shared by the mass and flow calculations."""
     number_elements = to_float(row.get("number_elements"))
@@ -392,6 +402,7 @@ def _resolve_quantity_inputs(row):
     }
 
 
+# Purpose: Get quantity context unit.
 def _get_quantity_context_unit(row):
     primary = str(row.get("Ecoinvent_unit") or "").strip().lower()
     fallback = str(row.get("unit") or "").strip().lower()
@@ -403,6 +414,7 @@ def _get_quantity_context_unit(row):
     return primary or fallback
 
 
+# Purpose: Try area quantity m2.
 def _try_area_quantity_m2(row):
     """Compute an area quantity for m2 rows using only L and W in millimetres."""
     l_mm = to_float(row.get("L_mm"))
@@ -412,6 +424,7 @@ def _try_area_quantity_m2(row):
     return (l_mm * w_mm) / 1_000_000.0
 
 
+# Purpose: Build quantity data.
 def _build_quantity_data(row, mass_data):
     """Build Quantity_per_element and Total_quantity for reporting and flow amounts."""
     quantity_inputs = _resolve_quantity_inputs(row)
@@ -456,6 +469,7 @@ def _build_quantity_data(row, mass_data):
     return None
 
 
+# Purpose: Ordered result fieldnames.
 def _ordered_result_fieldnames(row):
     """Return result CSV field order with key visualization columns first."""
     preferred_front = [
@@ -474,6 +488,7 @@ def _ordered_result_fieldnames(row):
     tail = [name for name in fields if name not in front]
     return front + tail
 
+# Purpose: Try geometry mass.
 def _try_geometry_mass(row, metal_extra_g):
     l_mm = to_float(row.get("L_mm"))
     w_mm = to_float(row.get("W_mm"))
@@ -496,6 +511,7 @@ def _try_geometry_mass(row, metal_extra_g):
     return volume_cm3, mass_per_element_kg, density_g_cm3, density_source
 
 
+# Purpose: Compute component mass.
 def compute_component_mass(row):
     """Try to compute mass. Returns None if data is insufficient (not an error
     unless the ecoinvent unit is kg, which is checked separately)."""
@@ -537,10 +553,12 @@ def compute_component_mass(row):
     }
 
 
+# Purpose: Is mass unit.
 def is_mass_unit(unit):
     return str(unit or "").strip().lower() in {"kg"}
 
 
+# Purpose: Grouped flow key.
 def _grouped_flow_key(flow, unit, direction):
     return (
         str(flow or "").strip(),
@@ -549,6 +567,7 @@ def _grouped_flow_key(flow, unit, direction):
     )
 
 
+# Purpose: Normalize ecoinvent fields.
 def _normalize_ecoinvent_fields(row):
     """Normalize malformed EcoInvent columns commonly seen in imported CSVs."""
     normalized = dict(row)
@@ -573,6 +592,7 @@ def _normalize_ecoinvent_fields(row):
     return normalized
 
 
+# Purpose: Split ecoinvent flow components.
 def _split_ecoinvent_flow_components(flow, direction):
     """Split compound EcoInvent flows joined by '+' into independent flow entries.
 
@@ -598,6 +618,7 @@ def _split_ecoinvent_flow_components(flow, direction):
     return components
 
 
+# Purpose: Load existing grouped flow rows.
 def _load_existing_grouped_flow_rows(grouped_flows_csv):
     """Load existing grouped flow rows keyed by (Flow, Unit, Direction).
 
@@ -631,6 +652,7 @@ def _load_existing_grouped_flow_rows(grouped_flows_csv):
         return ["Flow", "UUID", "Unit", "Amount", "Direction"], {}
 
 
+# Purpose: Build section ipe outputs.
 def _build_section_ipe_outputs(base_dir):
     """Create one IPE CSV per section using all available module result files.
 
@@ -890,6 +912,7 @@ def _build_section_ipe_outputs(base_dir):
     return section_file_count, len(diagnostic_rows), section_mass_total
 
 
+# Purpose: Ecoinvent amount.
 def ecoinvent_amount(row, mass_data, quantity_data):
     """Compute the ecoinvent flow amount for a component row.
     - kg unit     → taken from calculated mass (mass_data must not be None)
@@ -1242,6 +1265,7 @@ def run_pipeline(
     return component_results, component_flows, grouped_flows, errors
 
 
+# Purpose: Discover subsystems.
 def _discover_subsystems(base_dir):
     mapping = {}
     for path in sorted(base_dir.glob("*_component_parameters.csv")):
@@ -1250,12 +1274,14 @@ def _discover_subsystems(base_dir):
     return mapping
 
 
+# Purpose: Selection tokens.
 def _selection_tokens(raw):
     if raw is None:
         return []
     return [token for token in str(raw).replace(",", " ").split() if token]
 
 
+# Purpose: Parse selection.
 def _parse_selection(raw, names, subsystems, names_by_lower):
     tokens = _selection_tokens(raw)
     if not tokens:
@@ -1298,6 +1324,7 @@ def _parse_selection(raw, names, subsystems, names_by_lower):
     return selected
 
 
+# Purpose: Choose subsystems.
 def _choose_subsystems(subsystems, requested=None):
     names = list(subsystems.keys())
     if not names:
@@ -1332,6 +1359,7 @@ def _choose_subsystems(subsystems, requested=None):
             raise ValueError("Too many invalid attempts. Operation canceled.")
 
 
+# Purpose: Auto refresh component libraries.
 def _auto_refresh_component_libraries(base_dir, warning_scope_subsystems=None):
     """Refresh deduplicated libraries unless explicitly disabled.
 
@@ -1359,6 +1387,7 @@ def _auto_refresh_component_libraries(base_dir, warning_scope_subsystems=None):
         logging.warning("Library refresh failed: %s", exc)
 
 
+# Purpose: Clear subsystem outputs.
 def _clear_subsystem_outputs(results_csv, component_flows_csv, grouped_flows_csv):
     """Delete stale outputs for a subsystem that failed validation.
 
@@ -1380,6 +1409,7 @@ def _clear_subsystem_outputs(results_csv, component_flows_csv, grouped_flows_csv
             logging.warning("Could not remove stale output '%s': %s", output_path.name, exc)
 
 
+# Purpose: Fill uuid for subsystem ipe.
 def _fill_uuid_for_subsystem_ipe(grouped_flows_csv: Path):
     """Fill UUID columns for one subsystem IPE using global LCI libraries."""
     lci_root = Path(__file__).parent.parent
@@ -1404,6 +1434,7 @@ def _fill_uuid_for_subsystem_ipe(grouped_flows_csv: Path):
     )
 
 
+# Purpose: Fill uuid for section ipe files.
 def _fill_uuid_for_section_ipe_files(base_dir: Path):
     """Fill UUID columns for the generated section-level IPE files."""
     lci_root = Path(__file__).parent.parent
@@ -1430,6 +1461,7 @@ def _fill_uuid_for_section_ipe_files(base_dir: Path):
         )
 
 
+# Purpose: Main.
 def main():
     # UUID filling is delegated to library_sync.run_fill_ipe_columns_from_library
     # after each subsystem file is written.

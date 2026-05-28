@@ -55,6 +55,7 @@ def clean_filename_part(text):
     return cleaned_text
 
 
+# Purpose: Build graph filename.
 def build_graph_filename(prefix, selected_systems, impact=None):
     """Build an exported filename from the graph type, systems, and optional impact."""
     if len(selected_systems) > 6:
@@ -68,6 +69,7 @@ def build_graph_filename(prefix, selected_systems, impact=None):
     return f"{filename}.png"
 
 
+# Purpose: Save graph to files.
 def save_graph_to_files(filename, fig, output_dir=".", export_folder=None):
     """
     Save graph to the export directory when provided; otherwise save locally.
@@ -97,6 +99,7 @@ def save_graph_to_files(filename, fig, output_dir=".", export_folder=None):
     return local_path, export_path
 
 
+# Purpose: Cleanup local graph files.
 def cleanup_local_graph_files(output_dir):
     """Remove locally saved graph PNGs from the results folder."""
     patterns = [
@@ -112,6 +115,7 @@ def cleanup_local_graph_files(output_dir):
                 print(f"  [!] Warning: Could not remove local file {file_path}: {e}")
 
 
+# Purpose: Save tables to excel.
 def save_tables_to_excel(base_filename, tables, export_folder):
     """Save one or more pandas DataFrames to an Excel file with multiple sheets.
 
@@ -135,6 +139,7 @@ def save_tables_to_excel(base_filename, tables, export_folder):
         return None
 
 
+# Purpose: Append tables to excel.
 def append_tables_to_excel(excel_path, tables):
     """Append or create an Excel file with multiple sheets from dict of DataFrames."""
     try:
@@ -158,6 +163,7 @@ def append_tables_to_excel(excel_path, tables):
         return None
 
 
+# Purpose: Discover impact csvs.
 def discover_impact_csvs(results_dir="."):
     """
     Find all impact CSV files in results directory.
@@ -185,6 +191,7 @@ def discover_impact_csvs(results_dir="."):
     return systems
 
 
+# Purpose: Resolve results dir.
 def resolve_results_dir() -> str:
     base_dir = os.path.dirname(os.path.abspath(__file__)) or "."
     deterministic_dir = os.path.join(base_dir, "Deterministic results")
@@ -195,6 +202,7 @@ def resolve_results_dir() -> str:
     return base_dir
 
 
+# Purpose: Load impacts data.
 def load_impacts_data(csv_paths):
     """
     Load and consolidate impact data from multiple CSV files.
@@ -218,6 +226,7 @@ def load_impacts_data(csv_paths):
     return systems_data
 
 
+# Purpose: Get unique impacts.
 def get_unique_impacts(systems_data):
     """
     Get all unique impact categories across all systems.
@@ -232,6 +241,7 @@ def get_unique_impacts(systems_data):
     return sorted(list(impacts))
 
 
+# Purpose: Interactive select impacts.
 def interactive_select_impacts(all_impacts):
     """
     Interactive CLI to select environmental impacts.
@@ -276,6 +286,7 @@ def interactive_select_impacts(all_impacts):
             print("[ERR] Invalid choice. Enter 'a' or 'c'.")
 
 
+# Purpose: Interactive select systems.
 def interactive_select_systems(available_systems):
     """
     Interactive CLI to select product systems to compare.
@@ -320,6 +331,7 @@ def interactive_select_systems(available_systems):
             print("[ERR] Invalid choice. Enter 'a' or 'c'.")
 
 
+# Purpose: Interactive select graph types.
 def interactive_select_graph_types():
     """
     Interactive CLI to select which graph types to generate.

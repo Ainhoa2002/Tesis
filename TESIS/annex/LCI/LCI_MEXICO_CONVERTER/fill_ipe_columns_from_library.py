@@ -14,6 +14,7 @@ import logging
 
 # interactive-safe output helper
 _IS_TTY = sys.stdout.isatty()
+# Purpose: Out.
 def _out(msg: str, level: str = "info") -> None:
     if _IS_TTY:
         print(msg)
@@ -21,12 +22,14 @@ def _out(msg: str, level: str = "info") -> None:
         getattr(logging, level)(msg)
 
 
+# Purpose: Normalize key.
 def normalize_key(val):
     """Remove quotes, all whitespace, and lowercase for robust matching."""
     if pd.isna(val):
         return ''
     return re.sub(r'\s+', '', str(val).replace('"', '').replace("'", '')).lower()
 
+# Purpose: Find target files.
 def find_target_files(root_dir, suffix="_ipe_flows_from_parameters.csv"):
     """Yield all CSV files ending with the given suffix under root_dir."""
     for dirpath, _, filenames in os.walk(root_dir):
@@ -34,6 +37,7 @@ def find_target_files(root_dir, suffix="_ipe_flows_from_parameters.csv"):
             if f.endswith(suffix):
                 yield os.path.join(dirpath, f)
 
+# Purpose: Fill columns from library.
 def fill_columns_from_library(target_file, lib_df, key_col_lib='Ecoinvent_flow', key_col_target='Flow', fill_cols=None):
     # Lista para guardar los flujos que no se pudieron rellenar
     missing_rows = []
@@ -120,6 +124,7 @@ def fill_columns_from_library(target_file, lib_df, key_col_lib='Ecoinvent_flow',
             _out(f"  - {val}", level="warning")
 
 
+# Purpose: Fill uuid provider from library.
 def fill_uuid_provider_from_library(target_file, provider_df, key_col_target='Flow'):
     """Fill UUID_provider in one ipe file using provider library.
 
@@ -191,6 +196,7 @@ def fill_uuid_provider_from_library(target_file, provider_df, key_col_target='Fl
 
     return filled_count
 
+# Purpose: Main.
 def main():
     parser = argparse.ArgumentParser(description='Fill columns in _ipe_flows_from_parameters CSV files using a library.')
     parser.add_argument('--library', default='LCI_CONNECTION/LCI/component_library_ecoinvent_uuid_map.csv',

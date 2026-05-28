@@ -1,4 +1,12 @@
-﻿import os
+﻿"""
+Role: Extract calculated results (impacts, inventories) from raw output files.
+
+Brief: Reads calculation outputs and converts them into CSV/JSON summary
+formats for analysis and visualization. Designed to be downstream of
+calculation routines.
+"""
+
+import os
 import json
 import re
 from pathlib import Path
@@ -75,6 +83,7 @@ NORMALIZATION_NW_SET = OVERRIDE_VARS.get("NORMALIZATION_NW_SET", config.get("nor
 
 
 
+# Purpose: Find entity.
 def find_entity(client, model_type, name):
     ref = client.find(model_type, name=name)
     if ref is None:
@@ -82,12 +91,14 @@ def find_entity(client, model_type, name):
     return ref
 
 
+# Purpose: Filter impacts by names.
 def filter_impacts_by_names(impacts, allowed_names):
     if not allowed_names:
         return impacts
     return [i for i in impacts if i.impact_category.name in allowed_names]
 
 
+# Purpose: Normalize impact categories.
 def normalize_impact_categories(value):
     if value is None:
         return None
@@ -121,6 +132,7 @@ if not method_ref:
 logging.info("Using impact method: %s (ID: %s)", method_ref.name, method_ref.id)
 
 
+# Purpose: Safe filename.
 def safe_filename(value):
     text = str(value)
     text = re.sub(r'[<>:"/\\|?*\x00-\x1f]', "_", text)
@@ -130,6 +142,7 @@ def safe_filename(value):
 
 
 
+# Purpose: Process system.
 def process_system(system_name):
     logging.info("%s", "\n" + ("=" * 60))
     logging.info("Processing: %s | Method: %s", system_name, method_ref.name)
@@ -301,6 +314,7 @@ def process_system(system_name):
 
 
 
+# Purpose: Main.
 def main():
     for sys_name in PRODUCT_SYSTEMS:
         try:

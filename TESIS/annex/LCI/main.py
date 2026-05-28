@@ -1,3 +1,11 @@
+"""
+Role: Top-level orchestration script for LCI processing in the annex.
+
+Brief: Provides high-level CLI and orchestration for running the annex
+workflows (data preparation, result extraction, visualization). It ties
+together lower-level modules and should be used as the main entry point.
+"""
+
 """LCI import workflow orchestrator.
 
 This script coordinates workflow phases only. Creation of openLCA entities lives
@@ -59,6 +67,7 @@ def run_cmd(cmd: list[str], input_text: str | None = None, text: bool = True, ch
         raise
 
 
+# Purpose: Get ipc client.
 def get_ipc_client(host: str = "localhost", port: int = 8080):
     """Return an olca IPC client or None if unavailable."""
     if ipc is None:
@@ -87,6 +96,7 @@ class ImportWorkflowState:
     reports: list[ProcessImportReport] = field(default_factory=list)
 
 
+# Purpose: Parse product system names.
 def _parse_product_system_names(value: str) -> list[str]:
     items = []
     for part in str(value or "").split(","):
@@ -96,6 +106,7 @@ def _parse_product_system_names(value: str) -> list[str]:
     return items
 
 
+# Purpose: Parse selection names.
 def _parse_selection_names(value: str) -> list[str]:
     items = []
     seen = set()
@@ -109,6 +120,7 @@ def _parse_selection_names(value: str) -> list[str]:
     return items
 
 
+# Purpose: Resolve product system targets.
 def _resolve_product_system_targets(state: ImportWorkflowState, selection_mode: str, explicit_names: str) -> list[str]:
     mode = str(selection_mode or "none").strip().lower()
     if mode == "none":
@@ -133,6 +145,7 @@ def _resolve_product_system_targets(state: ImportWorkflowState, selection_mode: 
     return []
 
 
+# Purpose: Matches selected prefixes.
 def _matches_selected_prefixes(file_name: str, selected_prefixes: list[str]) -> bool:
     if not selected_prefixes:
         return True
@@ -181,6 +194,7 @@ def iter_system_csvs(system_folder: Path, selected_prefixes: list[str] | None = 
     return [path for path in csv_files if _matches_selected_prefixes(path.name, selected_prefixes)]
 
 
+# Purpose: Filter system folders.
 def filter_system_folders(system_folders: list[Path], selected_systems: list[str] | None = None) -> list[Path]:
     if not selected_systems:
         return system_folders
@@ -192,6 +206,7 @@ def filter_system_folders(system_folders: list[Path], selected_systems: list[str
     return [folder for folder in system_folders if folder.name.lower() in selected]
 
 
+# Purpose: Run system pipeline if available.
 def run_system_pipeline_if_available(system_folder: Path, dry_run: bool = False):
     """Regenerate generated CSVs for a system before importing them into openLCA."""
     pipeline_script = system_folder / "Pipeline.py"
@@ -216,6 +231,7 @@ def run_system_pipeline_if_available(system_folder: Path, dry_run: bool = False)
     run_cmd(cmd, input_text=run_kwargs.get("input"), text=run_kwargs.get("text", True), check=run_kwargs.get("check", True))
 
 
+# Purpose: Ensure ipc server available.
 def ensure_ipc_server_available(host: str = "localhost", port: int = 8080, timeout_seconds: float = 2.0) -> bool:
     try:
         with socket.create_connection((host, port), timeout=timeout_seconds):
@@ -224,6 +240,7 @@ def ensure_ipc_server_available(host: str = "localhost", port: int = 8080, timeo
         return False
 
 
+# Purpose: Register report.
 def _register_report(state: ImportWorkflowState, report: ProcessImportReport, collect_library_rows: bool) -> bool:
     """Store a file report and update counters; returns True if import was persisted."""
     state.reports.append(report)
@@ -243,6 +260,7 @@ def _register_report(state: ImportWorkflowState, report: ProcessImportReport, co
     return True
 
 
+# Purpose: Phase first fill and import.
 def _phase_first_fill_and_import(
     *,
     base_dir: Path,
@@ -282,6 +300,7 @@ def _phase_first_fill_and_import(
             _register_report(state, report, collect_library_rows=True)
 
 
+# Purpose: Phase second fill and reimport.
 def _phase_second_fill_and_reimport(base_dir: Path, client, state: ImportWorkflowState) -> int:
     """Phase 2: second UUID fill from created libraries and full re-import."""
     for system_folder in state.systems_with_csv:
@@ -302,6 +321,7 @@ def _phase_second_fill_and_reimport(base_dir: Path, client, state: ImportWorkflo
     return second_round_reimports
 
 
+# Purpose: Phase third fill and aggregate reimport.
 def _phase_third_fill_and_aggregate_reimport(base_dir: Path, client, state: ImportWorkflowState) -> None:
     """Phase 3: third targeted fill and aggregate re-import for system/transport."""
     system_folder = base_dir / "LCI_SYSTEM"
@@ -335,6 +355,7 @@ def _phase_third_fill_and_aggregate_reimport(base_dir: Path, client, state: Impo
                 logging.exception("Error importing transport target file: %s", transport_target_file)
 
 
+# Purpose: Print report summary.
 def _print_report_summary(reports: list[ProcessImportReport]) -> None:
     """Print centralized warning/error totals per imported CSV report."""
     # Debug/report summary intentionally omitted for production use.

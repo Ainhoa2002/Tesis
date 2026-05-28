@@ -24,6 +24,7 @@ import logging
 
 # interactive-safe output helper
 _IS_TTY = sys.stdout.isatty()
+# Purpose: Out.
 def _out(msg: str, level: str = "info") -> None:
     if _IS_TTY:
         print(msg)
@@ -31,16 +32,19 @@ def _out(msg: str, level: str = "info") -> None:
         getattr(logging, level)(msg)
 
 
+# Purpose: Ensure csv suffix.
 def _ensure_csv_suffix(name: str) -> str:
     if not name.lower().endswith(".csv"):
         return f"{name}.csv"
     return name
 
 
+# Purpose: Is yes answer.
 def _is_yes_answer(answer):
     return answer.strip().casefold() in {"y", "yes", "s", "si", "sí"}
 
 
+# Purpose: Prompt import mode.
 def _prompt_import_mode():
     _out("\nImport options:")
     _out("1. Excel (BoM parameters)")
@@ -55,6 +59,7 @@ def _prompt_import_mode():
         _out("Invalid option. Enter 1 or 2.", level="warning")
 
 
+# Purpose: Prompt directory.
 def _prompt_directory(prompt_text, default_dir):
     while True:
         dir_input = input(prompt_text).strip()
@@ -64,6 +69,7 @@ def _prompt_directory(prompt_text, default_dir):
         _out(f"Folder not found: {chosen_dir}", level="warning")
 
 
+# Purpose: Prompt output csv path.
 def _prompt_output_csv_path(default_dir, default_name, disallow_path=None):
     while True:
         csv_prompt = f"\nOutput CSV filename (Enter for default: {default_name}): "
@@ -92,6 +98,7 @@ def _prompt_output_csv_path(default_dir, default_name, disallow_path=None):
         return output_csv
 
 
+# Purpose: Resolve source csv.
 def _resolve_source_csv(source_dir, source_name, extra_search_dirs=None):
     source_path = Path(_ensure_csv_suffix(source_name))
     if source_path.is_absolute():
@@ -109,6 +116,7 @@ def _resolve_source_csv(source_dir, source_name, extra_search_dirs=None):
     return None
 
 
+# Purpose: Choose csv from directory.
 def _choose_csv_from_directory(source_dir):
     csv_files = sorted(p for p in source_dir.glob("*.csv") if p.is_file())
     if not csv_files:
@@ -134,6 +142,7 @@ def _choose_csv_from_directory(source_dir):
         _out("Invalid number. Enter one of the listed options.", level="warning")
 
 
+# Purpose: Prompt source csv path.
 def _prompt_source_csv_path(default_dir, extra_search_dirs=None):
     while True:
         dir_prompt = f"Source CSV folder (Enter for default: {default_dir}): "
@@ -160,10 +169,12 @@ def _prompt_source_csv_path(default_dir, extra_search_dirs=None):
             _out("Also checked fallback folders.")
 
 
+# Purpose: Duplicate csv.
 def duplicate_csv(source_csv, output_csv):
     shutil.copyfile(source_csv, output_csv)
 
 
+# Purpose: Select sheet name.
 def _select_sheet_name(workbook, requested_name=None):
     if requested_name:
         if requested_name in workbook.sheetnames:
@@ -179,6 +190,7 @@ def _select_sheet_name(workbook, requested_name=None):
     return workbook.sheetnames[0]
 
 
+# Purpose: Import from excel.
 def import_from_excel(workbook_path, output_csv, sheet_name=None):
     """
     Import component parameters from Excel to CSV.
@@ -238,6 +250,7 @@ def import_from_excel(workbook_path, output_csv, sheet_name=None):
     return len(rows), resolved_sheet_name
 
 
+# Purpose: Main.
 def main():
     mass_calc_dir = Path(__file__).parent.resolve()
     current_git_dir = Path.cwd().resolve()

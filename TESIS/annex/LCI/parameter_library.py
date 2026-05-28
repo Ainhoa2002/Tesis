@@ -1,3 +1,11 @@
+"""
+Role: Manage the component parameter library and metadata mappings.
+
+Brief: Loads and provides access to the parameter library used to map
+components to background systems, UUIDs, and other metadata required for IPE
+and product system generation.
+"""
+
 import argparse
 import json
 import json5
@@ -7,6 +15,7 @@ import logging
 
 # interactive-safe output helper
 _IS_TTY = sys.stdout.isatty()
+# Purpose: Out.
 def _out(msg: str, level: str = "info") -> None:
     if _IS_TTY:
         print(msg)
@@ -20,6 +29,7 @@ PARAMETER_FILE = Path(__file__).resolve().with_name("global_parameters.json")
 _LOCK = RLock()
 
 
+# Purpose: Default document.
 def _default_document() -> Dict[str, Any]:
     return {
         "version": 1,
@@ -31,6 +41,7 @@ def _default_document() -> Dict[str, Any]:
     }
 
 
+# Purpose: Ensure file exists.
 def _ensure_file_exists() -> None:
     if PARAMETER_FILE.exists():
         return
@@ -39,6 +50,7 @@ def _ensure_file_exists() -> None:
         f.write("\n")
 
 
+# Purpose: Load document.
 def load_document() -> Dict[str, Any]:
     with _LOCK:
         _ensure_file_exists()
@@ -52,6 +64,7 @@ def load_document() -> Dict[str, Any]:
         return data
 
 
+# Purpose: Save document.
 def save_document(doc: Dict[str, Any]) -> None:
     payload = {
         "version": int(doc.get("version", 1)),
@@ -64,6 +77,7 @@ def save_document(doc: Dict[str, Any]) -> None:
             f.write("\n")
 
 
+# Purpose: Get param.
 def get_param(name: str, default: Any = None, required: bool = False) -> Any:
     params = load_document().get("parameters", {})
     if name in params:
@@ -73,12 +87,14 @@ def get_param(name: str, default: Any = None, required: bool = False) -> Any:
     return default
 
 
+# Purpose: Set param.
 def set_param(name: str, value: Any) -> None:
     doc = load_document()
     doc["parameters"][name] = value
     save_document(doc)
 
 
+# Purpose: Delete param.
 def delete_param(name: str) -> bool:
     doc = load_document()
     if name not in doc["parameters"]:
@@ -88,10 +104,12 @@ def delete_param(name: str) -> bool:
     return True
 
 
+# Purpose: List params.
 def list_params() -> Dict[str, Any]:
     return dict(load_document().get("parameters", {}))
 
 
+# Purpose: Set execution scope.
 def set_execution_scope(run_scope: str = "all", target_system: str = "") -> None:
     scope = (run_scope or "all").strip().lower()
     if scope not in {"all", "single"}:
@@ -104,6 +122,7 @@ def set_execution_scope(run_scope: str = "all", target_system: str = "") -> None
     save_document(doc)
 
 
+# Purpose: Get execution scope.
 def get_execution_scope() -> Dict[str, str]:
     execution = load_document().get("execution", {})
     return {
@@ -112,6 +131,7 @@ def get_execution_scope() -> Dict[str, str]:
     }
 
 
+# Purpose: Parse value.
 def _parse_value(raw: str) -> Any:
     text = str(raw)
     lowered = text.strip().lower()
@@ -130,6 +150,7 @@ def _parse_value(raw: str) -> Any:
         return text
 
 
+# Purpose: Build parser.
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="LCI global parameter library")
     sub = parser.add_subparsers(dest="command", required=True)
@@ -155,6 +176,7 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+# Purpose: Run cli.
 def _run_cli() -> int:
     parser = _build_parser()
     args = parser.parse_args()

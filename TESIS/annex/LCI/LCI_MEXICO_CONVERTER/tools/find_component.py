@@ -37,6 +37,7 @@ import sys
 
 # interactive-safe output helper
 _IS_TTY = sys.stdout.isatty()
+# Purpose: Out.
 def _out(msg: str, level: str = "info") -> None:
     if _IS_TTY:
         print(msg)
@@ -44,10 +45,12 @@ def _out(msg: str, level: str = "info") -> None:
         getattr(logging, level)(msg)
 
 
+# Purpose: Clean.
 def _clean(value: object) -> str:
     return str(value or "").strip()
 
 
+# Purpose: Prompt int choice.
 def _prompt_int_choice(prompt: str, option_count: int, *, allow_cancel: bool = False) -> int | None:
     while True:
         raw = input(prompt).strip()
@@ -62,6 +65,7 @@ def _prompt_int_choice(prompt: str, option_count: int, *, allow_cancel: bool = F
         _out("Invalid selection.", level="warning")
 
 
+# Purpose: Discover subsystem files.
 def _discover_subsystem_files() -> Dict[str, Path]:
     return {
         path.name[: -len("_component_parameters.csv")]: path
@@ -69,12 +73,14 @@ def _discover_subsystem_files() -> Dict[str, Path]:
     }
 
 
+# Purpose: Read fieldnames.
 def _read_fieldnames(path: Path) -> List[str]:
     with open(path, newline="", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
         return [field for field in list(reader.fieldnames or []) if field]
 
 
+# Purpose: Parse scope.
 def _parse_scope(scope_raw: str, subsystem_files: Dict[str, Path]) -> Optional[Set[str]]:
     """Return selected subsystem names, or None for all."""
     if _clean(scope_raw) == "":
@@ -104,6 +110,7 @@ def _parse_scope(scope_raw: str, subsystem_files: Dict[str, Path]) -> Optional[S
     return selected
 
 
+# Purpose: Find part by scan.
 def _find_part_by_scan(
     part_number: str,
     subsystem_files: Dict[str, Path],
@@ -126,6 +133,7 @@ def _find_part_by_scan(
     return results
 
 
+# Purpose: Find part in storage library.
 def _find_part_in_storage_library(
     part_number: str,
     subsystem_files: Dict[str, Path],
@@ -177,6 +185,7 @@ def _find_part_in_storage_library(
         return None
 
 
+# Purpose: Find part.
 def find_part(part_number: str, scope_raw: str) -> Tuple[List[Tuple[str, List[str], Dict[str, str]]], str]:
     """Return matching rows and search mode used (library or scan)."""
     subsystem_files = _discover_subsystem_files()
@@ -192,6 +201,7 @@ def find_part(part_number: str, scope_raw: str) -> Tuple[List[Tuple[str, List[st
     return _find_part_by_scan(part_number, subsystem_files, selected_subsystems), "scan"
 
 
+# Purpose: Row to csv line.
 def _row_to_csv_line(fieldnames: List[str], row: Dict[str, str]) -> str:
     buf = io.StringIO()
     writer = csv.DictWriter(buf, fieldnames=fieldnames, extrasaction="ignore", lineterminator="")
@@ -199,6 +209,7 @@ def _row_to_csv_line(fieldnames: List[str], row: Dict[str, str]) -> str:
     return buf.getvalue()
 
 
+# Purpose: Collect display fieldnames.
 def _collect_display_fieldnames(results: List[Tuple[str, List[str], Dict[str, str]]]) -> List[str]:
     """Return a unified ordered list of columns across all matching rows."""
     ordered: List[str] = ["Subsystem"]
@@ -211,6 +222,7 @@ def _collect_display_fieldnames(results: List[Tuple[str, List[str], Dict[str, st
     return ordered
 
 
+# Purpose: Display results.
 def _display_results(results: List[Tuple[str, List[str], Dict[str, str]]], mode: str) -> None:
     _out(f"\nFound {len(results)} row(s) using {mode} search.\n")
     display_fieldnames = _collect_display_fieldnames(results)
@@ -228,6 +240,7 @@ def _display_results(results: List[Tuple[str, List[str], Dict[str, str]]], mode:
         _out(_row_to_csv_line(display_fieldnames, display_row))
 
 
+# Purpose: Rows match by fieldnames.
 def _rows_match_by_fieldnames(
     candidate_row: Dict[str, str],
     reference_row: Dict[str, str],
@@ -239,11 +252,13 @@ def _rows_match_by_fieldnames(
     return True
 
 
+# Purpose: Sanitize row for write.
 def _sanitize_row_for_write(row: Dict[str, str], fieldnames: List[str]) -> Dict[str, str]:
     """Return a row containing only known columns, with cleaned string values."""
     return {field: _clean(row.get(field, "")) for field in fieldnames}
 
 
+# Purpose: Update csv row.
 def _update_csv_row(
     subsystem: str,
     fieldnames: List[str],
@@ -288,6 +303,7 @@ def _update_csv_row(
     return True
 
 
+# Purpose: Update storage library row.
 def _update_storage_library_row(
     subsystem: str,
     fieldnames: List[str],
@@ -339,6 +355,7 @@ def _update_storage_library_row(
         return 0
 
 
+# Purpose: Bulk update all rows.
 def _bulk_update_all_rows(results: List[Tuple[str, List[str], Dict[str, str]]]) -> None:
     """Update one or more fields in all found rows."""
     _out("\n" + "=" * 80)
@@ -418,6 +435,7 @@ def _bulk_update_all_rows(results: List[Tuple[str, List[str], Dict[str, str]]]) 
             _out("Master library not updated. Source files only.")
 
 
+# Purpose: Interactive edit.
 def _interactive_edit(results: List[Tuple[str, List[str], Dict[str, str]]]) -> None:
     """Allow user to edit fields in the found components."""
     display_fieldnames = _collect_display_fieldnames(results)
@@ -506,6 +524,7 @@ def _interactive_edit(results: List[Tuple[str, List[str], Dict[str, str]]]) -> N
             break
 
 
+# Purpose: Main.
 def main() -> None:
     if len(sys.argv) > 1:
         part_number = _clean(sys.argv[1])

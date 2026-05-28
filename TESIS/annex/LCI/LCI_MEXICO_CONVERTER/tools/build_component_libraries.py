@@ -34,6 +34,7 @@ import logging
 
 # interactive-safe output helper
 _IS_TTY = sys.stdout.isatty()
+# Purpose: Out.
 def _out(msg: str, level: str = "info") -> None:
     if _IS_TTY:
         print(msg)
@@ -219,10 +220,12 @@ ROW_MATCH_FIELDS = [
 ]
 
 
+# Purpose: Clean.
 def _clean(value: str | None) -> str:
     return str(value or "").strip()
 
 
+# Purpose: Normalize direction.
 def _normalize_direction(value: str | None, database: str | None = None) -> str:
     text = _clean(value)
     lowered = text.casefold()
@@ -238,6 +241,7 @@ def _normalize_direction(value: str | None, database: str | None = None) -> str:
     return text
 
 
+# Purpose: Normalize ecoinvent fields.
 def _normalize_ecoinvent_fields(row: Dict[str, str]) -> Dict[str, str]:
     """Normalize common EcoInvent field inconsistencies in CSV rows.
 
@@ -272,6 +276,7 @@ def _normalize_ecoinvent_fields(row: Dict[str, str]) -> Dict[str, str]:
     return normalized
 
 
+# Purpose: Discover parameter subsystems.
 def _discover_parameter_subsystems(base_dir: Path) -> Set[str]:
     return {
         path.name[: -len("_component_parameters.csv")]
@@ -279,6 +284,7 @@ def _discover_parameter_subsystems(base_dir: Path) -> Set[str]:
     }
 
 
+# Purpose: Normalize quantity key.
 def _normalize_quantity_key(value: str | None) -> str:
     """Normalize numeric strings so equivalent quantities map to the same key."""
     text = _clean(value)
@@ -291,6 +297,7 @@ def _normalize_quantity_key(value: str | None) -> str:
         return text.casefold()
 
 
+# Purpose: Normalized part mass value.
 def _normalized_part_mass_value(field: str, value: str | None) -> str:
     if field in {"Quantity_per_element", "L_mm", "W_mm", "H_mm", "Volume_cm3_excel"}:
         return _normalize_quantity_key(value)
@@ -299,24 +306,29 @@ def _normalized_part_mass_value(field: str, value: str | None) -> str:
     return _clean(value).casefold()
 
 
+# Purpose: Is m2 unit.
 def _is_m2_unit(value: str | None) -> bool:
     return _clean(value).lower() == "m2"
 
 
+# Purpose: Has any dimensions.
 def _has_any_dimensions(row: Dict[str, str]) -> bool:
     return any(_clean(row.get(field)) != "" for field in PART_MASS_DIMENSION_FIELDS)
 
 
+# Purpose: Has complete dimensions.
 def _has_complete_dimensions(row: Dict[str, str]) -> bool:
     return all(_clean(row.get(field)) != "" for field in PART_MASS_DIMENSION_FIELDS)
 
 
+# Purpose: Component reference.
 def _component_reference(row: Dict[str, str]) -> Tuple[str, str]:
     designators = _clean(row.get("Designators")) or "no designator"
     part_number = _clean(row.get("Part_Number")) or "no part number"
     return designators, part_number
 
 
+# Purpose: Missing mass reason.
 def _missing_mass_reason(row: Dict[str, str]) -> str | None:
     unit = _clean(row.get("unit"))
     if not _is_mass_unit(unit):
@@ -351,6 +363,7 @@ def _missing_mass_reason(row: Dict[str, str]) -> str | None:
     return None
 
 
+# Purpose: Part mass warning fields.
 def _part_mass_warning_fields(first_row: Dict[str, str], incoming_row: Dict[str, str]) -> Set[str]:
     differing: Set[str] = set()
 
@@ -392,10 +405,12 @@ def _part_mass_warning_fields(first_row: Dict[str, str], incoming_row: Dict[str,
     return differing
 
 
+# Purpose: Row match key.
 def _row_match_key(row: Dict[str, str]) -> Tuple[str, ...]:
     return tuple(_clean(row.get(field)).casefold() for field in ROW_MATCH_FIELDS)
 
 
+# Purpose: Normalized mass value.
 def _normalized_mass_value(field: str, value: str | None) -> str:
     text = _clean(value)
     if field in CASING_NUMERIC_FIELDS:
@@ -405,14 +420,17 @@ def _normalized_mass_value(field: str, value: str | None) -> str:
     return text.casefold()
 
 
+# Purpose: Mass field matches.
 def _mass_field_matches(field: str, row_a: Dict[str, str], row_b: Dict[str, str]) -> bool:
     return _normalized_mass_value(field, row_a.get(field)) == _normalized_mass_value(field, row_b.get(field))
 
 
+# Purpose: Casing mass signature.
 def _casing_mass_signature(row: Dict[str, str]) -> Tuple[str, ...]:
     return tuple(_normalized_mass_value(field, row.get(field)) for field in CASING_MASS_COMPARISON_FIELDS)
 
 
+# Purpose: Load result quantity map.
 def _load_result_quantity_map(
     base_dir: Path,
     subsystem: str,
@@ -451,6 +469,7 @@ def _load_result_quantity_map(
     return quantity_map
 
 
+# Purpose: Load parameter rows.
 def _load_parameter_rows(base_dir: Path) -> List[Tuple[str, Dict[str, str]]]:
     rows: List[Tuple[str, Dict[str, str]]] = []
     for path in sorted(base_dir.glob("*_component_parameters.csv")):
@@ -467,10 +486,12 @@ def _load_parameter_rows(base_dir: Path) -> List[Tuple[str, Dict[str, str]]]:
     return rows
 
 
+# Purpose: Row subset.
 def _row_subset(row: Dict[str, str], fields: List[str]) -> Dict[str, str]:
     return {field: _clean(row.get(field)) for field in fields}
 
 
+# Purpose: Merge unique.
 def _merge_unique(
     target: Dict[str, str],
     incoming: Dict[str, str],
@@ -500,6 +521,7 @@ def _merge_unique(
     return conflict_count
 
 
+# Purpose: Print conflict summary.
 def _print_conflict_summary(
     casing_conflicts: Dict[Tuple[str, str, str], Dict[str, Set[str]]],
     casing_variant_conflicts: Dict[str, Tuple[str, Set[str], Set[str]]],
@@ -578,6 +600,7 @@ def _print_conflict_summary(
         )
 
 
+# Purpose: Write csv.
 def _write_csv(path: Path, fieldnames: List[str], rows: List[Dict[str, str]]) -> None:
     with open(path, "w", newline="", encoding="utf-8") as f:
         writer = csv.DictWriter(f, fieldnames=fieldnames)
@@ -585,6 +608,7 @@ def _write_csv(path: Path, fieldnames: List[str], rows: List[Dict[str, str]]) ->
         writer.writerows(rows)
 
 
+# Purpose: Build storage library.
 def _build_storage_library(
     base_dir: Path,
     input_suffix: str,
@@ -634,6 +658,7 @@ def _build_storage_library(
     return len(output_rows)
 
 
+# Purpose: Build ecoinvent totals library.
 def build_ecoinvent_totals_library(base_dir: Path) -> int:
     # Load mapping
     map_path = Path(__file__).parent.parent / 'component_library_ecoinvent_uuid_map.csv'
@@ -712,6 +737,7 @@ def build_ecoinvent_totals_library(base_dir: Path) -> int:
     return len(rows)
 
 
+# Purpose: Build system subsystem library.
 def build_system_subsystem_library(
     base_dir: Path,
     raw_rows: List[Tuple[str, Dict[str, str]]],
@@ -768,6 +794,7 @@ def build_system_subsystem_library(
     return len(rows)
 
 
+# Purpose: Build full storage libraries.
 def build_full_storage_libraries(base_dir: Path) -> Tuple[int, int]:
     parameters_storage_count = _build_storage_library(
         base_dir,
@@ -783,6 +810,7 @@ def build_full_storage_libraries(base_dir: Path) -> Tuple[int, int]:
     return parameters_storage_count, results_storage_count
 
 
+# Purpose: Load library rows.
 def _load_library_rows(path: Path) -> List[Dict[str, str]]:
     if not path.exists():
         return []
@@ -790,18 +818,22 @@ def _load_library_rows(path: Path) -> List[Dict[str, str]]:
         return [dict(row) for row in csv.DictReader(f)]
 
 
+# Purpose: Normalize part number key.
 def _normalize_part_number_key(part_number: str) -> str:
     return _clean(part_number).casefold()
 
 
+# Purpose: To yes no.
 def _to_yes_no(value: str | None) -> bool:
     return _clean(value).upper() in {"YES", "SI", "S", "Y", "M", "TRUE", "1", "T"}
 
 
+# Purpose: Is mass unit.
 def _is_mass_unit(value: str | None) -> bool:
     return _clean(value).lower() == "kg"
 
 
+# Purpose: Resolved sync value.
 def _resolved_sync_value(field: str, source_row: Dict[str, str]) -> str:
     if field != "Quantity_per_element":
         return _clean(source_row.get(field))
@@ -819,6 +851,7 @@ def _resolved_sync_value(field: str, source_row: Dict[str, str]) -> str:
     return _clean(source_row.get(field))
 
 
+# Purpose: Apply row updates.
 def _apply_row_updates(
     target_row: Dict[str, str],
     source_row: Dict[str, str],
@@ -845,6 +878,7 @@ def _apply_row_updates(
     return changed
 
 
+# Purpose: Sync parameter files from libraries.
 def sync_parameter_files_from_libraries(base_dir: Path) -> Tuple[int, int, int]:
     """Apply library values to all *_component_parameters.csv files.
 
@@ -909,6 +943,7 @@ def sync_parameter_files_from_libraries(base_dir: Path) -> Tuple[int, int, int]:
     return files_changed, rows_changed, skipped_ambiguous
 
 
+# Purpose: Build libraries.
 def build_libraries(
     base_dir: Path,
     warning_scope_subsystems: Set[str] | None = None,
@@ -1124,10 +1159,12 @@ def build_libraries(
     return result_tuple
 
 
+# Purpose: Format float.
 def _format_float(value: float) -> str:
     return format(value, ".12g")
 
 
+# Purpose: Main.
 def main() -> None:
     if len(sys.argv) > 1 and sys.argv[1].strip().lower() in {"--sync-parameters", "sync"}:
         files_changed, rows_changed, skipped_ambiguous = sync_parameter_files_from_libraries(BASE_DIR)

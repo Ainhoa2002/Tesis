@@ -87,6 +87,7 @@ def load_sankey_json(filepath):
         return json.load(f)
 
 
+# Purpose: Create sankey figure.
 def create_sankey_figure(sankey_data, title=None, max_depth=None):
     """
     Create interactive Plotly Sankey diagram from JSON data.
@@ -324,6 +325,7 @@ def create_sankey_figure(sankey_data, title=None, max_depth=None):
     return fig
 
 
+# Purpose: Visualize all sankeyfiles.
 def visualize_all_sankeyfiles(results_dir=None, output_dir=None):
     """
     Find all Sankey JSON files and create HTML visualizations.

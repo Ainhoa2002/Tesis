@@ -1,3 +1,10 @@
+"""
+Role: Generate example output files and minimal result samples for testing.
+
+Brief: Produces small, synthetic output files (CSV/JSON) to exercise the
+extraction and visualization pipelines during testing or documentation.
+"""
+
 #!/usr/bin/env python3
 """Generate example CSV outputs for the annex (non-destructive).
 
@@ -52,6 +59,7 @@ FIXTURE_ROWS = [
 ]
 
 
+# Purpose: Write csv.
 def _write_csv(path: Path, fieldnames, rows):
     with open(path, "w", newline="", encoding="utf-8") as fh:
         writer = csv.DictWriter(fh, fieldnames=fieldnames)
@@ -59,6 +67,7 @@ def _write_csv(path: Path, fieldnames, rows):
         writer.writerows(rows)
 
 
+# Purpose: Main.
 def main():
     input_csv = OUT_DIR / "example_component_parameters.csv"
     results_csv = OUT_DIR / "example_component_results.csv"

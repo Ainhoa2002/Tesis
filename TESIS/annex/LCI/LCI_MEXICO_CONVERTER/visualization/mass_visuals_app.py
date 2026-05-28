@@ -1,4 +1,11 @@
 """
+Role: Small interactive app to visualize mass distributions for Mexico converter.
+
+Brief: Provides a simple GUI or interactive plot to inspect component mass
+breakdowns; intended for quick exploratory use, not production reports.
+"""
+
+"""
 Working with Streamlit to visualize mass results across subsystems and components.
 This app:
 1. Reads all *_component_mass_results.csv files
@@ -16,15 +23,18 @@ BASE_DIR = Path(__file__).resolve().parent
 RESULT_SUFFIX = "_component_results.csv"
 
 
+# Purpose: To num.
 def _to_num(series: pd.Series) -> pd.Series:
     return pd.to_numeric(series.astype(str).str.replace(",", ".", regex=False), errors="coerce")
 
 
+# Purpose: Clean category.
 def _clean_category(value: object) -> str:
     text = str(value).strip().upper()
     return str(value).strip() if text not in {"", "AUTO", "UNKNOWN", "NONE", "NAN"} else "Others"
 
 
+# Purpose: Build summary table.
 def _build_summary_table(view: pd.DataFrame, group_col: str) -> pd.DataFrame:
     table = view.groupby(group_col, as_index=False)["mass_kg"].sum().sort_values("mass_kg", ascending=False)
     total_mass = table["mass_kg"].sum()
@@ -36,6 +46,7 @@ def _build_summary_table(view: pd.DataFrame, group_col: str) -> pd.DataFrame:
 
 
 @st.cache_data(show_spinner=False)
+# Purpose: Load all results.
 def load_all_results(base_dir: Path) -> pd.DataFrame:
     files = sorted(base_dir.glob(f"*{RESULT_SUFFIX}"))
     frames = []
@@ -76,6 +87,7 @@ def load_all_results(base_dir: Path) -> pd.DataFrame:
     return df
 
 
+# Purpose: Main.
 def main() -> None:
     st.set_page_config(page_title="Mass visuals", layout="wide")
     st.title("Mass visuals (all subsystems, unified Total_mass_kg)")

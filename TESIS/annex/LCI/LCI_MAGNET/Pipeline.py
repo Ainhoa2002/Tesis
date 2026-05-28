@@ -14,6 +14,7 @@ import logging
 
 # interactive-safe output helper
 _IS_TTY = sys.stdout.isatty()
+# Purpose: Out.
 def _out(msg: str, level: str = "info") -> None:
     if _IS_TTY:
         print(msg)
@@ -23,10 +24,12 @@ def _out(msg: str, level: str = "info") -> None:
 IPE_FIELDS = ["Flow", "UUID", "Unit", "Amount", "Direction", "UUID_provider", "Transport_phase_codes"]
 
 
+# Purpose: Normalize text.
 def normalize_text(value):
     return str(value or "").strip()
 
 
+# Purpose: To float.
 def to_float(value, default=0.0):
     try:
         text = str(value or "").strip().replace(",", ".")
@@ -39,6 +42,7 @@ def to_float(value, default=0.0):
         return default
 
 
+# Purpose: Read parameters.
 def read_parameters(parameters_path):
     if not parameters_path.exists():
         raise FileNotFoundError(f"Parameters file not found: {parameters_path}")
@@ -51,6 +55,7 @@ def read_parameters(parameters_path):
     return fieldnames, rows
 
 
+# Purpose: Read existing ipe rows.
 def read_existing_ipe_rows(ipe_path):
     if not ipe_path.exists():
         return []
@@ -60,10 +65,12 @@ def read_existing_ipe_rows(ipe_path):
         return list(reader)
 
 
+# Purpose: Row key.
 def _row_key(flow, unit, direction):
     return (normalize_text(flow), normalize_text(unit) or "kg", normalize_direction(direction))
 
 
+# Purpose: Split flows.
 def split_flows(flow_value):
     text = normalize_text(flow_value)
     if text == "":
@@ -71,6 +78,7 @@ def split_flows(flow_value):
     return [part.strip() for part in text.split("+") if part.strip()]
 
 
+# Purpose: Normalize direction.
 def normalize_direction(value):
     text = normalize_text(value).lower()
     if text.startswith("input") or text.startswith("inpu"):
@@ -80,6 +88,7 @@ def normalize_direction(value):
     return "Input" if text == "" else normalize_text(value)
 
 
+# Purpose: Build ipe rows.
 def build_ipe_rows(parameter_rows):
     aggregated = {}
     existing_rows_by_key = {}
@@ -128,6 +137,7 @@ def build_ipe_rows(parameter_rows):
     return ipe_rows, skipped, total_mass_kg, component_count
 
 
+# Purpose: Preserve existing output rows.
 def preserve_existing_output_rows(existing_rows):
     preserved = []
     for row in existing_rows:
@@ -149,6 +159,7 @@ def preserve_existing_output_rows(existing_rows):
     return preserved
 
 
+# Purpose: Write csv.
 def write_csv(path, fieldnames, rows):
     with open(path, "w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames, extrasaction="ignore")
@@ -157,6 +168,7 @@ def write_csv(path, fieldnames, rows):
 
 
 
+# Purpose: Run fill.
 def run_fill(ipe_path):
     lci_root = Path(__file__).resolve().parent.parent
     if str(lci_root) not in sys.path:
@@ -172,6 +184,7 @@ def run_fill(ipe_path):
 
 
 
+# Purpose: Main.
 def main():
     parser = argparse.ArgumentParser(description="Minimal pipeline for LCI_MAGNET.")
     parser.add_argument(

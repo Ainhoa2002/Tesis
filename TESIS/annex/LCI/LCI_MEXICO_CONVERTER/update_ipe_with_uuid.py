@@ -12,6 +12,7 @@ import logging
 
 # interactive-safe output helper
 _IS_TTY = sys.stdout.isatty()
+# Purpose: Out.
 def _out(msg: str, level: str = "info") -> None:
     if _IS_TTY:
         print(msg)
@@ -19,6 +20,7 @@ def _out(msg: str, level: str = "info") -> None:
         getattr(logging, level)(msg)
 
 
+# Purpose: Load uuid map.
 def load_uuid_map(map_path):
     uuid_map = {}
     with open(map_path, newline='', encoding='utf-8-sig') as f:
@@ -31,6 +33,7 @@ def load_uuid_map(map_path):
     return uuid_map
 
 
+# Purpose: Update ipe files.
 def update_ipe_files(base_dir, uuid_map):
     for path in Path(base_dir).glob('*_ipe_flows_from_parameters.csv'):
         with open(path, newline='', encoding='utf-8-sig') as f:
@@ -75,6 +78,7 @@ def update_ipe_files(base_dir, uuid_map):
                 _out(f"Updated: {path.name}")
 
 
+# Purpose: Main.
 def main():
     base_dir = Path(__file__).parent
     map_path = Path(__file__).parent.parent / 'component_library_ecoinvent_uuid_map.csv'

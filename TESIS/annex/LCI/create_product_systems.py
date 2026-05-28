@@ -1,3 +1,10 @@
+"""
+Role: Create product systems for LCA calculations from component definitions.
+
+Brief: Builds the product system structures that will be used in LCA runs.
+This includes assembling processes, flows and connections between components.
+"""
+
 import argparse
 import socket
 from pathlib import Path
@@ -6,6 +13,7 @@ import sys
 
 # interactive-safe output helper
 _IS_TTY = sys.stdout.isatty()
+# Purpose: Out.
 def _out(msg: str, level: str = "info") -> None:
     if _IS_TTY:
         print(msg)
@@ -25,6 +33,7 @@ BASE_DIR = Path(__file__).resolve().parent
 MAX_SELECTION_ATTEMPTS = 3
 
 
+# Purpose: Iter system folders.
 def iter_system_folders(base_dir: Path):
     for child in sorted(base_dir.iterdir()):
         if not child.is_dir():
@@ -34,12 +43,14 @@ def iter_system_folders(base_dir: Path):
         yield child
 
 
+# Purpose: Resolve category name.
 def resolve_category_name(folder_name: str) -> str:
     if folder_name.startswith("LCI_") and len(folder_name) > 4:
         return folder_name[4:]
     return folder_name
 
 
+# Purpose: Ensure ipc server available.
 def ensure_ipc_server_available(host: str = "localhost", port: int = 8080, timeout_seconds: float = 2.0) -> bool:
     try:
         with socket.create_connection((host, port), timeout=timeout_seconds):
@@ -48,10 +59,12 @@ def ensure_ipc_server_available(host: str = "localhost", port: int = 8080, timeo
         return False
 
 
+# Purpose: Normalize key.
 def _normalize_key(value: str) -> str:
     return "".join(str(value or "").strip().lower().split())
 
 
+# Purpose: Discover default categories.
 def discover_default_categories() -> set[str]:
     return {
         resolve_category_name(folder.name)
@@ -59,6 +72,7 @@ def discover_default_categories() -> set[str]:
     }
 
 
+# Purpose: Collect candidate processes.
 def collect_candidate_processes(client: ipc.Client, allowed_categories: set[str]) -> list[o.Ref]:
     refs = list(client.get_descriptors(o.Process) or [])
     selected = []
@@ -76,6 +90,7 @@ def collect_candidate_processes(client: ipc.Client, allowed_categories: set[str]
     return selected
 
 
+# Purpose: Parse selection.
 def _parse_selection(raw: str, candidates: list[o.Ref]) -> list[o.Ref]:
     text = str(raw or "").strip()
     if text == "":
@@ -109,6 +124,7 @@ def _parse_selection(raw: str, candidates: list[o.Ref]) -> list[o.Ref]:
     return picked
 
 
+# Purpose: Choose processes interactive.
 def choose_processes_interactive(candidates: list[o.Ref]) -> list[o.Ref]:
     if not candidates:
         return []
@@ -131,6 +147,7 @@ def choose_processes_interactive(candidates: list[o.Ref]) -> list[o.Ref]:
     raise ValueError("Too many invalid attempts. Operation canceled.")
 
 
+# Purpose: Find unlinked input flow names.
 def find_unlinked_input_flow_names(process: o.Process) -> list[str]:
     names = []
     seen = set()
@@ -159,6 +176,7 @@ def find_unlinked_input_flow_names(process: o.Process) -> list[str]:
     return names
 
 
+# Purpose: Ask overwrite.
 def ask_overwrite(existing_ps: o.Ref) -> bool:
     prompt = (
         f"Product system '{existing_ps.name}' already exists (ID: {existing_ps.id}). "
@@ -168,6 +186,7 @@ def ask_overwrite(existing_ps: o.Ref) -> bool:
     return raw in {"y", "yes", "s", "si"}
 
 
+# Purpose: Main.
 def main():
     parser = argparse.ArgumentParser(
         description="Create openLCA product systems from imported LCI processes with selectable linking mode."

@@ -1,3 +1,11 @@
+"""
+Role: Synchronize component parameter library and mappings.
+
+Brief: Provides functions to update the local parameter library CSVs,
+reconcile component UUID mappings, and perform synchronization tasks used by
+the annex workflows.
+"""
+
 """Library synchronization helpers for UUID/provider mapping.
 
 This module centralizes:
@@ -26,6 +34,7 @@ class CreatedLibrariesUpdateStats:
     process_skipped_existing: int
 
 
+# Purpose: Iter target files.
 def _iter_target_files(root_dir: Path, suffix: str = "_ipe_flows_from_parameters.csv"):
     for dirpath, _, filenames in os.walk(root_dir):
         for name in filenames:
@@ -33,6 +42,7 @@ def _iter_target_files(root_dir: Path, suffix: str = "_ipe_flows_from_parameters
                 yield Path(dirpath) / name
 
 
+# Purpose: Build mapping.
 def _build_mapping(rows: list[dict[str, str]], key_candidates: list[str], value_col: str, mapping_name: str):
     key_col = None
     for candidate in key_candidates:
@@ -78,6 +88,7 @@ def _build_mapping(rows: list[dict[str, str]], key_candidates: list[str], value_
     return mapping
 
 
+# Purpose: Load uuid map.
 def _load_uuid_map(path: Path):
     _, rows = read_csv_rows(path)
     if not rows:
@@ -90,6 +101,7 @@ def _load_uuid_map(path: Path):
     )
 
 
+# Purpose: Load provider map.
 def _load_provider_map(path: Path):
     _, rows = read_csv_rows(path)
     if not rows:
@@ -128,6 +140,7 @@ def _load_provider_map(path: Path):
     return mapping
 
 
+# Purpose: Collect missing provider flows.
 def _collect_missing_provider_flows(targets: list[Path], provider_map: dict[str, str]):
     missing = []
     seen = set()
@@ -157,6 +170,7 @@ def _collect_missing_provider_flows(targets: list[Path], provider_map: dict[str,
     return missing
 
 
+# Purpose: Preferred process score.
 def _preferred_process_score(name_lower: str, flow_lower: str) -> int:
     exact_market = f"market for {flow_lower} | {flow_lower} | apos, u"
     exact_pipe = f"| {flow_lower} | apos, u"
@@ -171,6 +185,7 @@ def _preferred_process_score(name_lower: str, flow_lower: str) -> int:
     return 99
 
 
+# Purpose: Resolve missing providers from openlca.
 def _resolve_missing_providers_from_openlca(flows: list[str]):
     if not flows:
         return []
@@ -218,6 +233,7 @@ def _resolve_missing_providers_from_openlca(flows: list[str]):
     return resolved
 
 
+# Purpose: Append provider mappings.
 def _append_provider_mappings(provider_library_path: Path, new_rows: list[dict[str, str]], dry_run: bool = False):
     if not new_rows:
         return 0
@@ -257,6 +273,7 @@ def _append_provider_mappings(provider_library_path: Path, new_rows: list[dict[s
     return appended
 
 
+# Purpose: Fill single file.
 def _fill_single_file(
     path: Path,
     uuid_map: dict[str, str],
@@ -351,6 +368,7 @@ def _fill_single_file(
     }
 
 
+# Purpose: Run fill ipe columns from library.
 def run_fill_ipe_columns_from_library(
     *,
     library_path: Path,
@@ -450,6 +468,7 @@ def run_fill_ipe_columns_from_library(
     }
 
 
+# Purpose: Run uuid fill if available.
 def run_uuid_fill_if_available(base_dir: Path, system_folder: Path, dry_run: bool = False) -> bool:
     """Run first UUID enrichment pass using global libraries."""
     uuid_library = base_dir / "component_library_ecoinvent_uuid_map.csv"
@@ -472,6 +491,7 @@ def run_uuid_fill_if_available(base_dir: Path, system_folder: Path, dry_run: boo
     return True
 
 
+# Purpose: Run created uuid fill if available.
 def run_created_uuid_fill_if_available(base_dir: Path, system_folder: Path, dry_run: bool = False) -> bool:
     """Run second UUID enrichment pass using created-object libraries."""
     uuid_library = base_dir / "created_flows_uuid_map.csv"
@@ -497,6 +517,7 @@ def run_created_uuid_fill_if_available(base_dir: Path, system_folder: Path, dry_
     return True
 
 
+# Purpose: Run final system uuid fill if available.
 def run_final_system_uuid_fill_if_available(base_dir: Path, system_folder: Path, dry_run: bool = False) -> bool:
     """Run third UUID fill pass focused on LCI_SYSTEM aggregate file."""
     uuid_library = base_dir / "created_flows_uuid_map.csv"
@@ -526,6 +547,7 @@ def run_final_system_uuid_fill_if_available(base_dir: Path, system_folder: Path,
     return True
 
 
+# Purpose: Run final transport uuid fill if available.
 def run_final_transport_uuid_fill_if_available(base_dir: Path, transport_folder: Path, dry_run: bool = False) -> bool:
     """Run third UUID fill pass focused on LCI_TRANSPORT aggregate file."""
     uuid_library = base_dir / "created_flows_uuid_map.csv"
@@ -555,6 +577,7 @@ def run_final_transport_uuid_fill_if_available(base_dir: Path, transport_folder:
     return True
 
 
+# Purpose: Upsert created flows library.
 def upsert_created_flows_library(path: Path, rows: list[dict[str, str]]):
     """Upsert flow UUID mappings keyed by normalized flow name."""
     fieldnames = ["Ecoinvent_flow", "UUID"]
@@ -614,6 +637,7 @@ def upsert_created_flows_library(path: Path, rows: list[dict[str, str]]):
     return added, updated, skipped_existing
 
 
+# Purpose: Upsert created process library.
 def upsert_created_process_library(path: Path, rows: list[dict[str, str]]):
     """Upsert provider UUID mappings keyed by normalized flow reference."""
     fieldnames = ["Ecoinvent_flow_reference", "Ecoinvent_process", "UUID_provider"]
@@ -679,6 +703,7 @@ def upsert_created_process_library(path: Path, rows: list[dict[str, str]]):
     return added, updated, skipped_existing
 
 
+# Purpose: Update created libraries.
 def update_created_libraries(
     base_dir: Path,
     flow_rows: list[dict[str, str]],

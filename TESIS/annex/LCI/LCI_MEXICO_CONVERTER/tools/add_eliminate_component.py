@@ -26,6 +26,7 @@ import logging
 
 # interactive-safe output helper
 _IS_TTY = sys.stdout.isatty()
+# Purpose: Out.
 def _out(msg: str, level: str = "info") -> None:
     if _IS_TTY:
         print(msg)
@@ -46,12 +47,14 @@ class SaveVerificationError(RuntimeError):
     pass
 
 
+# Purpose: Fail or abort selection.
 def fail_or_abort_selection(attempts: int) -> None:
     _out("Invalid selection. Try again.", level="warning")
     if attempts >= MAX_SELECTION_ATTEMPTS:
         raise SelectionAborted("Too many invalid attempts. Operation canceled.")
 
 
+# Purpose: Prompt menu choice.
 def _prompt_menu_choice(prompt: str, choices: Dict[str, str], invalid_message: str) -> str:
     attempts = 0
     while True:
@@ -64,6 +67,7 @@ def _prompt_menu_choice(prompt: str, choices: Dict[str, str], invalid_message: s
             raise SelectionAborted("Too many invalid attempts. Operation canceled.")
 
 
+# Purpose: Prompt index choice.
 def _prompt_index_choice(prompt: str, option_count: int, *, allow_cancel: bool = False) -> int | None:
     attempts = 0
     while True:
@@ -152,6 +156,7 @@ FIELD_EXAMPLES = {
 }
 
 
+# Purpose: Prompt label with example.
 def prompt_label_with_example(header: str) -> str:
     if header in {"Comments", "Notes"}:
         return header
@@ -161,6 +166,7 @@ def prompt_label_with_example(header: str) -> str:
     return f"{header} (e.g. {example})"
 
 
+# Purpose: Choose mode.
 def choose_mode() -> str:
     _out("\nWhat do you want to edit?")
     _out("  1. Component parameters")
@@ -183,6 +189,7 @@ def choose_mode() -> str:
     )
 
 
+# Purpose: Discover csv files.
 def discover_csv_files(base_dir: Path, suffix: str) -> Dict[str, Path]:
     return {
         p.name[: -len(suffix)]: p
@@ -195,10 +202,12 @@ def discover_subsystem_files(base_dir: Path) -> Dict[str, Path]:
     return discover_csv_files(base_dir, "_component_parameters.csv")
 
 
+# Purpose: Discover io files.
 def discover_io_files(base_dir: Path) -> Dict[str, Path]:
     return discover_csv_files(base_dir, "_io.csv")
 
 
+# Purpose: Choose from mapping.
 def choose_from_mapping(mapping: Dict[str, Path], label: str, empty_error: str) -> Tuple[str, Path]:
     # Presents a numbered list and returns the chosen (name, path) pair.
     names = list(mapping.keys())
@@ -245,6 +254,7 @@ def choose_subsystem(subsystems: Dict[str, Path]) -> Tuple[str, Path]:
     return choose_from_mapping(subsystems, "subsystems", "No *_component_parameters.csv files found in this folder.")
 
 
+# Purpose: Choose io file.
 def choose_io_file(io_files: Dict[str, Path]) -> Tuple[str, Path]:
     return choose_from_mapping(io_files, "I/O files", "No *_io.csv files found in this folder.")
 
@@ -261,10 +271,12 @@ def load_csv(path: Path) -> Tuple[List[str], List[Dict[str, str]]]:
     return headers, rows
 
 
+# Purpose: Normalize text.
 def normalize_text(value: str) -> str:
     return value.strip().lower()
 
 
+# Purpose: Prompt yes no.
 def prompt_yes_no(message: str, default: bool = False) -> bool:
     suffix = " [Y/n]: " if default else " [y/N]: "
     while True:
@@ -278,6 +290,7 @@ def prompt_yes_no(message: str, default: bool = False) -> bool:
         _out("Please answer y or n.", level="warning")
 
 
+# Purpose: Choose action.
 def choose_action() -> str:
     _out("\nChoose action:")
     _out("  1. Add or update component")
@@ -301,6 +314,7 @@ def choose_action() -> str:
         "Invalid action. Choose 1 or 2.",
     )
 
+# Purpose: Find row index.
 def find_row_index(rows: List[Dict[str, str]], field: str, value: str) -> int:
     #Returns the index of the first row where row[field] matches value, or -1.
     target = normalize_text(value)
@@ -331,6 +345,7 @@ def print_component_preview(row: Dict[str, str], headers: List[str]) -> None:
             _out(f"  {field}: {row.get(field, '')}")
 
 
+# Purpose: Component label.
 def component_label(row: Dict[str, str]) -> str:
     designators = row.get("Designators", "")
     casing = row.get("Casing", "")
@@ -342,6 +357,7 @@ def component_label(row: Dict[str, str]) -> str:
     return f"{designators} | {casing} | {manufacturer} | {part_number} | {description}"
 
 
+# Purpose: Choose search field.
 def choose_search_field(headers: List[str]) -> str | None:
     preferred_fields = [
         "Designators",
@@ -365,6 +381,7 @@ def choose_search_field(headers: List[str]) -> str | None:
     return searchable_fields[idx - 1] if idx is not None else None
 
 
+# Purpose: Search component indices.
 def search_component_indices(rows: List[Dict[str, str]], field: str, keyword: str) -> List[int]:
     target = normalize_text(keyword)
     matches: List[int] = []
@@ -375,6 +392,7 @@ def search_component_indices(rows: List[Dict[str, str]], field: str, keyword: st
     return matches
 
 
+# Purpose: Choose component from candidates.
 def choose_component_from_candidates(rows: List[Dict[str, str]], candidate_indices: List[int], title: str) -> int | None:
     if not candidate_indices:
         return None
@@ -389,6 +407,7 @@ def choose_component_from_candidates(rows: List[Dict[str, str]], candidate_indic
     return candidate_indices[idx - 1]
 
 
+# Purpose: Find component for delete.
 def find_component_for_delete(headers: List[str], rows: List[Dict[str, str]]) -> int:
     while True:
         reference = input("Enter component reference (Designators). Press Enter if unknown: ").strip()
@@ -473,10 +492,12 @@ def prompt_component_row(
 
     return new_row
 
+# Purpose: Find row index by flow.
 def find_row_index_by_flow(rows: List[Dict[str, str]], flow: str) -> int:
     return find_row_index(rows, "Flow", flow)
 
 
+# Purpose: Prompt io row.
 def prompt_io_row(
     headers: List[str],
     existing_row: Dict[str, str] | None = None,
@@ -501,6 +522,7 @@ def prompt_io_row(
     return new_row
 
 
+# Purpose: Io row label.
 def io_row_label(row: Dict[str, str]) -> str:
     flow = row.get("Flow", "")
     unit = row.get("Unit", "")
@@ -510,6 +532,7 @@ def io_row_label(row: Dict[str, str]) -> str:
     return f"{label} | {unit} | {amount} | {direction}"
 
 
+# Purpose: Find io row for delete.
 def find_io_row_for_delete(headers: List[str], rows: List[Dict[str, str]]) -> int:
     while True:
         keyword = input("Enter keyword to search in Flow (or Enter to list all): ").strip()
@@ -545,6 +568,7 @@ def save_csv(path: Path, headers: List[str], rows: List[Dict[str, str]]) -> None
         writer.writerows(rows)
 
 
+# Purpose: Verify saved row.
 def verify_saved_row(path: Path, key_field: str, key_value: str) -> Tuple[bool, int]:
     """Reload file and verify the target key value exists after save."""
     _, persisted_rows = load_csv(path)
@@ -553,6 +577,7 @@ def verify_saved_row(path: Path, key_field: str, key_value: str) -> Tuple[bool, 
     return exists, len(persisted_rows)
 
 
+# Purpose: Append audit log.
 def append_audit_log(
     csv_path: Path,
     action: str,
@@ -574,6 +599,7 @@ def append_audit_log(
         f.write(line)
 
 
+# Purpose: Auto refresh component libraries.
 def _auto_refresh_component_libraries(
     base_dir: Path,
     reason: str,
@@ -615,6 +641,7 @@ def _auto_refresh_component_libraries(
         _out(f"Warning: library refresh failed ({reason}): {exc}", level="warning")
 
 
+# Purpose: Run parameters workflow.
 def _run_parameters_workflow() -> None:
     subsystems = discover_csv_files(BASE_DIR, "_component_parameters.csv")
     subsystem_name, csv_path = choose_from_mapping(subsystems, "subsystems", "No *_component_parameters.csv files found in this folder.")
@@ -719,6 +746,7 @@ def _run_parameters_workflow() -> None:
     )
 
 
+# Purpose: Run io workflow.
 def _run_io_workflow() -> None:
     io_files = discover_csv_files(BASE_DIR, "_io.csv")
     io_name, csv_path = choose_from_mapping(io_files, "I/O files", "No *_io.csv files found in this folder.")
@@ -771,6 +799,7 @@ def _run_io_workflow() -> None:
     _out(f"Updated file: {csv_path.resolve()}")
 
 
+# Purpose: Main.
 def main() -> None:
     try:
         mode = choose_mode()

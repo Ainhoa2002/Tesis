@@ -14,6 +14,7 @@ import logging
 
 # interactive-safe output helper
 _IS_TTY = sys.stdout.isatty()
+# Purpose: Out.
 def _out(msg: str, level: str = "info") -> None:
     if _IS_TTY:
         print(msg)
@@ -29,6 +30,7 @@ OUTPUT_MD = BASE_DIR / "comparison_library_totals_vs_mexico_sections_bg.md"
 CREATED_FLOWS_FILE = BASE_DIR / "created_flows_uuid_map.csv"
 
 
+# Purpose: To float.
 def _to_float(value: str | None) -> float:
     text = str(value or "").strip().replace(",", ".")
     if not text:
@@ -39,6 +41,7 @@ def _to_float(value: str | None) -> float:
         return 0.0
 
 
+# Purpose: Load created flows.
 def _load_created_flows() -> set[str]:
     created = set()
     if not CREATED_FLOWS_FILE.exists():
@@ -51,6 +54,7 @@ def _load_created_flows() -> set[str]:
     return created
 
 
+# Purpose: Load library totals.
 def _load_library_totals(created_flows: set[str]) -> dict[tuple[str, str], float]:
     totals: dict[tuple[str, str], float] = defaultdict(float)
     with TOTALS_FILE.open(newline="", encoding="utf-8-sig") as handle:
@@ -69,6 +73,7 @@ def _load_library_totals(created_flows: set[str]) -> dict[tuple[str, str], float
     return totals
 
 
+# Purpose: Load section totals.
 def _load_section_totals(created_flows: set[str]) -> dict[tuple[str, str], float]:
     totals: dict[tuple[str, str], float] = defaultdict(float)
     for path in SECTION_FILES:
@@ -85,6 +90,7 @@ def _load_section_totals(created_flows: set[str]) -> dict[tuple[str, str], float
     return totals
 
 
+# Purpose: Summarize deltas.
 def _summarize_deltas(rows: list[dict[str, object]]) -> tuple[int, int, int, int]:
     same_nonzero = sum(1 for row in rows if row["MEXICO_MODULES_BG"] != 0 and row["MEXICO_SECTIONS_BG"] != 0 and abs(row["Delta"]) < 1e-12)
     only_modules = sum(1 for row in rows if row["MEXICO_MODULES_BG"] != 0 and row["MEXICO_SECTIONS_BG"] == 0)
@@ -93,6 +99,7 @@ def _summarize_deltas(rows: list[dict[str, object]]) -> tuple[int, int, int, int
     return same_nonzero, only_modules, only_sections, different
 
 
+# Purpose: Main.
 def main() -> None:
     created_flows = _load_created_flows()
     library_totals = _load_library_totals(created_flows)

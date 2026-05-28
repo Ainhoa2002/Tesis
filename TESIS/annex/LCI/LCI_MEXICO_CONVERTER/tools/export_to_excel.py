@@ -37,6 +37,7 @@ except ImportError:
 
 # interactive-safe output helper
 _IS_TTY = sys.stdout.isatty()
+# Purpose: Out.
 def _out(msg: str, level: str = "info") -> None:
     if _IS_TTY:
         print(msg)
@@ -47,6 +48,7 @@ BASE_DIR = Path(__file__).parent
 DEFAULT_EXPORT_DIR = BASE_DIR.parent
 
 
+# Purpose: Load csv optional.
 def load_csv_optional(path: Path) -> Tuple[List[str], List[Dict[str, str]]]:
     if not path.exists():
         return [], []
@@ -58,6 +60,7 @@ def load_csv_optional(path: Path) -> Tuple[List[str], List[Dict[str, str]]]:
     return headers, rows
 
 
+# Purpose: Load consolidated mass results.
 def load_consolidated_mass_results(base_dir: Path) -> Tuple[List[str], List[Dict[str, str]]]:
     headers: List[str] = []
     rows: List[Dict[str, str]] = []
@@ -84,6 +87,7 @@ def load_consolidated_mass_results(base_dir: Path) -> Tuple[List[str], List[Dict
     return headers, rows
 
 
+# Purpose: Discover section files.
 def discover_section_files(base_dir: Path) -> Dict[str, Path]:
     """Discover all SECTION_*_ipe_flows_from_parameters.csv files."""
     sections: Dict[str, Path] = {}
@@ -93,6 +97,7 @@ def discover_section_files(base_dir: Path) -> Dict[str, Path]:
     return sections
 
 
+# Purpose: Write sheet.
 def write_sheet(ws, headers: List[str], rows: List[Dict[str, str]]) -> None:
     if headers:
         ws.append(headers)
@@ -100,6 +105,7 @@ def write_sheet(ws, headers: List[str], rows: List[Dict[str, str]]) -> None:
         ws.append([row.get(h, "") for h in headers])
 
 
+# Purpose: Prompt output directory.
 def prompt_output_directory(default_dir: Path) -> Path:
     while True:
         folder_input = input(f"\nOutput folder (Enter for default: {default_dir}): ").strip()
@@ -113,6 +119,7 @@ def prompt_output_directory(default_dir: Path) -> Path:
         _out(f"Folder not found: {chosen_dir}", level="warning")
 
 
+# Purpose: Prompt output filename.
 def prompt_output_filename(default_name: str) -> str:
     while True:
         file_input = input(f"Output filename (Enter for default: {default_name}): ").strip()
@@ -123,6 +130,7 @@ def prompt_output_filename(default_name: str) -> str:
         return file_input
 
 
+# Purpose: Choose export mode.
 def choose_export_mode() -> str:
     _out("\nExport mode:")
     _out("  1. Export one subsystem")
@@ -145,6 +153,7 @@ def choose_export_mode() -> str:
             raise SelectionAborted("Too many invalid attempts. Operation canceled.")
 
 
+# Purpose: Export all subsystems to excel.
 def export_all_subsystems_to_excel(
     base_dir: Path,
     subsystems: Dict[str, Path],
@@ -176,6 +185,7 @@ def export_all_subsystems_to_excel(
     return exported_paths, skipped_subsystems
 
 
+# Purpose: Export subsystem results to excel.
 def export_subsystem_results_to_excel(
     base_dir: Path,
     subsystem: str,
@@ -217,6 +227,7 @@ def export_subsystem_results_to_excel(
     return output_path
 
 
+# Purpose: Export total bom to excel.
 def export_total_bom_to_excel(
     base_dir: Path,
     output_dir: Path,
@@ -259,6 +270,7 @@ def export_total_bom_to_excel(
     return output_path
 
 
+# Purpose: Export sections to excel.
 def export_sections_to_excel(
     base_dir: Path,
     output_dir: Path,
@@ -299,6 +311,7 @@ def export_sections_to_excel(
     return output_path
 
 
+# Purpose: Write export readme.
 def write_export_readme(
     output_dir: Path,
     exported_items: List[Tuple[Path, str]],
@@ -318,6 +331,7 @@ def write_export_readme(
     return readme_path
 
 
+# Purpose: Main.
 def main() -> None:
     try:
         subsystems = discover_subsystem_files(BASE_DIR)
