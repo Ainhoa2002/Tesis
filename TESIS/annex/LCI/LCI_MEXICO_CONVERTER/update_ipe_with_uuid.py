@@ -1,3 +1,10 @@
+"""
+Role: Update IPE files with UUIDs and resolved background systems.
+
+Brief: Injects UUIDs and library-derived metadata into IPE templates prior to
+openLCA import. Does not contact external services.
+"""
+
 import csv
 from pathlib import Path
 import sys

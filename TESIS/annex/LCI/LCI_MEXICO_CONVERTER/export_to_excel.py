@@ -1,3 +1,10 @@
+"""
+Role: Export converter outputs to Excel for review and reporting.
+
+Brief: Contains helpers to write component summaries, IPE tables, and results
+into Excel workbooks for manual inspection or archiving.
+"""
+
 #!/usr/bin/env python3
 """Export subsystem results to Excel workbooks.
 

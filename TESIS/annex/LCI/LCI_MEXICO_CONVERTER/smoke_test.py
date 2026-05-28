@@ -1,3 +1,10 @@
+"""
+Role: Smoke tests for Mexico converter workflows.
+
+Brief: Lightweight checks that run a subset of the Mexico converter pipeline to
+ensure outputs are generated and basic invariants hold.
+"""
+
 #!/usr/bin/env python3
 """Local smoke test for the Mexico converter pipeline.
 

@@ -1,3 +1,10 @@
+"""
+Role: Fill IPE columns for Mexico converter components using library mappings.
+
+Brief: Specialized version for the Mexico converter components that populates
+UUIDs and background references required for that converter's IPE files.
+"""
+
 import pandas as pd
 import os
 import argparse

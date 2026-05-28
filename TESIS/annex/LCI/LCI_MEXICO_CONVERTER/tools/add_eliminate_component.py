@@ -1,3 +1,10 @@
+"""
+Role: Add or remove components from the Mexico converter component set.
+
+Brief: CLI helpers to include or exclude components when building converter
+product systems or generating IPE files.
+"""
+
 #!/usr/bin/env python3
 """
 add_eliminate_component.py

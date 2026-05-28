@@ -1,3 +1,10 @@
+"""
+Role: Export converter tool outputs to Excel workbooks.
+
+Brief: Helper functions used by converter tools to write tabular output to
+Excel for manual review and sharing.
+"""
+
 #!/usr/bin/env python3
 """Export subsystem results to Excel workbooks.
 

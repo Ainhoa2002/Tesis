@@ -1,3 +1,10 @@
+"""
+Role: Find components in the parameter library and component CSVs.
+
+Brief: Search helpers used by converter tools and the CLI to locate component
+definitions across CSVs and the parameter library.
+"""
+
 #!/usr/bin/env python3
 """Search for a part number across component parameter data.
 

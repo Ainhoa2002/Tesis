@@ -1,3 +1,10 @@
+"""
+Role: Build component library CSVs and mapping tables for the converter.
+
+Brief: Assembles the component-to-UUID mapping and provider references used by
+the converter IPE generation.
+"""
+
 #!/usr/bin/env python3
 """Build deduplicated component libraries from all *_component_parameters.csv files.
 

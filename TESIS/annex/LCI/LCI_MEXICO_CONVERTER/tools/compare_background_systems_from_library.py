@@ -1,3 +1,10 @@
+"""
+Role: Compare background systems from the library for consistency checks.
+
+Brief: Utilities to verify that background system references and UUIDs used in
+components are present and consistent in the parameter library.
+"""
+
 from __future__ import annotations
 
 import csv

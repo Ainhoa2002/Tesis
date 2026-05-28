@@ -1,3 +1,10 @@
+"""
+Role: Calculate transport mass per transport code and aggregate results.
+
+Brief: Implements logic to map transport codes to mass factors and compute
+aggregated transport masses used in transport-phase impact calculations.
+"""
+
 import argparse
 import csv
 from collections import defaultdict

@@ -1,3 +1,10 @@
+"""
+Role: Energy calculations for the Use phase (renewables and mixes).
+
+Brief: Helper functions to compute energy-related IPE inputs such as
+renewable mixes and energy allocation during the Use phase.
+"""
+
 
 # ---------------------------------------------------------
 # FCC-ee Corrector Circuit – Use Phase Loss & Energy Model

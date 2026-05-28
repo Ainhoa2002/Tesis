@@ -1,3 +1,10 @@
+"""
+Role: Import component parameter files or I/O definitions into the converter.
+
+Brief: Utility to read and normalize component parameter CSVs and I/O tables
+so they can be consumed by the converter pipeline.
+"""
+
 #!/usr/bin/env python3
 """
 Import component parameters from Excel into CSV format or duplicate an existing CSV.
