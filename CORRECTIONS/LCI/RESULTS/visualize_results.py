@@ -377,7 +377,7 @@ def interactive_select_export_options():
     print("EXPORT OPTIONS")
     print("=" * 70)
     
-    default_export_folder = r"C:\Users\alorzaga\cernbox\WINDOWS\Desktop\TESIS\LCIA_Power systems\RESULTS_plots_and_values"
+    default_export_folder = str(Path(__file__).resolve().parent / "RESULTS_plots_and_values")
     
     print(f"\nDefault export folder:")
     print(f"  {default_export_folder}")

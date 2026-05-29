@@ -180,7 +180,7 @@ EXPORT_RESULT = True
 # Folder where results will be exported
 # Type: String (absolute or relative path)
 # Default: C:\\Users\\alorzaga\\cernbox\\WINDOWS\\Desktop\\TESIS\\LCIA_Power systems
-EXPORT_RESULT_FOLDER = r"C:\Users\alorzaga\cernbox\WINDOWS\Desktop\TESIS\LCIA_Power systems"
+EXPORT_RESULT_FOLDER = str(Path(__file__).resolve().parent / "RESULTS_export")
 
 
 # ============================================================================

@@ -3,7 +3,7 @@ connector_system,connector_system,19da36f5-dae3-48db-a007-5f4b86772d87
 "hazardous waste, for incineration",connector_system,19da36f5-dae3-48db-a007-5f4b86772d87
 "waste plastic, mixture",connector_system,19da36f5-dae3-48db-a007-5f4b86772d87
 Water,connector_system,19da36f5-dae3-48db-a007-5f4b86772d87
-magnet,magnet,9c78adc5-bfa6-49a2-85de-13b9af8b90ec
+magnet,magnet,efb861fc-ecc8-4a46-9960-fa4828afa178
 4Q_output_control_card,4Q_output_control_card,34473dbf-f659-4da0-9e44-5609e85b7631
 4Q_output_power_card,4Q_output_power_card,8bd8fa26-a856-4adb-ab4d-36d3879cdee2
 4Q_power_card,4Q_power_card,e62ae2fa-5bd4-4788-b93f-841c3c95b341
@@ -19,20 +19,20 @@ inverter_power_card,inverter_power_card,07a583e9-057a-4c44-a1a4-1383972d5de8
 mechanical_components,mechanical_components,10769f71-b5c4-44a4-a7ab-9b30b0036c08
 power_inductor_PM6249,power_inductor_PM6249,b4d590e2-4b9f-4d47-91fb-b0d6c715b20d
 MEXICO_CONVERTER,MEXICO,ced2f9cc-64c5-4586-a19b-2e6d93bf3019
-system,system,23f3850d-9554-4f07-9d0a-ff112531d588
+system,system,515c4efa-b730-47a3-a6d7-89a58fefd564
 P1,transport_code_P1,741d4998-aa69-469e-aadb-a9cbfeb51879
 P2,transport_code_P2,3c646b95-1e7c-414a-8e15-1e7db68dc3c0
 S1,transport_code_S1,7020925a-f8af-44b0-b9eb-ce694dace5a6
 S2,transport_code_S2,68d584c8-1455-405c-b33f-70ffd6577126
-SS1,transport_code_SS1,c5991c2e-581d-4160-aede-b600b5b9c3c9
-connector_system_transport,connector_system_transport,b2eee5a1-39f6-4358-a07f-3de78bb6ee63
+SS1,transport_code_SS1,c5a3ce6c-5cb3-45a5-932f-fde7e1054ddc
+connector_system_transport,connector_system_transport,06368bf7-289d-4681-8451-96460a48040a
 magnet_transport,magnet_transport,af054b90-a52d-4119-9f68-03cad5eafd8b
-mexico_transport,mexico_transport,3e944d8b-3c6e-4e4a-85b3-117779e7da7e
+mexico_transport,mexico_transport,a78bc0df-4a92-48e1-bfdd-e8a4ff3072ab
 transport,transport,4b516d29-2d2a-4ad1-98dc-805af1463405
 use_mix,use_mix,9393e7b6-443f-450b-b0b0-17f081863899
 use_renewables,use_renewables,4fec1ba5-ad6d-4809-8946-988283c432e1
-TEN_6-2415N,TEN_6-2415N,ad5f08da-7ff8-4d75-8ad1-f5297cc55c0a
-aux_TEN_6-2415N,aux_TEN_6_2415N,746f53a8-e13a-4bba-85f7-e155db460f13
+TEN_6-2415N,TEN_6-2415N,abbf5814-79b7-459f-9242-43dd787bdf19
+aux_TEN_6-2415N,aux_TEN_6_2415N,36e848b3-5e35-4395-9ecc-7c157e99ea93
 ten,ten62415aux,8d77477b-ed24-41e1-af47-b854ae91a712
 can_els,caen_els,25b1cd7e-6897-464b-ad7c-571d59e6db2d
 R1,transport_code_R1,4683a399-ec0f-4870-8906-b164be385dd3
@@ -49,3 +49,6 @@ SECTION_Mechanical_components,SECTION_Mechanical_components,73545e42-af6b-49fc-8
 SECTION_Modules,SECTION_Modules,cd9b1418-72f3-4123-ba53-3e9fe930b001
 SECTION_Passives,SECTION_Passives,47007822-0af0-4da2-98fd-f6f42a30caf4
 SECTION_PCB,SECTION_PCB,929b0039-eab8-4587-8ded-2ca2004875cd
+caen_els,caen_els,25b1cd7e-6897-464b-ad7c-571d59e6db2d
+MEXICO,MEXICO,e9414ca6-caa8-4c85-99a9-69cfaa017aba
+ten62415aux,ten62415aux,8d77477b-ed24-41e1-af47-b854ae91a712
