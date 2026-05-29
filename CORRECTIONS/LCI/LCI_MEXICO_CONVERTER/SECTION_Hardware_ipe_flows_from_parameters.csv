@@ -1,0 +1,15 @@
+Flow,UUID,Unit,Amount,Direction,Section,Subsections,Source_subsystems,Component_rows,Total_mass_kg,Missing_process_components,UUID_provider
+"aluminium, primary, cast alloy slab from continuous casting",f6161096-34e3-49c9-911e-060659b0dea1,kg,0.008388,Input,Hardware,Thermal Management,"4Q_output_control_card, 4Q_power_card",2,0.008388,0,eeb86a83-f9b4-37ad-a2b7-2a939571460a
+"copper, cathode",fbb039f7-f9cc-46d2-b631-313ddb125c1a,kg,0.03,Input,Hardware,Thermal Management,contactor_card,1,0.03,0,9e4d4bb4-2aed-3ef2-9caa-46439cf1c523
+"electronic component, passive, unspecified",4e252b55-fb08-4447-8391-d09e8bbb0238,kg,0.02077,Input,Hardware,"Enclosure, Mounting hardware","fan_supervision_card, fuse_card",2,0.02077,0,0e5d7b83-f812-32ac-a5e1-ac1d95910183
+"epoxy resin, liquid",51c7e57a-00b7-4412-b56c-94c17b211ee7,kg,0.02536443,Input,Hardware,Mounting hardware,4Q_output_power_card,1,0.02536443,0,1ab27f58-6586-33ea-9e7c-86b9e976adc1
+injection moulding,68d6dfcf-2089-4586-9bbf-ad75591105cf,kg,0.00129,Input,Hardware,Mounting hardware,digital_control,1,0.00129,0,2425ed8d-4a27-32f5-b80e-07711f419c02
+"market for steel, low-alloyed",817c3650-4fed-4ef2-b9b6-404a198834e6,kg,0.00884695,Input,Hardware,Mounting hardware,control_backplane_card,1,0.00884695,0,b784237b-e38b-345f-91ab-4f8f10f4ef10
+"metal working, average for aluminium product manufacturing",8c3b8032-b310-4dfe-9a9b-93fbd369142d,kg,0.008388,Input,Hardware,Thermal Management,"4Q_output_control_card, 4Q_power_card",2,0.008388,0,5421390b-1035-346c-89e1-6fe2f4a01aef
+"metal working, average for chromium steel product manufacturing",a5fc651b-3ee2-405f-b2f0-d035c8132be1,kg,0.00164785,Input,Hardware,Mounting hardware,4Q_output_power_card,4,0.00164785,0,f18bb0cd-c83f-3c17-924d-19d03903c7aa
+"metal working, average for copper product manufacturing",ec161f58-adae-4afc-ba38-14659925b080,kg,0.03,Input,Hardware,Thermal Management,contactor_card,1,0.03,0,05199773-548f-31b2-88b4-f1f8d6f9da98
+"metal working, average for steel product manufacturing",79632c4b-f876-4c89-bf27-b864b30566be,kg,0.01643005,Input,Hardware,Mounting hardware,"4Q_output_control_card, 4Q_power_card, control_backplane_card, fan_supervision_card, inverter_power_card",5,0.01643005,0,0e5e353c-4cbb-32c0-bd88-581facc6c091
+polycarbonate,e0d6f217-d1e3-4d5d-8b8a-b13c846d4ad6,kg,0.00129,Input,Hardware,Mounting hardware,digital_control,1,0.00129,0,9e4d4bb4-2aed-3ef2-9caa-46439cf1c523
+"steel, chromium steel 18/8",c33b5236-001e-49b5-aa3d-810c0214f9ce,kg,0.00164785,Input,Hardware,Mounting hardware,4Q_output_power_card,4,0.00164785,0,42290a29-b5f6-32b9-aced-cba9e1b5d487
+"steel, low-alloyed",817c3650-4fed-4ef2-b9b6-404a198834e6,kg,0.0075831,Input,Hardware,Mounting hardware,"4Q_output_control_card, 4Q_power_card, fan_supervision_card, inverter_power_card",4,0.0075831,0,b784237b-e38b-345f-91ab-4f8f10f4ef10
+SECTION_Hardware,,kg,0.10389033,Output,Hardware,"Enclosure, Mounting hardware, Thermal Management","4Q_output_control_card, 4Q_output_power_card, 4Q_power_card, contactor_card, control_backplane_card, digital_control, fan_supervision_card, fuse_card, inverter_power_card",16,0.10389033,0,

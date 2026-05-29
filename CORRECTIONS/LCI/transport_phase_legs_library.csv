@@ -1,0 +1,5 @@
+phase_code,leg_order,transport_type,distance_km,ecoinvent_flow_reference,UUID,Unit,tkm_share,active,notes
+P1,1,ship,18000,,,tkm,1,yes,Asia to PCB mounting by sea freight
+P1,2,truck,300,,,tkm,1,yes,Port to PCB mounting plant by lorry
+SC1,1,truck,1500,,,tkm,1,yes,Europe to PCB mounting by lorry
+P2,1,truck,800,,,tkm,1,yes,PCB mounting to converter mounting by lorry
