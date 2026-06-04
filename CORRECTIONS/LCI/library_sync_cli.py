@@ -1,3 +1,5 @@
+"""CLI wrapper to run UUID/provider filling for IPE CSV files."""
+
 import argparse
 from pathlib import Path
 
@@ -5,6 +7,7 @@ from library_sync import run_fill_ipe_columns_from_library
 
 
 def main():
+    """Parse CLI arguments and invoke `run_fill_ipe_columns_from_library`."""
     base_dir = Path(__file__).resolve().parent
     default_uuid_library = base_dir / "component_library_ecoinvent_uuid_map.csv"
     default_provider_library = base_dir / "component_library_ecoinvent_uuid_provider_map.csv"

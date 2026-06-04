@@ -1,3 +1,15 @@
+"""Fill UUID columns in IPE CSV files.
+
+Utility wrapper CLI that calls the library_sync helper to populate
+`UUID` and `UUID_provider` fields in `*_ipe_flows_from_parameters.csv` files.
+"""
+
+"""Fill IPE CSV columns using a mapping library.
+
+CLI helpers to apply `component_library_*` CSV mappings into
+`*_ipe_flows_from_parameters.csv` files under a given root.
+"""
+
 import argparse
 from pathlib import Path
 
@@ -5,6 +17,7 @@ from library_sync import run_fill_ipe_columns_from_library
 
 
 def main():
+    """CLI entrypoint: parse args and run the fill operation."""
     base_dir = Path(__file__).resolve().parent
     default_uuid_library = base_dir / "component_library_ecoinvent_uuid_map.csv"
     default_provider_library = base_dir / "component_library_ecoinvent_uuid_provider_map.csv"

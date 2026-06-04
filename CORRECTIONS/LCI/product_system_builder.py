@@ -1,4 +1,9 @@
 from __future__ import annotations
+"""Product system builder utilities.
+
+Helpers to create or update openLCA product systems from imported
+process descriptors and parameterized provider-linking strategies.
+"""
 
 import argparse
 import re
@@ -29,10 +34,12 @@ class ProductSystemCreationReport:
 
 
 def _normalize_name(value: str) -> str:
+    """Return a normalized lowercase name without surrounding whitespace."""
     return str(value or "").strip().lower()
 
 
 def _parse_csv_names(raw: str) -> list[str]:
+    """Parse a comma-separated string into a list of distinct names."""
     out = []
     seen = set()
     for part in str(raw or "").split(","):
@@ -46,6 +53,10 @@ def _parse_csv_names(raw: str) -> list[str]:
 
 
 def _as_name_list(value) -> list[str]:
+    """Normalize input to a list of cleaned names.
+
+    Accepts either a list or a comma-separated string.
+    """
     if isinstance(value, list):
         return [str(v).strip() for v in value if str(v).strip()]
     if isinstance(value, str):
@@ -54,6 +65,7 @@ def _as_name_list(value) -> list[str]:
 
 
 def get_prefer_defaults_processes() -> list[str]:
+    """Return configured list of processes that prefer default providers."""
     return _as_name_list(get_param(PREFER_DEFAULTS_PARAM, default=[]))
 
 
@@ -85,6 +97,7 @@ def set_prefer_defaults_processes(process_names: list[str]) -> None:
 
 
 def _normalize_mode_text(value: str) -> str:
+    """Normalize provider linking mode text to canonical token."""
     text = str(value or "").strip().lower()
     if text in {"prefer", "prefer-defaults", "prefer_defaults", "p"}:
         return "prefer-defaults"
@@ -96,6 +109,7 @@ def _normalize_mode_text(value: str) -> str:
 
 
 def _default_product_systems_module() -> dict:
+    """Return a default product_systems module document structure."""
     return {
         "components": []
     }
@@ -146,6 +160,7 @@ def set_product_systems_module(components: list[dict[str, str]]) -> None:
 
 
 def _module_component_mode_map(module_doc: dict) -> dict[str, str]:
+    """Extract a map of component name -> provider linking mode from module doc."""
     component_mode_map = {}
     for item in module_doc.get("components", []):
         name_key = _normalize_name(item.get("name", ""))
@@ -157,6 +172,7 @@ def _module_component_mode_map(module_doc: dict) -> dict[str, str]:
 
 
 def _module_component_names(module_doc: dict) -> list[str]:
+    """Return ordered list of component names from a product_systems module doc."""
     out = []
     seen = set()
     for item in module_doc.get("components", []):
@@ -170,6 +186,7 @@ def _module_component_names(module_doc: dict) -> list[str]:
 
 
 def _mode_name(mode: o.ProviderLinking) -> str:
+    """Return a short uppercase token for a ProviderLinking enum value."""
     if mode == o.ProviderLinking.PREFER_DEFAULTS:
         return "PREFER_DEFAULTS"
     if mode == o.ProviderLinking.ONLY_DEFAULTS:
@@ -180,11 +197,16 @@ def _mode_name(mode: o.ProviderLinking) -> str:
 
 
 def _is_uuid_like(value: str) -> bool:
+    """Return True if the value matches a UUID v1..v5 hex pattern."""
     text = str(value or "").strip()
     return bool(re.fullmatch(r"[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-5][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}", text))
 
 
 def _resolve_process_descriptor(client, process_input: str):
+    """Resolve a process input token (name or UUID) to an openLCA descriptor.
+
+    Returns descriptor or None if not found.
+    """
     token = str(process_input or "").strip()
     if token == "":
         return None
@@ -204,6 +226,7 @@ def _select_provider_linking(
     prefer_defaults_set: set[str],
     component_mode_map: dict[str, str] | None = None,
 ) -> o.ProviderLinking:
+    """Select provider linking enum based on strategy, parameters or module config."""
     mode = str(strategy or "parameter").strip().lower()
     if mode == "prefer-defaults":
         return o.ProviderLinking.PREFER_DEFAULTS
@@ -239,6 +262,10 @@ def create_or_update_product_system(
     prefer_defaults_processes: list[str] | None = None,
     component_mode_map: dict[str, str] | None = None,
 ) -> ProductSystemCreationReport:
+    """Create or update a product system for a given process input.
+
+    Returns a `ProductSystemCreationReport` summarizing actions taken.
+    """
     report = ProductSystemCreationReport(process_input=str(process_input or "").strip())
 
     process_ref = _resolve_process_descriptor(client, report.process_input)

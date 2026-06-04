@@ -1,3 +1,8 @@
+"""Quick magnet mass breakdown calculations used by the Mexico converter.
+
+This small script computes mass fractions for magnet subcomponents.
+"""
+
 import math
 
 rho_cu = 8960          # kg/m^3

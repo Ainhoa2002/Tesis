@@ -13,10 +13,12 @@ from pathlib import Path
 
 
 def _normalize_text(value: str) -> str:
+    """Normalize text by converting to string and stripping whitespace."""
     return str(value or "").strip()
 
 
 def _to_float(value):
+    """Convert a value to float, replacing comma decimals and returning None on invalid input."""
     text = _normalize_text(value).replace(",", ".")
     if text == "":
         return None
@@ -27,6 +29,7 @@ def _to_float(value):
 
 
 def _distance_to_km(distance, unit):
+    """Convert a distance value with unit to kilometers, or None if invalid."""
     distance_value = _to_float(distance)
     if distance_value is None:
         return None
@@ -42,6 +45,7 @@ def _distance_to_km(distance, unit):
 
 
 def _safe_code_name(code: str) -> str:
+    """Return a filesystem-safe name derived from a transport code."""
     cleaned = re.sub(r"[^A-Za-z0-9]+", "_", _normalize_text(code))
     cleaned = cleaned.strip("_")
     return cleaned if cleaned else "unknown"

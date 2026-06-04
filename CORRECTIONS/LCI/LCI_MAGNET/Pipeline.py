@@ -1,3 +1,8 @@
+"""Minimal pipeline for LCI_MAGNET to generate `_ipe_flows_from_parameters.csv`.
+
+Reads component parameter CSVs and aggregates flows into the IPE CSV contract.
+"""
+
 import argparse
 import csv
 import sys
@@ -7,10 +12,12 @@ IPE_FIELDS = ["Flow", "UUID", "Unit", "Amount", "Direction", "UUID_provider", "T
 
 
 def normalize_text(value):
+    """Normalize value to a stripped string."""
     return str(value or "").strip()
 
 
 def to_float(value, default=0.0):
+    """Convert a value to float, tolerant to comma decimals; return default on failure."""
     try:
         text = str(value or "").strip().replace(",", ".")
         if text == "":
@@ -21,6 +28,7 @@ def to_float(value, default=0.0):
 
 
 def read_parameters(parameters_path):
+    """Read component parameters CSV and return (fieldnames, rows)."""
     if not parameters_path.exists():
         raise FileNotFoundError(f"Parameters file not found: {parameters_path}")
 
@@ -33,6 +41,7 @@ def read_parameters(parameters_path):
 
 
 def read_existing_ipe_rows(ipe_path):
+    """Return existing IPE rows from a file, or empty list if missing."""
     if not ipe_path.exists():
         return []
 
@@ -42,10 +51,12 @@ def read_existing_ipe_rows(ipe_path):
 
 
 def _row_key(flow, unit, direction):
+    """Compose a stable key tuple from flow, unit and direction."""
     return (normalize_text(flow), normalize_text(unit) or "kg", normalize_direction(direction))
 
 
 def split_flows(flow_value):
+    """Split a '+'-separated flow_value into individual flow names."""
     text = normalize_text(flow_value)
     if text == "":
         return []
@@ -53,6 +64,7 @@ def split_flows(flow_value):
 
 
 def normalize_direction(value):
+    """Normalize direction strings to either 'Input' or 'Output'."""
     text = normalize_text(value).lower()
     if text.startswith("input") or text.startswith("inpu"):
         return "Input"
@@ -62,6 +74,7 @@ def normalize_direction(value):
 
 
 def build_ipe_rows(parameter_rows):
+    """Aggregate parameter rows into IPE CSV rows (summing amounts per flow)."""
     aggregated = {}
     existing_rows_by_key = {}
     skipped = 0
@@ -110,6 +123,7 @@ def build_ipe_rows(parameter_rows):
 
 
 def preserve_existing_output_rows(existing_rows):
+    """Extract and preserve Output rows from existing IPE rows."""
     preserved = []
     for row in existing_rows:
         direction = normalize_direction(row.get("Direction"))
@@ -131,6 +145,7 @@ def preserve_existing_output_rows(existing_rows):
 
 
 def write_csv(path, fieldnames, rows):
+    """Write rows to CSV using provided fieldnames."""
     with open(path, "w", newline="", encoding="utf-8") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames, extrasaction="ignore")
         writer.writeheader()
@@ -139,6 +154,7 @@ def write_csv(path, fieldnames, rows):
 
 
 def run_fill(ipe_path):
+    """Invoke `library_sync.run_fill_ipe_columns_from_library` for a given IPE file."""
     lci_root = Path(__file__).resolve().parent.parent
     if str(lci_root) not in sys.path:
         sys.path.insert(0, str(lci_root))

@@ -25,11 +25,13 @@ RESULT_SUFFIX = "_component_results.csv"
 
 
 def _to_num(series: pd.Series) -> pd.Series:
+    """Convert a pandas Series to numeric, handling commas as decimals."""
     return pd.to_numeric(series.astype(str).str.replace(",", ".", regex=False), errors="coerce")
 
 
 @st.cache_data(show_spinner=False)
 def load_all_results(base_dir: Path) -> pd.DataFrame:
+    """Load and normalize all component results CSVs into a single DataFrame."""
     files = sorted(base_dir.glob(f"*{RESULT_SUFFIX}"))
     frames = []
 
@@ -70,6 +72,7 @@ def load_all_results(base_dir: Path) -> pd.DataFrame:
 
 
 def main() -> None:
+    """Streamlit app entrypoint to render mass visualizations."""
     st.set_page_config(page_title="Mass visuals", layout="wide")
     st.title("Mass visuals (all subsystems, unified Total_mass_kg)")
 

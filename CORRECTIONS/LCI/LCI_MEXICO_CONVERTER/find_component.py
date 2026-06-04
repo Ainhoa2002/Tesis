@@ -27,10 +27,15 @@ STORAGE_LIBRARY_NAME = "component_library_parameters_all.csv"
 
 
 def _clean(value: object) -> str:
+    """Return a trimmed string representation for any value."""
     return str(value or "").strip()
 
 
 def _discover_subsystem_files() -> Dict[str, Path]:
+    """Discover all subsystem component parameter CSV files in the base dir.
+
+    Returns a mapping from subsystem name -> file Path.
+    """
     return {
         path.name[: -len("_component_parameters.csv")]: path
         for path in sorted(BASE_DIR.glob("*_component_parameters.csv"))
@@ -38,6 +43,7 @@ def _discover_subsystem_files() -> Dict[str, Path]:
 
 
 def _read_fieldnames(path: Path) -> List[str]:
+    """Read CSV header field names from a path, preserving order."""
     with open(path, newline="", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
         return [field for field in list(reader.fieldnames or []) if field]
@@ -160,6 +166,7 @@ def find_part(part_number: str, scope_raw: str) -> Tuple[List[Tuple[str, List[st
 
 
 def _row_to_csv_line(fieldnames: List[str], row: Dict[str, str]) -> str:
+    """Serialize a row dict to a CSV line using the provided fieldnames."""
     buf = io.StringIO()
     writer = csv.DictWriter(buf, fieldnames=fieldnames, extrasaction="ignore", lineterminator="")
     writer.writerow({key: row.get(key, "") for key in fieldnames})

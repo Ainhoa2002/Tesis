@@ -47,11 +47,13 @@ class ProductSystemCreationReport:
 
 
 def _warn(report: ProcessImportReport, message: str) -> None:
+    """Append a warning to the report and print it."""
     report.warnings.append(message)
     print(message)
 
 
 def _error(report: ProcessImportReport, message: str) -> None:
+    """Append an error to the report and print it."""
     report.errors.append(message)
     print(message)
 
@@ -70,6 +72,7 @@ def _normalize_category_path(value):
 
 # search for the name in openLCA
 def _get_entity_by_name(client, model_type, name):
+    """Find an entity by name and return its full object, or None."""
     ref = client.find(model_type, name=name)
     if not ref:
         return None
@@ -78,6 +81,7 @@ def _get_entity_by_name(client, model_type, name):
 
 # Search for the flow property in openLCA, it can be Number, Piece or Item
 def _get_number_flow_property(client):
+    """Return a FlowProperty object that can be used as the numeric reference."""
     for prop_name in ("Number", "Piece", "Item"):
         prop = _get_entity_by_name(client, o.FlowProperty, prop_name)
         if prop:
@@ -87,10 +91,12 @@ def _get_number_flow_property(client):
 
 # Search for the flow property in openLCA, it can be Mass or Weight
 def _get_mass_flow_property(client):
+    """Return the FlowProperty representing mass, if available."""
     return _get_entity_by_name(client, o.FlowProperty, "Mass")
 
 
 def _get_transport_work_flow_property(client):
+    """Find a FlowProperty representing transport work (e.g., tkm), if any."""
     # Common openLCA names for tkm-like properties.
     for prop_name in (
         "Mass transport",
@@ -131,6 +137,7 @@ def _get_existing_process_by_name(client, process_name):
 
 
 def _same_ref(ref_a, ref_b):
+    """Return True if two objects refer to the same entity (by id or name)."""
     if not ref_a or not ref_b:
         return False
     id_a = str(getattr(ref_a, "id", "") or "").strip().lower()
@@ -143,6 +150,10 @@ def _same_ref(ref_a, ref_b):
 
 
 def _upsert_flow_property_factor(flow, flow_property, conversion_factor, is_reference):
+    """Update or append a FlowPropertyFactor on a flow object.
+
+    Returns True if the flow was changed.
+    """
     if flow.flow_properties is None:
         flow.flow_properties = []
 
@@ -333,6 +344,10 @@ def _build_process_provider_rows(process_name: str, process_uuid: str, output_fl
 
 ################ Creates the process in openLCA with the inputs and outputs ############################
 def build_process_from_inputs(client, process_name, inputs, category_name, report: ProcessImportReport, output_rows=None):
+    """Create or rebuild an openLCA Process from input/output CSV rows.
+
+    Returns the created or updated process entity.
+    """
     existing_process = _get_existing_process_by_name(client, process_name)
     process_exists = existing_process is not None
     process = o.Process()

@@ -1,3 +1,9 @@
+"""Fill IPE CSV files in the Mexico converter folder using a library.
+
+This module mirrors the root-level `fill_ipe_columns_from_library` behaviour
+but is scoped to the `LCI_MEXICO_CONVERTER` folder layout.
+"""
+
 import pandas as pd
 import os
 import argparse
@@ -19,11 +25,9 @@ def find_target_files(root_dir, suffix="_ipe_flows_from_parameters.csv"):
                 yield os.path.join(dirpath, f)
 
 def fill_columns_from_library(target_file, lib_df, key_col_lib='Ecoinvent_flow', key_col_target='Flow', fill_cols=None):
+    """Fill specified columns in a target IPE CSV from a library DataFrame."""
     # Lista para guardar los flujos que no se pudieron rellenar
     missing_rows = []
-    """
-    Llena las columnas especificadas en el archivo target_file usando lib_df.
-    """
     if fill_cols is None:
         fill_cols = ['Flow', 'UUID', 'Unit', 'Amount', 'Direction', 'uuid']
 
@@ -169,6 +173,7 @@ def fill_uuid_provider_from_library(target_file, provider_df, key_col_target='Fl
     return filled_count
 
 def main():
+    """CLI entrypoint: load libraries and apply them to all target IPE CSVs."""
     parser = argparse.ArgumentParser(description='Fill columns in _ipe_flows_from_parameters CSV files using a library.')
     parser.add_argument('--library', default='LCI_CONNECTION/LCI/component_library_ecoinvent_uuid_map.csv',
                         help='Ruta al archivo CSV de la librería (por defecto: LCI_CONNECTION/LCI/component_library_ecoinvent_uuid_map.csv)')

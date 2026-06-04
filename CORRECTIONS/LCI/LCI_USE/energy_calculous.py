@@ -1,8 +1,8 @@
+"""FCC-ee corrector circuit use-phase energy loss model.
 
-# ---------------------------------------------------------
-# FCC-ee Corrector Circuit – Use Phase Loss & Energy Model
-# FINAL PHYSICALLY CORRECT VERSION
-# ---------------------------------------------------------
+Simple calculation utility that estimates lifetime energy losses and
+average power contributions for magnet, cable and converter.
+"""
 
 # -----------------------
 # INPUT PARAMETERS
@@ -41,6 +41,10 @@ T_op = lifetime_years * hours_per_year
 
 
 def calculate_losses(efficiency, cable_length_km_value=cable_length_km):
+    """Compute average losses and lifetime energy losses for given efficiency.
+
+    Returns a dict with numeric summary values.
+    """
     R_cable = R_cable_km * cable_length_km_value
     E_loss_total_Wh = 0.0
     P_magnet_avg = 0.0
@@ -88,6 +92,7 @@ def calculate_losses(efficiency, cable_length_km_value=cable_length_km):
 
 
 def print_single_result(result):
+    """Print a human-readable summary of the loss calculation result."""
     print("=== FCC-ee Corrector Circuit Use Phase ===\n")
     print(f"Converter efficiency:     {result['efficiency']:.2f} ({result['efficiency']*100:.0f}%)")
     print(f"Cable length:             {result['cable_length_km']:.5f} km")

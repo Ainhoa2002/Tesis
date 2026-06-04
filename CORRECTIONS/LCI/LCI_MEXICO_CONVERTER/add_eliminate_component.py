@@ -30,6 +30,7 @@ class SaveVerificationError(RuntimeError):
 
 
 def fail_or_abort_selection(attempts: int) -> None:
+    """Print an invalid-selection message and abort after too many attempts."""
     print("Invalid selection. Try again.")
     if attempts >= MAX_SELECTION_ATTEMPTS:
         raise SelectionAborted("Too many invalid attempts. Operation canceled.")
@@ -108,6 +109,7 @@ FIELD_EXAMPLES = {
 
 
 def prompt_label_with_example(header: str) -> str:
+    """Return a prompt label for a header including an example when available."""
     if header in {"Comments", "Notes"}:
         return header
     example = FIELD_EXAMPLES.get(header)
@@ -116,6 +118,7 @@ def prompt_label_with_example(header: str) -> str:
     return f"{header} (e.g. {example})"
 
 def choose_mode() -> str:
+    """Prompt user to choose edit mode: parameters or I/O flows."""
     print("\nWhat do you want to edit?")
     print("  1. Component parameters")
     print("  2. I/O flows")
@@ -133,6 +136,10 @@ def choose_mode() -> str:
 
 
 def discover_csv_files(base_dir: Path, suffix: str) -> Dict[str, Path]:
+    """Discover CSV files under base_dir with the given filename suffix.
+
+    Returns a mapping from module name (filename prefix) to Path.
+    """
     return {
         p.name[: -len(suffix)]: p
         for p in sorted(base_dir.glob(f"*{suffix}"))
@@ -150,6 +157,10 @@ def discover_io_files(base_dir: Path) -> Dict[str, Path]:
 
 def choose_from_mapping(mapping: Dict[str, Path], label: str, empty_error: str) -> Tuple[str, Path]:
     #Presents a numbered list and returns the chosen (name, path) pair.
+    """Prompt user to choose an entry from a mapping of name->Path.
+
+    Returns the selected (name, path).
+    """
     names = list(mapping.keys())
     if not names:
         raise RuntimeError(empty_error)
@@ -191,14 +202,17 @@ def choose_from_mapping(mapping: Dict[str, Path], label: str, empty_error: str) 
 
 # Kept as aliases so external callers continue to work.
 def choose_subsystem(subsystems: Dict[str, Path]) -> Tuple[str, Path]:
+    """Alias for selecting a subsystem by its parameters CSV file."""
     return choose_from_mapping(subsystems, "subsystems", "No *_component_parameters.csv files found in this folder.")
 
 
 def choose_io_file(io_files: Dict[str, Path]) -> Tuple[str, Path]:
+    """Alias for selecting an I/O CSV file from available files."""
     return choose_from_mapping(io_files, "I/O files", "No *_io.csv files found in this folder.")
 
 # Loads the CSV file and returns headers (categories) and rows (info inside the categories). 
 def load_csv(path: Path) -> Tuple[List[str], List[Dict[str, str]]]:
+    """Load a CSV and return (headers, rows). Raises on missing headers."""
     with open(path, newline="", encoding="utf-8-sig") as f:
         reader = csv.DictReader(f)
         rows = list(reader)
@@ -211,10 +225,12 @@ def load_csv(path: Path) -> Tuple[List[str], List[Dict[str, str]]]:
 
 
 def normalize_text(value: str) -> str:
+    """Normalize text for searching (lowercased, stripped)."""
     return value.strip().lower()
 
 
 def prompt_yes_no(message: str, default: bool = False) -> bool:
+    """Prompt a yes/no question and return True/False (with default)."""
     suffix = " [Y/n]: " if default else " [y/N]: "
     while True:
         raw = input(message + suffix).strip().lower()
@@ -228,6 +244,7 @@ def prompt_yes_no(message: str, default: bool = False) -> bool:
 
 
 def choose_action() -> str:
+    """Prompt user to choose add/update or delete action for a component."""
     print("\nChoose action:")
     print("  1. Add or update component")
     print("  2. Eliminate component")
@@ -244,7 +261,7 @@ def choose_action() -> str:
             raise SelectionAborted("Too many invalid attempts. Operation canceled.")
 
 def find_row_index(rows: List[Dict[str, str]], field: str, value: str) -> int:
-    #Returns the index of the first row where row[field] matches value, or -1.
+    """Return index of first row where row[field] matches value, or -1."""
     target = normalize_text(value)
     for i, row in enumerate(rows):
         if normalize_text(row.get(field, "")) == target:
@@ -258,6 +275,7 @@ def find_row_index_by_designators(rows: List[Dict[str, str]], designators: str) 
 
 #it prints the information of the component.
 def print_component_preview(row: Dict[str, str], headers: List[str]) -> None:
+    """Print a short preview of a component row to the console."""
     preview_order = [
         "Designators",
         "Casing",
@@ -299,6 +317,7 @@ def choose_search_field(headers: List[str]) -> str | None:
     if not searchable_fields:
         return None
 
+    """Prompt user to choose a searchable field from headers, if available."""
     print("\nChoose section/field to search:")
     for i, field in enumerate(searchable_fields, start=1):
         print(f"  {i}. {field}")
@@ -317,6 +336,7 @@ def choose_search_field(headers: List[str]) -> str | None:
 
 
 def search_component_indices(rows: List[Dict[str, str]], field: str, keyword: str) -> List[int]:
+    """Return indices of rows where keyword is found in the given field."""
     target = normalize_text(keyword)
     matches: List[int] = []
     for i, row in enumerate(rows):
@@ -327,6 +347,7 @@ def search_component_indices(rows: List[Dict[str, str]], field: str, keyword: st
 
 
 def choose_component_from_candidates(rows: List[Dict[str, str]], candidate_indices: List[int], title: str) -> int | None:
+    """Prompt user to choose one component index from candidate indices."""
     if not candidate_indices:
         return None
 

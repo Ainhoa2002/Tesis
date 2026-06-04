@@ -41,26 +41,25 @@ This codebase implements three connected missions. The paragraphs below expand t
 
 1) Preparation — how `_ipe_` flows are created
 
-- Converter pipelines (`LCI/LCI_MEXICO_CONVERTER/Pipeline.py`) calculate the unit and mass distribution for each subsystem and write three main CSV outputs per module:
-	- `*_component_parameters.csv` — module parameter values;
-	- `*_component_io_flows.csv` — component input/output flow table;
-	- `*_ipe_flows_from_parameters.csv` — the IPE rows calculated from those parameters and mass distributions.
+- For each module, one input file, `*_component_parameters.csv`, is used to generate three main CSV files:
+	- `*_component_results.csv`, containing the calculated mass per component;
+	- `*_component_io_flows.csv`, containing the component input/output flow table;
+	- `*_ipe_flows_from_parameters.csv`, containing the inventory rows calculated from the component parameters and mass distributions.
 
 	The `*_ipe_flows_from_parameters.csv` file is the main converter output. It contains the automatically generated IPE entries, including transport codes, amounts, and PCB/OCB mass rows when applicable. Downstream tools such as `library_sync`, `process_builder`, and the product-system builders read this file to fill UUIDs and continue the import flow.
 
 	The converter also relies on library CSVs that store UUID and provider mappings. The main ones are `component_library_ecoinvent_uuid_map.csv`, `component_library_ecoinvent_uuid_provider_map.csv`, `created_flows_uuid_map.csv`, and `created_process_uuid_map.csv`. These files keep the converter outputs matched with the openLCA database and with project-created objects.
 
 	Auxiliary scripts in `LCI_MEXICO_CONVERTER/` support this converter but are secondary to the main pipeline. The main helper scripts are `build_component_libraries.py`, `import_component_parameter_or_io.py`, `add_eliminate_component.py`, `find_component.py`, `export_to_excel.py`, and `fill_ipe_columns_from_library.py`.
-	`update_ipe_with_uuid.py` is not referenced by the current code flow, so it is omitted from the active helper list.
+
+- Mass visualization across subsystems is handled by `mass_visuals_app.py`. It is a Streamlit app that reads the `*_component_mass_results.csv` files from the converter outputs, lets you filter by subsystem and component, and shows bar charts and treemaps so you can inspect the mass distribution per subsystem interactively.
 
 - Magnet pipeline (example: `LCI/LCI_MAGNET/Pipeline.py`): follows the same pattern as the converter — it computes per-component masses and writes `*_ipe_flows_from_parameters.csv`. Domain-specific adjustments happen inside the Magnet pipeline, but IPE creation is automated.
 
 
-- Connector modules: the connector has being implemented in openLCA because it has waste products as outputs and as commented that is a limitation to the tool.
+- Cable/Connector modules: the connector has being implemented in openLCA because it has waste products as outputs and as commented that is a limitation to the tool.
 
-- Auxiliary components: some modules are auxiliary components created directly without a mass-calculation step. These modules are represented by small CSVs or module files that define component entries and include the IPE rows directly (no `Pipeline` computation). They are used for helper parts, fixed connectors or library-only items where parameterised mass distributions are unnecessary. Downstream tools (`library_sync`, `process_builder`, `product_system_builder`) treat them the same way: UUIDs are filled and processes are imported via IPC.
-
-- Mass visualization across subsystems is handled by `mass_visuals_app.py`. It is a Streamlit app that reads the `*_component_mass_results.csv` files from the converter outputs, lets you filter by subsystem and component, and shows bar charts and treemaps so you can inspect the mass distribution per subsystem interactively.
+- Auxiliary components: the `LCI_AUXILIARY_COMPONENTS/` folder contains modules that are created directly without a mass-calculation step. These are small CSV-based modules that already include the IPE rows, so there is no `Pipeline` computation for them. For example, `TEN_6-2415N_ipe_flows_from_parameters.csv` is stored directly in `LCI_AUXILIARY_COMPONENTS/`
 
 - Transport phase: transport aggregation scripts (`LCI/LCI_TRANSPORT/calculate_transport_mass_by_code.py`) read the `*_ipe_flows_from_parameters.csv` rows, group by transport code, and produce overall and per-subsystem summaries. 
 
@@ -110,43 +109,18 @@ Error handling and resilience
 - Major steps are guarded with try/except blocks so one system's failure doesn't abort the entire workflow. Per-file `ProcessImportReport`s are collected in `ImportWorkflowState` for inspection.
 
 Product system builder (`product_system_builder.py`)
---------------------------------------------------
-Purpose
--------
-`product_system_builder.py` is a standalone CLI and module used to create product systems in openLCA for given process names or UUIDs. It supports parameter-driven defaults and optional interactive prompting.
+	--------------------------------------------------
+	Purpose
+	-------
+	`product_system_builder.py` creates product systems in openLCA from selected process names or UUIDs. It supports default-provider selection and optional interactive prompting, and the orchestrator can call it after importing processes.
 
-Key parameters and configuration
---------------------------------
-- `product_systems_prefer_defaults` — list of process names that should prefer default providers.
-- `product_systems_module` — dict with `components` entries providing per-process `provider_linking` hints.
-- `product_systems_interactive_mode` — 0 (silent) or 1 (interactive). When silent, prompts are suppressed and parameter values drive behavior.
-
-Main behavior and functions
---------------------------
-- `create_product_systems_for_processes(client, process_inputs, strategy, prefer_defaults_processes, component_mode_map)` — main entry that iterates inputs and calls `create_or_update_product_system` for each.
-- `create_or_update_product_system(client, process_input, strategy, ...)` — resolves input (name or UUID), selects provider linking mode via `_select_provider_linking`, checks for existing product system, and creates one with `client.create_product_system(process_ref, LinkingConfig(...))` when needed. Returns `ProductSystemCreationReport`.
-
-Provider linking selection logic
--------------------------------
-- When `strategy='parameter'` the selection order is:
-	1) explicit `product_systems_module.components` entry for the process;
-	2) membership in `product_systems_prefer_defaults`;
-	3) fallback to `ONLY_DEFAULTS`.
-
-CLI flags and examples
-----------------------
-- `--process-names` — comma-separated names or UUIDs to build product systems for.
-- `--provider-linking` — override linking strategy (`parameter`, `prefer-defaults`, `only-defaults`, `ignore-defaults`).
-- `--interactive` — prompt user for process names and linking choice.
-- `--set-module-components` / `--set-prefer-default-processes` / `--set-interactive-mode` — CLI helpers to update parameter library entries.
-
-Integration with the orchestrator
----------------------------------
-- `LCI/main.py` can optionally create product systems after it finishes importing processes.
-- This happens only when `--product-systems` is not `none`.
-- If you use `--product-systems imported`, `main.py` takes the process names that were successfully imported in the first pass and sends those names to `create_product_systems_for_processes`.
-- If you use `--product-systems names`, you must also provide the list of process names with `--product-system-names`.
-- In short: `main.py` does the import first, then it asks `product_system_builder.py` to create product systems for the selected processes.
+	Key points
+	---------
+	- It can work from the processes imported in the first pass or from an explicit list of names/UUIDs.
+	- It can prefer default providers or use component-specific linking hints from the parameter library.
+	- `LCI/main.py` calls it after import when `--product-systems` is enabled.
+	- If you use `--product-systems imported`, `main.py` sends the successfully imported process names to `create_product_systems_for_processes`.
+	- If you use `--product-systems names`, you must also provide the list of process names with `--product-system-names`.
 
 3) Extraction & visualization
 

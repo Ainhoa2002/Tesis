@@ -1,3 +1,9 @@
+"""Compute aggregated mass per transport code from component results.
+
+Utilities to parse subsystem result CSVs and return mass grouped by
+transport flow codes for use by transport workflow helpers.
+"""
+
 import argparse
 import csv
 from collections import defaultdict
@@ -5,6 +11,7 @@ from pathlib import Path
 
 
 def _normalize_text(value):
+    """Normalize value to a stripped string."""
     return str(value or "").strip()
 
 
@@ -22,6 +29,10 @@ def _parse_codes(raw_codes):
 
 
 def _to_float(value):
+    """Convert a string to float, tolerant to comma decimals.
+
+    Returns None on empty or invalid input.
+    """
     if value is None:
         return None
     text = _normalize_text(value).replace(",", ".")
@@ -34,6 +45,7 @@ def _to_float(value):
 
 
 def _unit_to_kg(amount, unit):
+    """Convert an amount in a given unit into kilograms, or None if unknown."""
     if amount is None:
         return None
 
@@ -51,12 +63,14 @@ def _unit_to_kg(amount, unit):
 
 
 def _iter_ipe_files(root_dir):
+    """Yield all matching IPE CSV file paths recursively under root_dir."""
     for path in sorted(Path(root_dir).rglob("*_ipe_flows_from_parameters.csv")):
         if path.is_file():
             yield path
 
 
 def _module_name_from_ipe_path(csv_path):
+    """Derive module name from an `_ipe_flows_from_parameters.csv` filename."""
     suffix = "_ipe_flows_from_parameters.csv"
     name = Path(csv_path).name
     if not name.endswith(suffix):
@@ -65,6 +79,7 @@ def _module_name_from_ipe_path(csv_path):
 
 
 def _is_pcb_flow(flow_name):
+    """Return True if the flow name refers to printed circuit board production."""
     return "printed wiring board production" in _normalize_text(flow_name).lower()
 
 

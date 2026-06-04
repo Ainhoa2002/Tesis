@@ -1,3 +1,9 @@
+"""Global parameter storage and CLI helpers.
+
+Manage `global_parameters.json` with thread-safe access and provide a
+small CLI for reading and writing parameters used across the LCI pipeline.
+"""
+
 import argparse
 import json
 import json5

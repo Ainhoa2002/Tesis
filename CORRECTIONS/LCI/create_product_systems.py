@@ -1,3 +1,9 @@
+"""Create openLCA product systems from imported LCI processes.
+
+Provides utilities to discover imported processes and interactively
+or programmatically create product systems via openLCA IPC.
+"""
+
 import argparse
 import socket
 from pathlib import Path
@@ -11,6 +17,7 @@ MAX_SELECTION_ATTEMPTS = 3
 
 
 def iter_system_folders(base_dir: Path):
+    """Yield subfolders that represent product-system categories."""
     for child in sorted(base_dir.iterdir()):
         if not child.is_dir():
             continue
@@ -20,12 +27,14 @@ def iter_system_folders(base_dir: Path):
 
 
 def resolve_category_name(folder_name: str) -> str:
+    """Return a normalized category name from a folder name."""
     if folder_name.startswith("LCI_") and len(folder_name) > 4:
         return folder_name[4:]
     return folder_name
 
 
 def ensure_ipc_server_available(host: str = "localhost", port: int = 8080, timeout_seconds: float = 2.0) -> bool:
+    """Check whether an openLCA IPC server is reachable on host:port."""
     try:
         with socket.create_connection((host, port), timeout=timeout_seconds):
             return True
@@ -34,10 +43,12 @@ def ensure_ipc_server_available(host: str = "localhost", port: int = 8080, timeo
 
 
 def _normalize_key(value: str) -> str:
+    """Create a compact normalized key from a string (lowercased, no spaces)."""
     return "".join(str(value or "").strip().lower().split())
 
 
 def discover_default_categories() -> set[str]:
+    """Discover default categories from local `LCI_*` subfolders."""
     return {
         resolve_category_name(folder.name)
         for folder in iter_system_folders(BASE_DIR)
@@ -45,6 +56,7 @@ def discover_default_categories() -> set[str]:
 
 
 def collect_candidate_processes(client: ipc.Client, allowed_categories: set[str]) -> list[o.Ref]:
+    """Collect process descriptors from openLCA matching allowed categories."""
     refs = list(client.get_descriptors(o.Process) or [])
     selected = []
     for ref in refs:
@@ -62,6 +74,7 @@ def collect_candidate_processes(client: ipc.Client, allowed_categories: set[str]
 
 
 def _parse_selection(raw: str, candidates: list[o.Ref]) -> list[o.Ref]:
+    """Parse a user selection string into a list of candidate refs."""
     text = str(raw or "").strip()
     if text == "":
         raise ValueError("Selection is empty")
@@ -95,6 +108,7 @@ def _parse_selection(raw: str, candidates: list[o.Ref]) -> list[o.Ref]:
 
 
 def choose_processes_interactive(candidates: list[o.Ref]) -> list[o.Ref]:
+    """Prompt interactively to choose processes from candidates."""
     if not candidates:
         return []
 
@@ -117,6 +131,7 @@ def choose_processes_interactive(candidates: list[o.Ref]) -> list[o.Ref]:
 
 
 def find_unlinked_input_flow_names(process: o.Process) -> list[str]:
+    """Return names of input flows in a process that have no default provider."""
     names = []
     seen = set()
     for ex in list(process.exchanges or []):
@@ -145,6 +160,7 @@ def find_unlinked_input_flow_names(process: o.Process) -> list[str]:
 
 
 def ask_overwrite(existing_ps: o.Ref) -> bool:
+    """Prompt user whether to overwrite an existing product system."""
     prompt = (
         f"Product system '{existing_ps.name}' already exists (ID: {existing_ps.id}). "
         "Overwrite it? [y/N]: "
@@ -154,6 +170,7 @@ def ask_overwrite(existing_ps: o.Ref) -> bool:
 
 
 def main():
+    """CLI entrypoint to create product systems from selected processes."""
     parser = argparse.ArgumentParser(
         description="Create openLCA product systems from imported LCI processes with selectable linking mode."
     )

@@ -1,3 +1,9 @@
+"""Compare background system totals from the ecoinvent totals library.
+
+Produce a CSV comparing library totals with Mexico section files to help
+identify missing UUIDs or quantity mismatches.
+"""
+
 from __future__ import annotations
 
 import csv

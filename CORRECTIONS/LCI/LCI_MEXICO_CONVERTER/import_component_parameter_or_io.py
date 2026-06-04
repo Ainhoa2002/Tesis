@@ -12,10 +12,12 @@ import openpyxl
 
 
 def _is_yes_answer(answer):
+    """Return True for common yes answers (including Spanish)."""
     return answer.strip().casefold() in {"y", "yes", "s", "si", "sí"}
 
 
 def _prompt_import_mode():
+    """Prompt the user to choose import mode: Excel or duplicate CSV."""
     print("\nImport options:")
     print("1. Excel (BoM parameters)")
     print("2. Duplicate .csv")
@@ -30,6 +32,7 @@ def _prompt_import_mode():
 
 
 def _prompt_directory(prompt_text, default_dir):
+    """Prompt the user to select an existing directory, with a default."""
     while True:
         dir_input = input(prompt_text).strip()
         chosen_dir = Path(dir_input) if dir_input else default_dir
@@ -39,6 +42,7 @@ def _prompt_directory(prompt_text, default_dir):
 
 
 def _prompt_output_csv_path(default_dir, default_name, disallow_path=None):
+    """Prompt for an output CSV path, handling overwrite checks and defaults."""
     while True:
         csv_prompt = f"\nOutput CSV filename (Enter for default: {default_name}): "
         csv_name = input(csv_prompt).strip()
@@ -68,6 +72,10 @@ def _prompt_output_csv_path(default_dir, default_name, disallow_path=None):
 
 
 def _resolve_source_csv(source_dir, source_name, extra_search_dirs=None):
+    """Resolve a source CSV path from name and search directories.
+
+    Returns a Path if found, otherwise None.
+    """
     if not source_name.lower().endswith(".csv"):
         source_name = source_name + ".csv"
 
@@ -88,6 +96,7 @@ def _resolve_source_csv(source_dir, source_name, extra_search_dirs=None):
 
 
 def _choose_csv_from_directory(source_dir):
+    """List CSV files in a directory and allow the user to choose one."""
     csv_files = sorted(p for p in source_dir.glob("*.csv") if p.is_file())
     if not csv_files:
         return None
@@ -113,6 +122,7 @@ def _choose_csv_from_directory(source_dir):
 
 
 def _prompt_source_csv_path(default_dir, extra_search_dirs=None):
+    """Prompt the user to pick a source CSV file, offering directory browsing."""
     while True:
         dir_prompt = f"Source CSV folder (Enter for default: {default_dir}): "
         source_dir = _prompt_directory(dir_prompt, default_dir)
@@ -139,10 +149,12 @@ def _prompt_source_csv_path(default_dir, extra_search_dirs=None):
 
 
 def duplicate_csv(source_csv, output_csv):
+    """Duplicate a CSV file to a new path (simple file copy)."""
     shutil.copyfile(source_csv, output_csv)
 
 
 def _select_sheet_name(workbook, requested_name=None):
+    """Select a sheet name from a workbook, using sensible defaults."""
     if requested_name:
         if requested_name in workbook.sheetnames:
             return requested_name
